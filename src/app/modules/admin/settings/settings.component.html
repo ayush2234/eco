@@ -1,0 +1,24 @@
+<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+    <mat-drawer-container class="flex-auto h-full">
+        <!-- Drawer -->
+        <mat-drawer
+            class="w-72 dark:bg-gray-900"
+            [autoFocus]="false"
+            [mode]="drawerMode"
+            [opened]="drawerOpened"
+            #matDrawer
+        >
+            <!-- Demo sidebar -->
+            <eco-settings-sidebar></eco-settings-sidebar>
+        </mat-drawer>
+
+        <!-- Drawer content -->
+        <mat-drawer-content class="flex flex-col">
+            <!-- Main -->
+            <div class="flex-auto p-6 sm:p-10">
+                <!-- CONTENT GOES HERE -->
+                <router-outlet></router-outlet>
+            </div>
+        </mat-drawer-content>
+    </mat-drawer-container>
+</div>
