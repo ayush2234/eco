@@ -2,13 +2,11 @@
     "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
     "version": 1,
     "cli": {
-        "schematicCollections": [
-            "@angular-eslint/schematics"
-        ]
+        "schematicCollections": ["@angular-eslint/schematics"]
     },
     "newProjectRoot": "projects",
     "projects": {
-        "fuse": {
+        "ecommify": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -17,12 +15,12 @@
             },
             "root": "",
             "sourceRoot": "src",
-            "prefix": "app",
+            "prefix": "eco",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "outputPath": "dist/fuse",
+                        "outputPath": "dist/ecommify",
                         "index": "src/index.html",
                         "main": "src/main.ts",
                         "polyfills": "src/polyfills.ts",
@@ -49,9 +47,7 @@
                             }
                         ],
                         "stylePreprocessorOptions": {
-                            "includePaths": [
-                                "src/@fuse/styles"
-                            ]
+                            "includePaths": ["src/@fuse/styles"]
                         },
                         "styles": [
                             "src/@fuse/styles/tailwind.scss",
@@ -100,10 +96,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "fuse:build:production"
+                            "browserTarget": "ecommify:build:production"
                         },
                         "development": {
-                            "browserTarget": "fuse:build:development"
+                            "browserTarget": "ecommify:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -111,7 +107,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "fuse:build"
+                        "browserTarget": "ecommify:build"
                     }
                 },
                 "test": {
@@ -127,19 +123,14 @@
                             "src/favicon-32x32.png",
                             "src/assets"
                         ],
-                        "styles": [
-                            "src/styles/styles.scss"
-                        ],
+                        "styles": ["src/styles/styles.scss"],
                         "scripts": []
                     }
                 },
                 "lint": {
                     "builder": "@angular-eslint/builder:lint",
                     "options": {
-                        "lintFilePatterns": [
-                            "src/**/*.ts",
-                            "src/**/*.html"
-                        ]
+                        "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
                     }
                 }
             }
