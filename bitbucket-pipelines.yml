@@ -26,7 +26,7 @@ pipelines:
             - pipe: atlassian/git-secrets-scan:0.5.1
     - step:
         name: Upload to S3
-        deployment: Production
+        deployment: Test
         trigger: manual
         clone:
           enabled: false
