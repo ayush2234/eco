@@ -72,13 +72,6 @@ export const defaultNavigation: FuseNavigationItem[] = [
             },
         ],
     },
-    {
-        id: 'settings',
-        title: 'Settings',
-        type: 'basic',
-        icon: 'heroicons_outline:collection',
-        link: '/settings',
-    },
 ];
 export const compactNavigation: FuseNavigationItem[] = [
     {
@@ -120,13 +113,6 @@ export const futuristicNavigation: FuseNavigationItem[] = [
         title: 'Sync Logs',
         type: 'group',
     },
-    {
-        id: 'settings',
-        title: 'Settings',
-        type: 'basic',
-        icon: 'heroicons_outline:collection',
-        link: '/settings',
-    },
 ];
 export const horizontalNavigation: FuseNavigationItem[] = [
     {
@@ -143,12 +129,5 @@ export const horizontalNavigation: FuseNavigationItem[] = [
         id: 'sync-logs',
         title: 'Sync Logs',
         type: 'group',
-    },
-    {
-        id: 'settings',
-        title: 'Settings',
-        type: 'basic',
-        icon: 'heroicons_outline:collection',
-        link: '/settings',
     },
 ];
