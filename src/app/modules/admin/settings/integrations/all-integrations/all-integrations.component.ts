@@ -19,8 +19,6 @@ import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AllIntegrationsComponent implements OnInit, OnDestroy {
-    @ViewChild(CdkPortal, { static: true })
-    portalContent: CdkPortal;
     data: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -29,8 +27,6 @@ export class AllIntegrationsComponent implements OnInit, OnDestroy {
      */
     constructor(
         private _settingsService: SettingsService,
-        private _router: Router,
-        private _portalBridge: PortalBridgeService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------
@@ -41,7 +37,6 @@ export class AllIntegrationsComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        this._portalBridge.setPortal(this.portalContent);
         // Get the data
         this._settingsService.data$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -58,7 +53,6 @@ export class AllIntegrationsComponent implements OnInit, OnDestroy {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
-        this.portalContent.detach();
     }
 
     // -----------------------------------------------------------------------------------------------------

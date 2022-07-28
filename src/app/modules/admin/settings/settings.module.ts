@@ -17,6 +17,8 @@ import { SettingsComponent } from './settings.component';
 import { AllIntegrationsComponent } from './integrations/all-integrations/all-integrations.component';
 import { SettingsResolver } from './settings.resolver';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { AddIntegrationModule } from './integrations/add-integration/settings/settings.module';
+import { AddIntegrationComponent } from './integrations/add-integration/settings/settings.component';
 
 const routes: Route[] = [
     {
@@ -29,6 +31,10 @@ const routes: Route[] = [
                 resolve: {
                     data: SettingsResolver,
                 },
+            },
+            {
+                path: 'add-integration',
+                component: AddIntegrationComponent,
             },
         ],
     },
@@ -55,6 +61,7 @@ const routes: Route[] = [
         MatTooltipModule,
         SharedModule,
         SettingsSidebarModule,
+        AddIntegrationModule,
     ],
 })
 export class SettingsModule {}
