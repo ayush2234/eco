@@ -23,7 +23,7 @@ pipelines:
           script:
             - npm install
             #- npm test
-            - ng build
+            - npm run build
   branches:
     master:
       - parallel:
@@ -33,7 +33,7 @@ pipelines:
               - node
             script:
               - npm install
-              - ng build
+              - npm run build
             artifacts:
               - dist/ecommify/**
         - step:
