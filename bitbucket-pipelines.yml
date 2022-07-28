@@ -7,6 +7,7 @@ pipelines:
     - parallel:
       - step:
           name: Build and Test
+          trigger: manual
           caches:
             - node
           script:
@@ -20,6 +21,7 @@ pipelines:
             - dist/ecommify/**
       - step:
           name: Security Scan
+          trigger: manual
           script:
             # Run a security scan for sensitive data.
             # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
