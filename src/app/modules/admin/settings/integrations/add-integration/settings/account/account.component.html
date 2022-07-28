@@ -1,0 +1,108 @@
+<div class="w-full max-w-3xl">
+    <!-- Form -->
+    <form [formGroup]="accountForm">
+        <!-- Section -->
+        <div class="w-full">
+            <div class="text-xl">Connectivity</div>
+        </div>
+        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+            <!-- Name -->
+            <div class="sm:col-span-4">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Integration name</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:user'"
+                        matPrefix
+                    ></mat-icon>
+                    <input [formControlName]="'name'" matInput />
+                </mat-form-field>
+            </div>
+            <!-- Username -->
+            <div class="sm:col-span-4">
+                <mat-form-field
+                    class="fuse-mat-no-subscript fuse-mat-emphasized-affix w-full"
+                >
+                    <mat-label>StoreURL</mat-label>
+                    <div class="text-secondary" matPrefix>https://</div>
+                    <input [formControlName]="'username'" matInput />
+                </mat-form-field>
+            </div>
+            <!-- Title -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Username</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:briefcase'"
+                        matPrefix
+                    ></mat-icon>
+                    <input [formControlName]="'title'" matInput />
+                </mat-form-field>
+            </div>
+            <!-- Company -->
+            <div class="sm:col-span-2">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>API key</mat-label>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:key'"
+                        matPrefix
+                    ></mat-icon>
+                    <input [formControlName]="'company'" matInput />
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="text-secondary mt-8">
+            For more information on API credentials for Maropost, please see the
+            following URL:
+        </div>
+
+        <!-- Divider -->
+        <div class="my-10 border-t"></div>
+
+        <!-- Section -->
+        <div class="w-full">
+            <div class="text-xl">Sync options</div>
+        </div>
+        <div class="flex flex-col w-full mt-8">
+            <span class="w-full flex items-center justify-between">
+                <div class="text-base">Products</div>
+                <mat-slide-toggle class="ml-3" [color]="'primary'">
+                </mat-slide-toggle>
+            </span>
+            <span class="w-full flex items-center mt-3 justify-between">
+                <div class="text-base">Inventory</div>
+                <mat-slide-toggle class="ml-3" [color]="'primary'">
+                </mat-slide-toggle>
+            </span>
+            <span class="w-full flex items-center mt-3 justify-between">
+                <div class="text-base">Orders</div>
+                <mat-slide-toggle class="ml-3" [color]="'primary'">
+                </mat-slide-toggle>
+            </span>
+            <span class="w-full flex items-center mt-3 justify-between">
+                <div class="text-base">Tracking</div>
+                <mat-slide-toggle class="ml-3" [color]="'primary'">
+                </mat-slide-toggle>
+            </span>
+        </div>
+
+        <!-- Divider -->
+        <div class="mt-11 mb-10 border-t"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end">
+            <button mat-stroked-button type="button">Cancel</button>
+            <button
+                class="ml-4"
+                mat-flat-button
+                type="button"
+                [color]="'primary'"
+            >
+                Save
+            </button>
+        </div>
+    </form>
+</div>

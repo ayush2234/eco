@@ -8,16 +8,17 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NgApexchartsModule } from 'ng-apexcharts';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Route, RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 import { SettingsSidebarModule } from './common/settings-sidebar/settings-sidebar.module';
 import { SettingsComponent } from './settings.component';
-import { SettingsIntegrationsComponent } from './settings-integrations/settings-integrations.component';
+import { AllIntegrationsComponent } from './integrations/all-integrations/all-integrations.component';
 import { SettingsResolver } from './settings.resolver';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { AddIntegrationModule } from './integrations/add-integration/settings/settings.module';
+import { AddIntegrationComponent } from './integrations/add-integration/settings/settings.component';
 
 const routes: Route[] = [
     {
@@ -26,17 +27,21 @@ const routes: Route[] = [
         children: [
             {
                 path: 'integrations',
-                component: SettingsIntegrationsComponent,
+                component: AllIntegrationsComponent,
                 resolve: {
                     data: SettingsResolver,
                 },
+            },
+            {
+                path: 'add-integration',
+                component: AddIntegrationComponent,
             },
         ],
     },
 ];
 
 @NgModule({
-    declarations: [SettingsComponent, SettingsIntegrationsComponent],
+    declarations: [SettingsComponent, AllIntegrationsComponent],
     imports: [
         RouterModule.forChild(routes),
         MatButtonModule,
@@ -54,9 +59,9 @@ const routes: Route[] = [
         MatSortModule,
         MatTableModule,
         MatTooltipModule,
-        NgApexchartsModule,
         SharedModule,
         SettingsSidebarModule,
+        AddIntegrationModule,
     ],
 })
 export class SettingsModule {}

@@ -1,0 +1,57 @@
+<div class="w-full max-w-3xl">
+    <!-- Form -->
+    <form [formGroup]="planBillingForm">
+        <!-- Section -->
+        <div class="w-full">
+            <div class="text-xl">Inventory</div>
+        </div>
+        <div class="flex flex-col w-full mt-8">
+            <!-- Country -->
+            <div class="w-100">
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Take stock from</mat-label>
+                    <mat-select [formControlName]="'country'">
+                        <mat-option [value]="'usa'"
+                            >AvailableSellQuantity</mat-option
+                        >
+                        <mat-option [value]="'canada'">Canada</mat-option>
+                        <mat-option [value]="'mexico'">Mexico</mat-option>
+                        <mat-option [value]="'france'">France</mat-option>
+                        <mat-option [value]="'germany'">Germany</mat-option>
+                        <mat-option [value]="'italy'">Italy</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!-- Card holder -->
+            <div class="w-100">
+                <mat-form-field class="fuse-mat-no-subscript w-full mt-8">
+                    <mat-label>Set stock buffer</mat-label>
+                    <input [formControlName]="'cardHolder'" matInput />
+                </mat-form-field>
+            </div>
+            <!-- ZIP -->
+            <div class="w-100">
+                <mat-form-field class="fuse-mat-no-subscript w-full mt-8">
+                    <mat-label>Virtual Stock Qty</mat-label>
+                    <input matInput />
+                </mat-form-field>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="mt-11 mb-10 border-t"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end">
+            <button mat-stroked-button type="button">Cancel</button>
+            <button
+                class="ml-4"
+                mat-flat-button
+                type="button"
+                [color]="'primary'"
+            >
+                Save
+            </button>
+        </div>
+    </form>
+</div>
