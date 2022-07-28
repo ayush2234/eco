@@ -163,3 +163,15 @@
         </div>
     </div>
 </div>
+<ng-container *cdkPortal>
+    <fuse-drawer
+        class="w-screen min-w-screen sm:w-100 sm:min-w-100 z-999"
+        fixed
+        [mode]="'over'"
+        [name]="'settingsDrawer'"
+        [position]="'right'"
+        opened
+    >
+        Test
+    </fuse-drawer>
+</ng-container>

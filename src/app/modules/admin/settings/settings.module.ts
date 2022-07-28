@@ -8,7 +8,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NgApexchartsModule } from 'ng-apexcharts';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Route, RouterModule } from '@angular/router';
@@ -54,7 +53,6 @@ const routes: Route[] = [
         MatSortModule,
         MatTableModule,
         MatTooltipModule,
-        NgApexchartsModule,
         SharedModule,
         SettingsSidebarModule,
     ],
