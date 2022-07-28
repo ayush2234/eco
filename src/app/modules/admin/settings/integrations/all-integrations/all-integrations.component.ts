@@ -8,15 +8,15 @@ import {
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { ApexOptions } from 'ng-apexcharts';
-import { SettingsService } from '../settings.service';
+import { SettingsService } from '../../settings.service';
 
 @Component({
-    selector: 'eco-settings-integrations',
-    templateUrl: './settings-integrations.component.html',
+    selector: 'eco-all-integrations',
+    templateUrl: './all-integrations.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsIntegrationsComponent implements OnInit, OnDestroy {
+export class AllIntegrationsComponent implements OnInit, OnDestroy {
     chartGithubIssues: ApexOptions = {};
     chartTaskDistribution: ApexOptions = {};
     chartBudgetDistribution: ApexOptions = {};

@@ -15,7 +15,7 @@ import { Route, RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 import { SettingsSidebarModule } from './common/settings-sidebar/settings-sidebar.module';
 import { SettingsComponent } from './settings.component';
-import { SettingsIntegrationsComponent } from './settings-integrations/settings-integrations.component';
+import { AllIntegrationsComponent } from './integrations/all-integrations/all-integrations.component';
 import { SettingsResolver } from './settings.resolver';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
@@ -26,7 +26,7 @@ const routes: Route[] = [
         children: [
             {
                 path: 'integrations',
-                component: SettingsIntegrationsComponent,
+                component: AllIntegrationsComponent,
                 resolve: {
                     data: SettingsResolver,
                 },
@@ -36,7 +36,7 @@ const routes: Route[] = [
 ];
 
 @NgModule({
-    declarations: [SettingsComponent, SettingsIntegrationsComponent],
+    declarations: [SettingsComponent, AllIntegrationsComponent],
     imports: [
         RouterModule.forChild(routes),
         MatButtonModule,
