@@ -27,24 +27,8 @@ pipelines:
               # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
               - pipe: atlassian/git-secrets-scan:0.5.1
       - step:
-          name: Upload to S3
-          deployment: Test
-          trigger: manual
-          clone:
-            enabled: false
-          script:
-            # sync your files to S3
-            - pipe: atlassian/aws-s3-deploy:1.1.0
-              variables:
-                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-                S3_BUCKET: 'ecommify/frontend-app-dist'
-                LOCAL_PATH: 'artifact'
-      - step:
           name: Deploy to EC2
           deployment: Production
-          trigger: manual
           clone:
             enabled: false
           script:
