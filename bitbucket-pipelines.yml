@@ -6,13 +6,13 @@ pipelines:
   custom:
     deployment-to-prods:
       - step:
-          name: Deploy to EC2
-          deployment: Production
+          name: Deploy to EC2 Pre Prod
+          deployment: Staging
           clone:
             enabled: false
           script:
             - pipe: atlassian/ssh-run:0.4.1
               variables:
                 SSH_USER: 'bitbucket'
-                SERVER: 'pre-prod.ecommify.io',
+                SERVER: 'pre-prod.ecommify.io'
                 COMMAND: 'rm -Rf ecommify; git clone git@bitbucket.org:ecommify/ecommify.git; cd ecommify; npm install; npm run build; cp -Rf ecommify/dist/ecommify/** /var/www/ecommify/pre-prod/'
