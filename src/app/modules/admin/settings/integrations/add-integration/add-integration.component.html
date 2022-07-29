@@ -5,7 +5,9 @@
         [mode]="'over'"
         [name]="'addIntegrationDrawer'"
         [position]="'right'"
-        opened
+        [opened]="fuseDrawerOpened"
+        (openedChanged)="openedChanged(fuseDrawer)"
+        #fuseDrawer
         ><div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
             <mat-drawer-container class="flex-auto sm:h-full">
                 <!-- Drawer -->

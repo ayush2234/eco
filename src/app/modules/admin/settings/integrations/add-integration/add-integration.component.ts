@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable quotes */
 /* eslint-disable @typescript-eslint/quotes */
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    EventEmitter,
     OnDestroy,
     OnInit,
+    Output,
     ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
@@ -16,7 +19,7 @@ import { CdkPortal } from '@angular/cdk/portal';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
 
 @Component({
-    selector: 'settings',
+    selector: 'eco-add-integration',
     templateUrl: './add-integration.component.html',
     styleUrls: ['./add-integration.component.scss'],
     encapsulation: ViewEncapsulation.None,
@@ -26,8 +29,10 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
     @ViewChild(CdkPortal, { static: true })
     portalContent: CdkPortal;
     @ViewChild('drawer') drawer: MatDrawer;
+    @Output() cancel = new EventEmitter();
     drawerMode: 'over' | 'side' = 'side';
     drawerOpened: boolean = true;
+    fuseDrawerOpened: boolean = true;
     panels: any[] = [];
     selectedPanel: string = 'connection';
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -56,8 +61,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
                 id: 'connection',
                 icon: 'heroicons_outline:user-circle',
                 title: 'Connection',
-                description:
-                    '',
+                description: '',
             },
             {
                 id: 'products',
@@ -69,8 +73,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
                 id: 'inventory',
                 icon: 'heroicons_outline:credit-card',
                 title: 'Inventory',
-                description:
-                    '',
+                description: '',
             },
             {
                 id: 'orders',
@@ -149,5 +152,13 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
      */
     trackByFn(index: number, item: any): any {
         return item.id || index;
+    }
+
+    /**
+     * FuseDrawer openedChanged
+     *
+     */
+    openedChanged(fuseDrawer): any {
+        !fuseDrawer?.opened && this.cancel.emit();
     }
 }

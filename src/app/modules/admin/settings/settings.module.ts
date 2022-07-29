@@ -32,10 +32,6 @@ const routes: Route[] = [
                     data: SettingsResolver,
                 },
             },
-            {
-                path: 'add-integration',
-                component: AddIntegrationComponent,
-            },
         ],
     },
 ];

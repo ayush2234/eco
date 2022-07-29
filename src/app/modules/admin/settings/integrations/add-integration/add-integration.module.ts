@@ -37,5 +37,6 @@ import { AddIntegrationTrackingComponent } from './tracking/tracking.component';
         FuseAlertModule,
         SharedModule,
     ],
+    exports: [AddIntegrationComponent],
 })
 export class AddIntegrationModule {}

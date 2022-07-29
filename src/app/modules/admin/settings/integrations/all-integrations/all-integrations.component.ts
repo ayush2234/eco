@@ -20,14 +20,13 @@ import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.
 })
 export class AllIntegrationsComponent implements OnInit, OnDestroy {
     data: any;
+    openAddIntegration: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
      * Constructor
      */
-    constructor(
-        private _settingsService: SettingsService,
-    ) {}
+    constructor(private _settingsService: SettingsService) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
