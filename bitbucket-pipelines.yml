@@ -1,40 +1,18 @@
-image: node:16
+image: atlassian/default-image:3
 
 # Workflow Configuration
 
 pipelines:
   custom:
     deployment-to-prods:
-      - parallel:
-        - step:
-            name: Build
-            caches:
-              - node
-            script:
-              - npm install
-              #- npm test
-              - npm run build
-              - mkdir artifact
-              - apt-get update && apt-get install --yes zip
-              - (cd dist/ecommify; zip -r ../../artifact/ng-app-dist.zip .)
-            artifacts:
-              - artifact/ng-app-dist.zip
-              - dist/ecommify/**
-        - step:
-            name: Security Scan
-            script:
-              # Run a security scan for sensitive data.
-              # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
-              - pipe: atlassian/git-secrets-scan:0.5.1
       - step:
-          name: Deploy to EC2
-          deployment: Production
+          name: Deploy to EC2 Pre Prod
+          deployment: Staging
           clone:
             enabled: false
           script:
-            - pipe: atlassian/scp-deploy:1.2.1
+            - pipe: atlassian/ssh-run:0.4.1
               variables:
-                USER: 'bitbucket'
-                SERVER: 'ec2-13-239-30-251.ap-southeast-2.compute.amazonaws.com'
-                REMOTE_PATH: '/home/bitbucket/ng-app/'
-                LOCAL_PATH: 'dist/ecommify/*'
+                SSH_USER: 'bitbucket'
+                SERVER: 'pre-prod.ecommify.io'
+                COMMAND: 'rm -Rf ecommify; git clone git@bitbucket.org:ecommify/ecommify.git; cd ecommify; npm install; export NG_CLI_ANALYTICS=ci; npm run build; cp -Rf dist/ecommify/** /var/www/ecommify/pre-prod/'
