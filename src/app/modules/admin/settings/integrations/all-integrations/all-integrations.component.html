@@ -146,16 +146,16 @@
                     <!-- Footer -->
                     <div class="flex flex-col w-full mt-auto">
                         <div class="flex items-center p-8 pt-0">
-                            <a
+                            <button
                                 mat-flat-button
                                 [color]="'primary'"
                                 class="w-full"
-                                routerLink="/settings/add-integration"
+                                (click)="openAddIntegration = true"
                             >
                                 <span class="inline-flex items-center">
                                     <span>Add integration</span>
                                 </span>
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -163,3 +163,7 @@
         </div>
     </div>
 </div>
+<eco-add-integration
+    *ngIf="openAddIntegration"
+    (cancel)="openAddIntegration = false"
+></eco-add-integration>
