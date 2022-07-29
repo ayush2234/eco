@@ -17,7 +17,8 @@ import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.
 
 @Component({
     selector: 'settings',
-    templateUrl: './settings.component.html',
+    templateUrl: './add-integration.component.html',
+    styleUrls: ['./add-integration.component.scss'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -55,9 +56,8 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
                 id: 'connection',
                 icon: 'heroicons_outline:user-circle',
                 title: 'Connection',
-                heading: 'Add Maropost Commerce Cloud',
                 description:
-                    'Sync products, inventory, orders and tracking to Maropost',
+                    '',
             },
             {
                 id: 'products',
@@ -69,9 +69,8 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
                 id: 'inventory',
                 icon: 'heroicons_outline:credit-card',
                 title: 'Inventory',
-                heading: 'Add Maropost Commerce Cloud',
                 description:
-                    'Sync products, inventory, orders and tracking to Maropost',
+                    '',
             },
             {
                 id: 'orders',

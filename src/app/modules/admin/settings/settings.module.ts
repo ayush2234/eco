@@ -17,8 +17,8 @@ import { SettingsComponent } from './settings.component';
 import { AllIntegrationsComponent } from './integrations/all-integrations/all-integrations.component';
 import { SettingsResolver } from './settings.resolver';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { AddIntegrationModule } from './integrations/add-integration/settings/settings.module';
-import { AddIntegrationComponent } from './integrations/add-integration/settings/settings.component';
+import { AddIntegrationModule } from './integrations/add-integration/add-integration.module';
+import { AddIntegrationComponent } from './integrations/add-integration/add-integration.component';
 
 const routes: Route[] = [
     {

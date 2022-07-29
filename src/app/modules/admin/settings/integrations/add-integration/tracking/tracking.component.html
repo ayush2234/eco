@@ -1,0 +1,115 @@
+<div class="w-full max-w-3xl">
+    <!-- Form -->
+    <form [formGroup]="planBillingForm">
+        <!-- Section -->
+        <div class="w-full">
+            <div class="text-xl">Shipment method mapping</div>
+        </div>
+        <div class="grid sm:grid-cols-4 w-full">
+            <div class="sm:col-span-4">
+                <mat-form-field
+                    appearance="none"
+                    class="fuse-mat-no-subscript fuse-mat-emphasized-affix my-0 w-full"
+                >
+                    <div class="text-secondary font-bold" matPrefix>
+                        <span class="w-40 sm:w-48 truncate block mr-10"
+                            >Woo Commerce</span
+                        >
+                    </div>
+                    <input disabled value="Master Maropost" matInput />
+                </mat-form-field>
+            </div>
+            <div class="sm:col-span-4">
+                <mat-form-field
+                    class="fuse-mat-no-subscript fuse-mat-emphasized-affix my-0 w-full"
+                >
+                    <div class="text-secondary" matPrefix>
+                        <span class="w-40 sm:w-48 truncate block"
+                            >Free Shipping</span
+                        >
+                    </div>
+                    <mat-icon
+                        class="icon-size-5 -mr-2.5"
+                        [svgIcon]="'heroicons_solid:arrow-right'"
+                        matPrefix
+                    ></mat-icon>
+                    <mat-select [formControlName]="'country'">
+                        <mat-option [value]="'usa'"
+                            >eParcel Standard</mat-option
+                        >
+                        <mat-option [value]="'canada'">Canada</mat-option>
+                        <mat-option [value]="'mexico'">Mexico</mat-option>
+                        <mat-option [value]="'france'">France</mat-option>
+                        <mat-option [value]="'germany'">Germany</mat-option>
+                        <mat-option [value]="'italy'">Italy</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="sm:col-span-4">
+                <mat-form-field
+                    class="fuse-mat-no-subscript fuse-mat-emphasized-affix my-0 w-full"
+                >
+                    <div class="text-secondary" matPrefix>
+                        <span class="w-40 sm:w-48 truncate block"
+                            >Free Express Shipping</span
+                        >
+                    </div>
+                    <mat-icon
+                        class="icon-size-5 -mr-2.5"
+                        [svgIcon]="'heroicons_solid:arrow-right'"
+                        matPrefix
+                    ></mat-icon>
+                    <mat-select [formControlName]="'country'">
+                        <mat-option [value]="'usa'">eParcel Express</mat-option>
+                        <mat-option [value]="'canada'">Canada</mat-option>
+                        <mat-option [value]="'mexico'">Mexico</mat-option>
+                        <mat-option [value]="'france'">France</mat-option>
+                        <mat-option [value]="'germany'">Germany</mat-option>
+                        <mat-option [value]="'italy'">Italy</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="sm:col-span-4">
+                <mat-form-field
+                    class="fuse-mat-no-subscript fuse-mat-emphasized-affix my-0 w-full"
+                >
+                    <div class="text-secondary" matPrefix>
+                        <span class="w-40 sm:w-48 truncate block"
+                            >Standard Rate International</span
+                        >
+                    </div>
+                    <mat-icon
+                        class="icon-size-5 -mr-2.5"
+                        [svgIcon]="'heroicons_solid:arrow-right'"
+                        matPrefix
+                    ></mat-icon>
+                    <mat-select [formControlName]="'country'">
+                        <mat-option [value]="'usa'"
+                            >Australia Post International</mat-option
+                        >
+                        <mat-option [value]="'canada'">Canada</mat-option>
+                        <mat-option [value]="'mexico'">Mexico</mat-option>
+                        <mat-option [value]="'france'">France</mat-option>
+                        <mat-option [value]="'germany'">Germany</mat-option>
+                        <mat-option [value]="'italy'">Italy</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <!-- Divider -->
+        <div class="mt-11 mb-10 border-t"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end">
+            <button mat-stroked-button type="button">Cancel</button>
+            <button
+                class="ml-4"
+                mat-flat-button
+                type="button"
+                [color]="'primary'"
+            >
+                Save
+            </button>
+        </div>
+    </form>
+</div>
