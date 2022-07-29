@@ -7,12 +7,12 @@ import {
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 @Component({
-    selector: 'settings-security',
-    templateUrl: './security.component.html',
+    selector: 'eco-add-integration-inventory',
+    templateUrl: './inventory.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsSecurityComponent implements OnInit {
+export class AddIntegrationInventoryComponent implements OnInit {
     planBillingForm: UntypedFormGroup;
     plans: any[];
 

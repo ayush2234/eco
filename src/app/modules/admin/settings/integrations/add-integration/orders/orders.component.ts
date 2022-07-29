@@ -1,25 +1,25 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    OnInit,
+    ViewEncapsulation,
+} from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 @Component({
-    selector       : 'settings-plan-billing',
-    templateUrl    : './plan-billing.component.html',
-    encapsulation  : ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'eco-add-integration-orders',
+    templateUrl: './orders.component.html',
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsPlanBillingComponent implements OnInit
-{
+export class AddIntegrationOrdersComponent implements OnInit {
     planBillingForm: UntypedFormGroup;
     plans: any[];
 
     /**
      * Constructor
      */
-    constructor(
-        private _formBuilder: UntypedFormBuilder
-    )
-    {
-    }
+    constructor(private _formBuilder: UntypedFormBuilder) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -28,39 +28,38 @@ export class SettingsPlanBillingComponent implements OnInit
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         // Create the form
         this.planBillingForm = this._formBuilder.group({
-            plan          : ['team'],
-            cardHolder    : ['Brian Hughes'],
-            cardNumber    : [''],
+            plan: ['team'],
+            cardHolder: ['Brian Hughes'],
+            cardNumber: [''],
             cardExpiration: [''],
-            cardCVC       : [''],
-            country       : ['usa'],
-            zip           : ['']
+            cardCVC: [''],
+            country: ['usa'],
+            zip: [''],
         });
 
         // Setup the plans
         this.plans = [
             {
-                value  : 'basic',
-                label  : 'BASIC',
+                value: 'basic',
+                label: 'BASIC',
                 details: 'Starter plan for individuals.',
-                price  : '10'
+                price: '10',
             },
             {
-                value  : 'team',
-                label  : 'TEAM',
+                value: 'team',
+                label: 'TEAM',
                 details: 'Collaborate up to 10 people.',
-                price  : '20'
+                price: '20',
             },
             {
-                value  : 'enterprise',
-                label  : 'ENTERPRISE',
+                value: 'enterprise',
+                label: 'ENTERPRISE',
                 details: 'For bigger businesses.',
-                price  : '40'
-            }
+                price: '40',
+            },
         ];
     }
 
@@ -74,8 +73,7 @@ export class SettingsPlanBillingComponent implements OnInit
      * @param index
      * @param item
      */
-    trackByFn(index: number, item: any): any
-    {
+    trackByFn(index: number, item: any): any {
         return item.id || index;
     }
 }
