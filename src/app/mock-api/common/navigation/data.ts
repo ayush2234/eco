@@ -72,6 +72,27 @@ export const defaultNavigation: FuseNavigationItem[] = [
             },
         ],
     },
+    {
+        id: 'admin',
+        title: 'Admin',
+        type: 'group',
+        children: [
+            {
+                id: 'admin.tenants',
+                title: 'Tenants',
+                type: 'basic',
+                icon: 'heroicons_outline:user-group',
+                link: '/tenants',
+            },
+            {
+                id: 'admin.users',
+                title: 'Users',
+                type: 'basic',
+                icon: 'heroicons_outline:user-group',
+                link: '/users',
+            },
+        ],
+    },
 ];
 export const compactNavigation: FuseNavigationItem[] = [
     {
@@ -90,11 +111,9 @@ export const compactNavigation: FuseNavigationItem[] = [
         type: 'group',
     },
     {
-        id: 'settings',
-        title: 'Settings',
-        type: 'basic',
-        icon: 'heroicons_outline:collection',
-        link: '/settings',
+        id: 'admin',
+        title: 'Admin',
+        type: 'group',
     },
 ];
 export const futuristicNavigation: FuseNavigationItem[] = [
@@ -113,6 +132,11 @@ export const futuristicNavigation: FuseNavigationItem[] = [
         title: 'Sync Logs',
         type: 'group',
     },
+    {
+        id: 'admin',
+        title: 'Admin',
+        type: 'group',
+    },
 ];
 export const horizontalNavigation: FuseNavigationItem[] = [
     {
@@ -128,6 +152,11 @@ export const horizontalNavigation: FuseNavigationItem[] = [
     {
         id: 'sync-logs',
         title: 'Sync Logs',
+        type: 'group',
+    },
+    {
+        id: 'admin',
+        title: 'Admin',
         type: 'group',
     },
 ];
