@@ -128,6 +128,20 @@ export const appRoutes: Route[] = [
                         (m) => m.SettingsModule
                     ),
             },
+            {
+                path: 'tenants',
+                loadChildren: () =>
+                    import('app/modules/admin/tenants/tenants.module').then(
+                        (m) => m.TenantsModule
+                    ),
+            },
+            {
+                path: 'users',
+                loadChildren: () =>
+                    import('app/modules/admin/users/users.module').then(
+                        (m) => m.UsersModule
+                    ),
+            },
         ],
     },
 ];
