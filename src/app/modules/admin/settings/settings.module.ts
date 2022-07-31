@@ -26,6 +26,11 @@ const routes: Route[] = [
         component: SettingsComponent,
         children: [
             {
+                path: '',
+                pathMatch: 'full',
+                redirectTo: 'integrations',
+            },
+            {
                 path: 'integrations',
                 component: AllIntegrationsComponent,
                 resolve: {

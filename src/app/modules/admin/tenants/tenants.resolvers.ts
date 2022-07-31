@@ -5,14 +5,13 @@ import {
     Router,
     RouterStateSnapshot,
 } from '@angular/router';
+import { IPagination, ITag } from 'app/layout/common/types/grid.types';
 import { catchError, Observable, throwError } from 'rxjs';
 import { TenantsService } from './tenants.service';
 import {
     InventoryBrand,
     InventoryCategory,
     InventoryProduct,
-    InventoryPagination,
-    InventoryTag,
     InventoryVendor,
 } from './tenants.types';
 
@@ -143,7 +142,7 @@ export class InventoryProductsResolver implements Resolve<any> {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Observable<{
-        pagination: InventoryPagination;
+        pagination: IPagination;
         products: InventoryProduct[];
     }> {
         return this._inventoryService.getProducts();
@@ -172,7 +171,7 @@ export class InventoryTagsResolver implements Resolve<any> {
     resolve(
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
-    ): Observable<InventoryTag[]> {
+    ): Observable<ITag[]> {
         return this._inventoryService.getTags();
     }
 }

@@ -11,7 +11,8 @@ import {
     tap,
     throwError,
 } from 'rxjs';
-import { User, UserPagination, UserTag } from './users.types';
+import { User } from './users.types';
+import { IPagination, ITag } from 'app/layout/common/types/grid.types';
 
 @Injectable({
     providedIn: 'root',
@@ -20,11 +21,9 @@ export class UsersService {
     // Private
     private _user: BehaviorSubject<User | null> = new BehaviorSubject(null);
     private _users: BehaviorSubject<User[] | null> = new BehaviorSubject(null);
-    private _pagination: BehaviorSubject<UserPagination | null> =
+    private _pagination: BehaviorSubject<IPagination | null> =
         new BehaviorSubject(null);
-    private _tags: BehaviorSubject<UserTag[] | null> = new BehaviorSubject(
-        null
-    );
+    private _tags: BehaviorSubject<ITag[] | null> = new BehaviorSubject(null);
 
     /**
      * Constructor
@@ -52,14 +51,14 @@ export class UsersService {
     /**
      * Getter for pagination
      */
-    get pagination$(): Observable<UserPagination> {
+    get pagination$(): Observable<IPagination> {
         return this._pagination.asObservable();
     }
 
     /**
      * Getter for tags
      */
-    get tags$(): Observable<UserTag[]> {
+    get tags$(): Observable<ITag[]> {
         return this._tags.asObservable();
     }
 
@@ -84,12 +83,12 @@ export class UsersService {
         order: 'asc' | 'desc' | '' = 'asc',
         search: string = ''
     ): Observable<{
-        pagination: UserPagination;
+        pagination: IPagination;
         users: User[];
     }> {
         return this._httpClient
             .get<{
-                pagination: UserPagination;
+                pagination: IPagination;
                 users: User[];
             }>('api/common/users', {
                 params: {
@@ -229,9 +228,9 @@ export class UsersService {
     /**
      * Get tags
      */
-    getTags(): Observable<UserTag[]> {
+    getTags(): Observable<ITag[]> {
         return this._httpClient
-            .get<UserTag[]>('api/apps/ecommerce/inventory/tags')
+            .get<ITag[]>('api/apps/ecommerce/inventory/tags')
             .pipe(
                 tap((tags) => {
                     this._tags.next(tags);
@@ -244,12 +243,12 @@ export class UsersService {
      *
      * @param tag
      */
-    createTag(tag: UserTag): Observable<UserTag> {
+    createTag(tag: ITag): Observable<ITag> {
         return this.tags$.pipe(
             take(1),
             switchMap((tags) =>
                 this._httpClient
-                    .post<UserTag>('api/apps/ecommerce/inventory/tag', {
+                    .post<ITag>('api/apps/ecommerce/inventory/tag', {
                         tag,
                     })
                     .pipe(
@@ -271,12 +270,12 @@ export class UsersService {
      * @param id
      * @param tag
      */
-    updateTag(id: string, tag: UserTag): Observable<UserTag> {
+    updateTag(id: string, tag: ITag): Observable<ITag> {
         return this.tags$.pipe(
             take(1),
             switchMap((tags) =>
                 this._httpClient
-                    .patch<UserTag>('api/apps/ecommerce/inventory/tag', {
+                    .patch<ITag>('api/apps/ecommerce/inventory/tag', {
                         id,
                         tag,
                     })

@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import { assign, cloneDeep } from 'lodash-es';
 import { FuseMockApiService, FuseMockApiUtils } from '@fuse/lib/mock-api';
 import {
-    user as userData,
-    users as usersData,
-} from 'app/mock-api/common/user/data';
+    syncLog as syncLogData,
+    syncLogs as syncLogsData,
+} from 'app/mock-api/common/sync-log/data';
 
 @Injectable({
     providedIn: 'root',
 })
-export class UserMockApi {
-    private _user: any = userData;
-    private _users: any[] = usersData;
+export class SyncLogMockApi {
+    private _syncLog: any = syncLogData;
+    private _syncLogs: any[] = syncLogsData;
 
     /**
      * Constructor
@@ -30,17 +30,17 @@ export class UserMockApi {
      */
     registerHandlers(): void {
         // -----------------------------------------------------------------------------------------------------
-        // @ User - GET
+        // @ SyncLog - GET
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService
-            .onGet('api/common/user')
-            .reply(() => [200, cloneDeep(this._user)]);
+            .onGet('api/common/sync-log')
+            .reply(() => [200, cloneDeep(this._syncLog)]);
 
         // -----------------------------------------------------------------------------------------------------
-        // @ users - GET
+        // @ syncLogs - GET
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService
-            .onGet('api/common/users', 300)
+            .onGet('api/common/sync-logs', 300)
             .reply(({ request }) => {
                 // Get available queries
                 const search = request.params.get('search');
@@ -49,12 +49,12 @@ export class UserMockApi {
                 const page = parseInt(request.params.get('page') ?? '1', 10);
                 const size = parseInt(request.params.get('size') ?? '10', 10);
 
-                // Clone the users
-                let users: any[] | null = cloneDeep(this._users);
+                // Clone the syncLogs
+                let syncLogs: any[] | null = cloneDeep(this._syncLogs);
 
-                // Sort the users
-                if (sort === 'id' || sort === 'name' || sort === 'active') {
-                    users.sort((a, b) => {
+                // Sort the syncLogs
+                if (sort === 'id') {
+                    syncLogs.sort((a, b) => {
                         const fieldA = a[sort].toString().toUpperCase();
                         const fieldB = b[sort].toString().toUpperCase();
                         return order === 'asc'
@@ -62,15 +62,15 @@ export class UserMockApi {
                             : fieldB.localeCompare(fieldA);
                     });
                 } else {
-                    users.sort((a, b) =>
+                    syncLogs.sort((a, b) =>
                         order === 'asc' ? a[sort] - b[sort] : b[sort] - a[sort]
                     );
                 }
 
                 // If search exists...
                 if (search) {
-                    // Filter the users
-                    users = users.filter(
+                    // Filter the syncLogs
+                    syncLogs = syncLogs.filter(
                         (contact) =>
                             contact.name &&
                             contact.name
@@ -80,32 +80,32 @@ export class UserMockApi {
                 }
 
                 // Paginate - Start
-                const usersLength = users.length;
+                const syncLogsLength = syncLogs.length;
 
                 // Calculate pagination details
                 const begin = page * size;
-                const end = Math.min(size * (page + 1), usersLength);
-                const lastPage = Math.max(Math.ceil(usersLength / size), 1);
+                const end = Math.min(size * (page + 1), syncLogsLength);
+                const lastPage = Math.max(Math.ceil(syncLogsLength / size), 1);
 
                 // Prepare the pagination object
                 let pagination = {};
 
                 // If the requested page number is bigger than
                 // the last possible page number, return null for
-                // users but also send the last possible page so
+                // syncLogs but also send the last possible page so
                 // the app can navigate to there
                 if (page > lastPage) {
-                    users = null;
+                    syncLogs = null;
                     pagination = {
                         lastPage,
                     };
                 } else {
                     // Paginate the results by size
-                    users = users.slice(begin, end);
+                    syncLogs = syncLogs.slice(begin, end);
 
                     // Prepare the pagination mock-api
                     pagination = {
-                        length: usersLength,
+                        length: syncLogsLength,
                         size: size,
                         page: page,
                         lastPage: lastPage,
@@ -118,46 +118,46 @@ export class UserMockApi {
                 return [
                     200,
                     {
-                        users,
+                        syncLogs,
                         pagination,
                     },
                 ];
             });
 
         // -----------------------------------------------------------------------------------------------------
-        // @ user - POST
+        // @ syncLog - POST
         // -----------------------------------------------------------------------------------------------------
-        this._fuseMockApiService.onPost('api/common/user').reply(() => {
-            // Generate a new user
-            const newuser = {
+        this._fuseMockApiService.onPost('api/common/sync-log').reply(() => {
+            // Generate a new syncLog
+            const newsyncLog = {
                 id: FuseMockApiUtils.guid(),
                 email: '',
-                name: 'A New User',
+                name: 'A New SyncLog',
                 tags: [],
                 role: '',
                 active: false,
             };
 
-            // Unshift the new user
-            this._users.unshift(newuser);
+            // Unshift the new syncLog
+            this._syncLogs.unshift(newsyncLog);
 
             // Return the response
-            return [200, newuser];
+            return [200, newsyncLog];
         });
         // -----------------------------------------------------------------------------------------------------
-        // @ User - PATCH
+        // @ SyncLog - PATCH
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService
-            .onPatch('api/common/user')
+            .onPatch('api/common/sync-log')
             .reply(({ request }) => {
-                // Get the user mock-api
-                const user = cloneDeep(request.body.user);
+                // Get the syncLog mock-api
+                const syncLog = cloneDeep(request.body.syncLog);
 
-                // Update the user mock-api
-                this._user = assign({}, this._user, user);
+                // Update the syncLog mock-api
+                this._syncLog = assign({}, this._syncLog, syncLog);
 
                 // Return the response
-                return [200, cloneDeep(this._user)];
+                return [200, cloneDeep(this._syncLog)];
             });
     }
 }
