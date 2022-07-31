@@ -5,9 +5,10 @@ import {
     Router,
     RouterStateSnapshot,
 } from '@angular/router';
+import { IPagination, ITag } from 'app/layout/common/types/grid.types';
 import { catchError, Observable, throwError } from 'rxjs';
 import { UsersService } from './users.service';
-import { User, UserPagination, UserTag } from './users.types';
+import { User } from './users.types';
 
 @Injectable({
     providedIn: 'root',
@@ -32,7 +33,7 @@ export class UsersResolver implements Resolve<any> {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Observable<{
-        pagination: UserPagination;
+        pagination: IPagination;
         users: User[];
     }> {
         return this._usersService.getUsers();
@@ -61,7 +62,7 @@ export class InventoryTagsResolver implements Resolve<any> {
     resolve(
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
-    ): Observable<UserTag[]> {
+    ): Observable<ITag[]> {
         return this._inventoryService.getTags();
     }
 }

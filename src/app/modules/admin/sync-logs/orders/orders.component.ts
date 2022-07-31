@@ -28,17 +28,17 @@ import {
 } from 'rxjs';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { UsersService } from '../users.service';
-import { User } from '../users.types';
 import { IPagination, ITag } from 'app/layout/common/types/grid.types';
+import { SyncLogsService } from '../sync-logs.service';
+import { SyncLog } from '../sync-logs.types';
 
 @Component({
-    selector: 'eco-users-grid',
-    templateUrl: './users-grid.component.html',
+    selector: 'eco-sync-logs-orders',
+    templateUrl: './orders.component.html',
     styles: [
         /* language=SCSS */
         `
-            .users-grid {
+            .sync-logs-grid {
                 grid-template-columns: repeat(3, 1fr);
 
                 @screen sm {
@@ -50,7 +50,9 @@ import { IPagination, ITag } from 'app/layout/common/types/grid.types';
                 }
 
                 @screen lg {
-                    grid-template-columns: 1fr 3fr repeat(2, 1fr) 72px;
+                    grid-template-columns:
+                        150px 2.5fr repeat(2, 1fr) 3fr repeat(2, 1fr)
+                        110px;
                 }
             }
         `,
@@ -59,18 +61,20 @@ import { IPagination, ITag } from 'app/layout/common/types/grid.types';
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: fuseAnimations,
 })
-export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SyncLogsOrdersComponent
+    implements OnInit, AfterViewInit, OnDestroy
+{
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
 
-    users$: Observable<User[]>;
+    syncLogs$: Observable<SyncLog[]>;
 
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
     pagination: IPagination;
     searchInputControl: UntypedFormControl = new UntypedFormControl();
-    selectedUser: User | null = null;
-    selectedUserForm: UntypedFormGroup;
+    selectedSyncLog: SyncLog | null = null;
+    selectedSyncLogForm: UntypedFormGroup;
     tags: ITag[];
     filteredTags: ITag[];
     tagsEditMode: boolean = false;
@@ -83,7 +87,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseConfirmationService: FuseConfirmationService,
         private _formBuilder: UntypedFormBuilder,
-        private _userService: UsersService
+        private _syncLogService: SyncLogsService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------
@@ -94,8 +98,8 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        // Create the selected user form
-        this.selectedUserForm = this._formBuilder.group({
+        // Create the selected syncLog form
+        this.selectedSyncLogForm = this._formBuilder.group({
             id: [''],
             name: ['', [Validators.required]],
             email: [''],
@@ -106,7 +110,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         // Get the pagination
-        this._userService.pagination$
+        this._syncLogService.pagination$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((pagination: IPagination) => {
                 // Update the pagination
@@ -116,11 +120,11 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             });
 
-        // Get the users
-        this.users$ = this._userService.users$;
+        // Get the syncLogs
+        this.syncLogs$ = this._syncLogService.syncLogs$;
 
         // Get the tags
-        this._userService.tags$
+        this._syncLogService.tags$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((tags: ITag[]) => {
                 // Update the tags
@@ -139,7 +143,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
                 switchMap((query) => {
                     this.closeDetails();
                     this.isLoading = true;
-                    return this._userService.getUsers(
+                    return this._syncLogService.getSyncLogs(
                         0,
                         10,
                         'name',
@@ -169,7 +173,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
             // Mark for check
             this._changeDetectorRef.markForCheck();
 
-            // If the user changes the sort order...
+            // If the syncLog changes the sort order...
             this._sort.sortChange
                 .pipe(takeUntil(this._unsubscribeAll))
                 .subscribe(() => {
@@ -180,13 +184,13 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.closeDetails();
                 });
 
-            // Get users if sort or page changes
+            // Get syncLogs if sort or page changes
             merge(this._sort.sortChange, this._paginator.page)
                 .pipe(
                     switchMap(() => {
                         this.closeDetails();
                         this.isLoading = true;
-                        return this._userService.getUsers(
+                        return this._syncLogService.getSyncLogs(
                             this._paginator.pageIndex,
                             this._paginator.pageSize,
                             this._sort.active,
@@ -215,25 +219,25 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Toggle user details
+     * Toggle syncLog details
      *
-     * @param userId
+     * @param syncLogId
      */
-    toggleDetails(userId: string): void {
-        // If the user is already selected...
-        if (this.selectedUser && this.selectedUser.id === userId) {
+    toggleDetails(syncLogId: string): void {
+        // If the syncLog is already selected...
+        if (this.selectedSyncLog && this.selectedSyncLog.id === syncLogId) {
             // Close the details
             this.closeDetails();
             return;
         }
 
-        // Get the user by id
-        this._userService.getUserById(userId).subscribe((user) => {
-            // Set the selected user
-            this.selectedUser = user;
+        // Get the syncLog by id
+        this._syncLogService.getSyncLogById(syncLogId).subscribe((syncLog) => {
+            // Set the selected syncLog
+            this.selectedSyncLog = syncLog;
 
             // Fill the form
-            this.selectedUserForm.patchValue(user);
+            this.selectedSyncLogForm.patchValue(syncLog);
 
             // Mark for check
             this._changeDetectorRef.markForCheck();
@@ -244,165 +248,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
      * Close the details
      */
     closeDetails(): void {
-        this.selectedUser = null;
-    }
-
-    /**
-     * Toggle the tags edit mode
-     */
-    toggleTagsEditMode(): void {
-        this.tagsEditMode = !this.tagsEditMode;
-    }
-
-    /**
-     * Filter tags
-     *
-     * @param event
-     */
-    filterTags(event): void {
-        // Get the value
-        const value = event.target.value.toLowerCase();
-
-        // Filter the tags
-        this.filteredTags = this.tags.filter((tag) =>
-            tag.title.toLowerCase().includes(value)
-        );
-    }
-
-    /**
-     * Filter tags input key down event
-     *
-     * @param event
-     */
-    filterTagsInputKeyDown(event): void {
-        // Return if the pressed key is not 'Enter'
-        if (event.key !== 'Enter') {
-            return;
-        }
-
-        // If there is no tag available...
-        if (this.filteredTags.length === 0) {
-            // Create the tag
-            this.createTag(event.target.value);
-
-            // Clear the input
-            event.target.value = '';
-
-            // Return
-            return;
-        }
-
-        // If there is a tag...
-        const tag = this.filteredTags[0];
-        const isTagApplied = this.selectedUser.tags.find((id) => id === tag.id);
-
-        // If the found tag is already applied to the user...
-        if (isTagApplied) {
-            // Remove the tag from the user
-            this.removeTagFromUser(tag);
-        } else {
-            // Otherwise add the tag to the user
-            this.addTagToUser(tag);
-        }
-    }
-
-    /**
-     * Create a new tag
-     *
-     * @param title
-     */
-    createTag(title: string): void {
-        const tag = {
-            title,
-        };
-
-        // Create tag on the server
-        this._userService.createTag(tag).subscribe((response) => {
-            // Add the tag to the user
-            this.addTagToUser(response);
-        });
-    }
-
-    /**
-     * Update the tag title
-     *
-     * @param tag
-     * @param event
-     */
-    updateTagTitle(tag: ITag, event): void {
-        // Update the title on the tag
-        tag.title = event.target.value;
-
-        // Update the tag on the server
-        this._userService
-            .updateTag(tag.id, tag)
-            .pipe(debounceTime(300))
-            .subscribe();
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Delete the tag
-     *
-     * @param tag
-     */
-    deleteTag(tag: ITag): void {
-        // Delete the tag from the server
-        this._userService.deleteTag(tag.id).subscribe();
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Add tag to the user
-     *
-     * @param tag
-     */
-    addTagToUser(tag: ITag): void {
-        // Add the tag
-        this.selectedUser.tags.unshift(tag.id);
-
-        // Update the selected user form
-        this.selectedUserForm.get('tags').patchValue(this.selectedUser.tags);
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Remove tag from the user
-     *
-     * @param tag
-     */
-    removeTagFromUser(tag: ITag): void {
-        // Remove the tag
-        this.selectedUser.tags.splice(
-            this.selectedUser.tags.findIndex((item) => item === tag.id),
-            1
-        );
-
-        // Update the selected user form
-        this.selectedUserForm.get('tags').patchValue(this.selectedUser.tags);
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Toggle user tag
-     *
-     * @param tag
-     * @param change
-     */
-    toggleITag(tag: ITag, change: MatCheckboxChange): void {
-        if (change.checked) {
-            this.addTagToUser(tag);
-        } else {
-            this.removeTagFromUser(tag);
-        }
+        this.selectedSyncLog = null;
     }
 
     /**
@@ -420,16 +266,16 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
-     * Create user
+     * Create syncLog
      */
-    createUser(): void {
-        // Create the user
-        this._userService.createUser().subscribe((newuser) => {
-            // Go to new user
-            this.selectedUser = newuser;
+    createSyncLog(): void {
+        // Create the syncLog
+        this._syncLogService.createSyncLog().subscribe((newsyncLog) => {
+            // Go to new syncLog
+            this.selectedSyncLog = newsyncLog;
 
             // Fill the form
-            this.selectedUserForm.patchValue(newuser);
+            this.selectedSyncLogForm.patchValue(newsyncLog);
 
             // Mark for check
             this._changeDetectorRef.markForCheck();
@@ -437,31 +283,33 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
-     * Update the selected user using the form data
+     * Update the selected syncLog using the form data
      */
-    updateSelectedUser(): void {
-        // Get the user object
-        const user = this.selectedUserForm.getRawValue();
+    updateSelectedSyncLog(): void {
+        // Get the syncLog object
+        const syncLog = this.selectedSyncLogForm.getRawValue();
 
         // Remove the currentImageIndex field
-        delete user.currentImageIndex;
+        delete syncLog.currentImageIndex;
 
-        // Update the user on the server
-        this._userService.updateUser(user.id, user).subscribe(() => {
-            // Show a success message
-            this.showFlashMessage('success');
-        });
+        // Update the syncLog on the server
+        this._syncLogService
+            .updateSyncLog(syncLog.id, syncLog)
+            .subscribe(() => {
+                // Show a success message
+                this.showFlashMessage('success');
+            });
     }
 
     /**
-     * Delete the selected user using the form data
+     * Delete the selected syncLog using the form data
      */
-    deleteSelectedUser(): void {
+    deleteSelectedSyncLog(): void {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title: 'Delete user',
+            title: 'Delete syncLog',
             message:
-                'Are you sure you want to remove this user? This action cannot be undone!',
+                'Are you sure you want to remove this syncLog? This action cannot be undone!',
             actions: {
                 confirm: {
                     label: 'Delete',
@@ -473,11 +321,11 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
         confirmation.afterClosed().subscribe((result) => {
             // If the confirm button pressed...
             if (result === 'confirmed') {
-                // Get the user object
-                const user = this.selectedUserForm.getRawValue();
+                // Get the syncLog object
+                const syncLog = this.selectedSyncLogForm.getRawValue();
 
-                // Delete the user on the server
-                this._userService.deleteUser(user.id).subscribe(() => {
+                // Delete the syncLog on the server
+                this._syncLogService.deleteSyncLog(syncLog.id).subscribe(() => {
                     // Close the details
                     this.closeDetails();
                 });

@@ -33,13 +33,12 @@ import {
     InventoryProduct,
     InventoryBrand,
     InventoryCategory,
-    InventoryTag,
-    InventoryPagination,
     InventoryVendor,
 } from '../tenants.types';
+import { IPagination, ITag } from 'app/layout/common/types/grid.types';
 
 @Component({
-    selector: 'eco-tenants-list',
+    selector: 'eco-tenants-grid',
     templateUrl: './tenants-grid.component.html',
     styles: [
         /* language=SCSS */
@@ -73,14 +72,14 @@ export class TenantsGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     brands: InventoryBrand[];
     categories: InventoryCategory[];
-    filteredTags: InventoryTag[];
+    filteredTags: ITag[];
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
-    pagination: InventoryPagination;
+    pagination: IPagination;
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedProduct: InventoryProduct | null = null;
     selectedProductForm: UntypedFormGroup;
-    tags: InventoryTag[];
+    tags: ITag[];
     tagsEditMode: boolean = false;
     vendors: InventoryVendor[];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -152,7 +151,7 @@ export class TenantsGridComponent implements OnInit, AfterViewInit, OnDestroy {
         // Get the pagination
         this._tenantsService.pagination$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((pagination: InventoryPagination) => {
+            .subscribe((pagination: IPagination) => {
                 // Update the pagination
                 this.pagination = pagination;
 
@@ -166,7 +165,7 @@ export class TenantsGridComponent implements OnInit, AfterViewInit, OnDestroy {
         // Get the tags
         this._tenantsService.tags$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((tags: InventoryTag[]) => {
+            .subscribe((tags: ITag[]) => {
                 // Update the tags
                 this.tags = tags;
                 this.filteredTags = tags;
@@ -413,7 +412,7 @@ export class TenantsGridComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param tag
      * @param event
      */
-    updateTagTitle(tag: InventoryTag, event): void {
+    updateTagTitle(tag: ITag, event): void {
         // Update the title on the tag
         tag.title = event.target.value;
 
@@ -432,7 +431,7 @@ export class TenantsGridComponent implements OnInit, AfterViewInit, OnDestroy {
      *
      * @param tag
      */
-    deleteTag(tag: InventoryTag): void {
+    deleteTag(tag: ITag): void {
         // Delete the tag from the server
         this._tenantsService.deleteTag(tag.id).subscribe();
 
@@ -445,7 +444,7 @@ export class TenantsGridComponent implements OnInit, AfterViewInit, OnDestroy {
      *
      * @param tag
      */
-    addTagToProduct(tag: InventoryTag): void {
+    addTagToProduct(tag: ITag): void {
         // Add the tag
         this.selectedProduct.tags.unshift(tag.id);
 
@@ -463,7 +462,7 @@ export class TenantsGridComponent implements OnInit, AfterViewInit, OnDestroy {
      *
      * @param tag
      */
-    removeTagFromProduct(tag: InventoryTag): void {
+    removeTagFromProduct(tag: ITag): void {
         // Remove the tag
         this.selectedProduct.tags.splice(
             this.selectedProduct.tags.findIndex((item) => item === tag.id),
@@ -485,7 +484,7 @@ export class TenantsGridComponent implements OnInit, AfterViewInit, OnDestroy {
      * @param tag
      * @param change
      */
-    toggleProductTag(tag: InventoryTag, change: MatCheckboxChange): void {
+    toggleProductTag(tag: ITag, change: MatCheckboxChange): void {
         if (change.checked) {
             this.addTagToProduct(tag);
         } else {

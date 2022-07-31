@@ -14,11 +14,10 @@ import {
 import {
     InventoryBrand,
     InventoryCategory,
-    InventoryPagination,
     InventoryProduct,
-    InventoryTag,
     InventoryVendor,
 } from './tenants.types';
+import { IPagination, ITag } from 'app/layout/common/types/grid.types';
 
 @Injectable({
     providedIn: 'root',
@@ -29,15 +28,13 @@ export class TenantsService {
         new BehaviorSubject(null);
     private _categories: BehaviorSubject<InventoryCategory[] | null> =
         new BehaviorSubject(null);
-    private _pagination: BehaviorSubject<InventoryPagination | null> =
+    private _pagination: BehaviorSubject<IPagination | null> =
         new BehaviorSubject(null);
     private _product: BehaviorSubject<InventoryProduct | null> =
         new BehaviorSubject(null);
     private _products: BehaviorSubject<InventoryProduct[] | null> =
         new BehaviorSubject(null);
-    private _tags: BehaviorSubject<InventoryTag[] | null> = new BehaviorSubject(
-        null
-    );
+    private _tags: BehaviorSubject<ITag[] | null> = new BehaviorSubject(null);
     private _vendors: BehaviorSubject<InventoryVendor[] | null> =
         new BehaviorSubject(null);
 
@@ -67,7 +64,7 @@ export class TenantsService {
     /**
      * Getter for pagination
      */
-    get pagination$(): Observable<InventoryPagination> {
+    get pagination$(): Observable<IPagination> {
         return this._pagination.asObservable();
     }
 
@@ -88,7 +85,7 @@ export class TenantsService {
     /**
      * Getter for tags
      */
-    get tags$(): Observable<InventoryTag[]> {
+    get tags$(): Observable<ITag[]> {
         return this._tags.asObservable();
     }
 
@@ -146,12 +143,12 @@ export class TenantsService {
         order: 'asc' | 'desc' | '' = 'asc',
         search: string = ''
     ): Observable<{
-        pagination: InventoryPagination;
+        pagination: IPagination;
         products: InventoryProduct[];
     }> {
         return this._httpClient
             .get<{
-                pagination: InventoryPagination;
+                pagination: IPagination;
                 products: InventoryProduct[];
             }>('api/apps/ecommerce/inventory/products', {
                 params: {
@@ -315,9 +312,9 @@ export class TenantsService {
     /**
      * Get tags
      */
-    getTags(): Observable<InventoryTag[]> {
+    getTags(): Observable<ITag[]> {
         return this._httpClient
-            .get<InventoryTag[]>('api/apps/ecommerce/inventory/tags')
+            .get<ITag[]>('api/apps/ecommerce/inventory/tags')
             .pipe(
                 tap((tags) => {
                     this._tags.next(tags);
@@ -330,12 +327,12 @@ export class TenantsService {
      *
      * @param tag
      */
-    createTag(tag: InventoryTag): Observable<InventoryTag> {
+    createTag(tag: ITag): Observable<ITag> {
         return this.tags$.pipe(
             take(1),
             switchMap((tags) =>
                 this._httpClient
-                    .post<InventoryTag>('api/apps/ecommerce/inventory/tag', {
+                    .post<ITag>('api/apps/ecommerce/inventory/tag', {
                         tag,
                     })
                     .pipe(
@@ -357,12 +354,12 @@ export class TenantsService {
      * @param id
      * @param tag
      */
-    updateTag(id: string, tag: InventoryTag): Observable<InventoryTag> {
+    updateTag(id: string, tag: ITag): Observable<ITag> {
         return this.tags$.pipe(
             take(1),
             switchMap((tags) =>
                 this._httpClient
-                    .patch<InventoryTag>('api/apps/ecommerce/inventory/tag', {
+                    .patch<ITag>('api/apps/ecommerce/inventory/tag', {
                         id,
                         tag,
                     })
