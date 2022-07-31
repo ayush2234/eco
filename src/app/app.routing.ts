@@ -142,6 +142,13 @@ export const appRoutes: Route[] = [
                         (m) => m.UsersModule
                     ),
             },
+            {
+                path: 'sync-logs',
+                loadChildren: () =>
+                    import('app/modules/admin/sync-logs/sync-logs.module').then(
+                        (m) => m.SyncLogsModule
+                    ),
+            },
         ],
     },
 ];

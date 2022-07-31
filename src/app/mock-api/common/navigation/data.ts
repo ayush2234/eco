@@ -47,7 +47,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'Products',
                 type: 'basic',
                 icon: 'heroicons_outline:shopping-cart',
-                link: '/sync-logs/productss',
+                link: '/sync-logs/products',
             },
             {
                 id: 'sync-logs.inventory',
