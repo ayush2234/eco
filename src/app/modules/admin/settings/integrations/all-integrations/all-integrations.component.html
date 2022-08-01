@@ -91,7 +91,11 @@
                                     <span class="truncate">Configuration</span>
                                 </span>
                             </a>
-                            <mat-slide-toggle class="ml-3" [color]="'primary'">
+                            <mat-slide-toggle
+                                class="ml-3"
+                                [color]="'primary'"
+                                [checked]="integration.isCustom"
+                            >
                             </mat-slide-toggle>
                         </div>
                     </div>
