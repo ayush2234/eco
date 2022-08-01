@@ -52,7 +52,7 @@ import { SyncLog } from '../sync-logs.types';
                 @screen lg {
                     grid-template-columns:
                         150px 2.5fr repeat(2, 1fr) 3fr repeat(2, 1fr)
-                        110px;
+                        130px;
                 }
             }
         `,
@@ -225,7 +225,7 @@ export class SyncLogsTrackingComponent
      */
     toggleDetails(syncLogId: string): void {
         // If the syncLog is already selected...
-        if (this.selectedSyncLog && this.selectedSyncLog.id === syncLogId) {
+        if (this.selectedSyncLog && this.selectedSyncLog.syncId === syncLogId) {
             // Close the details
             this.closeDetails();
             return;
