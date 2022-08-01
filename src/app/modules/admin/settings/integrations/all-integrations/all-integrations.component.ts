@@ -3,14 +3,10 @@ import {
     Component,
     OnDestroy,
     OnInit,
-    ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
-import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { SettingsService } from '../../settings.service';
-import { CdkPortal } from '@angular/cdk/portal';
-import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
+import { IntegrationsService } from '../integrations.service';
 
 @Component({
     selector: 'eco-all-integrations',
@@ -19,14 +15,15 @@ import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AllIntegrationsComponent implements OnInit, OnDestroy {
-    data: any;
+    installed: any;
+    available: any;
     openAddIntegration: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
      * Constructor
      */
-    constructor(private _settingsService: SettingsService) {}
+    constructor(private _integrationsService: IntegrationsService) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -36,12 +33,20 @@ export class AllIntegrationsComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        // Get the data
-        this._settingsService.data$
+        // Get installed data
+        this._integrationsService.installed$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((data) => {
                 // Store the data
-                this.data = data;
+                this.installed = data;
+            });
+
+        // Get available data
+        this._integrationsService.available$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((data) => {
+                // Store the data
+                this.available = data;
             });
     }
 

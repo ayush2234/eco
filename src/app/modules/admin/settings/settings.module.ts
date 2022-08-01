@@ -15,10 +15,12 @@ import { SharedModule } from 'app/shared/shared.module';
 import { SettingsSidebarModule } from './common/settings-sidebar/settings-sidebar.module';
 import { SettingsComponent } from './settings.component';
 import { AllIntegrationsComponent } from './integrations/all-integrations/all-integrations.component';
-import { SettingsResolver } from './settings.resolver';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AddIntegrationModule } from './integrations/add-integration/add-integration.module';
-import { AddIntegrationComponent } from './integrations/add-integration/add-integration.component';
+import {
+    AvailableIntegrationsResolver,
+    InstalledIntegrationsResolver,
+} from './integrations/integrations.resolver';
 
 const routes: Route[] = [
     {
@@ -34,7 +36,8 @@ const routes: Route[] = [
                 path: 'integrations',
                 component: AllIntegrationsComponent,
                 resolve: {
-                    data: SettingsResolver,
+                    installed: InstalledIntegrationsResolver,
+                    available: AvailableIntegrationsResolver,
                 },
             },
         ],

@@ -22,6 +22,7 @@ import { ShortcutsMockApi } from 'app/mock-api/common/shortcuts/api';
 import { TasksMockApi } from 'app/mock-api/apps/tasks/api';
 import { UserMockApi } from 'app/mock-api/common/user/api';
 import { SyncLogMockApi } from './common/sync-log/api';
+import { IntegrationMockApi } from './settings/integrations/api';
 
 export const mockApiServices = [
     AcademyMockApi,
@@ -48,4 +49,5 @@ export const mockApiServices = [
     TasksMockApi,
     UserMockApi,
     SyncLogMockApi,
+    IntegrationMockApi,
 ];
