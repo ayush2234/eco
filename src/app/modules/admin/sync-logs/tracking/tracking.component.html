@@ -135,10 +135,7 @@
                                 >
                                     <!-- SyncLog ID -->
                                     <div class="hidden md:block truncate">
-                                        {{
-                                            syncLog.logDate
-                                                | date: "dd-MM-yyyy h:mm a"
-                                        }}
+                                        {{ syncLog.niceDate }}
                                     </div>
 
                                     <!-- Name -->
@@ -148,20 +145,20 @@
                                         <div class="flex-shrink-0">
                                             <img
                                                 class="w-10 h-10 rounded-full"
-                                                [src]="syncLog.avatar"
-                                                alt="Michael image"
+                                                [src]="syncLog.sourceIcon"
+                                                alt="Source Icon"
                                             />
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <p
                                                 class="font-medium text-gray-900 truncate dark:text-white"
                                             >
-                                                {{ syncLog.source }}
+                                                {{ syncLog.sourceName }}
                                             </p>
                                             <p
                                                 class="text-sm text-gray-500 truncate dark:text-gray-400"
                                             >
-                                                {{ syncLog.email }}
+                                                {{ syncLog.neatSourceURL }}
                                             </p>
                                         </div>
                                     </div>
@@ -178,66 +175,28 @@
 
                                     <!-- Name -->
                                     <div class="hidden md:block truncate">
-                                        {{ syncLog.message }}
+                                        {{ syncLog.shortMessage }}
                                     </div>
 
                                     <!-- Name -->
                                     <div class="hidden lg:block">
-                                        <ng-container
-                                            *ngIf="syncLog?.result === 'Ok'"
-                                        >
-                                            <div class="flex items-center">
-                                                <div
-                                                    class="flex-0 w-2 h-2 rounded-full"
-                                                    [style.backgroundColor]="
-                                                        'green'
-                                                    "
-                                                ></div>
-                                                <div class="ml-3 truncate">
-                                                    {{ syncLog?.result }}
-                                                </div>
+                                        <div class="flex items-center">
+                                            <div
+                                                class="flex-0 w-2 h-2 rounded-full"
+                                                [style.backgroundColor]="
+                                                    syncLog?.result?.badgeColor
+                                                "
+                                            ></div>
+                                            <div class="ml-3 truncate">
+                                                {{ syncLog?.result?.message }}
                                             </div>
-                                        </ng-container>
-
-                                        <ng-container
-                                            *ngIf="syncLog?.result === 'Error'"
-                                        >
-                                            <div class="flex items-center">
-                                                <div
-                                                    class="flex-0 w-2 h-2 rounded-full"
-                                                    [style.backgroundColor]="
-                                                        'red'
-                                                    "
-                                                ></div>
-                                                <div class="ml-3 truncate">
-                                                    {{ syncLog?.result }}
-                                                </div>
-                                            </div>
-                                        </ng-container>
-
-                                        <ng-container
-                                            *ngIf="
-                                                syncLog?.result === 'Warning'
-                                            "
-                                        >
-                                            <div class="flex items-center">
-                                                <div
-                                                    class="flex-0 w-2 h-2 rounded-full"
-                                                    [style.backgroundColor]="
-                                                        'orange'
-                                                    "
-                                                ></div>
-                                                <div class="ml-3 truncate">
-                                                    {{ syncLog?.result }}
-                                                </div>
-                                            </div>
-                                        </ng-container>
+                                        </div>
                                     </div>
 
                                     <!-- Status -->
                                     <div class="hidden lg:block">
                                         <ng-container
-                                            *ngIf="syncLog.isActionRequired"
+                                            *ngIf="syncLog.actionRequired"
                                         >
                                             <mat-icon
                                                 class="text-green-400 icon-size-5"
@@ -247,7 +206,7 @@
                                             ></mat-icon>
                                         </ng-container>
                                         <ng-container
-                                            *ngIf="!syncLog.isActionRequired"
+                                            *ngIf="!syncLog.actionRequired"
                                         >
                                             <mat-icon
                                                 class="text-gray-400 icon-size-5"
@@ -266,10 +225,19 @@
                                                 View
                                             </button>
                                         </div>
-                                        <div>
+                                        <div *ngIf="syncLog.showResync">
                                             <button
                                                 class="min-w-10 min-h-7 h-7 px-2 leading-6"
                                                 mat-stroked-button
+                                            >
+                                                Resync
+                                            </button>
+                                        </div>
+                                        <div *ngIf="syncLog.showSuggestSync">
+                                            <button
+                                                class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                                mat-flat-button
+                                                color="primary"
                                             >
                                                 Sync
                                             </button>

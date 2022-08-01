@@ -4,7 +4,7 @@ import { FuseMockApiService, FuseMockApiUtils } from '@fuse/lib/mock-api';
 import {
     syncLog as syncLogData,
     syncLogs as syncLogsData,
-} from 'app/mock-api/common/sync-log/data';
+} from 'app/mock-api/apps/sync-log/data';
 
 @Injectable({
     providedIn: 'root',

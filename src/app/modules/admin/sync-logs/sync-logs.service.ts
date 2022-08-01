@@ -119,7 +119,8 @@ export class SyncLogsService {
             take(1),
             map((syncLogs) => {
                 // Find the syncLog
-                const syncLog = syncLogs.find((item) => item.id === id) || null;
+                const syncLog =
+                    syncLogs.find((item) => item.syncId === id) || null;
 
                 // Update the syncLog
                 this._syncLog.next(syncLog);
@@ -178,7 +179,7 @@ export class SyncLogsService {
                         map((updatedSyncLog) => {
                             // Find the index of the updated syncLog
                             const index = syncLogs.findIndex(
-                                (item) => item.id === id
+                                (item) => item.syncId === id
                             );
 
                             // Update the syncLog
@@ -212,7 +213,7 @@ export class SyncLogsService {
                         map((isDeleted: boolean) => {
                             // Find the index of the deleted syncLog
                             const index = syncLogs.findIndex(
-                                (item) => item.id === id
+                                (item) => item.syncId === id
                             );
 
                             // Delete the syncLog
