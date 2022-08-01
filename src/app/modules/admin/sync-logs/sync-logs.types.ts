@@ -1,13 +1,25 @@
 export interface SyncLog {
-    id: string;
-    logDate: string;
-    source: string;
+    syncId: string;
+    installationId: string;
+    integrationId: string;
+    niceDate: string;
+    sourceName: string;
+    sourceIcon: string;
+    neatSourceURL: string;
     sourceId: string;
     destinationId: string;
-    message: string;
-    result: string;
-    avatar: string;
-    email: string;
-    isActionRequired: boolean;
-    isSyncOn: boolean;
+    shortMessage: string;
+    result: {
+        badgeColor: string;
+        message: string;
+    };
+    actionRequired: true;
+    showSuggestSync: false;
+    showResync: true;
+    isCustom: false;
+    detailView: {
+        payload: string;
+        response: string;
+        detail1: string;
+    };
 }
