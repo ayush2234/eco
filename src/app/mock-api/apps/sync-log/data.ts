@@ -15,7 +15,7 @@ export const syncLog = {
         badgeColor: '#4fd1c5',
         message: 'Ok',
     },
-    actionRequired: true,
+    actionRequired: false,
     showSuggestSync: false,
     showResync: true,
     isCustom: false,
@@ -44,7 +44,7 @@ export const syncLogs = [
             badgeColor: '#4fd1c5',
             message: 'Ok',
         },
-        actionRequired: true,
+        actionRequired: false,
         showSuggestSync: false,
         showResync: true,
         isCustom: false,
@@ -68,7 +68,7 @@ export const syncLogs = [
         shortMessage:
             'Order synced with warning: ShipMethod Click & Collect does not exist.',
         result: {
-            badgeColor: '#4fd1c5',
+            badgeColor: '#ffae42',
             message: 'Warning',
         },
         actionRequired: false,
