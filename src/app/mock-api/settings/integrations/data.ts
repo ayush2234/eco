@@ -10,7 +10,7 @@ export const integrations = {
             description:
                 'Sync products, inventory, tracking and more to and from Maropost',
             isActive: true,
-            isCustom: false,
+            isCustom: true,
         },
     ],
     installed: [
