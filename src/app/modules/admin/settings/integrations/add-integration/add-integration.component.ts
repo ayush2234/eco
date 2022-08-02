@@ -21,7 +21,7 @@ import { AddIntegrationService } from './add-integration.service';
 import { Integration } from '../integrations.types';
 
 const badgeActiveClasses =
-    'px-2 bg-primary text-sm text-on-primary rounded-full';
+    'px-2 bg-green-500 text-sm text-on-primary rounded-full';
 const badgeInactiveClasses =
     'px-2 bg-primary text-sm text-on-primary rounded-full';
 const addIntegrationPanels = [
