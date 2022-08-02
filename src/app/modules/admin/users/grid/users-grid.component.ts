@@ -9,6 +9,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import {
+    FormControl,
     UntypedFormBuilder,
     UntypedFormControl,
     UntypedFormGroup,
@@ -233,6 +234,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
             this.selectedUser = user;
 
             // Fill the form
+            this.selectedUserForm.removeControl('password');
             this.selectedUserForm.patchValue(user);
 
             // Mark for check
@@ -429,6 +431,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
             this.selectedUser = newuser;
 
             // Fill the form
+            this.selectedUserForm.addControl('password', new FormControl(''));
             this.selectedUserForm.patchValue(newuser);
 
             // Mark for check

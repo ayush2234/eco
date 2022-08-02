@@ -1,6 +1,6 @@
 <div class="w-full max-w-3xl">
     <!-- Form -->
-    <form [formGroup]="accountForm">
+    <form [formGroup]="connectionForm">
         <!-- Section -->
         <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
             <!-- Name -->
@@ -17,21 +17,21 @@
                 >
                     <mat-label>Store URL</mat-label>
                     <div class="text-secondary" matPrefix>https://</div>
-                    <input [formControlName]="'username'" matInput />
+                    <input [formControlName]="'neatStoreURL'" matInput />
                 </mat-form-field>
             </div>
             <!-- Title -->
             <div class="sm:col-span-2">
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Username</mat-label>
-                    <input [formControlName]="'title'" matInput />
+                    <input [formControlName]="'username'" matInput />
                 </mat-form-field>
             </div>
             <!-- Company -->
             <div class="sm:col-span-2">
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>API key</mat-label>
-                    <input [formControlName]="'company'" matInput />
+                    <input [formControlName]="'apiKey'" matInput />
                 </mat-form-field>
             </div>
         </div>
@@ -51,15 +51,15 @@
             <div class="flex items-center justify-between">
                 <div
                     class="flex-auto leading-6 cursor-pointer"
-                    (click)="comments.toggle()"
+                    (click)="products.toggle()"
                 >
                     Products
                 </div>
                 <mat-slide-toggle
                     class="ml-2"
                     [color]="'primary'"
-                    [formControlName]="'username'"
-                    #comments
+                    [formControlName]="'syncProducts'"
+                    #products
                 >
                 </mat-slide-toggle>
             </div>
@@ -67,15 +67,15 @@
             <div class="flex items-center justify-between">
                 <div
                     class="flex-auto leading-6 cursor-pointer"
-                    (click)="mention.toggle()"
+                    (click)="inventory.toggle()"
                 >
                     Inventory
                 </div>
                 <mat-slide-toggle
                     class="ml-2"
                     [color]="'primary'"
-                    [formControlName]="'username'"
-                    #mention
+                    [formControlName]="'syncInventory'"
+                    #inventory
                 >
                 </mat-slide-toggle>
             </div>
@@ -83,15 +83,15 @@
             <div class="flex items-center justify-between">
                 <div
                     class="flex-auto leading-6 cursor-pointer"
-                    (click)="follow.toggle()"
+                    (click)="orders.toggle()"
                 >
                     Orders
                 </div>
                 <mat-slide-toggle
                     class="ml-2"
                     [color]="'primary'"
-                    [formControlName]="'username'"
-                    #follow
+                    [formControlName]="'syncOrders'"
+                    #orders
                 >
                 </mat-slide-toggle>
             </div>
@@ -99,15 +99,15 @@
             <div class="flex items-center justify-between">
                 <div
                     class="flex-auto leading-6 cursor-pointer"
-                    (click)="inquiry.toggle()"
+                    (click)="tracking.toggle()"
                 >
                     Tracking
                 </div>
                 <mat-slide-toggle
                     class="ml-2"
                     [color]="'primary'"
-                    [formControlName]="'username'"
-                    #inquiry
+                    [formControlName]="'syncTracking'"
+                    #tracking
                 >
                 </mat-slide-toggle>
             </div>

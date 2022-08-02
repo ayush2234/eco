@@ -26,17 +26,24 @@ export class IntegrationMockApi {
      */
     registerHandlers(): void {
         // -----------------------------------------------------------------------------------------------------
-        // @ SyncLog - GET
+        // @ Integrations - GET
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService
             .onGet('api/integrations/installed')
             .reply(() => [200, cloneDeep(this._integrations?.installed)]);
 
         // -----------------------------------------------------------------------------------------------------
-        // @ SyncLog - GET
+        // @ Integrations - GET
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService
             .onGet('api/integrations/available')
             .reply(() => [200, cloneDeep(this._integrations?.available)]);
+
+        // -----------------------------------------------------------------------------------------------------
+        // @ Integrations - GET
+        // -----------------------------------------------------------------------------------------------------
+        this._fuseMockApiService
+            .onGet('api/integrations/source-channel')
+            .reply(() => [200, cloneDeep(this._integrations?.sourceChannel)]);
     }
 }
