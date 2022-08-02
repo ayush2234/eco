@@ -10,44 +10,23 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Route, RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 import { SettingsSidebarModule } from './common/settings-sidebar/settings-sidebar.module';
 import { SettingsComponent } from './settings.component';
 import { AllIntegrationsComponent } from './integrations/all-integrations/all-integrations.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AddIntegrationModule } from './integrations/add-integration/add-integration.module';
-import {
-    AvailableIntegrationsResolver,
-    InstalledIntegrationsResolver,
-} from './integrations/integrations.resolver';
-
-const routes: Route[] = [
-    {
-        path: '',
-        component: SettingsComponent,
-        children: [
-            {
-                path: '',
-                pathMatch: 'full',
-                redirectTo: 'integrations',
-            },
-            {
-                path: 'integrations',
-                component: AllIntegrationsComponent,
-                resolve: {
-                    installed: InstalledIntegrationsResolver,
-                    available: AvailableIntegrationsResolver,
-                },
-            },
-        ],
-    },
-];
+import { SettingssRoutingModule } from './integrations/settings-routing.module';
+import { SourceChannelComponent } from './integrations/source-channel/source-channel.component';
 
 @NgModule({
-    declarations: [SettingsComponent, AllIntegrationsComponent],
+    declarations: [
+        SettingsComponent,
+        AllIntegrationsComponent,
+        SourceChannelComponent,
+    ],
     imports: [
-        RouterModule.forChild(routes),
+        SettingssRoutingModule,
         MatButtonModule,
         MatIconModule,
         MatMenuModule,

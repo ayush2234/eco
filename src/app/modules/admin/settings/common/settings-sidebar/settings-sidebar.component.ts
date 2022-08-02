@@ -116,9 +116,10 @@ export class SettingsSidebarComponent {
                         },
                     },
                     {
-                        title: 'Default mapping',
+                        title: 'Source channel',
                         type: 'basic',
                         icon: 'heroicons_outline:clipboard-copy',
+                        link: '/settings/source-channel',
                     },
                     {
                         title: 'Custom integration request',

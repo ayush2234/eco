@@ -60,3 +60,30 @@ export class AvailableIntegrationsResolver implements Resolve<any> {
         return this._integrationsService.getAvailableIntegrations();
     }
 }
+
+@Injectable({
+    providedIn: 'root',
+})
+export class SourceChannelResolver implements Resolve<any> {
+    /**
+     * Constructor
+     */
+    constructor(private _integrationsService: IntegrationsService) {}
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Resolver
+     *
+     * @param route
+     * @param state
+     */
+    resolve(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ): Observable<any> {
+        return this._integrationsService.getSourceChannel();
+    }
+}

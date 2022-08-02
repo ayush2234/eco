@@ -1,5 +1,18 @@
 /* eslint-disable */
 export const integrations = {
+    sourceChannel: [
+        {
+            installationId: '0eb12ffd-34a8-491a-accc-df9b024f65f7',
+            integrationId: '2afad8bd-7776-41ea-9a99-e7dc345c74ff',
+            name: 'Maropost Commerce Cloud',
+            icon: 'https://wordpress-631421-2579652.cloudwaysapps.com/wp-content/uploads/2022/07/44daee87-399d-45a9-b959-6ea26aedc153-2.png',
+            neatStoreURL: 'pshomeandliving.co.uk',
+            description:
+                'Sync products, inventory, tracking and more to and from Maropost',
+            isActive: true,
+            isCustom: false,
+        },
+    ],
     installed: [
         {
             installationId: 'df1e061d-b785-4168-ac18-489625071b02',

@@ -12,6 +12,8 @@ export class IntegrationsService {
         new BehaviorSubject(null);
     private _available: BehaviorSubject<Integration[] | null> =
         new BehaviorSubject(null);
+    private _sourceChannel: BehaviorSubject<Integration[] | null> =
+        new BehaviorSubject(null);
 
     /**
      * Constructor
@@ -30,10 +32,17 @@ export class IntegrationsService {
     }
 
     /**
-     * Getter for integrations
+     * Getter for available integrations
      */
     get available$(): Observable<Integration[]> {
         return this._available.asObservable();
+    }
+
+    /**
+     * Getter for source channel
+     */
+    get sourceChannel$(): Observable<Integration[]> {
+        return this._sourceChannel.asObservable();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -58,6 +67,17 @@ export class IntegrationsService {
         return this._httpClient.get('api/integrations/available').pipe(
             tap((response: any) => {
                 this._available.next(response);
+            })
+        );
+    }
+
+    /**
+     * Get available integrationss
+     */
+    getSourceChannel(): Observable<any> {
+        return this._httpClient.get('api/integrations/source-channel').pipe(
+            tap((response: any) => {
+                this._sourceChannel.next(response);
             })
         );
     }

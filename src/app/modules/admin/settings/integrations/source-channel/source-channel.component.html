@@ -1,0 +1,104 @@
+<div class="flex flex-col flex-auto w-full">
+    <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
+        <!-- Title and action buttons -->
+        <div class="flex items-center justify-between w-full">
+            <div>
+                <div class="text-3xl font-semibold tracking-tight leading-8">
+                    Source
+                </div>
+                <div class="font-medium tracking-tight text-secondary">
+                    Connect the source channels
+                </div>
+            </div>
+            <div class="flex items-center ml-6">
+                <button class="hidden sm:inline-flex" mat-stroked-button>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:cog'"
+                    ></mat-icon>
+                    <span class="ml-2">Settings</span>
+                </button>
+                <button
+                    class="hidden sm:inline-flex ml-3"
+                    mat-flat-button
+                    [color]="'primary'"
+                    (click)="openAddIntegration = true"
+                >
+                    <span class="ml-2">Add integration</span>
+                </button>
+
+                <!-- Actions menu (visible on xs) -->
+                <div class="sm:hidden">
+                    <button [matMenuTriggerFor]="actionsMenu" mat-icon-button>
+                        <mat-icon
+                            [svgIcon]="'heroicons_outline:dots-vertical'"
+                        ></mat-icon>
+                    </button>
+                    <mat-menu #actionsMenu="matMenu">
+                        <button mat-menu-item>Export</button>
+                        <button mat-menu-item>Settings</button>
+                    </mat-menu>
+                </div>
+            </div>
+        </div>
+
+        <!-- Installed -->
+        <div
+            class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 w-full min-w-0"
+        >
+            <ng-container *ngFor="let integration of sourceChannel">
+                <div
+                    class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden"
+                >
+                    <!-- Avatar & Info -->
+                    <div class="flex items-center p-8 pb-0 space-x-4">
+                        <div class="flex-shrink-0">
+                            <img
+                                class="w-15 h-15 rounded-full"
+                                [src]="integration.icon"
+                                alt="Integration Icon"
+                            />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p
+                                class="text-sm font-medium text-gray-900 truncate dark:text-white"
+                            >
+                                {{ integration.name }}
+                            </p>
+                            <p
+                                class="text-sm text-gray-500 truncate dark:text-gray-400"
+                            >
+                                {{ integration.neatStoreURL }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <p class="text-sm p-8 pt-2 text-secondary">
+                            {{ integration.description }}
+                        </p>
+                    </div>
+                    <!-- Footer -->
+                    <div class="flex flex-col w-full mt-auto">
+                        <div class="flex items-center justify-between p-8 pt-0">
+                            <a mat-stroked-button routerLink="#">
+                                <span class="inline-flex items-center">
+                                    <span class="truncate">Configuration</span>
+                                </span>
+                            </a>
+                            <mat-slide-toggle
+                                class="ml-3"
+                                [color]="'primary'"
+                                [checked]="integration.isCustom"
+                            >
+                            </mat-slide-toggle>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<eco-add-integration
+    *ngIf="openAddIntegration"
+    (cancel)="openAddIntegration = false"
+></eco-add-integration>
