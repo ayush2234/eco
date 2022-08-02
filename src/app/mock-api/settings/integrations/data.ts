@@ -66,6 +66,25 @@ export const integrations = {
             description:
                 'Sync products, inventory, tracking and more to and from Bunnings Marketlink',
             isCustom: false,
+            neatStoreURL: 'onesixeightlondon.com.au',
+            username: 'onesixeightlondon',
+            apiKey: 'Test API Key',
+            connection: {
+                isActive: true,
+                sync: ['products', 'inventory'],
+            },
+            products: {
+                isActive: true,
+            },
+            inventory: {
+                isActive: false,
+            },
+            orders: {
+                isActive: true,
+            },
+            tracking: {
+                isActive: false,
+            },
         },
         {
             integrationId: '2afad8bd-7776-41ea-9a99-e7dc345c74ff',
@@ -75,6 +94,25 @@ export const integrations = {
                 'Sync products, inventory, tracking and more to and from WooCommerce',
             isActive: true,
             isCustom: false,
+            neatStoreURL: 'onesixeightlondon.com.au',
+            username: 'onesixeightlondon',
+            apiKey: 'Test API Key',
+            connection: {
+                isActive: true,
+                sync: ['products', 'inventory', 'orders', 'tracking'],
+            },
+            products: {
+                isActive: true,
+            },
+            inventory: {
+                isActive: true,
+            },
+            orders: {
+                isActive: true,
+            },
+            tracking: {
+                isActive: true,
+            },
         },
         {
             integrationId: '8d4b8e48-3e40-46bf-af09-bb1382270ae8',
@@ -84,6 +122,25 @@ export const integrations = {
                 'Sync products, inventory, tracking and more to and from Maropost',
             isActive: true,
             isCustom: false,
+            neatStoreURL: 'onesixeightlondon.com.au',
+            username: 'onesixeightlondon',
+            apiKey: 'Test API Key',
+            connection: {
+                isActive: true,
+                sync: ['products', 'inventory', 'orders', 'tracking'],
+            },
+            products: {
+                isActive: true,
+            },
+            inventory: {
+                isActive: true,
+            },
+            orders: {
+                isActive: true,
+            },
+            tracking: {
+                isActive: true,
+            },
         },
         {
             integrationId: 'd98519af-0c44-4840-adf8-33a12ab4f2f1',
@@ -91,6 +148,25 @@ export const integrations = {
             icon: 'https://wordpress-631421-2579652.cloudwaysapps.com/wp-content/uploads/2022/07/ecommifyicon-01.svg',
             description: 'Scan new locations and update Maropost live',
             isCustom: true,
+            neatStoreURL: 'moveinventorytool.com.uk',
+            username: 'moveinventorytool',
+            apiKey: 'Test API Key',
+            connection: {
+                isActive: true,
+                sync: ['products', 'inventory', 'orders', 'tracking'],
+            },
+            products: {
+                isActive: true,
+            },
+            inventory: {
+                isActive: true,
+            },
+            orders: {
+                isActive: true,
+            },
+            tracking: {
+                isActive: true,
+            },
         },
         {
             integrationId: 'c811f373-2053-427e-bc67-3ef7a3337a49',
@@ -100,6 +176,25 @@ export const integrations = {
                 'Sync products, inventory, tracking and more to and from WooCommerce',
             isActive: true,
             isCustom: false,
+            neatStoreURL: 'moveinventorytool.com.uk',
+            username: 'moveinventorytool',
+            apiKey: 'Test API Key',
+            connection: {
+                isActive: true,
+                sync: ['products', 'inventory', 'orders', 'tracking'],
+            },
+            products: {
+                isActive: true,
+            },
+            inventory: {
+                isActive: true,
+            },
+            orders: {
+                isActive: true,
+            },
+            tracking: {
+                isActive: true,
+            },
         },
     ],
 };

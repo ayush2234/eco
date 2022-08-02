@@ -6,6 +6,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
+import { AddIntegrationService } from '../add-integration/add-integration.service';
 import { IntegrationsService } from '../integrations.service';
 
 @Component({
@@ -18,12 +19,16 @@ export class AllIntegrationsComponent implements OnInit, OnDestroy {
     installed: any;
     available: any;
     openAddIntegration: boolean = false;
+    selectedIntegration: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
      * Constructor
      */
-    constructor(private _integrationsService: IntegrationsService) {}
+    constructor(
+        private _integrationsService: IntegrationsService,
+        private _addIntegrationService: AddIntegrationService
+    ) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -71,5 +76,16 @@ export class AllIntegrationsComponent implements OnInit, OnDestroy {
      */
     trackByFn(index: number, item: any): any {
         return item.id || index;
+    }
+
+    /**
+     * Add integration
+     *
+     * @param index
+     * @param item
+     */
+    addIntegration(integration: any): any {
+        this.openAddIntegration = true;
+        this._addIntegrationService.setSelectedIntegration(integration);
     }
 }

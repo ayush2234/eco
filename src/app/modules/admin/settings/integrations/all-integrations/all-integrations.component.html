@@ -152,7 +152,7 @@
                                 mat-flat-button
                                 [color]="'primary'"
                                 class="w-full"
-                                (click)="openAddIntegration = true"
+                                (click)="addIntegration(integration)"
                             >
                                 <span class="inline-flex items-center">
                                     <span>Add integration</span>
@@ -167,5 +167,6 @@
 </div>
 <eco-add-integration
     *ngIf="openAddIntegration"
+    [integration]="selectedIntegration"
     (cancel)="openAddIntegration = false"
 ></eco-add-integration>

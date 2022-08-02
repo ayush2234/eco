@@ -8,7 +8,7 @@ import { Integration } from './integrations.types';
 })
 export class IntegrationsService {
     // Private
-    private _installed: BehaviorSubject<Integration | null> =
+    private _installed: BehaviorSubject<Integration[] | null> =
         new BehaviorSubject(null);
     private _available: BehaviorSubject<Integration[] | null> =
         new BehaviorSubject(null);
@@ -27,7 +27,7 @@ export class IntegrationsService {
     /**
      * Getter for installed integration
      */
-    get installed$(): Observable<Integration> {
+    get installed$(): Observable<Integration[]> {
         return this._installed.asObservable();
     }
 

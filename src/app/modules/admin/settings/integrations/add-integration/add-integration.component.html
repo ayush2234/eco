@@ -8,7 +8,10 @@
         [opened]="fuseDrawerOpened"
         (openedChanged)="openedChanged(fuseDrawer)"
         #fuseDrawer
-        ><div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+        ><div
+            *ngIf="selectedIntegration$ | async as integration"
+            class="absolute inset-0 flex flex-col min-w-0 overflow-hidden"
+        >
             <mat-drawer-container class="flex-auto sm:h-full">
                 <!-- Drawer -->
                 <mat-drawer
@@ -77,6 +80,11 @@
                                         {{ panel.title }}
                                     </div>
                                 </div>
+                                <div *ngIf="panel.badge" class="ml-auto mr-0">
+                                    <div [ngClass]="panel.badge.classes">
+                                        {{ panel.badge.title }}
+                                    </div>
+                                </div>
                             </div>
                         </ng-container>
                     </div>
@@ -117,23 +125,33 @@
                             <ng-container [ngSwitch]="selectedPanel">
                                 <!-- Connection -->
                                 <ng-container *ngSwitchCase="'connection'">
-                                    <eco-add-integration-connection></eco-add-integration-connection>
+                                    <eco-add-integration-connection
+                                        [data]="integration"
+                                    ></eco-add-integration-connection>
                                 </ng-container>
                                 <!-- Products -->
                                 <ng-container *ngSwitchCase="'products'">
-                                    <eco-add-integration-products></eco-add-integration-products>
+                                    <eco-add-integration-products
+                                        [data]="integration?.products"
+                                    ></eco-add-integration-products>
                                 </ng-container>
                                 <!-- Inventory -->
                                 <ng-container *ngSwitchCase="'inventory'">
-                                    <eco-add-integration-inventory></eco-add-integration-inventory>
+                                    <eco-add-integration-inventory
+                                        [data]="integration?.inventory"
+                                    ></eco-add-integration-inventory>
                                 </ng-container>
                                 <!-- Orders -->
                                 <ng-container *ngSwitchCase="'orders'">
-                                    <eco-add-integration-orders></eco-add-integration-orders>
+                                    <eco-add-integration-orders
+                                        [data]="integration?.orders"
+                                    ></eco-add-integration-orders>
                                 </ng-container>
                                 <!-- Tracking -->
                                 <ng-container *ngSwitchCase="'tracking'">
-                                    <eco-add-integration-tracking></eco-add-integration-tracking>
+                                    <eco-add-integration-tracking
+                                        [data]="integration?.tracking"
+                                    ></eco-add-integration-tracking>
                                 </ng-container>
                             </ng-container>
                         </div>
