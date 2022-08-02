@@ -6,29 +6,23 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { AddIntegrationService } from '../add-integration/add-integration.service';
 import { IntegrationsService } from '../integrations.service';
 
 @Component({
-    selector: 'eco-all-integrations',
-    templateUrl: './all-integrations.component.html',
+    selector: 'eco-source-channel',
+    templateUrl: './source-channel.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AllIntegrationsComponent implements OnInit, OnDestroy {
-    installed: any;
-    available: any;
+export class SourceChannelComponent implements OnInit, OnDestroy {
+    sourceChannel: any;
     openAddIntegration: boolean = false;
-    selectedIntegration: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
      * Constructor
      */
-    constructor(
-        private _integrationsService: IntegrationsService,
-        private _addIntegrationService: AddIntegrationService
-    ) {}
+    constructor(private _integrationsService: IntegrationsService) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -38,20 +32,12 @@ export class AllIntegrationsComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        // Get installed data
-        this._integrationsService.installed$
+        // Get source channel data
+        this._integrationsService.sourceChannel$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((data) => {
                 // Store the data
-                this.installed = data;
-            });
-
-        // Get available data
-        this._integrationsService.available$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((data) => {
-                // Store the data
-                this.available = data;
+                this.sourceChannel = data;
             });
     }
 
@@ -76,16 +62,5 @@ export class AllIntegrationsComponent implements OnInit, OnDestroy {
      */
     trackByFn(index: number, item: any): any {
         return item.id || index;
-    }
-
-    /**
-     * Add integration
-     *
-     * @param index
-     * @param item
-     */
-    addIntegration(integration: any): any {
-        this.openAddIntegration = true;
-        this._addIntegrationService.setSelectedIntegration(integration);
     }
 }

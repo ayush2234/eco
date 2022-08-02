@@ -13,11 +13,49 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { CdkPortal } from '@angular/cdk/portal';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
+import { AddIntegrationService } from './add-integration.service';
+import { Integration } from '../integrations.types';
 
+const badgeActiveClasses =
+    'px-2 bg-primary text-sm text-on-primary rounded-full';
+const badgeInactiveClasses =
+    'px-2 bg-primary text-sm text-on-primary rounded-full';
+const addIntegrationPanels = [
+    {
+        id: 'connection',
+        icon: 'heroicons_outline:user-circle',
+        title: 'Connection',
+        description: '',
+    },
+    {
+        id: 'products',
+        icon: 'heroicons_outline:lock-closed',
+        title: 'Products',
+        description: '',
+    },
+    {
+        id: 'inventory',
+        icon: 'heroicons_outline:credit-card',
+        title: 'Inventory',
+        description: '',
+    },
+    {
+        id: 'orders',
+        icon: 'heroicons_outline:bell',
+        title: 'Orders',
+        description: '',
+    },
+    {
+        id: 'tracking',
+        icon: 'heroicons_outline:user-group',
+        title: 'Tracking',
+        description: '',
+    },
+];
 @Component({
     selector: 'eco-add-integration',
     templateUrl: './add-integration.component.html',
@@ -34,7 +72,9 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
     drawerOpened: boolean = true;
     fuseDrawerOpened: boolean = true;
     panels: any[] = [];
+    panelsConfig: any;
     selectedPanel: string = 'connection';
+    selectedIntegration$: Observable<Integration>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -43,7 +83,8 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _portalBridge: PortalBridgeService
+        private _portalBridge: PortalBridgeService,
+        private _addIntegrationService: AddIntegrationService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------
@@ -55,39 +96,85 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         this._portalBridge.setPortal(this.portalContent);
-        // Setup available panels
-        this.panels = [
-            {
-                id: 'connection',
-                icon: 'heroicons_outline:user-circle',
-                title: 'Connection',
-                description: '',
-            },
-            {
-                id: 'products',
-                icon: 'heroicons_outline:lock-closed',
-                title: 'Products',
-                description: '',
-            },
-            {
-                id: 'inventory',
-                icon: 'heroicons_outline:credit-card',
-                title: 'Inventory',
-                description: '',
-            },
-            {
-                id: 'orders',
-                icon: 'heroicons_outline:bell',
-                title: 'Orders',
-                description: '',
-            },
-            {
-                id: 'tracking',
-                icon: 'heroicons_outline:user-group',
-                title: 'Tracking',
-                description: '',
-            },
-        ];
+        this.selectedIntegration$ =
+            this._addIntegrationService.selectedIntegration$.pipe(
+                tap((data) => {
+                    // Setup available panels
+                    this.panels = addIntegrationPanels.reduce(
+                        (acc, panel) => {
+                            let styledPanel: any;
+                            switch (panel.id) {
+                                case 'products':
+                                    styledPanel = {
+                                        ...panel,
+                                        badge: {
+                                            title: data?.products?.isActive
+                                                ? 'Active'
+                                                : 'Inactive',
+                                            classes: data?.products?.isActive
+                                                ? badgeActiveClasses
+                                                : badgeInactiveClasses,
+                                        },
+                                    };
+                                    break;
+                                case 'inventory':
+                                    styledPanel = {
+                                        ...panel,
+                                        badge: {
+                                            title: data?.inventory?.isActive
+                                                ? 'Active'
+                                                : 'Inactive',
+                                            classes: data?.inventory?.isActive
+                                                ? badgeActiveClasses
+                                                : badgeInactiveClasses,
+                                        },
+                                    };
+                                    break;
+                                case 'orders':
+                                    styledPanel = {
+                                        ...panel,
+                                        badge: {
+                                            title: data?.orders?.isActive
+                                                ? 'Active'
+                                                : 'Inactive',
+                                            classes: data?.orders?.isActive
+                                                ? badgeActiveClasses
+                                                : badgeInactiveClasses,
+                                        },
+                                    };
+                                    break;
+                                case 'tracking':
+                                    styledPanel = {
+                                        ...panel,
+                                        badge: {
+                                            title: data?.tracking?.isActive
+                                                ? 'Active'
+                                                : 'Inactive',
+                                            classes: data?.tracking?.isActive
+                                                ? badgeActiveClasses
+                                                : badgeInactiveClasses,
+                                        },
+                                    };
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                            return data?.connection?.sync?.includes(panel.id)
+                                ? [...acc, styledPanel]
+                                : [...acc];
+                        },
+                        [
+                            {
+                                id: 'connection',
+                                icon: 'heroicons_outline:user-circle',
+                                title: 'Connection',
+                                description: '',
+                            },
+                        ]
+                    );
+                })
+            );
 
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
