@@ -29,9 +29,9 @@ import {
 } from 'rxjs';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { UsersService } from '../users.service';
-import { User } from '../users.types';
+import { UserService } from '../../../../core/user/user.service';
 import { IPagination, ITag } from 'app/layout/common/types/grid.types';
+import { User } from 'app/core/user/user.types';
 
 @Component({
     selector: 'eco-users-grid',
@@ -84,7 +84,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseConfirmationService: FuseConfirmationService,
         private _formBuilder: UntypedFormBuilder,
-        private _userService: UsersService
+        private _userService: UserService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------

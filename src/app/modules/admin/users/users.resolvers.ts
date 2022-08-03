@@ -5,10 +5,10 @@ import {
     Router,
     RouterStateSnapshot,
 } from '@angular/router';
+import { UserService } from 'app/core/user/user.service';
+import { User } from 'app/core/user/user.types';
 import { IPagination, ITag } from 'app/layout/common/types/grid.types';
 import { catchError, Observable, throwError } from 'rxjs';
-import { UsersService } from './users.service';
-import { User } from './users.types';
 
 @Injectable({
     providedIn: 'root',
@@ -17,7 +17,7 @@ export class UsersResolver implements Resolve<any> {
     /**
      * Constructor
      */
-    constructor(private _usersService: UsersService) {}
+    constructor(private _userService: UserService) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -36,18 +36,18 @@ export class UsersResolver implements Resolve<any> {
         pagination: IPagination;
         users: User[];
     }> {
-        return this._usersService.getUsers();
+        return this._userService.getUsers();
     }
 }
 
 @Injectable({
     providedIn: 'root',
 })
-export class InventoryTagsResolver implements Resolve<any> {
+export class UserTagsResolver implements Resolve<any> {
     /**
      * Constructor
      */
-    constructor(private _inventoryService: UsersService) {}
+    constructor(private _userService: UserService) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -63,6 +63,6 @@ export class InventoryTagsResolver implements Resolve<any> {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Observable<ITag[]> {
-        return this._inventoryService.getTags();
+        return this._userService.getTags();
     }
 }
