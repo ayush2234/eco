@@ -74,7 +74,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
     panels: any[] = [];
     panelsConfig: any;
     selectedPanel: string = 'connection';
-    selectedIntegration$: Observable<Integration>;
+    wipIntegration$: Observable<Integration>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -96,85 +96,12 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         this._portalBridge.setPortal(this.portalContent);
-        this.selectedIntegration$ =
-            this._addIntegrationService.selectedIntegration$.pipe(
-                tap((data) => {
-                    // Setup available panels
-                    this.panels = addIntegrationPanels.reduce(
-                        (acc, panel) => {
-                            let styledPanel: any;
-                            switch (panel.id) {
-                                case 'products':
-                                    styledPanel = {
-                                        ...panel,
-                                        badge: {
-                                            title: data?.products?.isActive
-                                                ? 'Active'
-                                                : 'Inactive',
-                                            classes: data?.products?.isActive
-                                                ? badgeActiveClasses
-                                                : badgeInactiveClasses,
-                                        },
-                                    };
-                                    break;
-                                case 'inventory':
-                                    styledPanel = {
-                                        ...panel,
-                                        badge: {
-                                            title: data?.inventory?.isActive
-                                                ? 'Active'
-                                                : 'Inactive',
-                                            classes: data?.inventory?.isActive
-                                                ? badgeActiveClasses
-                                                : badgeInactiveClasses,
-                                        },
-                                    };
-                                    break;
-                                case 'orders':
-                                    styledPanel = {
-                                        ...panel,
-                                        badge: {
-                                            title: data?.orders?.isActive
-                                                ? 'Active'
-                                                : 'Inactive',
-                                            classes: data?.orders?.isActive
-                                                ? badgeActiveClasses
-                                                : badgeInactiveClasses,
-                                        },
-                                    };
-                                    break;
-                                case 'tracking':
-                                    styledPanel = {
-                                        ...panel,
-                                        badge: {
-                                            title: data?.tracking?.isActive
-                                                ? 'Active'
-                                                : 'Inactive',
-                                            classes: data?.tracking?.isActive
-                                                ? badgeActiveClasses
-                                                : badgeInactiveClasses,
-                                        },
-                                    };
-                                    break;
-
-                                default:
-                                    break;
-                            }
-                            return data?.connection?.sync?.includes(panel.id)
-                                ? [...acc, styledPanel]
-                                : [...acc];
-                        },
-                        [
-                            {
-                                id: 'connection',
-                                icon: 'heroicons_outline:user-circle',
-                                title: 'Connection',
-                                description: '',
-                            },
-                        ]
-                    );
-                })
-            );
+        this.wipIntegration$ = this._addIntegrationService.wipIntegration$.pipe(
+            tap((data) => {
+                // Setup available panels
+                this.setPanels(data);
+            })
+        );
 
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
@@ -247,5 +174,81 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
      */
     openedChanged(fuseDrawer): any {
         !fuseDrawer?.opened && this.cancel.emit();
+    }
+
+    private setPanels(data: any): void {
+        this.panels = addIntegrationPanels.reduce(
+            (acc, panel) => {
+                let styledPanel: any;
+                switch (panel.id) {
+                    case 'products':
+                        styledPanel = {
+                            ...panel,
+                            badge: {
+                                title: data?.products?.isActive
+                                    ? 'Active'
+                                    : 'Inactive',
+                                classes: data?.products?.isActive
+                                    ? badgeActiveClasses
+                                    : badgeInactiveClasses,
+                            },
+                        };
+                        break;
+                    case 'inventory':
+                        styledPanel = {
+                            ...panel,
+                            badge: {
+                                title: data?.inventory?.isActive
+                                    ? 'Active'
+                                    : 'Inactive',
+                                classes: data?.inventory?.isActive
+                                    ? badgeActiveClasses
+                                    : badgeInactiveClasses,
+                            },
+                        };
+                        break;
+                    case 'orders':
+                        styledPanel = {
+                            ...panel,
+                            badge: {
+                                title: data?.orders?.isActive
+                                    ? 'Active'
+                                    : 'Inactive',
+                                classes: data?.orders?.isActive
+                                    ? badgeActiveClasses
+                                    : badgeInactiveClasses,
+                            },
+                        };
+                        break;
+                    case 'tracking':
+                        styledPanel = {
+                            ...panel,
+                            badge: {
+                                title: data?.tracking?.isActive
+                                    ? 'Active'
+                                    : 'Inactive',
+                                classes: data?.tracking?.isActive
+                                    ? badgeActiveClasses
+                                    : badgeInactiveClasses,
+                            },
+                        };
+                        break;
+
+                    default:
+                        break;
+                }
+                return data?.connection?.sync?.includes(panel.id)
+                    ? [...acc, styledPanel]
+                    : [...acc];
+            },
+            [
+                {
+                    id: 'connection',
+                    icon: 'heroicons_outline:user-circle',
+                    title: 'Connection',
+                    description: '',
+                },
+            ]
+        );
     }
 }

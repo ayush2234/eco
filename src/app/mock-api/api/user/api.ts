@@ -4,7 +4,7 @@ import { FuseMockApiService, FuseMockApiUtils } from '@fuse/lib/mock-api';
 import {
     user as userData,
     users as usersData,
-} from 'app/mock-api/common/user/data';
+} from 'app/mock-api/api/user/data';
 
 @Injectable({
     providedIn: 'root',
@@ -33,14 +33,14 @@ export class UserMockApi {
         // @ User - GET
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService
-            .onGet('api/common/user')
+            .onGet('api/user')
             .reply(() => [200, cloneDeep(this._user)]);
 
         // -----------------------------------------------------------------------------------------------------
         // @ users - GET
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService
-            .onGet('api/common/users', 300)
+            .onGet('api/users', 300)
             .reply(({ request }) => {
                 // Get available queries
                 const search = request.params.get('search');
@@ -127,7 +127,7 @@ export class UserMockApi {
         // -----------------------------------------------------------------------------------------------------
         // @ user - POST
         // -----------------------------------------------------------------------------------------------------
-        this._fuseMockApiService.onPost('api/common/user').reply(() => {
+        this._fuseMockApiService.onPost('api/user').reply(() => {
             // Generate a new user
             const newuser = {
                 id: FuseMockApiUtils.guid(),
@@ -147,17 +147,15 @@ export class UserMockApi {
         // -----------------------------------------------------------------------------------------------------
         // @ User - PATCH
         // -----------------------------------------------------------------------------------------------------
-        this._fuseMockApiService
-            .onPatch('api/common/user')
-            .reply(({ request }) => {
-                // Get the user mock-api
-                const user = cloneDeep(request.body.user);
+        this._fuseMockApiService.onPatch('api/user').reply(({ request }) => {
+            // Get the user mock-api
+            const user = cloneDeep(request.body.user);
 
-                // Update the user mock-api
-                this._user = assign({}, this._user, user);
+            // Update the user mock-api
+            this._user = assign({}, this._user, user);
 
-                // Return the response
-                return [200, cloneDeep(this._user)];
-            });
+            // Return the response
+            return [200, cloneDeep(this._user)];
+        });
     }
 }

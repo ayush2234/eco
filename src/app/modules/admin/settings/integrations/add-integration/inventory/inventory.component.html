@@ -1,12 +1,12 @@
 <div class="w-full max-w-3xl">
     <!-- Form -->
-    <form [formGroup]="planBillingForm">
+    <form [formGroup]="inventoryForm">
         <!-- Section -->
         <div class="flex flex-col w-full mt-8">
             <div>
                 <mat-form-field class="fuse-mat-no-subscript w-full sm:w-1/2">
                     <mat-label>Take stock from</mat-label>
-                    <mat-select [formControlName]="'country'">
+                    <mat-select [formControlName]="'takeStockFrom'">
                         <mat-option [value]="'usa'"
                             >AvailableSellQuantity</mat-option
                         >
@@ -23,7 +23,7 @@
                     class="fuse-mat-no-subscript w-full sm:w-1/2 mt-8"
                 >
                     <mat-label>Set stock buffer</mat-label>
-                    <input [formControlName]="'cardHolder'" matInput />
+                    <input [formControlName]="'setStockBuffer'" matInput />
                 </mat-form-field>
             </div>
             <div>
@@ -31,7 +31,7 @@
                     class="fuse-mat-no-subscript w-full sm:w-1/2 mt-8"
                 >
                     <mat-label>Virtual stock qty</mat-label>
-                    <input matInput />
+                    <input [formControlName]="'virtualStockQty'" matInput />
                 </mat-form-field>
             </div>
         </div>
@@ -51,5 +51,31 @@
                 Save
             </button>
         </div>
+        <ng-container *ngIf="!data?.inventory?.isActive">
+            <!-- Divider -->
+            <div class="mt-11 mb-10 border-t"></div>
+
+            <!-- Section -->
+            <div class="flex">
+                <fuse-alert [appearance]="'outline'" [type]="'info'">
+                    <span fuseAlertTitle>Activate Inventory Sync</span>
+                    <div class="flex">
+                        <span class="mr-4"
+                            >If mapping has been completed, you can activate
+                            this sync.</span
+                        >
+                        <button
+                            class="ml-auto mr-0"
+                            mat-flat-button
+                            type="button"
+                            [color]="'primary'"
+                            (click)="activatePanel()"
+                        >
+                            Activate
+                        </button>
+                    </div>
+                </fuse-alert>
+            </div>
+        </ng-container>
     </form>
 </div>

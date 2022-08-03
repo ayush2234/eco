@@ -10,7 +10,7 @@ import { IntegrationsService } from './integrations.service';
 @Injectable({
     providedIn: 'root',
 })
-export class InstalledIntegrationsResolver implements Resolve<any> {
+export class ConnectionsResolver implements Resolve<any> {
     /**
      * Constructor
      */
@@ -30,60 +30,6 @@ export class InstalledIntegrationsResolver implements Resolve<any> {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Observable<any> {
-        return this._integrationsService.getInstalledIntegrations();
-    }
-}
-
-@Injectable({
-    providedIn: 'root',
-})
-export class AvailableIntegrationsResolver implements Resolve<any> {
-    /**
-     * Constructor
-     */
-    constructor(private _integrationsService: IntegrationsService) {}
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Resolver
-     *
-     * @param route
-     * @param state
-     */
-    resolve(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ): Observable<any> {
-        return this._integrationsService.getAvailableIntegrations();
-    }
-}
-
-@Injectable({
-    providedIn: 'root',
-})
-export class SourceChannelResolver implements Resolve<any> {
-    /**
-     * Constructor
-     */
-    constructor(private _integrationsService: IntegrationsService) {}
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Resolver
-     *
-     * @param route
-     * @param state
-     */
-    resolve(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ): Observable<any> {
-        return this._integrationsService.getSourceChannel();
+        return this._integrationsService.getConnections();
     }
 }

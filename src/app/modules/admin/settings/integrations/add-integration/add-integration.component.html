@@ -9,7 +9,7 @@
         (openedChanged)="openedChanged(fuseDrawer)"
         #fuseDrawer
         ><div
-            *ngIf="selectedIntegration$ | async as integration"
+            *ngIf="wipIntegration$ | async as integration"
             class="absolute inset-0 flex flex-col min-w-0 overflow-hidden"
         >
             <mat-drawer-container class="flex-auto sm:h-full">
@@ -132,25 +132,25 @@
                                 <!-- Products -->
                                 <ng-container *ngSwitchCase="'products'">
                                     <eco-add-integration-products
-                                        [data]="integration?.products"
+                                        [data]="integration"
                                     ></eco-add-integration-products>
                                 </ng-container>
                                 <!-- Inventory -->
                                 <ng-container *ngSwitchCase="'inventory'">
                                     <eco-add-integration-inventory
-                                        [data]="integration?.inventory"
+                                        [data]="integration"
                                     ></eco-add-integration-inventory>
                                 </ng-container>
                                 <!-- Orders -->
                                 <ng-container *ngSwitchCase="'orders'">
                                     <eco-add-integration-orders
-                                        [data]="integration?.orders"
+                                        [data]="integration"
                                     ></eco-add-integration-orders>
                                 </ng-container>
                                 <!-- Tracking -->
                                 <ng-container *ngSwitchCase="'tracking'">
                                     <eco-add-integration-tracking
-                                        [data]="integration?.tracking"
+                                        [data]="integration"
                                     ></eco-add-integration-tracking>
                                 </ng-container>
                             </ng-container>
