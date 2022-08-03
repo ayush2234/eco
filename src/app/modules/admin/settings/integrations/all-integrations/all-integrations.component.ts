@@ -19,7 +19,7 @@ export class AllIntegrationsComponent implements OnInit, OnDestroy {
     installed: any;
     available: any;
     openAddIntegration: boolean = false;
-    selectedIntegration: any;
+    selectedIntegration$ = this._addIntegrationService.selectedIntegration$;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -39,19 +39,12 @@ export class AllIntegrationsComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         // Get installed data
-        this._integrationsService.installed$
+        this._integrationsService.integrations$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((data) => {
                 // Store the data
-                this.installed = data;
-            });
-
-        // Get available data
-        this._integrationsService.available$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((data) => {
-                // Store the data
-                this.available = data;
+                this.installed = data?.installed;
+                this.available = data?.available;
             });
     }
 
@@ -86,6 +79,6 @@ export class AllIntegrationsComponent implements OnInit, OnDestroy {
      */
     addIntegration(integration: any): any {
         this.openAddIntegration = true;
-        this._addIntegrationService.setSelectedIntegration(integration);
+        this._addIntegrationService.setSelectedIntegration(integration?.id);
     }
 }

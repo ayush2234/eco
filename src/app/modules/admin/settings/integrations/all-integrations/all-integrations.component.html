@@ -74,7 +74,7 @@
                             <p
                                 class="text-sm text-gray-500 truncate dark:text-gray-400"
                             >
-                                {{ integration.neatStoreURL }}
+                                {{ integration.installationName }}
                             </p>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                             <mat-slide-toggle
                                 class="ml-3"
                                 [color]="'primary'"
-                                [checked]="integration.isCustom"
+                                [checked]="integration.isActive"
                             >
                             </mat-slide-toggle>
                         </div>
@@ -136,7 +136,7 @@
                             <p
                                 class="text-sm text-gray-500 truncate dark:text-gray-400"
                             >
-                                {{ integration.neatStoreURL }}
+                                {{ integration.installationName }}
                             </p>
                         </div>
                     </div>
@@ -166,7 +166,6 @@
     </div>
 </div>
 <eco-add-integration
-    *ngIf="openAddIntegration"
-    [integration]="selectedIntegration"
+    *ngIf="openAddIntegration && selectedIntegration$ | async"
     (cancel)="openAddIntegration = false"
 ></eco-add-integration>

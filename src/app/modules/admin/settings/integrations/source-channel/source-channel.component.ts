@@ -15,8 +15,10 @@ import { IntegrationsService } from '../integrations.service';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SourceChannelComponent implements OnInit, OnDestroy {
-    sourceChannel: any;
+    installed: any;
+    available: any;
     openAddIntegration: boolean = false;
+    selectedIntegration: any;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -33,11 +35,12 @@ export class SourceChannelComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         // Get source channel data
-        this._integrationsService.sourceChannel$
+        this._integrationsService.erps$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((data) => {
                 // Store the data
-                this.sourceChannel = data;
+                this.installed = data?.installed;
+                this.available = data?.available;
             });
     }
 

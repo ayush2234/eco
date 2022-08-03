@@ -2,11 +2,7 @@ import { NgModule } from '@angular/core';
 import { Route, RouterModule } from '@angular/router';
 import { SettingsComponent } from '../settings.component';
 import { AllIntegrationsComponent } from './all-integrations/all-integrations.component';
-import {
-    InstalledIntegrationsResolver,
-    AvailableIntegrationsResolver,
-    SourceChannelResolver,
-} from './integrations.resolver';
+import { ConnectionsResolver } from './integrations.resolver';
 import { SourceChannelComponent } from './source-channel/source-channel.component';
 
 const routes: Route[] = [
@@ -23,15 +19,14 @@ const routes: Route[] = [
                 path: 'integrations',
                 component: AllIntegrationsComponent,
                 resolve: {
-                    installed: InstalledIntegrationsResolver,
-                    available: AvailableIntegrationsResolver,
+                    integrations: ConnectionsResolver,
                 },
             },
             {
                 path: 'source-channel',
                 component: SourceChannelComponent,
                 resolve: {
-                    sourceChannel: SourceChannelResolver,
+                    erps: ConnectionsResolver,
                 },
             },
         ],

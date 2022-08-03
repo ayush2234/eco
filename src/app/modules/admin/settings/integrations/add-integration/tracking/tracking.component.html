@@ -1,6 +1,6 @@
 <div class="w-full max-w-3xl">
     <!-- Form -->
-    <form [formGroup]="planBillingForm">
+    <form [formGroup]="trackingForm">
         <!-- Section -->
         <div class="w-full">
             <div class="text-xl">Shipment method mapping</div>
@@ -33,7 +33,7 @@
                         [svgIcon]="'heroicons_solid:arrow-right'"
                         matPrefix
                     ></mat-icon>
-                    <mat-select [formControlName]="'country'">
+                    <mat-select [formControlName]="'freeShipping'">
                         <mat-option [value]="'usa'"
                             >eParcel Standard</mat-option
                         >
@@ -59,7 +59,7 @@
                         [svgIcon]="'heroicons_solid:arrow-right'"
                         matPrefix
                     ></mat-icon>
-                    <mat-select [formControlName]="'country'">
+                    <mat-select [formControlName]="'freeExpressShipping'">
                         <mat-option [value]="'usa'">eParcel Express</mat-option>
                         <mat-option [value]="'canada'">Canada</mat-option>
                         <mat-option [value]="'mexico'">Mexico</mat-option>
@@ -83,7 +83,7 @@
                         [svgIcon]="'heroicons_solid:arrow-right'"
                         matPrefix
                     ></mat-icon>
-                    <mat-select [formControlName]="'country'">
+                    <mat-select [formControlName]="'standardRateInternational'">
                         <mat-option [value]="'usa'"
                             >Australia Post International</mat-option
                         >
@@ -96,6 +96,7 @@
                 </mat-form-field>
             </div>
         </div>
+
         <!-- Divider -->
         <div class="mt-11 mb-10 border-t"></div>
 
@@ -111,5 +112,31 @@
                 Save
             </button>
         </div>
+        <ng-container *ngIf="!data?.tracking?.isActive">
+            <!-- Divider -->
+            <div class="mt-11 mb-10 border-t"></div>
+
+            <!-- Section -->
+            <div class="flex">
+                <fuse-alert [appearance]="'outline'" [type]="'info'">
+                    <span fuseAlertTitle>Activate Tracking Sync</span>
+                    <div class="flex">
+                        <span class="mr-4"
+                            >If mapping has been completed, you can activate
+                            this sync.</span
+                        >
+                        <button
+                            class="ml-auto mr-0"
+                            mat-flat-button
+                            type="button"
+                            [color]="'primary'"
+                            (click)="activatePanel()"
+                        >
+                            Activate
+                        </button>
+                    </div>
+                </fuse-alert>
+            </div>
+        </ng-container>
     </form>
 </div>
