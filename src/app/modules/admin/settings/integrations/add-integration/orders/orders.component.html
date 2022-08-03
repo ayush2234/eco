@@ -1,6 +1,6 @@
 <div class="w-full max-w-3xl">
     <!-- Form -->
-    <form [formGroup]="planBillingForm">
+    <form [formGroup]="ordersForm">
         <!-- Section -->
         <div class="w-full">
             <div class="text-xl">Order options</div>
@@ -9,7 +9,7 @@
             <div class="col-span-4 sm:col-span-2">
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Customer options</mat-label>
-                    <mat-select [formControlName]="'country'">
+                    <mat-select [formControlName]="'customerOptions'">
                         <mat-option [value]="'usa'"
                             >Create unique customer for each order</mat-option
                         >
@@ -24,7 +24,7 @@
             <div class="col-span-4 sm:col-span-2">
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Customer group for new customers</mat-label>
-                    <mat-select [formControlName]="'country'">
+                    <mat-select [formControlName]="'customerGroup'">
                         <mat-option [value]="'usa'"
                             >Customer group forA (ID 4)</mat-option
                         >
@@ -39,7 +39,7 @@
             <div class="col-span-4 sm:col-span-2">
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Order status</mat-label>
-                    <mat-select [formControlName]="'country'">
+                    <mat-select [formControlName]="'orderStatus'">
                         <mat-option [value]="'usa'">Pick</mat-option>
                         <mat-option [value]="'canada'">Canada</mat-option>
                         <mat-option [value]="'mexico'">Mexico</mat-option>
@@ -86,7 +86,7 @@
                         [svgIcon]="'heroicons_solid:arrow-right'"
                         matPrefix
                     ></mat-icon>
-                    <mat-select [formControlName]="'country'">
+                    <mat-select [formControlName]="'freeShipping'">
                         <mat-option [value]="'usa'"
                             >eParcel Standard</mat-option
                         >
@@ -112,7 +112,7 @@
                         [svgIcon]="'heroicons_solid:arrow-right'"
                         matPrefix
                     ></mat-icon>
-                    <mat-select [formControlName]="'country'">
+                    <mat-select [formControlName]="'freeExpressShipping'">
                         <mat-option [value]="'usa'">eParcel Express</mat-option>
                         <mat-option [value]="'canada'">Canada</mat-option>
                         <mat-option [value]="'mexico'">Mexico</mat-option>
@@ -136,7 +136,7 @@
                         [svgIcon]="'heroicons_solid:arrow-right'"
                         matPrefix
                     ></mat-icon>
-                    <mat-select [formControlName]="'country'">
+                    <mat-select [formControlName]="'standardRateInternational'">
                         <mat-option [value]="'usa'"
                             >Australia Post International</mat-option
                         >
@@ -157,7 +157,7 @@
             <div class="col-span-4 sm:col-span-2">
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Payment </mat-label>
-                    <mat-select [formControlName]="'country'">
+                    <mat-select [formControlName]="'payment'">
                         <mat-option [value]="'usa'"
                             >Do not mark as paid</mat-option
                         >
@@ -186,32 +186,31 @@
                 Save
             </button>
         </div>
+        <ng-container *ngIf="!data?.orders?.isActive">
+            <!-- Divider -->
+            <div class="mt-11 mb-10 border-t"></div>
 
-        <!-- Divider -->
-        <div class="mt-11 mb-10 border-t"></div>
-
-        <!-- Section -->
-        <div class="grid sm:grid-cols-3 gap-6 w-full mt-8">
-            <!-- Plan -->
-            <div class="sm:col-span-3">
+            <!-- Section -->
+            <div class="flex">
                 <fuse-alert [appearance]="'outline'" [type]="'info'">
-                    <span fuseAlertTitle>Activate Order Sync</span>
-                    <div class="flex flex-row justify-between">
+                    <span fuseAlertTitle>Activate Orders Sync</span>
+                    <div class="flex">
                         <span class="mr-4"
                             >If mapping has been completed, you can activate
                             this sync.</span
                         >
                         <button
-                            class="m-auto"
+                            class="ml-auto mr-0"
                             mat-flat-button
                             type="button"
                             [color]="'primary'"
+                            (click)="activatePanel()"
                         >
                             Activate
                         </button>
                     </div>
                 </fuse-alert>
             </div>
-        </div>
+        </ng-container>
     </form>
 </div>

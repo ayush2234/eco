@@ -94,7 +94,7 @@ export class SyncLogsService {
             .get<{
                 pagination: IPagination;
                 syncLogs: SyncLog[];
-            }>('api/common/sync-logs', {
+            }>('api/sync-logs', {
                 params: {
                     page: '' + page,
                     size: '' + size,
@@ -147,7 +147,7 @@ export class SyncLogsService {
         return this.syncLogs$.pipe(
             take(1),
             switchMap((syncLogs) =>
-                this._httpClient.post<SyncLog>('api/common/sync-log', {}).pipe(
+                this._httpClient.post<SyncLog>('api/sync-log', {}).pipe(
                     map((newSyncLog) => {
                         // Update the syncLogs with the new syncLog
                         this._syncLogs.next([newSyncLog, ...syncLogs]);
@@ -171,7 +171,7 @@ export class SyncLogsService {
             take(1),
             switchMap((syncLogs) =>
                 this._httpClient
-                    .patch<SyncLog>('api/common/sync-log', {
+                    .patch<SyncLog>('api/sync-log', {
                         id,
                         syncLog,
                     })
@@ -206,7 +206,7 @@ export class SyncLogsService {
             take(1),
             switchMap((syncLogs) =>
                 this._httpClient
-                    .delete('api/common/sync-log', {
+                    .delete('api/sync-log', {
                         params: { id },
                     })
                     .pipe(

@@ -4,7 +4,7 @@ import { FuseMockApiService, FuseMockApiUtils } from '@fuse/lib/mock-api';
 import {
     syncLog as syncLogData,
     syncLogs as syncLogsData,
-} from 'app/mock-api/apps/sync-log/data';
+} from 'app/mock-api/api/sync-log/data';
 
 @Injectable({
     providedIn: 'root',
@@ -33,14 +33,14 @@ export class SyncLogMockApi {
         // @ SyncLog - GET
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService
-            .onGet('api/common/sync-log')
+            .onGet('api/sync-log')
             .reply(() => [200, cloneDeep(this._syncLog)]);
 
         // -----------------------------------------------------------------------------------------------------
         // @ syncLogs - GET
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService
-            .onGet('api/common/sync-logs', 300)
+            .onGet('api/sync-logs', 300)
             .reply(({ request }) => {
                 // Get available queries
                 const search = request.params.get('search');
@@ -127,7 +127,7 @@ export class SyncLogMockApi {
         // -----------------------------------------------------------------------------------------------------
         // @ syncLog - POST
         // -----------------------------------------------------------------------------------------------------
-        this._fuseMockApiService.onPost('api/common/sync-log').reply(() => {
+        this._fuseMockApiService.onPost('api/sync-log').reply(() => {
             // Generate a new syncLog
             const newsyncLog = {
                 id: FuseMockApiUtils.guid(),
@@ -148,7 +148,7 @@ export class SyncLogMockApi {
         // @ SyncLog - PATCH
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService
-            .onPatch('api/common/sync-log')
+            .onPatch('api/sync-log')
             .reply(({ request }) => {
                 // Get the syncLog mock-api
                 const syncLog = cloneDeep(request.body.syncLog);

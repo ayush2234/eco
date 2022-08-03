@@ -13,7 +13,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 @Injectable({
     providedIn: 'root',
 })
-export class UsersResolver implements Resolve<any> {
+export class UserResolver implements Resolve<any> {
     /**
      * Constructor
      */
@@ -43,7 +43,7 @@ export class UsersResolver implements Resolve<any> {
 @Injectable({
     providedIn: 'root',
 })
-export class UserTagsResolver implements Resolve<any> {
+export class UserTagResolver implements Resolve<any> {
     /**
      * Constructor
      */

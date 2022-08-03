@@ -98,7 +98,7 @@ export class UserService {
             .get<{
                 pagination: IPagination;
                 users: User[];
-            }>('api/common/users', {
+            }>('api/users', {
                 params: {
                     page: '' + page,
                     size: '' + size,
@@ -119,7 +119,7 @@ export class UserService {
      * Get the current logged in user data
      */
     get(): Observable<User> {
-        return this._httpClient.get<User>('api/common/user').pipe(
+        return this._httpClient.get<User>('api/user').pipe(
             tap((user) => {
                 this._user.next(user);
             })
@@ -161,7 +161,7 @@ export class UserService {
         return this.users$.pipe(
             take(1),
             switchMap((users) =>
-                this._httpClient.post<User>('api/common/user', {}).pipe(
+                this._httpClient.post<User>('api/user', {}).pipe(
                     map((newUser) => {
                         // Update the users with the new user
                         this._users.next([newUser, ...users]);
@@ -185,7 +185,7 @@ export class UserService {
             take(1),
             switchMap((users) =>
                 this._httpClient
-                    .patch<User>('api/common/user', {
+                    .patch<User>('api/user', {
                         id,
                         user,
                     })
@@ -220,7 +220,7 @@ export class UserService {
             take(1),
             switchMap((users) =>
                 this._httpClient
-                    .delete('api/common/user', {
+                    .delete('api/user', {
                         params: { id },
                     })
                     .pipe(

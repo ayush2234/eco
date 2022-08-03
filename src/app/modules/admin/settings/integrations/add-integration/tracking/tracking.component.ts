@@ -1,10 +1,12 @@
 import {
     ChangeDetectionStrategy,
     Component,
+    Input,
     OnInit,
     ViewEncapsulation,
 } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { AddIntegrationService } from '../add-integration.service';
 
 @Component({
     selector: 'eco-add-integration-tracking',
@@ -13,13 +15,17 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddIntegrationTrackingComponent implements OnInit {
-    planBillingForm: UntypedFormGroup;
+    @Input() data: any;
+    trackingForm: UntypedFormGroup;
     plans: any[];
 
     /**
      * Constructor
      */
-    constructor(private _formBuilder: UntypedFormBuilder) {}
+    constructor(
+        private _formBuilder: UntypedFormBuilder,
+        private _addIntegrationService: AddIntegrationService
+    ) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -30,37 +36,14 @@ export class AddIntegrationTrackingComponent implements OnInit {
      */
     ngOnInit(): void {
         // Create the form
-        this.planBillingForm = this._formBuilder.group({
-            plan: ['team'],
-            cardHolder: ['Brian Hughes'],
-            cardNumber: [''],
-            cardExpiration: [''],
-            cardCVC: [''],
-            country: ['usa'],
-            zip: [''],
+        this.trackingForm = this._formBuilder.group({
+            isActive: [false],
+            freeShipping: ['usa'],
+            freeExpressShipping: ['usa'],
+            standardRateInternational: ['usa'],
         });
 
-        // Setup the plans
-        this.plans = [
-            {
-                value: 'basic',
-                label: 'BASIC',
-                details: 'Starter plan for individuals.',
-                price: '10',
-            },
-            {
-                value: 'team',
-                label: 'TEAM',
-                details: 'Collaborate up to 10 people.',
-                price: '20',
-            },
-            {
-                value: 'enterprise',
-                label: 'ENTERPRISE',
-                details: 'For bigger businesses.',
-                price: '40',
-            },
-        ];
+        this.trackingForm.patchValue({ ...this.data?.tracking });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -75,5 +58,15 @@ export class AddIntegrationTrackingComponent implements OnInit {
      */
     trackByFn(index: number, item: any): any {
         return item.id || index;
+    }
+
+    /**
+     * Activate panel
+     */
+    activatePanel(): void {
+        this._addIntegrationService.wipIntegration = {
+            ...this.data,
+            tracking: { ...this.data?.tracking, isActive: true },
+        };
     }
 }

@@ -84,10 +84,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
                         : this.data.connection.sync.filter(
                               (id) => id !== 'products'
                           );
-                    this._addIntegrationService.setSelectedIntegration({
-                        ...this.data,
-                        connection: { ...this.data.connection, sync: sync },
-                    });
+                    this.setWipIntegration(sync);
                 })
             )
             .subscribe();
@@ -101,10 +98,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
                         : this.data.connection.sync.filter(
                               (id) => id !== 'inventory'
                           );
-                    this._addIntegrationService.setSelectedIntegration({
-                        ...this.data,
-                        connection: { ...this.data.connection, sync: sync },
-                    });
+                    this.setWipIntegration(sync);
                 })
             )
             .subscribe();
@@ -118,10 +112,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
                         : this.data.connection.sync.filter(
                               (id) => id !== 'orders'
                           );
-                    this._addIntegrationService.setSelectedIntegration({
-                        ...this.data,
-                        connection: { ...this.data.connection, sync: sync },
-                    });
+                    this.setWipIntegration(sync);
                 })
             )
             .subscribe();
@@ -135,10 +126,10 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
                         : this.data.connection.sync.filter(
                               (id) => id !== 'tracking'
                           );
-                    this._addIntegrationService.setSelectedIntegration({
+                    this._addIntegrationService.wipIntegration = {
                         ...this.data,
                         connection: { ...this.data.connection, sync: sync },
-                    });
+                    };
                 })
             )
             .subscribe();
@@ -163,5 +154,12 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
                     break;
             }
         });
+    }
+
+    private setWipIntegration(sync: string[]): void {
+        this._addIntegrationService.wipIntegration = {
+            ...this.data,
+            connection: { ...this.data.connection, sync: sync },
+        };
     }
 }
