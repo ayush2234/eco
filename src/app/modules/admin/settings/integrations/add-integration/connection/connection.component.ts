@@ -59,7 +59,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
             syncTracking: [false],
         });
 
-        this.connectionForm.patchValue({ ...this.data });
+        this.connectionForm.patchValue({ ...this.data?.connection });
         this.setSyncOptions();
         this.subscribeOnFormValueChanges();
     }

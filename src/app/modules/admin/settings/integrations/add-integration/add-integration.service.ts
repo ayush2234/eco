@@ -36,6 +36,14 @@ export class AddIntegrationService {
             switchMap((id) =>
                 of({
                     connection: {
+                        name: 'Test Data',
+                        neatStoreURL: 'Test Data',
+                        username: 'Test Data',
+                        apiKey: 'Test Data',
+                        syncProducts: true,
+                        syncInventory: true,
+                        syncOrders: true,
+                        syncTracking: true,
                         sync: ['products', 'inventory', 'orders', 'tracking'],
                     },
                     products: {
@@ -43,12 +51,25 @@ export class AddIntegrationService {
                     },
                     inventory: {
                         isActive: false,
+                        takeStockFrom: 'usa',
+                        setStockBuffer: 5,
+                        virtualStockQty: 10,
                     },
                     orders: {
                         isActive: false,
+                        customerOptions: 'usa',
+                        customerGroup: 'usa',
+                        orderStatus: 'usa',
+                        freeShipping: 'usa',
+                        freeExpressShipping: 'usa',
+                        standardRateInternational: 'usa',
+                        payment: 'usa',
                     },
                     tracking: {
                         isActive: false,
+                        freeShipping: 'usa',
+                        freeExpressShipping: 'usa',
+                        standardRateInternational: 'usa',
                     },
                 })
             ),
