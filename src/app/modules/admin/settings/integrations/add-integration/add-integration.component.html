@@ -126,31 +126,47 @@
                                 <!-- Connection -->
                                 <ng-container *ngSwitchCase="'connection'">
                                     <eco-add-integration-connection
-                                        [data]="integration"
+                                        [integration]="integration"
                                     ></eco-add-integration-connection>
                                 </ng-container>
                                 <!-- Products -->
                                 <ng-container *ngSwitchCase="'products'">
                                     <eco-add-integration-products
-                                        [data]="integration"
+                                        [integration]="integration"
+                                        [syncOption]="
+                                            integration?.syncOptions
+                                                | getSyncOption: selectedPanel
+                                        "
                                     ></eco-add-integration-products>
                                 </ng-container>
                                 <!-- Inventory -->
                                 <ng-container *ngSwitchCase="'inventory'">
                                     <eco-add-integration-inventory
-                                        [data]="integration"
+                                        [integration]="integration"
+                                        [syncOption]="
+                                            integration?.syncOptions
+                                                | getSyncOption: selectedPanel
+                                        "
                                     ></eco-add-integration-inventory>
                                 </ng-container>
                                 <!-- Orders -->
                                 <ng-container *ngSwitchCase="'orders'">
                                     <eco-add-integration-orders
-                                        [data]="integration"
+                                        [integration]="integration"
+                                        [syncOption]="
+                                            integration?.syncOptions
+                                                | getSyncOption: selectedPanel
+                                        "
                                     ></eco-add-integration-orders>
                                 </ng-container>
                                 <!-- Tracking -->
                                 <ng-container *ngSwitchCase="'tracking'">
                                     <eco-add-integration-tracking
-                                        [data]="integration"
+                                        [integration]="integration"
+                                        [syncOption]="
+                                            integration?.syncOptions
+                                                | getSyncOption: selectedPanel
+                                        "
                                     ></eco-add-integration-tracking>
                                 </ng-container>
                             </ng-container>

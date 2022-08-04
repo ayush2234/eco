@@ -1,26 +1,36 @@
 export interface Integration {
-    installationId: string;
     integrationId: string;
+    erpId: string;
     name: string;
     icon: string;
-    neatStoreURL: string;
     description: string;
-    isActive: boolean;
     isCustom: boolean;
-    connection: {
-        isActive: boolean;
-        sync: string[];
-    };
-    products: {
-        isActive: boolean;
-    };
-    inventory: {
-        isActive: boolean;
-    };
-    orders: {
-        isActive: boolean;
-    };
-    tracking: {
-        isActive: boolean;
-    };
+    connectionForm: string;
+    forceTestConnection: boolean;
+    syncOptions: SyncOption[];
+}
+
+export interface SyncOption {
+    key: string;
+    name: string;
+    isActive: boolean;
+    form: string;
+    attributes: Attribute[];
+}
+
+export interface Attribute {
+    setting: string;
+    fieldType: string;
+    erpValuesList: string;
+    installationValuesList: string;
+    additionalOptions: any;
+    dependency?: string;
+    source?: string;
+    destination?: string;
+}
+
+export interface SelectOption {
+    option: string;
+    label: string;
+    isDefault: boolean;
 }

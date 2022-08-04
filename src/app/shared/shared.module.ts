@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PortalModule } from '@angular/cdk/portal';
 import { FuseDrawerModule } from '@fuse/components/drawer';
 import { PipesModule } from './pipes/pipes.module';
+import { GetSyncOptionPipe } from './pipes/get-sync-option.pipe';
 
 @NgModule({
     imports: [
