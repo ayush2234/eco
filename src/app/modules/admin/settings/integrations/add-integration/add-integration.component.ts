@@ -18,7 +18,7 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { CdkPortal } from '@angular/cdk/portal';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
 import { AddIntegrationService } from './add-integration.service';
-import { Integration } from '../integrations.types';
+import { Integration, SyncOption } from '../integrations.types';
 
 const badgeActiveClasses =
     'px-2 bg-green-500 text-sm text-on-primary rounded-full';
@@ -99,7 +99,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
         this.wipIntegration$ = this._addIntegrationService.wipIntegration$.pipe(
             tap((data) => {
                 // Setup available panels
-                this.setPanels(data);
+                this.setPanels(data?.syncOptions);
             })
         );
 
@@ -176,68 +176,21 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
         !fuseDrawer?.opened && this.cancel.emit();
     }
 
-    private setPanels(data: any): void {
+    private setPanels(data: SyncOption[]): void {
         this.panels = addIntegrationPanels.reduce(
             (acc, panel) => {
-                let styledPanel: any;
-                switch (panel.id) {
-                    case 'products':
-                        styledPanel = {
-                            ...panel,
-                            badge: {
-                                title: data?.products?.isActive
-                                    ? 'Active'
-                                    : 'Inactive',
-                                classes: data?.products?.isActive
-                                    ? badgeActiveClasses
-                                    : badgeInactiveClasses,
-                            },
-                        };
-                        break;
-                    case 'inventory':
-                        styledPanel = {
-                            ...panel,
-                            badge: {
-                                title: data?.inventory?.isActive
-                                    ? 'Active'
-                                    : 'Inactive',
-                                classes: data?.inventory?.isActive
-                                    ? badgeActiveClasses
-                                    : badgeInactiveClasses,
-                            },
-                        };
-                        break;
-                    case 'orders':
-                        styledPanel = {
-                            ...panel,
-                            badge: {
-                                title: data?.orders?.isActive
-                                    ? 'Active'
-                                    : 'Inactive',
-                                classes: data?.orders?.isActive
-                                    ? badgeActiveClasses
-                                    : badgeInactiveClasses,
-                            },
-                        };
-                        break;
-                    case 'tracking':
-                        styledPanel = {
-                            ...panel,
-                            badge: {
-                                title: data?.tracking?.isActive
-                                    ? 'Active'
-                                    : 'Inactive',
-                                classes: data?.tracking?.isActive
-                                    ? badgeActiveClasses
-                                    : badgeInactiveClasses,
-                            },
-                        };
-                        break;
+                const syncOption = data?.find(({ key }) => key === panel.id);
+                const styledPanel = {
+                    ...panel,
+                    badge: {
+                        title: syncOption?.isActive ? 'Active' : 'Inactive',
+                        classes: syncOption?.isActive
+                            ? badgeActiveClasses
+                            : badgeInactiveClasses,
+                    },
+                };
 
-                    default:
-                        break;
-                }
-                return data?.connection?.sync?.includes(panel.id)
+                return data?.some(({ key }) => key === panel.id)
                     ? [...acc, styledPanel]
                     : [...acc];
             },

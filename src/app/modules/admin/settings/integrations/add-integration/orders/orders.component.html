@@ -10,14 +10,13 @@
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Customer options</mat-label>
                     <mat-select [formControlName]="'customerOptions'">
-                        <mat-option [value]="'usa'"
-                            >Create unique customer for each order</mat-option
+                        <mat-option
+                            *ngFor="
+                                let item of customerOptionsSelectOptionsAdditionalOptions
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
                         >
-                        <mat-option [value]="'canada'">Canada</mat-option>
-                        <mat-option [value]="'mexico'">Mexico</mat-option>
-                        <mat-option [value]="'france'">France</mat-option>
-                        <mat-option [value]="'germany'">Germany</mat-option>
-                        <mat-option [value]="'italy'">Italy</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -25,14 +24,13 @@
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Customer group for new customers</mat-label>
                     <mat-select [formControlName]="'customerGroup'">
-                        <mat-option [value]="'usa'"
-                            >Customer group forA (ID 4)</mat-option
+                        <mat-option
+                            *ngFor="
+                                let item of existingCustomerSelectOptionsAdditionalOptions
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
                         >
-                        <mat-option [value]="'canada'">Canada</mat-option>
-                        <mat-option [value]="'mexico'">Mexico</mat-option>
-                        <mat-option [value]="'france'">France</mat-option>
-                        <mat-option [value]="'germany'">Germany</mat-option>
-                        <mat-option [value]="'italy'">Italy</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -186,7 +184,7 @@
                 Save
             </button>
         </div>
-        <ng-container *ngIf="!data?.orders?.isActive">
+        <ng-container *ngIf="!syncOption?.isActive">
             <!-- Divider -->
             <div class="mt-11 mb-10 border-t"></div>
 

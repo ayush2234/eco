@@ -6,6 +6,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Integration, SyncOption } from '../../integrations.types';
 import { AddIntegrationService } from '../add-integration.service';
 
 @Component({
@@ -15,7 +16,8 @@ import { AddIntegrationService } from '../add-integration.service';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddIntegrationTrackingComponent implements OnInit {
-    @Input() data: any;
+    @Input() integration: Integration;
+    @Input() syncOption: SyncOption;
     trackingForm: UntypedFormGroup;
     plans: any[];
 
@@ -43,7 +45,7 @@ export class AddIntegrationTrackingComponent implements OnInit {
             standardRateInternational: ['usa'],
         });
 
-        this.trackingForm.patchValue({ ...this.data?.tracking });
+        this.trackingForm.patchValue({ ...this.syncOption });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -64,9 +66,14 @@ export class AddIntegrationTrackingComponent implements OnInit {
      * Activate panel
      */
     activatePanel(): void {
+        const activatedSyncOption = { ...this.syncOption, isActive: true };
         this._addIntegrationService.wipIntegration = {
-            ...this.data,
-            tracking: { ...this.data?.tracking, isActive: true },
+            ...this.integration,
+            syncOptions: this.integration?.syncOptions?.map((syncOption) =>
+                syncOption.key === this.syncOption.key
+                    ? activatedSyncOption
+                    : syncOption
+            ),
         };
     }
 }
