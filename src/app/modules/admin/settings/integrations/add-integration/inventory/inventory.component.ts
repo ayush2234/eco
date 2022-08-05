@@ -6,7 +6,14 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Observable, tap } from 'rxjs';
+import {
+    Integration,
+    SelectOption,
+    SyncOption,
+} from '../../integrations.types';
 import { AddIntegrationService } from '../add-integration.service';
+import { AddIntegrationInventoryService } from './inventory.service';
 
 @Component({
     selector: 'eco-add-integration-inventory',
@@ -15,15 +22,19 @@ import { AddIntegrationService } from '../add-integration.service';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddIntegrationInventoryComponent implements OnInit {
-    @Input() data: any;
+    @Input() integration: Integration;
+    @Input() syncOption: SyncOption;
     inventoryForm: UntypedFormGroup;
+    takeStockFromSelectOptionAdditionalOptions;
+    takeStockFromSelectOptionsErp$: Observable<SelectOption[]>;
 
     /**
      * Constructor
      */
     constructor(
         private _formBuilder: UntypedFormBuilder,
-        private _addIntegrationService: AddIntegrationService
+        private _addIntegrationService: AddIntegrationService,
+        private _addIntegrationInventoryService: AddIntegrationInventoryService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------
@@ -37,12 +48,13 @@ export class AddIntegrationInventoryComponent implements OnInit {
         // Create the form
         this.inventoryForm = this._formBuilder.group({
             isActive: [false],
-            takeStockFrom: [''],
+            takeStockFrom: ['take_from_available'],
             setStockBuffer: [''],
             virtualStockQty: [''],
         });
 
-        this.inventoryForm.patchValue({ ...this.data?.inventory });
+        this.loadFormControlData();
+        this.inventoryForm.patchValue({ ...this.syncOption });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -63,9 +75,35 @@ export class AddIntegrationInventoryComponent implements OnInit {
      * Activate panel
      */
     activatePanel(): void {
+        const activatedSyncOption = { ...this.syncOption, isActive: true };
         this._addIntegrationService.wipIntegration = {
-            ...this.data,
-            inventory: { ...this.data?.inventory, isActive: true },
+            ...this.integration,
+            syncOptions: this.integration?.syncOptions?.map((syncOption) =>
+                syncOption.key === this.syncOption.key
+                    ? activatedSyncOption
+                    : syncOption
+            ),
         };
+    }
+
+    /**
+     * Load select options
+     */
+    loadFormControlData(): void {
+        this.takeStockFromSelectOptionsErp$ =
+            this._addIntegrationInventoryService.takeStockFromSelectOptions$;
+
+        const takeStockFrom = this.syncOption?.attributes?.find(
+            ({ setting }) => setting === 'take_stock_from'
+        );
+
+        this.takeStockFromSelectOptionAdditionalOptions =
+            takeStockFrom?.additionalOptions;
+
+        if (takeStockFrom?.fieldType === 'selectFromErp') {
+            this._addIntegrationInventoryService.getTakeStockFromSelectOptions(
+                takeStockFrom.erpValuesList
+            );
+        }
     }
 }

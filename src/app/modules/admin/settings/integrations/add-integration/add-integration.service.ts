@@ -11,7 +11,7 @@ export class AddIntegrationService {
     // Private
     private _selectedIntegration: BehaviorSubject<string | null> =
         new BehaviorSubject(null);
-    private _wipIntegration: BehaviorSubject<string | null> =
+    private _wipIntegration: BehaviorSubject<Integration | null> =
         new BehaviorSubject(null);
 
     /**
@@ -23,54 +23,187 @@ export class AddIntegrationService {
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
 
-    set wipIntegration(value: any) {
+    set wipIntegration(value: Integration) {
         this._wipIntegration.next(value);
     }
 
-    get wipIntegration$(): Observable<any> {
+    get wipIntegration$(): Observable<Integration> {
         return this._wipIntegration.asObservable();
     }
 
-    get selectedIntegration$(): Observable<any> {
+    get selectedIntegration$(): Observable<Integration> {
         return this._selectedIntegration.asObservable().pipe(
             switchMap((id) =>
                 of({
-                    connection: {
-                        name: 'Test Data',
-                        neatStoreURL: 'Test Data',
-                        username: 'Test Data',
-                        apiKey: 'Test Data',
-                        syncProducts: true,
-                        syncInventory: true,
-                        syncOrders: true,
-                        syncTracking: true,
-                        sync: ['products', 'inventory', 'orders', 'tracking'],
-                    },
-                    products: {
-                        isActive: false,
-                    },
-                    inventory: {
-                        isActive: false,
-                        takeStockFrom: 'usa',
-                        setStockBuffer: 5,
-                        virtualStockQty: 10,
-                    },
-                    orders: {
-                        isActive: false,
-                        customerOptions: 'usa',
-                        customerGroup: 'usa',
-                        orderStatus: 'usa',
-                        freeShipping: 'usa',
-                        freeExpressShipping: 'usa',
-                        standardRateInternational: 'usa',
-                        payment: 'usa',
-                    },
-                    tracking: {
-                        isActive: false,
-                        freeShipping: 'usa',
-                        freeExpressShipping: 'usa',
-                        standardRateInternational: 'usa',
-                    },
+                    integrationId: 'd39c5f3f-26bd-440b-8f99-f95869dfa659',
+                    erpId: 'd39c5f3f-26bd-440b-8f99-f95869dfa659',
+                    name: 'Bunnings Marketlink',
+                    icon: 'https://wordpress-631421-2579652.cloudwaysapps.com/wp-content/uploads/2022/07/25498408_1747271388901154_6198955593483881874_n.png',
+                    description:
+                        'Sync products, inventory, tracking and more to and from Bunnings Marketlink',
+                    isCustom: false,
+                    connectionForm: 'woocommerce',
+                    forceTestConnection: true,
+                    syncOptions: [
+                        {
+                            key: 'products',
+                            name: 'Products',
+                            form: 'erpMaropostWooCommerce',
+                            attributes: [],
+                            isActive: true,
+                        },
+                        {
+                            key: 'inventory',
+                            name: 'Inventory',
+                            form: 'erpMaropost',
+                            attributes: [
+                                {
+                                    setting: 'take_stock_from',
+                                    fieldType: 'selectFromErp',
+                                    erpValuesList:
+                                        'api/v1/erpInstallId/shipMethod',
+                                    installationValuesList: '',
+                                    additionalOptions: [
+                                        {
+                                            option: 'take_from_available',
+                                            label: 'Take from AvailableSellQauntity',
+                                            isDefault: true,
+                                        },
+                                    ],
+                                },
+                            ],
+                            isActive: false,
+                        },
+                        {
+                            key: 'orders',
+                            name: 'Orders',
+                            form: 'erpMaropost',
+                            attributes: [
+                                {
+                                    setting: 'customer_options',
+                                    fieldType: 'selectFromAdditionalOptions',
+                                    erpValuesList: '',
+                                    installationValuesList: '',
+                                    additionalOptions: [
+                                        {
+                                            option: 'create_unique_customer',
+                                            label: 'Create unique customer for each order',
+                                            isDefault: true,
+                                        },
+                                        {
+                                            option: 'link_to_existing',
+                                            label: 'Link to existing username',
+                                            isDefault: false,
+                                        },
+                                    ],
+                                },
+                                {
+                                    setting: 'existing_customer',
+                                    fieldType: 'selectFromErp',
+                                    erpValuesList:
+                                        'api/v1/erpInstallId/shipMethod',
+                                    installationValuesList: '',
+                                    dependency: 'link_to_existing',
+                                    additionalOptions: [],
+                                },
+                                {
+                                    setting: 'customer_group',
+                                    fieldType: 'selectFromErp',
+                                    erpValuesList:
+                                        'api/v1/erpInstallId/pricegroups',
+                                    installationValuesList: '',
+                                    dependency: 'create_unique_customer',
+                                    additionalOptions: [],
+                                },
+                                {
+                                    setting: 'order_status',
+                                    fieldType: 'selectFromAdditionalOptions',
+                                    erpValuesList: '',
+                                    installationValuesList: '',
+                                    additionalOptions: [
+                                        {
+                                            option: 'New',
+                                            label: 'New',
+                                            isDefault: 'false',
+                                        },
+                                        {
+                                            option: 'Pick',
+                                            label: 'Pick',
+                                            isDefault: 'true',
+                                        },
+                                        {
+                                            option: 'Pack',
+                                            label: 'Pack',
+                                            isDefault: 'false',
+                                        },
+                                        {
+                                            option: 'Pending Dispatch',
+                                            label: 'Pending Dispatch',
+                                            isDefault: 'false',
+                                        },
+                                        {
+                                            option: 'On Hold',
+                                            label: 'On Hold',
+                                            isDefault: 'false',
+                                        },
+                                        {
+                                            option: 'Dispatched',
+                                            label: 'Dispatched',
+                                            isDefault: 'false',
+                                        },
+                                    ],
+                                },
+                                {
+                                    setting: 'ship_method_mapping',
+                                    fieldType: 'mapping',
+                                    source: 'installation',
+                                    destination: 'erp',
+                                    erpValuesList:
+                                        'api/v1/erpInstallId/shipMethod',
+                                    installationValuesList:
+                                        'api/v1/installationId/shipMethod',
+                                    additionalOptions: '',
+                                },
+                                {
+                                    setting: 'payment_method_mapping',
+                                    fieldType: 'mapping',
+                                    source: 'installation',
+                                    destination: 'erp',
+                                    erpValuesList:
+                                        'api/v1/erpInstallId/paymentMethods',
+                                    installationValuesList:
+                                        'api/v1/installationId/paymentMethods',
+                                    additionalOptions: [
+                                        {
+                                            option: 'do_not_mark_as_paid',
+                                            label: 'Do not mark as paid',
+                                            isDefault: 'true',
+                                        },
+                                    ],
+                                },
+                            ],
+                            isActive: false,
+                        },
+                        {
+                            key: 'tracking',
+                            name: 'Tracking',
+                            form: 'erpMaropost',
+                            attributes: [
+                                {
+                                    setting: 'carrier_mapping',
+                                    fieldType: 'mapping',
+                                    source: 'erp',
+                                    destination: 'installation',
+                                    erpValuesList:
+                                        'api/v1/erpInstallId/ShippingServices',
+                                    installationValuesList:
+                                        'api/v1/installationId/Carriers',
+                                    additionalOptions: '',
+                                },
+                            ],
+                            isActive: false,
+                        },
+                    ],
                 })
             ),
             tap((integration) => {

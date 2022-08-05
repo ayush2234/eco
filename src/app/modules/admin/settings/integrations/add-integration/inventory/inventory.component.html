@@ -7,14 +7,21 @@
                 <mat-form-field class="fuse-mat-no-subscript w-full sm:w-1/2">
                     <mat-label>Take stock from</mat-label>
                     <mat-select [formControlName]="'takeStockFrom'">
-                        <mat-option [value]="'usa'"
-                            >AvailableSellQuantity</mat-option
+                        <mat-option
+                            *ngFor="
+                                let item of takeStockFromSelectOptionAdditionalOptions
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
                         >
-                        <mat-option [value]="'canada'">Canada</mat-option>
-                        <mat-option [value]="'mexico'">Mexico</mat-option>
-                        <mat-option [value]="'france'">France</mat-option>
-                        <mat-option [value]="'germany'">Germany</mat-option>
-                        <mat-option [value]="'italy'">Italy</mat-option>
+                        <mat-option
+                            *ngFor="
+                                let item of takeStockFromSelectOptionsErp$
+                                    | async
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
+                        >
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -51,7 +58,7 @@
                 Save
             </button>
         </div>
-        <ng-container *ngIf="!data?.inventory?.isActive">
+        <ng-container *ngIf="!syncOption?.isActive">
             <!-- Divider -->
             <div class="mt-11 mb-10 border-t"></div>
 

@@ -6,6 +6,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Integration, SyncOption } from '../../integrations.types';
 import { AddIntegrationService } from '../add-integration.service';
 
 @Component({
@@ -15,7 +16,8 @@ import { AddIntegrationService } from '../add-integration.service';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddIntegrationProductsComponent implements OnInit {
-    @Input() data: any;
+    @Input() integration: Integration;
+    @Input() syncOption: SyncOption;
     productsForm: UntypedFormGroup;
 
     /**
@@ -39,7 +41,7 @@ export class AddIntegrationProductsComponent implements OnInit {
             isActive: [true],
         });
 
-        this.productsForm.patchValue({ ...this.data?.products });
+        this.productsForm.patchValue({ ...this.syncOption });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -60,9 +62,14 @@ export class AddIntegrationProductsComponent implements OnInit {
      * Activate panel
      */
     activatePanel(): void {
+        const activatedSyncOption = { ...this.syncOption, isActive: true };
         this._addIntegrationService.wipIntegration = {
-            ...this.data,
-            products: { ...this.data?.products, isActive: true },
+            ...this.integration,
+            syncOptions: this.integration?.syncOptions?.map((syncOption) =>
+                syncOption.key === this.syncOption.key
+                    ? activatedSyncOption
+                    : syncOption
+            ),
         };
     }
 }

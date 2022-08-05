@@ -3,20 +3,14 @@ import {
     ChangeDetectionStrategy,
     Component,
     Input,
-    OnChanges,
     OnDestroy,
     OnInit,
-    SimpleChanges,
     ViewEncapsulation,
 } from '@angular/core';
-import {
-    UntypedFormBuilder,
-    UntypedFormGroup,
-    Validators,
-} from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { Integration } from '../../integrations.types';
+import { Integration, SyncOption } from '../../integrations.types';
 import { AddIntegrationService } from '../add-integration.service';
 
 @Component({
@@ -26,7 +20,7 @@ import { AddIntegrationService } from '../add-integration.service';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
-    @Input() data: Integration;
+    @Input() integration: Integration;
     connectionForm: UntypedFormGroup;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -59,7 +53,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
             syncTracking: [false],
         });
 
-        this.connectionForm.patchValue({ ...this.data?.connection });
+        this.connectionForm.patchValue({ ...this.integration });
         this.setSyncOptions();
         this.subscribeOnFormValueChanges();
     }
@@ -79,11 +73,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
             .valueChanges.pipe(
                 takeUntil(this._unsubscribeAll),
                 tap((value) => {
-                    const sync = value
-                        ? [...this.data.connection.sync, 'products']
-                        : this.data.connection.sync.filter(
-                              (id) => id !== 'products'
-                          );
+                    const sync = this.updateSyncOptions('products', value);
                     this.setWipIntegration(sync);
                 })
             )
@@ -93,11 +83,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
             .valueChanges.pipe(
                 takeUntil(this._unsubscribeAll),
                 tap((value) => {
-                    const sync = value
-                        ? [...this.data.connection.sync, 'inventory']
-                        : this.data.connection.sync.filter(
-                              (id) => id !== 'inventory'
-                          );
+                    const sync = this.updateSyncOptions('inventory', value);
                     this.setWipIntegration(sync);
                 })
             )
@@ -107,11 +93,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
             .valueChanges.pipe(
                 takeUntil(this._unsubscribeAll),
                 tap((value) => {
-                    const sync = value
-                        ? [...this.data.connection.sync, 'orders']
-                        : this.data.connection.sync.filter(
-                              (id) => id !== 'orders'
-                          );
+                    const sync = this.updateSyncOptions('orders', value);
                     this.setWipIntegration(sync);
                 })
             )
@@ -121,23 +103,34 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
             .valueChanges.pipe(
                 takeUntil(this._unsubscribeAll),
                 tap((value) => {
-                    const sync = value
-                        ? [...this.data.connection.sync, 'tracking']
-                        : this.data.connection.sync.filter(
-                              (id) => id !== 'tracking'
-                          );
-                    this._addIntegrationService.wipIntegration = {
-                        ...this.data,
-                        connection: { ...this.data.connection, sync: sync },
-                    };
+                    const sync = this.updateSyncOptions('tracking', value);
+                    this.setWipIntegration(sync);
                 })
             )
             .subscribe();
     }
 
-    setSyncOptions(): void {
-        this.data.connection.sync.forEach((sync) => {
-            switch (sync.toLowerCase()) {
+    private updateSyncOptions(key: string, value: any): SyncOption[] {
+        return value
+            ? [
+                  ...this.integration.syncOptions,
+                  {
+                      key,
+                      name: null,
+                      form: null,
+                      attributes: null,
+                      isActive: false,
+                  },
+              ]
+            : this.integration.syncOptions.filter(
+                  (syncOption) => syncOption.key !== key
+              );
+    }
+
+    private setSyncOptions(): void {
+        this.integration.syncOptions.forEach((sync) => {
+            const { key } = sync;
+            switch (key) {
                 case 'products':
                     this.connectionForm.patchValue({ syncProducts: true });
                     break;
@@ -156,10 +149,10 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
         });
     }
 
-    private setWipIntegration(sync: string[]): void {
+    private setWipIntegration(syncOptions: SyncOption[]): void {
         this._addIntegrationService.wipIntegration = {
-            ...this.data,
-            connection: { ...this.data.connection, sync: sync },
+            ...this.integration,
+            syncOptions,
         };
     }
 }
