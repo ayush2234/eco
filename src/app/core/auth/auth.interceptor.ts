@@ -36,7 +36,7 @@ export class AuthInterceptor implements HttpInterceptor
         if ( this._authService.accessToken && !AuthUtils.isTokenExpired(this._authService.accessToken) )
         {
             newReq = req.clone({
-                headers: req.headers.set('Authorization', 'Bearer ' + this._authService.accessToken)
+                headers: req.headers.set('Authorization', 'JWT ' + this._authService.accessToken)
             });
         }
 

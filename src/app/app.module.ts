@@ -1,4 +1,4 @@
-import { isDevMode, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ExtraOptions, PreloadAllModules, RouterModule } from '@angular/router';
@@ -13,20 +13,16 @@ import { LayoutModule } from 'app/layout/layout.module';
 import { AppComponent } from 'app/app.component';
 import { appRoutes } from 'app/app.routing';
 
-let appMockApiServices = mockApiServices;
-
-if (!isDevMode()) {
-    appMockApiServices = [];
-}
-
 const routerConfig: ExtraOptions = {
-    preloadingStrategy: PreloadAllModules,
-    scrollPositionRestoration: 'enabled',
+    preloadingStrategy       : PreloadAllModules,
+    scrollPositionRestoration: 'enabled'
 };
 
 @NgModule({
-    declarations: [AppComponent],
-    imports: [
+    declarations: [
+        AppComponent
+    ],
+    imports     : [
         BrowserModule,
         BrowserAnimationsModule,
         RouterModule.forRoot(appRoutes, routerConfig),
@@ -34,7 +30,7 @@ const routerConfig: ExtraOptions = {
         // Fuse, FuseConfig & FuseMockAPI
         FuseModule,
         FuseConfigModule.forRoot(appConfig),
-        FuseMockApiModule.forRoot(appMockApiServices),
+        FuseMockApiModule.forRoot(mockApiServices),
 
         // Core module of your application
         CoreModule,
@@ -43,8 +39,12 @@ const routerConfig: ExtraOptions = {
         LayoutModule,
 
         // 3rd party modules that require global configuration via forRoot
-        MarkdownModule.forRoot({}),
+        MarkdownModule.forRoot({})
     ],
-    bootstrap: [AppComponent],
+    bootstrap   : [
+        AppComponent
+    ]
 })
-export class AppModule {}
+export class AppModule
+{
+}
