@@ -1,6 +1,6 @@
 <div class="w-full max-w-3xl">
     <!-- Form -->
-    <form [formGroup]="ordersForm">
+    <form [formGroup]="form">
         <!-- Section -->
         <div class="w-full">
             <div class="text-xl">Order options</div>
@@ -12,7 +12,26 @@
                     <mat-select [formControlName]="'customerOptions'">
                         <mat-option
                             *ngFor="
-                                let item of customerOptionsSelectOptionsAdditionalOptions
+                                let item of additionalSelectOptions
+                                    | getSelectOptions: customerOptions
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
+                        >
+                        <mat-option
+                            *ngFor="
+                                let item of erpSelectOptions
+                                    | getSelectOptions: customerOptions
+                                    | async
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
+                        >
+                        <mat-option
+                            *ngFor="
+                                let item of installationSelectOptions
+                                    | getSelectOptions: customerOptions
+                                    | async
                             "
                             [value]="item.option"
                             >{{ item.label }}</mat-option
@@ -20,13 +39,44 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="col-span-4 sm:col-span-2">
+            <div
+                *ngIf="form.get('existingCustomer')"
+                class="col-span-4 sm:col-span-2"
+            >
+                <mat-form-field class="fuse-mat-no-subscript w-full">
+                    <mat-label>Username</mat-label>
+                    <input [formControlName]="'existingCustomer'" matInput />
+                </mat-form-field>
+            </div>
+            <div
+                *ngIf="form.get('customerGroup')"
+                class="col-span-4 sm:col-span-2"
+            >
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Customer group for new customers</mat-label>
                     <mat-select [formControlName]="'customerGroup'">
                         <mat-option
                             *ngFor="
-                                let item of existingCustomerSelectOptionsAdditionalOptions
+                                let item of additionalSelectOptions
+                                    | getSelectOptions: customerGroup
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
+                        >
+                        <mat-option
+                            *ngFor="
+                                let item of erpSelectOptions
+                                    | getSelectOptions: customerGroup
+                                    | async
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
+                        >
+                        <mat-option
+                            *ngFor="
+                                let item of installationSelectOptions
+                                    | getSelectOptions: customerGroup
+                                    | async
                             "
                             [value]="item.option"
                             >{{ item.label }}</mat-option
@@ -38,12 +88,32 @@
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Order status</mat-label>
                     <mat-select [formControlName]="'orderStatus'">
-                        <mat-option [value]="'usa'">Pick</mat-option>
-                        <mat-option [value]="'canada'">Canada</mat-option>
-                        <mat-option [value]="'mexico'">Mexico</mat-option>
-                        <mat-option [value]="'france'">France</mat-option>
-                        <mat-option [value]="'germany'">Germany</mat-option>
-                        <mat-option [value]="'italy'">Italy</mat-option>
+                        <mat-option
+                            *ngFor="
+                                let item of additionalSelectOptions
+                                    | getSelectOptions: orderStatus
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
+                        >
+                        <mat-option
+                            *ngFor="
+                                let item of erpSelectOptions
+                                    | getSelectOptions: orderStatus
+                                    | async
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
+                        >
+                        <mat-option
+                            *ngFor="
+                                let item of installationSelectOptions
+                                    | getSelectOptions: orderStatus
+                                    | async
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
+                        >
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -156,14 +226,32 @@
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Payment </mat-label>
                     <mat-select [formControlName]="'payment'">
-                        <mat-option [value]="'usa'"
-                            >Do not mark as paid</mat-option
+                        <mat-option
+                            *ngFor="
+                                let item of additionalSelectOptions
+                                    | getSelectOptions: paymentMethodMapping
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
                         >
-                        <mat-option [value]="'canada'">Canada</mat-option>
-                        <mat-option [value]="'mexico'">Mexico</mat-option>
-                        <mat-option [value]="'france'">France</mat-option>
-                        <mat-option [value]="'germany'">Germany</mat-option>
-                        <mat-option [value]="'italy'">Italy</mat-option>
+                        <mat-option
+                            *ngFor="
+                                let item of erpSelectOptions
+                                    | getSelectOptions: paymentMethodMapping
+                                    | async
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
+                        >
+                        <mat-option
+                            *ngFor="
+                                let item of installationSelectOptions
+                                    | getSelectOptions: paymentMethodMapping
+                                    | async
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
+                        >
                     </mat-select>
                 </mat-form-field>
             </div>

@@ -17,7 +17,7 @@ import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { CdkPortal } from '@angular/cdk/portal';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
-import { AddIntegrationService } from './add-integration.service';
+import { SyncOptionService } from './common/sync-option/sync-option.service';
 import { Integration, SyncOption } from '../integrations.types';
 
 const badgeActiveClasses =
@@ -84,7 +84,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _portalBridge: PortalBridgeService,
-        private _addIntegrationService: AddIntegrationService
+        private _addIntegrationService: SyncOptionService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------

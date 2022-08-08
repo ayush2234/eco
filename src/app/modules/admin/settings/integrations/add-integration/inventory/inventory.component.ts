@@ -1,19 +1,14 @@
 import {
     ChangeDetectionStrategy,
     Component,
-    Input,
     OnInit,
     ViewEncapsulation,
 } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { Observable, tap } from 'rxjs';
-import {
-    Integration,
-    SelectOption,
-    SyncOption,
-} from '../../integrations.types';
-import { AddIntegrationService } from '../add-integration.service';
-import { AddIntegrationInventoryService } from './inventory.service';
+import { UntypedFormBuilder } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { SelectOption } from '../../integrations.types';
+import { SyncOptionComponent } from '../common/sync-option/sync-option.component';
+import { SyncOptionService } from '../common/sync-option/sync-option.service';
 
 @Component({
     selector: 'eco-add-integration-inventory',
@@ -21,21 +16,21 @@ import { AddIntegrationInventoryService } from './inventory.service';
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddIntegrationInventoryComponent implements OnInit {
-    @Input() integration: Integration;
-    @Input() syncOption: SyncOption;
-    inventoryForm: UntypedFormGroup;
-    takeStockFromSelectOptionAdditionalOptions;
-    takeStockFromSelectOptionsErp$: Observable<SelectOption[]>;
+export class AddIntegrationInventoryComponent
+    extends SyncOptionComponent
+    implements OnInit
+{
+    takeStockFrom = 'take_stock_from';
 
     /**
      * Constructor
      */
     constructor(
-        private _formBuilder: UntypedFormBuilder,
-        private _addIntegrationService: AddIntegrationService,
-        private _addIntegrationInventoryService: AddIntegrationInventoryService
-    ) {}
+        public _syncOptionService: SyncOptionService,
+        private _formBuilder: UntypedFormBuilder
+    ) {
+        super(_syncOptionService);
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -46,64 +41,14 @@ export class AddIntegrationInventoryComponent implements OnInit {
      */
     ngOnInit(): void {
         // Create the form
-        this.inventoryForm = this._formBuilder.group({
+        this.form = this._formBuilder.group({
             isActive: [false],
             takeStockFrom: ['take_from_available'],
             setStockBuffer: [''],
             virtualStockQty: [''],
         });
 
-        this.loadFormControlData();
-        this.inventoryForm.patchValue({ ...this.syncOption });
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
-    trackByFn(index: number, item: any): any {
-        return item.id || index;
-    }
-
-    /**
-     * Activate panel
-     */
-    activatePanel(): void {
-        const activatedSyncOption = { ...this.syncOption, isActive: true };
-        this._addIntegrationService.wipIntegration = {
-            ...this.integration,
-            syncOptions: this.integration?.syncOptions?.map((syncOption) =>
-                syncOption.key === this.syncOption.key
-                    ? activatedSyncOption
-                    : syncOption
-            ),
-        };
-    }
-
-    /**
-     * Load select options
-     */
-    loadFormControlData(): void {
-        this.takeStockFromSelectOptionsErp$ =
-            this._addIntegrationInventoryService.takeStockFromSelectOptions$;
-
-        const takeStockFrom = this.syncOption?.attributes?.find(
-            ({ setting }) => setting === 'take_stock_from'
-        );
-
-        this.takeStockFromSelectOptionAdditionalOptions =
-            takeStockFrom?.additionalOptions;
-
-        if (takeStockFrom?.fieldType === 'selectFromErp') {
-            this._addIntegrationInventoryService.getTakeStockFromSelectOptions(
-                takeStockFrom.erpValuesList
-            );
-        }
+        this.loadSelectOptions();
+        this.form.patchValue({ ...this.syncOption });
     }
 }
