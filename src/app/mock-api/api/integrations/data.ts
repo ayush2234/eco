@@ -121,3 +121,508 @@ export const data = {
         ],
     },
 };
+
+export const erpSelectOptions = [
+    { option: 'id1', label: 'Erp Option 1' },
+    { option: 'id2', label: 'Erp Option 2' },
+    { option: 'id3', label: 'Erp Option 3' },
+];
+
+export const installationSelectOptions = [
+    { option: 'id1', label: 'Installation Option 1' },
+    { option: 'id2', label: 'Installation Option 2' },
+    { option: 'id3', label: 'Installation Option 3' },
+];
+
+export const wareHouses = {
+    wareHouse: [
+        {
+            wareHouseID: '1',
+            wareHouseName: 'Ozpig',
+        },
+        {
+            wareHouseID: '2',
+            wareHouseName: 'Jagrd',
+        },
+        {
+            wareHouseID: '3',
+            wareHouseName: 'Steadfast',
+        },
+        {
+            wareHouseID: '4',
+            wareHouseName: 'Isuzu Truck',
+        },
+        {
+            wareHouseID: '5',
+            wareHouseName: 'Ford Transit',
+        },
+        {
+            wareHouseID: '6',
+            wareHouseName: 'Travelling Stock',
+        },
+        {
+            wareHouseID: '7',
+            wareHouseName: 'COFAR',
+        },
+        {
+            wareHouseID: '8',
+            wareHouseName: 'Joe Peeters',
+        },
+        {
+            wareHouseID: '9',
+            wareHouseName: 'Malcolm Total Logistics',
+        },
+        {
+            wareHouseID: '10',
+            wareHouseName: 'Ozpig - Unsaleable Stock',
+        },
+        {
+            wareHouseID: '11',
+            wareHouseName: 'Ozpig - Reserved Stock',
+        },
+        {
+            wareHouseID: '12',
+            wareHouseName: 'Ozpig Buy Ins',
+        },
+        {
+            wareHouseID: '13',
+            wareHouseName: 'SLA',
+        },
+    ],
+    currentTime: '2022-08-08 07:15:55',
+    ack: 'Success',
+};
+
+export const paymentMethods = {
+    currentTime: '2022-08-08 07:34:26',
+    ack: 'Success',
+    paymentMethods: {
+        paymentMethod: [
+            {
+                accCode: '103',
+                visible: 'y',
+                name: 'Account Credit',
+                active: 'y',
+                id: '14',
+            },
+            {
+                accCode: '103',
+                visible: 'y',
+                name: 'Voucher / Reward Points',
+                active: 'y',
+                id: '20',
+            },
+            {
+                accCode: '102',
+                visible: 'y',
+                name: 'PayPal Express',
+                active: 'y',
+                id: '21',
+            },
+            {
+                accCode: '103',
+                visible: 'n',
+                name: 'POS Card',
+                active: 'y',
+                id: '22',
+            },
+            {
+                accCode: '103',
+                visible: 'n',
+                name: 'POS Cash',
+                active: 'y',
+                id: '23',
+            },
+            {
+                accCode: '100',
+                visible: 'y',
+                name: 'Visa',
+                active: 'n',
+                id: '24',
+            },
+            {
+                accCode: '100',
+                visible: 'y',
+                name: 'MasterCard',
+                active: 'n',
+                id: '25',
+            },
+            {
+                accCode: '100',
+                visible: 'y',
+                name: 'Bank Deposit',
+                active: 'y',
+                id: '26',
+            },
+            {
+                accCode: '103',
+                visible: 'n',
+                name: 'Offline Payments',
+                active: 'y',
+                id: '27',
+            },
+            {
+                accCode: '613',
+                visible: 'n',
+                name: 'New Zealand - Settlement',
+                active: 'y',
+                id: '28',
+            },
+            {
+                accCode: '',
+                visible: 'n',
+                name: 'Amazon AU',
+                active: 'y',
+                id: '29',
+            },
+            {
+                accCode: '100',
+                visible: 'n',
+                name: 'Visa',
+                active: 'n',
+                id: '30',
+            },
+            {
+                accCode: '100',
+                visible: 'n',
+                name: 'MasterCard',
+                active: 'n',
+                id: '31',
+            },
+            {
+                accCode: '100',
+                visible: 'y',
+                name: 'zipPay',
+                active: 'y',
+                id: '32',
+            },
+            {
+                accCode: '100',
+                visible: 'y',
+                name: 'zipMoney',
+                active: 'y',
+                id: '33',
+            },
+            {
+                accCode: '128',
+                visible: 'y',
+                name: 'Visa',
+                active: 'y',
+                id: '34',
+            },
+            {
+                accCode: '128',
+                visible: 'y',
+                name: 'MasterCard',
+                active: 'y',
+                id: '35',
+            },
+            {
+                accCode: '128',
+                visible: 'y',
+                name: 'American Express',
+                active: 'y',
+                id: '36',
+            },
+            {
+                accCode: '129',
+                visible: 'n',
+                name: 'Shopify Payments',
+                active: 'y',
+                id: '37',
+            },
+            {
+                accCode: '',
+                visible: 'n',
+                name: 'eBay Managed Payments',
+                active: 'y',
+                id: '38',
+            },
+        ],
+    },
+};
+
+export const shippingMethods = {
+    currentTime: '2022-08-08 07:35:08',
+    ack: 'Success',
+    shippingMethods: {
+        shippingMethod: [
+            {
+                visibility: {
+                    ebay: 'true',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'Road Courier',
+                id: '1',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Inactive',
+                name: 'Road Courier',
+                id: '2',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'true',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'Parcel Post - Australia Post eParcel',
+                id: '3',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Inactive',
+                name: 'Parcel Post - Australia Post eParcel',
+                id: '4',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'true',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'Express Post - Australia Post eParcel',
+                id: '5',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Inactive',
+                name: 'Express Post - Australia Post eParcel',
+                id: '6',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'Pick Up',
+                id: '7',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'Use my own freight account',
+                id: '8',
+                description:
+                    'Please enter your carriers details with your account number below in the delivery instructions box.',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'false',
+                },
+                status: 'Active',
+                name: 'Generic Courier',
+                id: '9',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'PREMIUM - StarTrack',
+                id: '10',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Inactive',
+                name: 'ROAD EXPRESS - TNT Express - 4',
+                id: '11',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Inactive',
+                name: 'ROAD EXPRESS - Toll Express - 4',
+                id: '12',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Inactive',
+                name: 'ROAD EXPRESS - TNT Express - 5',
+                id: '13',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Inactive',
+                name: 'ROAD EXPRESS - TNT Express - 6',
+                id: '14',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Inactive',
+                name: 'ROAD EXPRESS - Toll Express - 5',
+                id: '15',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Inactive',
+                name: 'ROAD EXPRESS - Toll Express - 6',
+                id: '16',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'true',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'Long Haul',
+                id: '17',
+                description: 'Long Haul Ex Auckland',
+            },
+            {
+                visibility: {
+                    ebay: 'true',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'Standard shipping',
+                id: '18',
+                description: 'Delivery Australia Wide',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Inactive',
+                name: 'TNT Express',
+                id: '19',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'TNT - Road Express',
+                id: '20',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'TNT - Road Express (BP)',
+                id: '21',
+                description: 'Copy for BP',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'TNT - Road Express (BP + mix con)',
+                id: '22',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'true',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'Free Shipping',
+                id: '23',
+                description: 'Free Australia Wide Shipping',
+            },
+            {
+                visibility: {
+                    ebay: 'false',
+                    staff: 'true',
+                    customers: 'false',
+                },
+                status: 'Active',
+                name: 'Australia Post - Generic',
+                id: '24',
+                description: '',
+            },
+            {
+                visibility: {
+                    ebay: 'true',
+                    staff: 'true',
+                    customers: 'true',
+                },
+                status: 'Active',
+                name: 'Electronic Delivery',
+                id: '25',
+                description: '',
+            },
+        ],
+    },
+};

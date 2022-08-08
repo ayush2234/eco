@@ -16,7 +16,7 @@ import { SettingsComponent } from './settings.component';
 import { AllIntegrationsComponent } from './integrations/all-integrations/all-integrations.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AddIntegrationModule } from './integrations/add-integration/add-integration.module';
-import { SettingssRoutingModule } from './integrations/settings-routing.module';
+import { SettingssRoutingModule } from './settings-routing.module';
 import { SourceChannelComponent } from './integrations/source-channel/source-channel.component';
 
 @NgModule({

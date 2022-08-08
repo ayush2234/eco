@@ -11,7 +11,7 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Integration, SyncOption } from '../../integrations.types';
-import { AddIntegrationService } from '../add-integration.service';
+import { SyncOptionService } from '../common/sync-option/sync-option.service';
 
 @Component({
     selector: 'eco-add-integration-connection',
@@ -30,7 +30,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
      */
     constructor(
         private _formBuilder: UntypedFormBuilder,
-        private _addIntegrationService: AddIntegrationService
+        private _addIntegrationService: SyncOptionService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------

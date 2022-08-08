@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Route, RouterModule } from '@angular/router';
-import { SettingsComponent } from '../settings.component';
-import { AllIntegrationsComponent } from './all-integrations/all-integrations.component';
-import { ConnectionsResolver } from './integrations.resolver';
-import { SourceChannelComponent } from './source-channel/source-channel.component';
+import { SettingsComponent } from './settings.component';
+import { AllIntegrationsComponent } from './integrations/all-integrations/all-integrations.component';
+import { ConnectionsResolver } from './integrations/integrations.resolver';
+import { SourceChannelComponent } from './integrations/source-channel/source-channel.component';
 
 const routes: Route[] = [
     {

@@ -1,18 +1,27 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, tap, switchMap } from 'rxjs';
-import { Integration } from '../integrations.types';
+import { BehaviorSubject, Observable, of, tap, switchMap, map } from 'rxjs';
+import { Integration, SelectOption } from '../../../integrations.types';
 
 @Injectable({
     providedIn: 'root',
 })
-export class AddIntegrationService {
+export class SyncOptionService {
     // Private
     private _selectedIntegration: BehaviorSubject<string | null> =
         new BehaviorSubject(null);
     private _wipIntegration: BehaviorSubject<Integration | null> =
         new BehaviorSubject(null);
+    private _customerOptionsSelectOptions: BehaviorSubject<
+        SelectOption[] | null
+    > = new BehaviorSubject(null);
+    private _customerGroupSelectOptions: BehaviorSubject<
+        SelectOption[] | null
+    > = new BehaviorSubject(null);
+    private _existingCustomerSelectOptions: BehaviorSubject<
+        SelectOption[] | null
+    > = new BehaviorSubject(null);
 
     /**
      * Constructor
@@ -61,7 +70,7 @@ export class AddIntegrationService {
                                     setting: 'take_stock_from',
                                     fieldType: 'selectFromErp',
                                     erpValuesList:
-                                        'api/v1/erpInstallId/shipMethod',
+                                        'api/v1/erpInstallId/warehouses',
                                     installationValuesList: '',
                                     additionalOptions: [
                                         {
@@ -101,7 +110,7 @@ export class AddIntegrationService {
                                     setting: 'existing_customer',
                                     fieldType: 'selectFromErp',
                                     erpValuesList:
-                                        'api/v1/erpInstallId/shipMethod',
+                                        'api/v1/erpInstallId/customers',
                                     installationValuesList: '',
                                     dependency: 'link_to_existing',
                                     additionalOptions: [],
@@ -156,12 +165,12 @@ export class AddIntegrationService {
                                 {
                                     setting: 'ship_method_mapping',
                                     fieldType: 'mapping',
-                                    source: 'installation',
-                                    destination: 'erp',
+                                    source: 'Source',
+                                    destination: 'Destination',
                                     erpValuesList:
-                                        'api/v1/erpInstallId/shipMethod',
+                                        'api/v1/erpInstallId/shippingMethods',
                                     installationValuesList:
-                                        'api/v1/installationId/shipMethod',
+                                        'api/v1/installationId/shippingMethods',
                                     additionalOptions: '',
                                 },
                                 {
@@ -221,5 +230,66 @@ export class AddIntegrationService {
      */
     setSelectedIntegration(value: string): void {
         this._selectedIntegration.next(value);
+    }
+
+    /**
+     * Get select options
+     */
+    getSelectOptions(key: string, api: string): Observable<SelectOption[]> {
+        return this._httpClient.get(api).pipe(
+            map((res: any) => {
+                switch (key) {
+                    case 'take_stock_from':
+                        const warehouses = res?.wareHouse?.reduce(
+                            (arr, value) =>
+                                value
+                                    ? [
+                                          ...arr,
+                                          {
+                                              option: value.wareHouseID,
+                                              label: value.wareHouseName,
+                                          },
+                                      ]
+                                    : [...arr],
+                            []
+                        );
+
+                        return warehouses;
+                    default:
+                        return res;
+                }
+            })
+        );
+    }
+
+    /**
+     * Get mapping
+     */
+    getMapping(key: string, api: string): Observable<SelectOption[]> {
+        return this._httpClient.get(api).pipe(
+            map((res: any) => {
+                switch (key) {
+                    case 'ship_method_mapping':
+                        const shippingMethods =
+                            res?.shippingMethods?.shippingMethod?.reduce(
+                                (arr, value) =>
+                                    value
+                                        ? [
+                                              ...arr,
+                                              {
+                                                  option: value.id,
+                                                  label: value.name,
+                                              },
+                                          ]
+                                        : [...arr],
+                                []
+                            );
+
+                        return shippingMethods;
+                    default:
+                        return res;
+                }
+            })
+        );
     }
 }
