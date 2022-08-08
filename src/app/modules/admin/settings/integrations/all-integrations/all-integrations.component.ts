@@ -6,7 +6,7 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { AddIntegrationService } from '../add-integration/add-integration.service';
+import { SyncOptionService } from '../add-integration/common/sync-option/sync-option.service';
 import { IntegrationsService } from '../integrations.service';
 
 @Component({
@@ -27,7 +27,7 @@ export class AllIntegrationsComponent implements OnInit, OnDestroy {
      */
     constructor(
         private _integrationsService: IntegrationsService,
-        private _addIntegrationService: AddIntegrationService
+        private _addIntegrationService: SyncOptionService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 <div class="w-full max-w-3xl">
     <!-- Form -->
-    <form [formGroup]="inventoryForm">
+    <form [formGroup]="form">
         <!-- Section -->
         <div class="flex flex-col w-full mt-8">
             <div>
@@ -9,14 +9,25 @@
                     <mat-select [formControlName]="'takeStockFrom'">
                         <mat-option
                             *ngFor="
-                                let item of takeStockFromSelectOptionAdditionalOptions
+                                let item of additionalSelectOptions
+                                    | getSelectOptions: takeStockFrom
                             "
                             [value]="item.option"
                             >{{ item.label }}</mat-option
                         >
                         <mat-option
                             *ngFor="
-                                let item of takeStockFromSelectOptionsErp$
+                                let item of erpSelectOptions
+                                    | getSelectOptions: takeStockFrom
+                                    | async
+                            "
+                            [value]="item.option"
+                            >{{ item.label }}</mat-option
+                        >
+                        <mat-option
+                            *ngFor="
+                                let item of installationSelectOptions
+                                    | getSelectOptions: takeStockFrom
                                     | async
                             "
                             [value]="item.option"

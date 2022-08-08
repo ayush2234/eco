@@ -1,19 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import {
     ChangeDetectionStrategy,
     Component,
-    Input,
+    OnDestroy,
     OnInit,
     ViewEncapsulation,
 } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
-import {
-    Integration,
-    SelectOption,
-    SyncOption,
-} from '../../integrations.types';
-import { AddIntegrationService } from '../add-integration.service';
-import { AddIntegrationOrdersService } from './orders.service';
+import { UntypedFormBuilder } from '@angular/forms';
+import { CustomerService } from 'app/core/customer/customer.service';
+import { CustomerValidator } from 'app/shared/validators/customer.validator';
+import { takeUntil, tap } from 'rxjs';
+import { SyncOptionComponent } from '../common/sync-option/sync-option.component';
+import { SyncOptionService } from '../common/sync-option/sync-option.service';
 
 @Component({
     selector: 'eco-add-integration-orders',
@@ -21,23 +19,26 @@ import { AddIntegrationOrdersService } from './orders.service';
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddIntegrationOrdersComponent implements OnInit {
-    @Input() integration: Integration;
-    @Input() syncOption: SyncOption;
-    ordersForm: UntypedFormGroup;
-    customerOptionsSelectOptionsAdditionalOptions;
-    customerOptionsSelectOptionsErp$: Observable<SelectOption[]>;
-    existingCustomerSelectOptionsAdditionalOptions;
-    existingCustomerSelectOptionsErp$: Observable<SelectOption[]>;
+export class AddIntegrationOrdersComponent
+    extends SyncOptionComponent
+    implements OnInit, OnDestroy
+{
+    customerOptions = 'customer_options';
+    customerGroup = 'customer_group';
+    existingCustomer = 'existing_customer';
+    orderStatus = 'order_status';
+    paymentMethodMapping = 'payment_method_mapping';
 
     /**
      * Constructor
      */
     constructor(
-        private _formBuilder: UntypedFormBuilder,
-        private _addIntegrationService: AddIntegrationService,
-        private _addIntegrationOrdersService: AddIntegrationOrdersService
-    ) {}
+        public _syncOptionService: SyncOptionService,
+        public _formBuilder: UntypedFormBuilder,
+        private _customerService: CustomerService
+    ) {
+        super(_syncOptionService);
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -48,19 +49,21 @@ export class AddIntegrationOrdersComponent implements OnInit {
      */
     ngOnInit(): void {
         // Create the form
-        this.ordersForm = this._formBuilder.group({
+        this.form = this._formBuilder.group({
             isActive: [false],
             customerOptions: ['create_unique_customer'],
-            customerGroup: ['create_unique_customer'],
-            orderStatus: [''],
+            customerGroup: ['id1'],
+            orderStatus: ['Pick'],
             freeShipping: ['usa'],
             freeExpressShipping: ['usa'],
             standardRateInternational: ['usa'],
-            payment: ['usa'],
+            payment: ['do_not_mark_as_paid'],
         });
 
-        this.loadFormControlData();
-        this.ordersForm.patchValue({ ...this.syncOption });
+        this.loadSelectOptions();
+        this.loadMappings();
+        this.subscribeOnFormValueChanges();
+        this.form.patchValue({ ...this.syncOption });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -68,60 +71,37 @@ export class AddIntegrationOrdersComponent implements OnInit {
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
+     * Subscribe on Form Value Changes
      */
-    trackByFn(index: number, item: any): any {
-        return item.id || index;
-    }
+    subscribeOnFormValueChanges(): void {
+        this.form
+            .get('customerOptions')
+            ?.valueChanges.pipe(
+                takeUntil(this._unsubscribeAll),
+                tap((value) => {
+                    value === 'link_to_existing'
+                        ? this.form.addControl(
+                              'existingCustomer',
+                              this._formBuilder.control(
+                                  '',
+                                  [],
+                                  [
+                                      CustomerValidator.createValidator(
+                                          this._customerService
+                                      ),
+                                  ]
+                              )
+                          )
+                        : this.form.removeControl('existingCustomer');
 
-    /**
-     * Activate panel
-     */
-    activatePanel(): void {
-        const activatedSyncOption = { ...this.syncOption, isActive: true };
-        this._addIntegrationService.wipIntegration = {
-            ...this.integration,
-            syncOptions: this.integration?.syncOptions?.map((syncOption) =>
-                syncOption.key === this.syncOption.key
-                    ? activatedSyncOption
-                    : syncOption
-            ),
-        };
-    }
-
-    /**
-     * Load select options
-     */
-    loadFormControlData(): void {
-        const customerOptions = this.syncOption?.attributes?.find(
-            ({ setting }) => setting === 'customer_options'
-        );
-        const existingCustomer = this.syncOption?.attributes?.find(
-            ({ setting }) => setting === 'customer_options'
-        );
-
-        this.customerOptionsSelectOptionsAdditionalOptions =
-            customerOptions?.additionalOptions;
-        this.existingCustomerSelectOptionsAdditionalOptions =
-            existingCustomer?.additionalOptions;
-
-        this.customerOptionsSelectOptionsErp$ =
-            this._addIntegrationOrdersService.customerOptionsSelectOptionsErp$;
-        this.existingCustomerSelectOptionsErp$ =
-            this._addIntegrationOrdersService.existingCustomerSelectOptionsErp$;
-
-        if (customerOptions?.fieldType === 'selectFromErp') {
-            this._addIntegrationOrdersService.getCustomerOptionsSelectOptionsErp(
-                customerOptions.erpValuesList
-            );
-        }
-        if (existingCustomer?.fieldType === 'selectFromErp') {
-            this._addIntegrationOrdersService.getExistingCustomerSelectOptionsErp(
-                customerOptions.erpValuesList
-            );
-        }
+                    value === 'create_unique_customer'
+                        ? this.form.addControl(
+                              'customerGroup',
+                              this._formBuilder.control(['id1'])
+                          )
+                        : this.form.removeControl('customerGroup');
+                })
+            )
+            .subscribe();
     }
 }
