@@ -24,6 +24,7 @@ import { UserMockApi } from 'app/mock-api/api/user/api';
 import { SyncLogMockApi } from './api/sync-log/api';
 import { IntegrationMockApi } from './api/integrations/api';
 import { CustomerMockApi } from './api/customer/api';
+import { TagMockApi } from './api/tags/api';
 
 export const mockApiServices = [
     AcademyMockApi,
@@ -52,4 +53,5 @@ export const mockApiServices = [
     SyncLogMockApi,
     IntegrationMockApi,
     CustomerMockApi,
+    TagMockApi,
 ];

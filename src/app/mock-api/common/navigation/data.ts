@@ -91,6 +91,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:user-group',
                 link: '/users',
             },
+            {
+                id: 'admin.integrations',
+                title: 'Integrations',
+                type: 'basic',
+                icon: 'heroicons_outline:document-duplicate',
+                link: '/integrations',
+            },
         ],
     },
 ];
