@@ -149,6 +149,13 @@ export const appRoutes: Route[] = [
                         (m) => m.SyncLogsModule
                     ),
             },
+            {
+                path: 'integrations',
+                loadChildren: () =>
+                    import(
+                        'app/modules/admin/integrations/integrations.module'
+                    ).then((m) => m.IntegrationsModule),
+            },
         ],
     },
 ];

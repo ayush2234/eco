@@ -626,3 +626,116 @@ export const shippingMethods = {
         ],
     },
 };
+
+export const integrations = {
+    integrations: [
+        {
+            integrationId: '6a01f17a-cf2f-4b69-80d1-51405d793668',
+            sourceId: ['167190fa-51b4-45fc-a742-8ce1b33d24ea'],
+            name: 'Maropost Commerce Cloud',
+            icon: 'https://wordpress-631421-2579652.cloudwaysapps.com/wp-content/uploads/2022/07/44daee87-399d-45a9-b959-6ea26aedc153-2.png',
+            description:
+                'Sync products, inventory, tracking and more to and from WooCommerce',
+            restrictedToCompanies: [
+                '167190fa-51b4-45fc-a742-8ce1b33d24ea',
+                '2300ac48-f268-466a-b765-8b878b6e14a7',
+            ],
+            isBeta: true,
+            isCustom: 'true',
+            forceTestConnection: true,
+            jsonFormSchemaFile: '',
+            dateCreated: '10/10/2022 11:14 am',
+            dateUpdated: '',
+            installedInstances: 10,
+        },
+        {
+            integrationId: 'fd8e4587-0a83-4d3a-a1f3-c85fb9f8e392',
+            sourceId: ['408ac652-8936-48f3-9e2e-fd20bfb18715'],
+            name: 'WooCommerce',
+            icon: 'https://wordpress-631421-2579652.cloudwaysapps.com/wp-content/uploads/2022/07/90431683_10158311076699180_2657409051876392960_n.png',
+            description:
+                'Sync products, inventory, tracking and more to and from WooCommerce',
+            restrictedToCompanies: ['f3ce67d4-1320-4b7d-ba9a-a1b6771305c9'],
+            isBeta: false,
+            isCustom: 'true',
+            forceTestConnection: true,
+            jsonFormSchemaFile: '',
+            dateCreated: '10/10/2022 11:16 am',
+            dateUpdated: '10/10/2022 11:18 am',
+            installedInstances: 15,
+        },
+    ],
+};
+
+export const companies = {
+    companies: [
+        {
+            companyId: 'f3ce67d4-1320-4b7d-ba9a-a1b6771305c9',
+            companyName: 'WolfgroupDev',
+            notes: 'TestCompany',
+            isActive: true,
+            status: 'ok',
+            allowBeta: false,
+            limits: [
+                {
+                    users: {
+                        limit: 5,
+                        used: 0,
+                    },
+                },
+                {
+                    sources: {
+                        limit: 2,
+                        used: 0,
+                    },
+                },
+                {
+                    integrations: {
+                        limit: 1,
+                        used: 0,
+                    },
+                },
+                {
+                    skus: {
+                        limit: 20000,
+                        used: 500,
+                    },
+                },
+            ],
+        },
+        {
+            companyId: 'd44a4899-e753-40d0-bc3a-8146990e431c',
+            companyName: 'PS Home and Living',
+            notes: 'Real Test Company',
+            isActive: true,
+            status: 'error',
+            allowBeta: false,
+            limits: [
+                {
+                    users: {
+                        limit: 10,
+                        used: 1,
+                    },
+                },
+                {
+                    sources: {
+                        limit: 10,
+                        used: 1,
+                    },
+                },
+                {
+                    integrations: {
+                        limit: 10,
+                        used: 2,
+                    },
+                },
+                {
+                    skus: {
+                        limit: 10000,
+                        used: 500,
+                    },
+                },
+            ],
+        },
+    ],
+};
