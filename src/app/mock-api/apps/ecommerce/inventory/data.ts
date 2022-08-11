@@ -3,20 +3,20 @@ export const categories = [
     {
         id      : 'b899ec30-b85a-40ab-bb1f-18a596d5c6de',
         parentId: null,
-        name    : 'Mens',
-        slug    : 'mens'
+        name    : 'WooCommerce',
+        slug    : 'woocommerce'
     },
     {
         id      : '07986d93-d4eb-4de1-9448-2538407f7254',
         parentId: null,
-        name    : 'Ladies',
-        slug    : 'ladies'
+        name    : 'Shopify',
+        slug    : 'shopify'
     },
     {
         id      : 'ad12aa94-3863-47f8-acab-a638ef02a3e9',
         parentId: null,
-        name    : 'Unisex',
-        slug    : 'unisex'
+        name    : 'Mosaic Brands',
+        slug    : 'mosaic'
     }
 ];
 export const brands = [
@@ -233,7 +233,7 @@ export const products = [
     {
         id         : '91d96e18-d3f5-4c32-a8bf-1fc525cb92c0',
         category   : '07986d93-d4eb-4de1-9448-2538407f7254',
-        name       : 'Benton Ladies Automatic Watch 40mm 5 ATM',
+        name       : 'WolfgroupTest',
         description: 'Pariatur proident labore commodo consequat qui et. Ad labore fugiat consectetur ea magna dolore mollit consequat reprehenderit laborum ad mollit eiusmod. Esse laboris voluptate ullamco occaecat labore esse laboris enim ipsum aliquip ipsum. Ea ea proident eu enim anim mollit non consequat enim nulla.',
         tags       : [
             '3baea410-a7d6-4916-b79a-bdce50c37f95',
@@ -242,8 +242,8 @@ export const products = [
             '2300ac48-f268-466a-b765-8b878b6e14a7',
             'b1286f3a-e2d0-4237-882b-f0efc0819ec3'
         ],
-        sku        : 'ADP-5745',
-        barcode    : '8390590339828',
+        sku        : '319128ed-ccc3-4a0e-b64b-1c174b4236e9',
+        barcode    : '10',
         brand      : 'e1789f32-9475-43e7-9256-451d2e3a2282',
         vendor     : '05ebb527-d733-46a9-acfb-a4e4ec960024',
         stock      : 12,

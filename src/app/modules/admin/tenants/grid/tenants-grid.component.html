@@ -10,7 +10,7 @@
             <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
         </div>
         <!-- Title -->
-        <div class="text-4xl font-extrabold tracking-tight">Tenants</div>
+        <div class="text-4xl font-extrabold tracking-tight">Companies</div>
         <!-- Actions -->
         <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
             <!-- Search -->
@@ -26,7 +26,7 @@
                     matInput
                     [formControl]="searchInputControl"
                     [autocomplete]="'off'"
-                    [placeholder]="'Search tenant or tenand ID'"
+                    [placeholder]="'Search company or company ID'"
                 />
             </mat-form-field>
             <!-- Add product button -->
@@ -37,7 +37,7 @@
                 (click)="createProduct()"
             >
                 <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                <span class="ml-2 mr-1">Add Tenant</span>
+                <span class="ml-2 mr-1">Add Company</span>
             </button>
         </div>
     </div>
@@ -57,7 +57,7 @@
                             matSort
                             matSortDisableClear
                         >
-                            <div>Tenant ID</div>
+                            <div>Company ID</div>
                             <div
                                 class="hidden md:block"
                                 [mat-sort-header]="'sku'"
@@ -248,7 +248,7 @@
                                     <div class="flex flex-col">
                                         <!-- Name -->
                                         <mat-form-field class="w-full">
-                                            <mat-label>Tenant ID*</mat-label>
+                                            <mat-label>Company ID*</mat-label>
                                             <input
                                                 matInput
                                                 [formControlName]="'sku'"
