@@ -79,7 +79,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
         children: [
             {
                 id: 'admin.tenants',
-                title: 'Tenants',
+                title: 'Companies',
                 type: 'basic',
                 icon: 'heroicons_outline:user-group',
                 link: '/tenants',
