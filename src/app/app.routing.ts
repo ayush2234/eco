@@ -156,6 +156,13 @@ export const appRoutes: Route[] = [
                         'app/modules/admin/integrations/integrations.module'
                     ).then((m) => m.IntegrationsModule),
             },
+            {
+                path: 'sources',
+                loadChildren: () =>
+                    import('app/modules/admin/sources/sources.module').then(
+                        (m) => m.SourcesModule
+                    ),
+            },
         ],
     },
 ];
