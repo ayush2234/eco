@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 
-import { IntegrationsRoutingModule } from './integrations-routing.module';
-import { IntegrationsGridComponent } from './grid/integrations-grid.component';
+import { SourcesRoutingModule } from './sources-routing.module';
+import { SourcesGridComponent } from './grid/sources-grid.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
@@ -18,9 +18,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from 'app/shared/shared.module';
 
 @NgModule({
-    declarations: [IntegrationsGridComponent],
+    declarations: [SourcesGridComponent],
     imports: [
-        IntegrationsRoutingModule,
+        SourcesRoutingModule,
         MatButtonModule,
         MatCheckboxModule,
         MatFormFieldModule,
@@ -37,4 +37,4 @@ import { SharedModule } from 'app/shared/shared.module';
         SharedModule,
     ],
 })
-export class IntegrationsModule {}
+export class SourcesModule {}

@@ -13,22 +13,21 @@ import {
     throwError,
 } from 'rxjs';
 import { IPagination, ITag } from 'app/layout/common/types/grid.types';
-import { Integration } from './integration.types';
+import { Source } from './source.types';
 
 @Injectable({
     providedIn: 'root',
 })
-export class IntegrationService {
+export class SourceService {
     // Private
-    private _integration: BehaviorSubject<Integration | null> =
-        new BehaviorSubject(null);
-    private _integrations: BehaviorSubject<Integration[] | null> =
-        new BehaviorSubject(null);
-    private _pagination: BehaviorSubject<IPagination | null> =
-        new BehaviorSubject(null);
-    private _sourceTags: BehaviorSubject<ITag[] | null> = new BehaviorSubject(
+    private _source: BehaviorSubject<Source | null> = new BehaviorSubject(null);
+    private _sources: BehaviorSubject<Source[] | null> = new BehaviorSubject(
         null
     );
+    private _pagination: BehaviorSubject<IPagination | null> =
+        new BehaviorSubject(null);
+    private _integrationTags: BehaviorSubject<ITag[] | null> =
+        new BehaviorSubject(null);
     private _restrictedToCompanyTags: BehaviorSubject<ITag[] | null> =
         new BehaviorSubject(null);
 
@@ -42,24 +41,24 @@ export class IntegrationService {
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Setter & getter for integration
+     * Setter & getter for source
      *
      * @param value
      */
-    set integration(value: Integration) {
+    set source(value: Source) {
         // Store the value
-        this._integration.next(value);
+        this._source.next(value);
     }
 
-    get integration$(): Observable<Integration> {
-        return this._integration.asObservable();
+    get source$(): Observable<Source> {
+        return this._source.asObservable();
     }
 
     /**
-     * Getter for integrations
+     * Getter for sources
      */
-    get integrations$(): Observable<Integration[]> {
-        return this._integrations.asObservable();
+    get sources$(): Observable<Source[]> {
+        return this._sources.asObservable();
     }
 
     /**
@@ -72,8 +71,8 @@ export class IntegrationService {
     /**
      * Getter for source tags
      */
-    get sourceTags$(): Observable<ITag[]> {
-        return this._sourceTags.asObservable();
+    get integrationTags$(): Observable<ITag[]> {
+        return this._integrationTags.asObservable();
     }
 
     /**
@@ -88,7 +87,7 @@ export class IntegrationService {
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Get integrations
+     * Get sources
      *
      *
      * @param page
@@ -97,7 +96,7 @@ export class IntegrationService {
      * @param order
      * @param search
      */
-    getIntegrations(
+    getSources(
         page: number = 0,
         size: number = 10,
         sort: string = 'name',
@@ -105,13 +104,13 @@ export class IntegrationService {
         search: string = ''
     ): Observable<{
         pagination: IPagination;
-        integrations: Integration[];
+        sources: Source[];
     }> {
         return this._httpClient
             .get<{
                 pagination: IPagination;
-                integrations: Integration[];
-            }>('api/integrations', {
+                sources: Source[];
+            }>('api/sources', {
                 params: {
                     page: '' + page,
                     size: '' + size,
@@ -123,69 +122,65 @@ export class IntegrationService {
             .pipe(
                 tap((response) => {
                     this._pagination.next(response.pagination);
-                    this._integrations.next(response.integrations);
+                    this._sources.next(response.sources);
                 })
             );
     }
 
     /**
-     * Get the current logged in integration data
+     * Get the current logged in source data
      */
-    get(): Observable<Integration> {
-        return this._httpClient.get<Integration>('api/integration').pipe(
-            tap((integration) => {
-                this._integration.next(integration);
+    get(): Observable<Source> {
+        return this._httpClient.get<Source>('api/source').pipe(
+            tap((source) => {
+                this._source.next(source);
             })
         );
     }
 
     /**
-     * Get integration by id
+     * Get source by id
      */
-    getIntegrationById(id: string): Observable<Integration> {
-        return this._integrations.pipe(
+    getSourceById(id: string): Observable<Source> {
+        return this._sources.pipe(
             take(1),
-            map((integrations) => {
-                // Find the integration
-                const integration =
-                    integrations.find((item) => item.integrationId === id) ||
-                    null;
+            map((sources) => {
+                // Find the source
+                const source =
+                    sources.find((item) => item.sourceId === id) || null;
 
-                // Update the integration
-                this._integration.next(integration);
+                // Update the source
+                this._source.next(source);
 
-                // Return the integration
-                return integration;
+                // Return the source
+                return source;
             }),
-            switchMap((integration) => {
-                if (!integration) {
+            switchMap((source) => {
+                if (!source) {
                     return throwError(
-                        'Could not found integration with id of ' + id + '!'
+                        'Could not found source with id of ' + id + '!'
                     );
                 }
 
-                return of(integration);
+                return of(source);
             })
         );
     }
 
     /**
-     * Create integration
+     * Create source
      */
-    createIntegration(): Observable<Integration> {
-        return this.integrations$.pipe(
+    createSource(): Observable<Source> {
+        return this.sources$.pipe(
             take(1),
-            switchMap((integrations) =>
-                this._httpClient.post<Integration>('api/integrations', {}).pipe(
-                    map((newIntegration) => {
-                        // Update the integrations with the new integration
-                        this._integrations.next([
-                            newIntegration,
-                            ...integrations,
-                        ]);
+            switchMap((sources) =>
+                this._httpClient.post<Source>('api/sources', {}).pipe(
+                    map((newSource) => {
+                        // Update the sources with the new source
+                        this._sources.next([newSource, ...sources]);
 
-                        // Return the new integration
-                        return newIntegration;
+                        // Return the new source
+                        return newSource;
                     })
                 )
             )
@@ -193,38 +188,35 @@ export class IntegrationService {
     }
 
     /**
-     * Update integration
+     * Update source
      *
      * @param id
-     * @param integration
+     * @param source
      */
-    updateIntegration(
-        id: string,
-        integration: Integration
-    ): Observable<Integration> {
-        return this.integrations$.pipe(
+    updateSource(id: string, source: Source): Observable<Source> {
+        return this.sources$.pipe(
             take(1),
-            switchMap((integrations) =>
+            switchMap((sources) =>
                 this._httpClient
-                    .patch<Integration>('api/integrations', {
+                    .patch<Source>('api/sources', {
                         id,
-                        integration,
+                        source,
                     })
                     .pipe(
-                        map((updatedIntegration) => {
-                            // Find the index of the updated integration
-                            const index = integrations.findIndex(
-                                (item) => item.integrationId === id
+                        map((updatedSource) => {
+                            // Find the index of the updated source
+                            const index = sources.findIndex(
+                                (item) => item.sourceId === id
                             );
 
-                            // Update the integration
-                            integrations[index] = updatedIntegration;
+                            // Update the source
+                            sources[index] = updatedSource;
 
-                            // Update the integrations
-                            this._integrations.next(integrations);
+                            // Update the sources
+                            this._sources.next(sources);
 
-                            // Return the updated integration
-                            return updatedIntegration;
+                            // Return the updated source
+                            return updatedSource;
                         })
                     )
             )
@@ -232,30 +224,30 @@ export class IntegrationService {
     }
 
     /**
-     * Delete the integration
+     * Delete the source
      *
      * @param id
      */
-    deleteIntegration(id: string): Observable<boolean> {
-        return this.integrations$.pipe(
+    deleteSource(id: string): Observable<boolean> {
+        return this.sources$.pipe(
             take(1),
-            switchMap((integrations) =>
+            switchMap((sources) =>
                 this._httpClient
-                    .delete('api/integrations', {
+                    .delete('api/sources', {
                         params: { id },
                     })
                     .pipe(
                         map((isDeleted: boolean) => {
-                            // Find the index of the deleted integration
-                            const index = integrations.findIndex(
-                                (item) => item.integrationId === id
+                            // Find the index of the deleted source
+                            const index = sources.findIndex(
+                                (item) => item.sourceId === id
                             );
 
-                            // Delete the integration
-                            integrations.splice(index, 1);
+                            // Delete the source
+                            sources.splice(index, 1);
 
-                            // Update the integrations
-                            this._integrations.next(integrations);
+                            // Update the sources
+                            this._sources.next(sources);
 
                             // Return the deleted status
                             return isDeleted;
@@ -268,10 +260,10 @@ export class IntegrationService {
     /**
      * Get tags
      */
-    getSourceTags(): Observable<ITag[]> {
-        return this._httpClient.get<ITag[]>('api/tags/sources').pipe(
+    getIntegrationTags(): Observable<ITag[]> {
+        return this._httpClient.get<ITag[]>('api/tags/integrations').pipe(
             tap((tags) => {
-                this._sourceTags.next(tags);
+                this._integrationTags.next(tags);
             })
         );
     }
@@ -281,18 +273,18 @@ export class IntegrationService {
      *
      * @param tag
      */
-    createSourceTag(tag: ITag): Observable<ITag> {
-        return this.sourceTags$.pipe(
+    createIntegrationTag(tag: ITag): Observable<ITag> {
+        return this.integrationTags$.pipe(
             take(1),
             switchMap((tags) =>
                 this._httpClient
-                    .post<ITag>('api/tags/sources', {
+                    .post<ITag>('api/tags/integrations', {
                         tag,
                     })
                     .pipe(
                         map((newTag) => {
                             // Update the tags with the new tag
-                            this._sourceTags.next([...tags, newTag]);
+                            this._integrationTags.next([...tags, newTag]);
 
                             // Return new tag from observable
                             return newTag;
@@ -308,12 +300,12 @@ export class IntegrationService {
      * @param id
      * @param tag
      */
-    updateSourceTag(id: string, tag: ITag): Observable<ITag> {
-        return this.sourceTags$.pipe(
+    updateIntegrationTag(id: string, tag: ITag): Observable<ITag> {
+        return this.integrationTags$.pipe(
             take(1),
             switchMap((tags) =>
                 this._httpClient
-                    .patch<ITag>('api/tag/sources', {
+                    .patch<ITag>('api/tags/integrations', {
                         id,
                         tag,
                     })
@@ -328,7 +320,7 @@ export class IntegrationService {
                             tags[index] = updatedTag;
 
                             // Update the tags
-                            this._sourceTags.next(tags);
+                            this._integrationTags.next(tags);
 
                             // Return the updated tag
                             return updatedTag;
@@ -343,12 +335,12 @@ export class IntegrationService {
      *
      * @param id
      */
-    deleteSourceTag(id: string): Observable<boolean> {
-        return this.sourceTags$.pipe(
+    deleteIntegrationTag(id: string): Observable<boolean> {
+        return this.integrationTags$.pipe(
             take(1),
             switchMap((tags) =>
                 this._httpClient
-                    .delete('api/tags/sources', {
+                    .delete('api/tags/integrations', {
                         params: { id },
                     })
                     .pipe(
@@ -362,26 +354,26 @@ export class IntegrationService {
                             tags.splice(index, 1);
 
                             // Update the tags
-                            this._sourceTags.next(tags);
+                            this._integrationTags.next(tags);
 
                             // Return the deleted status
                             return isDeleted;
                         }),
                         filter((isDeleted) => isDeleted),
                         switchMap((isDeleted) =>
-                            this.integrations$.pipe(
+                            this.sources$.pipe(
                                 take(1),
-                                map((integrations) => {
+                                map((sources) => {
                                     // Iterate through the contacts
-                                    integrations.forEach((integration) => {
+                                    sources.forEach((source) => {
                                         const tagIndex =
-                                            integration.sourceId.findIndex(
+                                            source.integration.findIndex(
                                                 (tag) => tag === id
                                             );
 
                                         // If the contact has the tag, remove it
                                         if (tagIndex > -1) {
-                                            integration.sourceId.splice(
+                                            source.integration.splice(
                                                 tagIndex,
                                                 1
                                             );
@@ -417,7 +409,7 @@ export class IntegrationService {
      * @param tag
      */
     createRestrictedToCompanyTag(tag: ITag): Observable<ITag> {
-        return this.sourceTags$.pipe(
+        return this.integrationTags$.pipe(
             take(1),
             switchMap((tags) =>
                 this._httpClient
@@ -447,7 +439,7 @@ export class IntegrationService {
      * @param tag
      */
     updateRestrictedToCompanyTag(id: string, tag: ITag): Observable<ITag> {
-        return this.sourceTags$.pipe(
+        return this.integrationTags$.pipe(
             take(1),
             switchMap((tags) =>
                 this._httpClient
@@ -482,7 +474,7 @@ export class IntegrationService {
      * @param id
      */
     deleteRestrictedToCompanyTag(id: string): Observable<boolean> {
-        return this.sourceTags$.pipe(
+        return this.integrationTags$.pipe(
             take(1),
             switchMap((tags) =>
                 this._httpClient
@@ -507,19 +499,19 @@ export class IntegrationService {
                         }),
                         filter((isDeleted) => isDeleted),
                         switchMap((isDeleted) =>
-                            this.integrations$.pipe(
+                            this.sources$.pipe(
                                 take(1),
-                                map((integrations) => {
+                                map((sources) => {
                                     // Iterate through the contacts
-                                    integrations.forEach((integration) => {
+                                    sources.forEach((source) => {
                                         const tagIndex =
-                                            integration.restrictedToCompanies.findIndex(
+                                            source.restrictedToCompanies.findIndex(
                                                 (tag) => tag === id
                                             );
 
                                         // If the contact has the tag, remove it
                                         if (tagIndex > -1) {
-                                            integration.restrictedToCompanies.splice(
+                                            source.restrictedToCompanies.splice(
                                                 tagIndex,
                                                 1
                                             );

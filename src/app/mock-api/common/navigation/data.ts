@@ -98,6 +98,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:document-duplicate',
                 link: '/integrations',
             },
+            {
+                id: 'admin.sources',
+                title: 'Sources',
+                type: 'basic',
+                icon: 'heroicons_outline:document-duplicate',
+                link: '/sources',
+            },
         ],
     },
 ];
