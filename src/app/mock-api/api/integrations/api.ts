@@ -197,12 +197,8 @@ export class IntegrationMockApi {
         this._fuseMockApiService.onPost('api/integrations').reply(() => {
             // Generate a new integration
             const newintegration = {
-                id: FuseMockApiUtils.guid(),
-                email: '',
+                integrationId: FuseMockApiUtils.guid(),
                 name: 'A New Integration',
-                tags: [],
-                role: '',
-                active: false,
             };
 
             // Unshift the new integration

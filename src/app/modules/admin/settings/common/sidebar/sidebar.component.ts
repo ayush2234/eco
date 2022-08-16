@@ -92,11 +92,13 @@ export class SettingsSidebarComponent {
                         title: 'Your Details',
                         type: 'basic',
                         icon: 'heroicons_outline:plus-circle',
+                        link: '/settings/account',
                     },
                     {
                         title: 'Users',
                         type: 'basic',
                         icon: 'heroicons_outline:user-add',
+                        link: '/settings/users',
                     },
                 ],
             },
