@@ -4,35 +4,32 @@ import { FuseMockApiService } from '@fuse/lib/mock-api';
 import { crypto as cryptoData } from 'app/mock-api/dashboards/crypto/data';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
-export class CryptoMockApi
-{
-    private _crypto: any = cryptoData;
+export class CryptoMockApi {
+  private _crypto: any = cryptoData;
 
-    /**
-     * Constructor
-     */
-    constructor(private _fuseMockApiService: FuseMockApiService)
-    {
-        // Register Mock API handlers
-        this.registerHandlers();
-    }
+  /**
+   * Constructor
+   */
+  constructor(private _fuseMockApiService: FuseMockApiService) {
+    // Register Mock API handlers
+    this.registerHandlers();
+  }
 
+  // -----------------------------------------------------------------------------------------------------
+  // @ Public methods
+  // -----------------------------------------------------------------------------------------------------
+
+  /**
+   * Register Mock API handlers
+   */
+  registerHandlers(): void {
     // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
+    // @ Crypto - GET
     // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Register Mock API handlers
-     */
-    registerHandlers(): void
-    {
-        // -----------------------------------------------------------------------------------------------------
-        // @ Crypto - GET
-        // -----------------------------------------------------------------------------------------------------
-        this._fuseMockApiService
-            .onGet('api/dashboards/crypto')
-            .reply(() => [200, cloneDeep(this._crypto)]);
-    }
+    this._fuseMockApiService
+      .onGet('api/dashboards/crypto')
+      .reply(() => [200, cloneDeep(this._crypto)]);
+  }
 }

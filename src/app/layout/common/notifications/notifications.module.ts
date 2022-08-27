@@ -9,22 +9,16 @@ import { NotificationsComponent } from 'app/layout/common/notifications/notifica
 import { SharedModule } from 'app/shared/shared.module';
 
 @NgModule({
-    declarations: [
-        NotificationsComponent
-    ],
-    imports     : [
-        RouterModule,
-        OverlayModule,
-        PortalModule,
-        MatButtonModule,
-        MatIconModule,
-        MatTooltipModule,
-        SharedModule
-    ],
-    exports     : [
-        NotificationsComponent
-    ]
+  declarations: [NotificationsComponent],
+  imports: [
+    RouterModule,
+    OverlayModule,
+    PortalModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    SharedModule,
+  ],
+  exports: [NotificationsComponent],
 })
-export class NotificationsModule
-{
-}
+export class NotificationsModule {}

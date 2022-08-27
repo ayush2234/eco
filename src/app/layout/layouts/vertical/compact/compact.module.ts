@@ -19,32 +19,26 @@ import { SharedModule } from 'app/shared/shared.module';
 import { CompactLayoutComponent } from 'app/layout/layouts/vertical/compact/compact.component';
 
 @NgModule({
-    declarations: [
-        CompactLayoutComponent
-    ],
-    imports     : [
-        HttpClientModule,
-        RouterModule,
-        MatButtonModule,
-        MatDividerModule,
-        MatIconModule,
-        MatMenuModule,
-        FuseFullscreenModule,
-        FuseLoadingBarModule,
-        FuseNavigationModule,
-        LanguagesModule,
-        MessagesModule,
-        NotificationsModule,
-        QuickChatModule,
-        SearchModule,
-        ShortcutsModule,
-        UserModule,
-        SharedModule
-    ],
-    exports     : [
-        CompactLayoutComponent
-    ]
+  declarations: [CompactLayoutComponent],
+  imports: [
+    HttpClientModule,
+    RouterModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule,
+    MatMenuModule,
+    FuseFullscreenModule,
+    FuseLoadingBarModule,
+    FuseNavigationModule,
+    LanguagesModule,
+    MessagesModule,
+    NotificationsModule,
+    QuickChatModule,
+    SearchModule,
+    ShortcutsModule,
+    UserModule,
+    SharedModule,
+  ],
+  exports: [CompactLayoutComponent],
 })
-export class CompactLayoutModule
-{
-}
+export class CompactLayoutModule {}

@@ -1,22 +1,18 @@
-export class FuseMockApiUtils
-{
-    /**
-     * Constructor
-     */
-    constructor()
-    {
-    }
+export class FuseMockApiUtils {
+  /**
+   * Constructor
+   */
+  constructor() {}
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------------
+  // @ Public methods
+  // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Generate a globally unique id
-     */
-    static guid(): string
-    {
-        /* eslint-disable */
+  /**
+   * Generate a globally unique id
+   */
+  static guid(): string {
+    /* eslint-disable */
 
         let d = new Date().getTime();
 
@@ -33,5 +29,5 @@ export class FuseMockApiUtils
         });
 
         /* eslint-enable */
-    }
+  }
 }

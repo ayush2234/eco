@@ -1,94 +1,67 @@
 import { Injectable } from '@angular/core';
 import {
-    ActivatedRouteSnapshot,
-    Resolve,
-    RouterStateSnapshot,
+  ActivatedRouteSnapshot,
+  Resolve,
+  RouterStateSnapshot,
 } from '@angular/router';
-import { IPagination, ITag } from 'app/layout/common/types/grid.types';
+import { ApiResponse } from 'app/core/api/api.types';
+import { Tag } from 'app/layout/common/grid/grid.types';
 import { Observable } from 'rxjs';
+import { CompanyService } from '../companies/company.service';
+import { CompanyListResponse } from '../companies/company.types';
 import { SourceService } from './source.service';
-import { Source } from './source.types';
+import { SourceListResponse } from './source.types';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class SourceResolver implements Resolve<any> {
-    /**
-     * Constructor
-     */
-    constructor(private _sourceService: SourceService) {}
+  /**
+   * Constructor
+   */
+  constructor(private _sourceService: SourceService) {}
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------------
+  // @ Public methods
+  // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Resolver
-     *
-     * @param route
-     * @param state
-     */
-    resolve(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ): Observable<{
-        pagination: IPagination;
-        sources: Source[];
-    }> {
-        return this._sourceService.getSources();
-    }
+  /**
+   * Resolver
+   *
+   * @param route
+   * @param state
+   */
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<ApiResponse<SourceListResponse>> {
+    return this._sourceService.getSources();
+  }
 }
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
-export class SourceRestrictedToCompanyResolver implements Resolve<any> {
-    /**
-     * Constructor
-     */
-    constructor(private _sourceService: SourceService) {}
+export class SourceCompanyResolver implements Resolve<any> {
+  /**
+   * Constructor
+   */
+  constructor(private _companyService: CompanyService) {}
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------------
+  // @ Public methods
+  // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Resolver
-     *
-     * @param route
-     * @param state
-     */
-    resolve(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ): Observable<ITag[]> {
-        return this._sourceService.getRestrictedToCompanyTags();
-    }
-}
-
-@Injectable({
-    providedIn: 'root',
-})
-export class SourceSourceResolver implements Resolve<any> {
-    /**
-     * Constructor
-     */
-    constructor(private _sourceService: SourceService) {}
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Resolver
-     *
-     * @param route
-     * @param state
-     */
-    resolve(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ): Observable<ITag[]> {
-        return this._sourceService.getIntegrationTags();
-    }
+  /**
+   * Resolver
+   *
+   * @param route
+   * @param state
+   */
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<ApiResponse<CompanyListResponse>> {
+    return this._companyService.getCompanies();
+  }
 }

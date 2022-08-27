@@ -6,21 +6,21 @@ import { FuseDrawerModule } from '@fuse/components/drawer';
 import { PipesModule } from './pipes/pipes.module';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        PipesModule,
-        PortalModule,
-        FuseDrawerModule,
-    ],
-    exports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        PipesModule,
-        PortalModule,
-        FuseDrawerModule,
-    ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    PipesModule,
+    PortalModule,
+    FuseDrawerModule,
+  ],
+  exports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    PipesModule,
+    PortalModule,
+    FuseDrawerModule,
+  ],
 })
 export class SharedModule {}

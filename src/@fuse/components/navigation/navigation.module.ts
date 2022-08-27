@@ -21,34 +21,34 @@ import { FuseVerticalNavigationSpacerItemComponent } from '@fuse/components/navi
 import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/vertical/vertical.component';
 
 @NgModule({
-    declarations: [
-        FuseHorizontalNavigationBasicItemComponent,
-        FuseHorizontalNavigationBranchItemComponent,
-        FuseHorizontalNavigationDividerItemComponent,
-        FuseHorizontalNavigationSpacerItemComponent,
-        FuseHorizontalNavigationComponent,
-        FuseVerticalNavigationAsideItemComponent,
-        FuseVerticalNavigationBasicItemComponent,
-        FuseVerticalNavigationCollapsableItemComponent,
-        FuseVerticalNavigationDividerItemComponent,
-        FuseVerticalNavigationGroupItemComponent,
-        FuseVerticalNavigationSpacerItemComponent,
-        FuseVerticalNavigationComponent,
-    ],
-    imports: [
-        CommonModule,
-        RouterModule,
-        MatButtonModule,
-        MatDividerModule,
-        MatIconModule,
-        MatMenuModule,
-        MatTooltipModule,
-        FuseScrollbarModule,
-    ],
-    exports: [
-        FuseHorizontalNavigationComponent,
-        FuseVerticalNavigationComponent,
-        FuseVerticalNavigationBasicItemComponent,
-    ],
+  declarations: [
+    FuseHorizontalNavigationBasicItemComponent,
+    FuseHorizontalNavigationBranchItemComponent,
+    FuseHorizontalNavigationDividerItemComponent,
+    FuseHorizontalNavigationSpacerItemComponent,
+    FuseHorizontalNavigationComponent,
+    FuseVerticalNavigationAsideItemComponent,
+    FuseVerticalNavigationBasicItemComponent,
+    FuseVerticalNavigationCollapsableItemComponent,
+    FuseVerticalNavigationDividerItemComponent,
+    FuseVerticalNavigationGroupItemComponent,
+    FuseVerticalNavigationSpacerItemComponent,
+    FuseVerticalNavigationComponent,
+  ],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule,
+    MatMenuModule,
+    MatTooltipModule,
+    FuseScrollbarModule,
+  ],
+  exports: [
+    FuseHorizontalNavigationComponent,
+    FuseVerticalNavigationComponent,
+    FuseVerticalNavigationBasicItemComponent,
+  ],
 })
 export class FuseNavigationModule {}

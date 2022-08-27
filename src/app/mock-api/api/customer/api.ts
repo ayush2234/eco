@@ -4,32 +4,32 @@ import { FuseMockApiService } from '@fuse/lib/mock-api';
 import { customers } from 'app/mock-api/api/customer/data';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class CustomerMockApi {
-    private _customers: any = customers;
+  private _customers: any = customers;
 
-    /**
-     * Constructor
-     */
-    constructor(private _fuseMockApiService: FuseMockApiService) {
-        // Register Mock API handlers
-        this.registerHandlers();
-    }
+  /**
+   * Constructor
+   */
+  constructor(private _fuseMockApiService: FuseMockApiService) {
+    // Register Mock API handlers
+    this.registerHandlers();
+  }
 
+  // -----------------------------------------------------------------------------------------------------
+  // @ Public methods
+  // -----------------------------------------------------------------------------------------------------
+
+  /**
+   * Register Mock API handlers
+   */
+  registerHandlers(): void {
     // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
+    // @ Customers - GET
     // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Register Mock API handlers
-     */
-    registerHandlers(): void {
-        // -----------------------------------------------------------------------------------------------------
-        // @ Customers - GET
-        // -----------------------------------------------------------------------------------------------------
-        this._fuseMockApiService
-            .onGet('api/v1/erpInstallId/customers')
-            .reply(() => [200, cloneDeep(this._customers)]);
-    }
+    this._fuseMockApiService
+      .onGet('api/v1/erpInstallId/customers')
+      .reply(() => [200, cloneDeep(this._customers)]);
+  }
 }

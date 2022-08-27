@@ -18,23 +18,23 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from 'app/shared/shared.module';
 
 @NgModule({
-    declarations: [SourcesGridComponent],
-    imports: [
-        SourcesRoutingModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatMenuModule,
-        MatPaginatorModule,
-        MatProgressBarModule,
-        MatRippleModule,
-        MatSortModule,
-        MatSelectModule,
-        MatSlideToggleModule,
-        MatTooltipModule,
-        SharedModule,
-    ],
+  declarations: [SourcesGridComponent],
+  imports: [
+    SourcesRoutingModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    MatProgressBarModule,
+    MatRippleModule,
+    MatSortModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatTooltipModule,
+    SharedModule,
+  ],
 })
 export class SourcesModule {}

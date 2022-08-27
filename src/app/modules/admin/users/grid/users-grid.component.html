@@ -1,526 +1,363 @@
 <div
-    class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent"
->
-    <!-- Header -->
+  class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+  <!-- Header -->
+  <div
+    class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+    <!-- Loader -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+      <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <!-- Title -->
+    <div class="text-4xl font-extrabold tracking-tight">Users</div>
+    <!-- Actions -->
+    <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+      <!-- Search -->
+      <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript min-w-64">
+        <mat-icon
+          class="icon-size-5"
+          matPrefix
+          [svgIcon]="'heroicons_solid:search'"></mat-icon>
+        <input
+          matInput
+          [formControl]="searchInputControl"
+          [autocomplete]="'off'"
+          [placeholder]="'Search user or user ID'" />
+      </mat-form-field>
+      <!-- Add user button -->
+      <button
+        class="ml-4"
+        mat-flat-button
+        [color]="'primary'"
+        (click)="createUser()">
+        <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+        <span class="ml-2 mr-1">Add User</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="flex flex-auto overflow-hidden">
+    <!-- users list -->
     <div
-        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b"
-    >
-        <!-- Loader -->
-        <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
-            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
-        </div>
-        <!-- Title -->
-        <div class="text-4xl font-extrabold tracking-tight">Users</div>
-        <!-- Actions -->
-        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
-            <!-- Search -->
-            <mat-form-field
-                class="fuse-mat-dense fuse-mat-no-subscript min-w-64"
-            >
-                <mat-icon
-                    class="icon-size-5"
-                    matPrefix
-                    [svgIcon]="'heroicons_solid:search'"
-                ></mat-icon>
-                <input
-                    matInput
-                    [formControl]="searchInputControl"
-                    [autocomplete]="'off'"
-                    [placeholder]="'Search user or user ID'"
-                />
-            </mat-form-field>
-            <!-- Add user button -->
-            <button
-                class="ml-4"
-                mat-flat-button
-                [color]="'primary'"
-                (click)="createUser()"
-            >
-                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                <span class="ml-2 mr-1">Add User</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Main -->
-    <div class="flex flex-auto overflow-hidden">
-        <!-- users list -->
-        <div
-            class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto"
-        >
+      class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+      <ng-container *ngIf="users$ | async as users">
+        <ng-container *ngIf="users.length > 0; else noUsers">
+          <div class="grid">
+            <!-- Header -->
+            <div
+              class="users-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+              matSort
+              matSortDisableClear>
+              <div [mat-sort-header]="'id'">User ID</div>
+              <div class="hidden md:block">Name</div>
+              <div class="hidden sm:block">Role</div>
+              <div class="hidden lg:block">Active</div>
+              <div class="hidden sm:block">Details</div>
+            </div>
+            <!-- Rows -->
             <ng-container *ngIf="users$ | async as users">
-                <ng-container *ngIf="users.length > 0; else noUsers">
-                    <div class="grid">
-                        <!-- Header -->
-                        <div
-                            class="users-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
-                            matSort
-                            matSortDisableClear
-                        >
-                            <div [mat-sort-header]="'id'">User ID</div>
-                            <div class="hidden md:block">Name</div>
-                            <div class="hidden sm:block">Role</div>
-                            <div class="hidden lg:block">Active</div>
-                            <div class="hidden sm:block">Details</div>
-                        </div>
-                        <!-- Rows -->
-                        <ng-container *ngIf="users$ | async as users">
-                            <ng-container
-                                *ngFor="let user of users; trackBy: trackByFn"
-                            >
-                                <div
-                                    class="users-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b"
-                                >
-                                    <!-- User ID -->
-                                    <div class="hidden md:block truncate">
-                                        {{ user.email }}
-                                    </div>
-
-                                    <!-- Name -->
-                                    <div class="hidden md:block truncate">
-                                        {{ user.name }}
-                                    </div>
-
-                                    <!-- Role -->
-                                    <div class="hidden sm:block">
-                                        {{ user.role }}
-                                    </div>
-
-                                    <!-- Status -->
-                                    <div class="hidden lg:block">
-                                        <ng-container *ngIf="user.active">
-                                            <mat-icon
-                                                class="text-green-400 icon-size-5"
-                                                [svgIcon]="
-                                                    'heroicons_solid:check'
-                                                "
-                                            ></mat-icon>
-                                        </ng-container>
-                                        <ng-container *ngIf="!user.active">
-                                            <mat-icon
-                                                class="text-gray-400 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:x'"
-                                            ></mat-icon>
-                                        </ng-container>
-                                    </div>
-
-                                    <!-- Details button -->
-                                    <div>
-                                        <button
-                                            class="min-w-10 min-h-7 h-7 px-2 leading-6"
-                                            mat-stroked-button
-                                            (click)="toggleDetails(user.id)"
-                                        >
-                                            <mat-icon
-                                                class="icon-size-5"
-                                                [svgIcon]="
-                                                    selectedUser?.id === user.id
-                                                        ? 'heroicons_solid:chevron-up'
-                                                        : 'heroicons_solid:chevron-down'
-                                                "
-                                            ></mat-icon>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="grid">
-                                    <ng-container
-                                        *ngIf="selectedUser?.id === user.id"
-                                    >
-                                        <ng-container
-                                            *ngTemplateOutlet="
-                                                rowDetailsTemplate;
-                                                context: { $implicit: user }
-                                            "
-                                        ></ng-container>
-                                    </ng-container>
-                                </div>
-                            </ng-container>
-                        </ng-container>
-                    </div>
-
-                    <mat-paginator
-                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
-                        [ngClass]="{ 'pointer-events-none': isLoading }"
-                        [length]="pagination.length"
-                        [pageIndex]="pagination.page"
-                        [pageSize]="pagination.size"
-                        [pageSizeOptions]="[5, 10, 25, 100]"
-                        [showFirstLastButtons]="true"
-                    ></mat-paginator>
-                </ng-container>
-            </ng-container>
-
-            <ng-template #rowDetailsTemplate let-user>
-                <div class="shadow-lg overflow-hidden">
-                    <div class="flex border-b">
-                        <!-- Selected user form -->
-                        <form
-                            class="flex flex-col w-full"
-                            [formGroup]="selectedUserForm"
-                        >
-                            <div class="flex flex-col sm:flex-row p-8">
-                                <!-- user images and status -->
-                                <div class="flex flex-col">
-                                    <div class="flex flex-col">
-                                        <span class="font-semibold mb-2"
-                                            >Active</span
-                                        >
-                                        <mat-slide-toggle
-                                            [formControlName]="'active'"
-                                            [color]="'primary'"
-                                        >
-                                            {{
-                                                selectedUserForm.get("active")
-                                                    .value === true
-                                                    ? "Active"
-                                                    : "Disabled"
-                                            }}
-                                        </mat-slide-toggle>
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-auto flex-wrap">
-                                    <!-- Name, SKU & etc. -->
-                                    <div
-                                        class="flex flex-col w-full lg:w-2/4 sm:pl-8"
-                                    >
-                                        <!-- Name -->
-                                        <mat-form-field class="w-full">
-                                            <mat-label>Name</mat-label>
-                                            <input
-                                                matInput
-                                                [formControlName]="'name'"
-                                            />
-                                        </mat-form-field>
-                                        <div class="flex">
-                                            <mat-form-field class="w-1/2 pr-2">
-                                                <mat-label>Email</mat-label>
-                                                <input
-                                                    matInput
-                                                    [formControlName]="'email'"
-                                                />
-                                            </mat-form-field>
-
-                                            <!-- Password field -->
-                                            <mat-form-field
-                                                *ngIf="
-                                                    selectedUserForm.get(
-                                                        'password'
-                                                    )
-                                                "
-                                                class="w-1/2 pl-2"
-                                            >
-                                                <mat-label>Password</mat-label>
-                                                <input
-                                                    id="password"
-                                                    matInput
-                                                    type="password"
-                                                    [formControlName]="
-                                                        'password'
-                                                    "
-                                                    #passwordField
-                                                />
-                                                <button
-                                                    mat-icon-button
-                                                    type="button"
-                                                    (click)="
-                                                        passwordField.type ===
-                                                        'password'
-                                                            ? (passwordField.type =
-                                                                  'text')
-                                                            : (passwordField.type =
-                                                                  'password')
-                                                    "
-                                                    matSuffix
-                                                >
-                                                    <mat-icon
-                                                        class="icon-size-5"
-                                                        *ngIf="
-                                                            passwordField.type ===
-                                                            'password'
-                                                        "
-                                                        [svgIcon]="
-                                                            'heroicons_solid:eye'
-                                                        "
-                                                    ></mat-icon>
-                                                    <mat-icon
-                                                        class="icon-size-5"
-                                                        *ngIf="
-                                                            passwordField.type ===
-                                                            'text'
-                                                        "
-                                                        [svgIcon]="
-                                                            'heroicons_solid:eye-off'
-                                                        "
-                                                    ></mat-icon>
-                                                </button>
-                                                <mat-error>
-                                                    Password is required
-                                                </mat-error>
-                                            </mat-form-field>
-                                        </div>
-
-                                        <!-- Referrer -->
-                                        <div class="flex">
-                                            <mat-form-field class="w-1/3 pr-2">
-                                                <mat-label>Role</mat-label>
-                                                <input
-                                                    matInput
-                                                    [formControlName]="'role'"
-                                                />
-                                            </mat-form-field>
-                                            <mat-form-field class="w-2/3 pl-2">
-                                                <mat-label>Notes</mat-label>
-                                                <input
-                                                    matInput
-                                                    [formControlName]="'notes'"
-                                                />
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-
-                                    <!-- Tenants -->
-                                    <div
-                                        class="flex flex-col w-full lg:w-2/4 sm:pl-8"
-                                    >
-                                        <!-- Tags -->
-                                        <span
-                                            class="mb-px font-medium leading-tight"
-                                            >Tenants</span
-                                        >
-                                        <div
-                                            class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden"
-                                        >
-                                            <!-- Header -->
-                                            <div
-                                                class="flex items-center -my-px py-2 px-3"
-                                            >
-                                                <div
-                                                    class="flex items-center flex-auto min-w-0"
-                                                >
-                                                    <mat-icon
-                                                        class="icon-size-5"
-                                                        [svgIcon]="
-                                                            'heroicons_solid:search'
-                                                        "
-                                                    ></mat-icon>
-                                                    <input
-                                                        class="min-w-0 ml-2 py-1 border-0"
-                                                        type="text"
-                                                        placeholder="Search tenant"
-                                                        (input)="
-                                                            filterTags($event)
-                                                        "
-                                                        (keydown)="
-                                                            filterTagsInputKeyDown(
-                                                                $event
-                                                            )
-                                                        "
-                                                        [maxLength]="50"
-                                                        #newTagInput
-                                                    />
-                                                </div>
-                                                <button
-                                                    class="ml-3 w-8 h-8 min-h-8"
-                                                    mat-icon-button
-                                                    (click)="
-                                                        toggleTagsEditMode()
-                                                    "
-                                                >
-                                                    <mat-icon
-                                                        *ngIf="!tagsEditMode"
-                                                        class="icon-size-5"
-                                                        [svgIcon]="
-                                                            'heroicons_solid:pencil-alt'
-                                                        "
-                                                    ></mat-icon>
-                                                    <mat-icon
-                                                        *ngIf="tagsEditMode"
-                                                        class="icon-size-5"
-                                                        [svgIcon]="
-                                                            'heroicons_solid:check'
-                                                        "
-                                                    ></mat-icon>
-                                                </button>
-                                            </div>
-                                            <!-- Available tags -->
-                                            <div
-                                                class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500"
-                                            >
-                                                <!-- Tags -->
-                                                <ng-container
-                                                    *ngIf="!tagsEditMode"
-                                                >
-                                                    <ng-container
-                                                        *ngFor="
-                                                            let tag of filteredTags;
-                                                            trackBy: trackByFn
-                                                        "
-                                                    >
-                                                        <mat-checkbox
-                                                            class="flex items-center h-10 min-h-10 px-4"
-                                                            [color]="'primary'"
-                                                            [checked]="
-                                                                selectedUser.tags.includes(
-                                                                    tag.id
-                                                                )
-                                                            "
-                                                            (change)="
-                                                                toggleUserTag(
-                                                                    tag,
-                                                                    $event
-                                                                )
-                                                            "
-                                                        >
-                                                            {{ tag.title }}
-                                                        </mat-checkbox>
-                                                    </ng-container>
-                                                </ng-container>
-                                                <!-- Tags editing -->
-                                                <ng-container
-                                                    *ngIf="tagsEditMode"
-                                                >
-                                                    <div class="p-4 space-y-2">
-                                                        <ng-container
-                                                            *ngFor="
-                                                                let tag of filteredTags;
-                                                                trackBy: trackByFn
-                                                            "
-                                                        >
-                                                            <mat-form-field
-                                                                class="fuse-mat-dense fuse-mat-no-subscript w-full"
-                                                            >
-                                                                <input
-                                                                    matInput
-                                                                    [value]="
-                                                                        tag.title
-                                                                    "
-                                                                    (input)="
-                                                                        updateTagTitle(
-                                                                            tag,
-                                                                            $event
-                                                                        )
-                                                                    "
-                                                                />
-                                                                <button
-                                                                    mat-icon-button
-                                                                    (click)="
-                                                                        deleteTag(
-                                                                            tag
-                                                                        )
-                                                                    "
-                                                                    matSuffix
-                                                                >
-                                                                    <mat-icon
-                                                                        class="icon-size-5"
-                                                                        [svgIcon]="
-                                                                            'heroicons_solid:trash'
-                                                                        "
-                                                                    ></mat-icon>
-                                                                </button>
-                                                            </mat-form-field>
-                                                        </ng-container>
-                                                    </div>
-                                                </ng-container>
-                                                <div
-                                                    class="flex items-center h-10 min-h-10 -ml-0.5 pl-4 pr-3 leading-none cursor-pointer border-t hover:bg-gray-50 dark:hover:bg-hover"
-                                                    *ngIf="
-                                                        shouldShowCreateTagButton(
-                                                            newTagInput.value
-                                                        )
-                                                    "
-                                                    (click)="
-                                                        createTag(
-                                                            newTagInput.value
-                                                        );
-                                                        newTagInput.value = ''
-                                                    "
-                                                    matRipple
-                                                >
-                                                    <mat-icon
-                                                        class="mr-2 icon-size-5"
-                                                        [svgIcon]="
-                                                            'heroicons_solid:plus-circle'
-                                                        "
-                                                    ></mat-icon>
-                                                    <div class="break-all">
-                                                        Create "<b>{{
-                                                            newTagInput.value
-                                                        }}</b
-                                                        >"
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div
-                                class="flex items-center justify-between w-full border-t px-8 py-4"
-                            >
-                                <button
-                                    class="-ml-4"
-                                    mat-button
-                                    [color]="'warn'"
-                                    (click)="deleteSelectedUser()"
-                                >
-                                    Delete
-                                </button>
-                                <div class="flex items-center">
-                                    <div
-                                        class="flex items-center mr-4"
-                                        *ngIf="flashMessage"
-                                    >
-                                        <ng-container
-                                            *ngIf="flashMessage === 'success'"
-                                        >
-                                            <mat-icon
-                                                class="text-green-500"
-                                                [svgIcon]="
-                                                    'heroicons_outline:check'
-                                                "
-                                            ></mat-icon>
-                                            <span class="ml-2"
-                                                >User updated</span
-                                            >
-                                        </ng-container>
-                                        <ng-container
-                                            *ngIf="flashMessage === 'error'"
-                                        >
-                                            <mat-icon
-                                                class="text-red-500"
-                                                [svgIcon]="
-                                                    'heroicons_outline:x'
-                                                "
-                                            ></mat-icon>
-                                            <span class="ml-2"
-                                                >An error occurred, try
-                                                again!</span
-                                            >
-                                        </ng-container>
-                                    </div>
-                                    <button
-                                        mat-flat-button
-                                        [color]="'primary'"
-                                        (click)="updateSelectedUser()"
-                                    >
-                                        Update
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </ng-template>
-
-            <ng-template #noUsers>
+              <ng-container *ngFor="let user of users; trackBy: trackByFn">
                 <div
-                    class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center"
-                >
-                    There are no users!
+                  class="users-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                  <!-- User ID -->
+                  <div class="hidden md:block truncate">
+                    {{ user.email }}
+                  </div>
+
+                  <!-- Name -->
+                  <div class="hidden md:block truncate">
+                    {{ user.name }}
+                  </div>
+
+                  <!-- Role -->
+                  <div class="hidden sm:block">
+                    {{ user.role }}
+                  </div>
+
+                  <!-- Status -->
+                  <div class="hidden lg:block">
+                    <ng-container *ngIf="user.active">
+                      <mat-icon
+                        class="text-green-400 icon-size-5"
+                        [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                    </ng-container>
+                    <ng-container *ngIf="!user.active">
+                      <mat-icon
+                        class="text-gray-400 icon-size-5"
+                        [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                    </ng-container>
+                  </div>
+
+                  <!-- Details button -->
+                  <div>
+                    <button
+                      class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                      mat-stroked-button
+                      (click)="toggleDetails(user.id)">
+                      <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="
+                          selectedUser?.id === user.id
+                            ? 'heroicons_solid:chevron-up'
+                            : 'heroicons_solid:chevron-down'
+                        "></mat-icon>
+                    </button>
+                  </div>
                 </div>
-            </ng-template>
+                <div class="grid">
+                  <ng-container *ngIf="selectedUser?.id === user.id">
+                    <ng-container
+                      *ngTemplateOutlet="
+                        rowDetailsTemplate;
+                        context: { $implicit: user }
+                      "></ng-container>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+
+          <mat-paginator
+            class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+            [ngClass]="{ 'pointer-events-none': isLoading }"
+            [length]="pagination.length"
+            [pageIndex]="pagination.page"
+            [pageSize]="pagination.size"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            [showFirstLastButtons]="true"></mat-paginator>
+        </ng-container>
+      </ng-container>
+
+      <ng-template #rowDetailsTemplate let-user>
+        <div class="shadow-lg overflow-hidden">
+          <div class="flex border-b">
+            <!-- Selected user form -->
+            <form class="flex flex-col w-full" [formGroup]="selectedUserForm">
+              <div class="flex flex-col sm:flex-row p-8">
+                <!-- user images and status -->
+                <div class="flex flex-col">
+                  <div class="flex flex-col">
+                    <span class="font-semibold mb-2">Active</span>
+                    <mat-slide-toggle
+                      [formControlName]="'active'"
+                      [color]="'primary'">
+                      {{
+                        selectedUserForm.get('active').value === true
+                          ? 'Active'
+                          : 'Disabled'
+                      }}
+                    </mat-slide-toggle>
+                  </div>
+                </div>
+
+                <div class="flex flex-auto flex-wrap">
+                  <!-- Name, SKU & etc. -->
+                  <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+                    <!-- Name -->
+                    <mat-form-field class="w-full">
+                      <mat-label>Name</mat-label>
+                      <input matInput [formControlName]="'name'" />
+                    </mat-form-field>
+                    <div class="flex">
+                      <mat-form-field class="w-1/2 pr-2">
+                        <mat-label>Email</mat-label>
+                        <input matInput [formControlName]="'email'" />
+                      </mat-form-field>
+
+                      <!-- Password field -->
+                      <mat-form-field
+                        *ngIf="selectedUserForm.get('password')"
+                        class="w-1/2 pl-2">
+                        <mat-label>Password</mat-label>
+                        <input
+                          id="password"
+                          matInput
+                          type="password"
+                          [formControlName]="'password'"
+                          #passwordField />
+                        <button
+                          mat-icon-button
+                          type="button"
+                          (click)="
+                            passwordField.type === 'password'
+                              ? (passwordField.type = 'text')
+                              : (passwordField.type = 'password')
+                          "
+                          matSuffix>
+                          <mat-icon
+                            class="icon-size-5"
+                            *ngIf="passwordField.type === 'password'"
+                            [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                          <mat-icon
+                            class="icon-size-5"
+                            *ngIf="passwordField.type === 'text'"
+                            [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
+                        </button>
+                        <mat-error> Password is required </mat-error>
+                      </mat-form-field>
+                    </div>
+
+                    <!-- Referrer -->
+                    <div class="flex">
+                      <mat-form-field class="w-1/3 pr-2">
+                        <mat-label>Role</mat-label>
+                        <input matInput [formControlName]="'role'" />
+                      </mat-form-field>
+                      <mat-form-field class="w-2/3 pl-2">
+                        <mat-label>Notes</mat-label>
+                        <input matInput [formControlName]="'notes'" />
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                  <!-- Tenants -->
+                  <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+                    <!-- Tags -->
+                    <span class="mb-px font-medium leading-tight">Tenants</span>
+                    <div
+                      class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
+                      <!-- Header -->
+                      <div class="flex items-center -my-px py-2 px-3">
+                        <div class="flex items-center flex-auto min-w-0">
+                          <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                          <input
+                            class="min-w-0 ml-2 py-1 border-0"
+                            type="text"
+                            placeholder="Search tenant"
+                            (input)="filterTags($event)"
+                            (keydown)="filterTagsInputKeyDown($event)"
+                            [maxLength]="50"
+                            #newTagInput />
+                        </div>
+                        <button
+                          class="ml-3 w-8 h-8 min-h-8"
+                          mat-icon-button
+                          (click)="toggleTagsEditMode()">
+                          <mat-icon
+                            *ngIf="!tagsEditMode"
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                          <mat-icon
+                            *ngIf="tagsEditMode"
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                        </button>
+                      </div>
+                      <!-- Available tags -->
+                      <div
+                        class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
+                        <!-- Tags -->
+                        <ng-container *ngIf="!tagsEditMode">
+                          <ng-container
+                            *ngFor="
+                              let tag of filteredTags;
+                              trackBy: trackByFn
+                            ">
+                            <mat-checkbox
+                              class="flex items-center h-10 min-h-10 px-4"
+                              [color]="'primary'"
+                              [checked]="selectedUser.tags.includes(tag.id)"
+                              (change)="toggleUserTag(tag, $event)">
+                              {{ tag.title }}
+                            </mat-checkbox>
+                          </ng-container>
+                        </ng-container>
+                        <!-- Tags editing -->
+                        <ng-container *ngIf="tagsEditMode">
+                          <div class="p-4 space-y-2">
+                            <ng-container
+                              *ngFor="
+                                let tag of filteredTags;
+                                trackBy: trackByFn
+                              ">
+                              <mat-form-field
+                                class="fuse-mat-dense fuse-mat-no-subscript w-full">
+                                <input
+                                  matInput
+                                  [value]="tag.title"
+                                  (input)="updateTagTitle(tag, $event)" />
+                                <button
+                                  mat-icon-button
+                                  (click)="deleteTag(tag)"
+                                  matSuffix>
+                                  <mat-icon
+                                    class="icon-size-5"
+                                    [svgIcon]="
+                                      'heroicons_solid:trash'
+                                    "></mat-icon>
+                                </button>
+                              </mat-form-field>
+                            </ng-container>
+                          </div>
+                        </ng-container>
+                        <div
+                          class="flex items-center h-10 min-h-10 -ml-0.5 pl-4 pr-3 leading-none cursor-pointer border-t hover:bg-gray-50 dark:hover:bg-hover"
+                          *ngIf="shouldShowCreateTagButton(newTagInput.value)"
+                          (click)="
+                            createTag(newTagInput.value); newTagInput.value = ''
+                          "
+                          matRipple>
+                          <mat-icon
+                            class="mr-2 icon-size-5"
+                            [svgIcon]="
+                              'heroicons_solid:plus-circle'
+                            "></mat-icon>
+                          <div class="break-all">
+                            Create "<b>{{ newTagInput.value }}</b
+                            >"
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="flex items-center justify-between w-full border-t px-8 py-4">
+                <button
+                  class="-ml-4"
+                  mat-button
+                  [color]="'warn'"
+                  (click)="deleteSelectedUser()">
+                  Delete
+                </button>
+                <div class="flex items-center">
+                  <div class="flex items-center mr-4" *ngIf="flashMessage">
+                    <ng-container *ngIf="flashMessage === 'success'">
+                      <mat-icon
+                        class="text-green-500"
+                        [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                      <span class="ml-2">User updated</span>
+                    </ng-container>
+                    <ng-container *ngIf="flashMessage === 'error'">
+                      <mat-icon
+                        class="text-red-500"
+                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                      <span class="ml-2">An error occurred, try again!</span>
+                    </ng-container>
+                  </div>
+                  <button
+                    mat-flat-button
+                    [color]="'primary'"
+                    (click)="updateSelectedUser()">
+                    Update
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
+      </ng-template>
+
+      <ng-template #noUsers>
+        <div
+          class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
+          There are no users!
+        </div>
+      </ng-template>
     </div>
+  </div>
 </div>
