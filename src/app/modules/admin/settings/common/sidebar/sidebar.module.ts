@@ -6,13 +6,13 @@ import { FuseNavigationModule } from '@fuse/components/navigation/navigation.mod
 import { SettingsSidebarComponent } from './sidebar.component';
 
 @NgModule({
-    declarations: [SettingsSidebarComponent],
-    imports: [
-        RouterModule.forChild([]),
-        MatIconModule,
-        MatProgressBarModule,
-        FuseNavigationModule,
-    ],
-    exports: [SettingsSidebarComponent],
+  declarations: [SettingsSidebarComponent],
+  imports: [
+    RouterModule.forChild([]),
+    MatIconModule,
+    MatProgressBarModule,
+    FuseNavigationModule,
+  ],
+  exports: [SettingsSidebarComponent],
 })
 export class SettingsSidebarModule {}

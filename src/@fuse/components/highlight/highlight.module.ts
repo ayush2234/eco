@@ -3,16 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FuseHighlightComponent } from '@fuse/components/highlight/highlight.component';
 
 @NgModule({
-    declarations: [
-        FuseHighlightComponent
-    ],
-    imports     : [
-        CommonModule
-    ],
-    exports     : [
-        FuseHighlightComponent
-    ]
+  declarations: [FuseHighlightComponent],
+  imports: [CommonModule],
+  exports: [FuseHighlightComponent],
 })
-export class FuseHighlightModule
-{
-}
+export class FuseHighlightModule {}

@@ -7,16 +7,12 @@ import { LandingHomeComponent } from 'app/modules/landing/home/home.component';
 import { landingHomeRoutes } from 'app/modules/landing/home/home.routing';
 
 @NgModule({
-    declarations: [
-        LandingHomeComponent
-    ],
-    imports     : [
-        RouterModule.forChild(landingHomeRoutes),
-        MatButtonModule,
-        MatIconModule,
-        SharedModule
-    ]
+  declarations: [LandingHomeComponent],
+  imports: [
+    RouterModule.forChild(landingHomeRoutes),
+    MatButtonModule,
+    MatIconModule,
+    SharedModule,
+  ],
 })
-export class LandingHomeModule
-{
-}
+export class LandingHomeModule {}

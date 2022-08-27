@@ -13,22 +13,18 @@ import { AuthSignInComponent } from 'app/modules/auth/sign-in/sign-in.component'
 import { authSignInRoutes } from 'app/modules/auth/sign-in/sign-in.routing';
 
 @NgModule({
-    declarations: [
-        AuthSignInComponent
-    ],
-    imports     : [
-        RouterModule.forChild(authSignInRoutes),
-        MatButtonModule,
-        MatCheckboxModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        FuseCardModule,
-        FuseAlertModule,
-        SharedModule
-    ]
+  declarations: [AuthSignInComponent],
+  imports: [
+    RouterModule.forChild(authSignInRoutes),
+    MatButtonModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    FuseCardModule,
+    FuseAlertModule,
+    SharedModule,
+  ],
 })
-export class AuthSignInModule
-{
-}
+export class AuthSignInModule {}

@@ -12,21 +12,17 @@ import { AuthForgotPasswordComponent } from 'app/modules/auth/forgot-password/fo
 import { authForgotPasswordRoutes } from 'app/modules/auth/forgot-password/forgot-password.routing';
 
 @NgModule({
-    declarations: [
-        AuthForgotPasswordComponent
-    ],
-    imports     : [
-        RouterModule.forChild(authForgotPasswordRoutes),
-        MatButtonModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        FuseCardModule,
-        FuseAlertModule,
-        SharedModule
-    ]
+  declarations: [AuthForgotPasswordComponent],
+  imports: [
+    RouterModule.forChild(authForgotPasswordRoutes),
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    FuseCardModule,
+    FuseAlertModule,
+    SharedModule,
+  ],
 })
-export class AuthForgotPasswordModule
-{
-}
+export class AuthForgotPasswordModule {}

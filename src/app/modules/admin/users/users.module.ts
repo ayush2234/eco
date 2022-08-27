@@ -20,23 +20,23 @@ import { SharedModule } from 'app/shared/shared.module';
 import { UsersGridComponent } from './grid/users-grid.component';
 
 @NgModule({
-    declarations: [UsersComponent, UsersGridComponent],
-    imports: [
-        TenantsRoutingModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatMenuModule,
-        MatPaginatorModule,
-        MatProgressBarModule,
-        MatRippleModule,
-        MatSortModule,
-        MatSelectModule,
-        MatSlideToggleModule,
-        MatTooltipModule,
-        SharedModule,
-    ],
+  declarations: [UsersComponent, UsersGridComponent],
+  imports: [
+    TenantsRoutingModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    MatProgressBarModule,
+    MatRippleModule,
+    MatSortModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatTooltipModule,
+    SharedModule,
+  ],
 })
 export class UsersModule {}

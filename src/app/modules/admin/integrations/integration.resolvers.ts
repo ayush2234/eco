@@ -1,94 +1,95 @@
 import { Injectable } from '@angular/core';
 import {
-    ActivatedRouteSnapshot,
-    Resolve,
-    RouterStateSnapshot,
+  ActivatedRouteSnapshot,
+  Resolve,
+  RouterStateSnapshot,
 } from '@angular/router';
-import { IPagination, ITag } from 'app/layout/common/types/grid.types';
+import { ApiResponse } from 'app/core/api/api.types';
 import { Observable } from 'rxjs';
+import { CompanyService } from '../companies/company.service';
+import { CompanyListResponse } from '../companies/company.types';
+import { SourceService } from '../sources/source.service';
+import { SourceListResponse } from '../sources/source.types';
 import { IntegrationService } from './integration.service';
-import { Integration } from './integration.types';
+import { IntegrationListResponse } from './integration.types';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class IntegrationResolver implements Resolve<any> {
-    /**
-     * Constructor
-     */
-    constructor(private _integrationService: IntegrationService) {}
+  /**
+   * Constructor
+   */
+  constructor(private _integrationService: IntegrationService) {}
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------------
+  // @ Public methods
+  // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Resolver
-     *
-     * @param route
-     * @param state
-     */
-    resolve(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ): Observable<{
-        pagination: IPagination;
-        integrations: Integration[];
-    }> {
-        return this._integrationService.getIntegrations();
-    }
+  /**
+   * Resolver
+   *
+   * @param route
+   * @param state
+   */
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<ApiResponse<IntegrationListResponse>> {
+    return this._integrationService.getIntegrations();
+  }
 }
 
 @Injectable({
-    providedIn: 'root',
-})
-export class IntegrationRestrictedToCompanyResolver implements Resolve<any> {
-    /**
-     * Constructor
-     */
-    constructor(private _integrationService: IntegrationService) {}
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Resolver
-     *
-     * @param route
-     * @param state
-     */
-    resolve(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ): Observable<ITag[]> {
-        return this._integrationService.getRestrictedToCompanyTags();
-    }
-}
-
-@Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class IntegrationSourceResolver implements Resolve<any> {
-    /**
-     * Constructor
-     */
-    constructor(private _integrationService: IntegrationService) {}
+  /**
+   * Constructor
+   */
+  constructor(private _sourceService: SourceService) {}
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------------------
+  // @ Public methods
+  // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Resolver
-     *
-     * @param route
-     * @param state
-     */
-    resolve(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ): Observable<ITag[]> {
-        return this._integrationService.getSourceTags();
-    }
+  /**
+   * Resolver
+   *
+   * @param route
+   * @param state
+   */
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<ApiResponse<SourceListResponse>> {
+    return this._sourceService.getSources();
+  }
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class IntegrationCompanyResolver implements Resolve<any> {
+  /**
+   * Constructor
+   */
+  constructor(private _companyService: CompanyService) {}
+
+  // -----------------------------------------------------------------------------------------------------
+  // @ Public methods
+  // -----------------------------------------------------------------------------------------------------
+
+  /**
+   * Resolver
+   *
+   * @param route
+   * @param state
+   */
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<ApiResponse<CompanyListResponse>> {
+    return this._companyService.getCompanies();
+  }
 }

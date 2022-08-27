@@ -19,32 +19,26 @@ import { SharedModule } from 'app/shared/shared.module';
 import { FuturisticLayoutComponent } from 'app/layout/layouts/vertical/futuristic/futuristic.component';
 
 @NgModule({
-    declarations: [
-        FuturisticLayoutComponent
-    ],
-    imports     : [
-        HttpClientModule,
-        RouterModule,
-        MatButtonModule,
-        MatDividerModule,
-        MatIconModule,
-        MatMenuModule,
-        FuseFullscreenModule,
-        FuseLoadingBarModule,
-        FuseNavigationModule,
-        LanguagesModule,
-        MessagesModule,
-        NotificationsModule,
-        QuickChatModule,
-        SearchModule,
-        ShortcutsModule,
-        UserModule,
-        SharedModule
-    ],
-    exports     : [
-        FuturisticLayoutComponent
-    ]
+  declarations: [FuturisticLayoutComponent],
+  imports: [
+    HttpClientModule,
+    RouterModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule,
+    MatMenuModule,
+    FuseFullscreenModule,
+    FuseLoadingBarModule,
+    FuseNavigationModule,
+    LanguagesModule,
+    MessagesModule,
+    NotificationsModule,
+    QuickChatModule,
+    SearchModule,
+    ShortcutsModule,
+    UserModule,
+    SharedModule,
+  ],
+  exports: [FuturisticLayoutComponent],
 })
-export class FuturisticLayoutModule
-{
-}
+export class FuturisticLayoutModule {}

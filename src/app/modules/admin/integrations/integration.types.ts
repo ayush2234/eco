@@ -1,54 +1,24 @@
-import { ITag } from 'app/layout/common/types/grid.types';
+import { Pageable } from 'app/layout/common/grid/grid.types';
+
+export interface IntegrationListResponse extends Pageable {
+  integrations: Integration[];
+}
 
 export interface Integration {
-    integrationId: string;
-    sourceId: string[];
-    name: string;
-    icon: string;
-    description: string;
-    restrictedToCompanies: string[];
-    isBeta: boolean;
-    isCustom: string;
-    forceTestConnection: boolean;
-    jsonFormSchemaFile: string;
-    dateCreated: string;
-    dateUpdated: string;
-    installedInstances: number;
-}
-
-export interface Company {
-    companyId: string;
-    companyName: string;
-    notes: string;
-    isActive: boolean;
-    status: string;
-    allowBeta: boolean;
-    limits: Limit[];
-}
-
-export interface Limit {
-    users?: Users;
-    sources?: Sources;
-    integrations?: Integrations;
-    skus?: Skus;
-}
-
-export interface Users {
-    limit: number;
-    used: number;
-}
-
-export interface Sources {
-    limit: number;
-    used: number;
-}
-
-export interface Integrations {
-    limit: number;
-    used: number;
-}
-
-export interface Skus {
-    limit: number;
-    used: number;
+  integration_id: string;
+  source_id: string;
+  name: string;
+  icon: string;
+  description: string;
+  is_custom: string;
+  is_beta: string;
+  active_status: string;
+  force_test_connection: string;
+  json_form_schema_file: string;
+  installed_instances: number;
+  created_at: string;
+  created_by: string;
+  updated_at?: string;
+  updated_by?: string;
+  restricted_to_companies: string[];
 }

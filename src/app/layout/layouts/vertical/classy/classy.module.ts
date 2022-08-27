@@ -19,32 +19,26 @@ import { SharedModule } from 'app/shared/shared.module';
 import { ClassyLayoutComponent } from 'app/layout/layouts/vertical/classy/classy.component';
 
 @NgModule({
-    declarations: [
-        ClassyLayoutComponent
-    ],
-    imports     : [
-        HttpClientModule,
-        RouterModule,
-        MatButtonModule,
-        MatDividerModule,
-        MatIconModule,
-        MatMenuModule,
-        FuseFullscreenModule,
-        FuseLoadingBarModule,
-        FuseNavigationModule,
-        LanguagesModule,
-        MessagesModule,
-        NotificationsModule,
-        QuickChatModule,
-        SearchModule,
-        ShortcutsModule,
-        UserModule,
-        SharedModule
-    ],
-    exports     : [
-        ClassyLayoutComponent
-    ]
+  declarations: [ClassyLayoutComponent],
+  imports: [
+    HttpClientModule,
+    RouterModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule,
+    MatMenuModule,
+    FuseFullscreenModule,
+    FuseLoadingBarModule,
+    FuseNavigationModule,
+    LanguagesModule,
+    MessagesModule,
+    NotificationsModule,
+    QuickChatModule,
+    SearchModule,
+    ShortcutsModule,
+    UserModule,
+    SharedModule,
+  ],
+  exports: [ClassyLayoutComponent],
 })
-export class ClassyLayoutModule
-{
-}
+export class ClassyLayoutModule {}
