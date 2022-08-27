@@ -17,26 +17,26 @@ import { AddIntegrationInventoryComponent } from './inventory/inventory.componen
 import { AddIntegrationTrackingComponent } from './tracking/tracking.component';
 
 @NgModule({
-    declarations: [
-        AddIntegrationComponent,
-        AddIntegarationConnectionComponent,
-        AddIntegrationInventoryComponent,
-        AddIntegrationOrdersComponent,
-        AddIntegrationProductsComponent,
-        AddIntegrationTrackingComponent,
-    ],
-    imports: [
-        MatButtonModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatRadioModule,
-        MatSelectModule,
-        MatSidenavModule,
-        MatSlideToggleModule,
-        FuseAlertModule,
-        SharedModule,
-    ],
-    exports: [AddIntegrationComponent],
+  declarations: [
+    AddIntegrationComponent,
+    AddIntegarationConnectionComponent,
+    AddIntegrationInventoryComponent,
+    AddIntegrationOrdersComponent,
+    AddIntegrationProductsComponent,
+    AddIntegrationTrackingComponent,
+  ],
+  imports: [
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatSlideToggleModule,
+    FuseAlertModule,
+    SharedModule,
+  ],
+  exports: [AddIntegrationComponent],
 })
 export class AddIntegrationModule {}

@@ -7,16 +7,12 @@ import { AuthConfirmationRequiredComponent } from 'app/modules/auth/confirmation
 import { authConfirmationRequiredRoutes } from 'app/modules/auth/confirmation-required/confirmation-required.routing';
 
 @NgModule({
-    declarations: [
-        AuthConfirmationRequiredComponent
-    ],
-    imports     : [
-        RouterModule.forChild(authConfirmationRequiredRoutes),
-        MatButtonModule,
-        FuseCardModule,
-        SharedModule
-    ]
+  declarations: [AuthConfirmationRequiredComponent],
+  imports: [
+    RouterModule.forChild(authConfirmationRequiredRoutes),
+    MatButtonModule,
+    FuseCardModule,
+    SharedModule,
+  ],
 })
-export class AuthConfirmationRequiredModule
-{
-}
+export class AuthConfirmationRequiredModule {}

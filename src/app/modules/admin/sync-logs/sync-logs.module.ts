@@ -23,29 +23,29 @@ import { SyncLogsProductsComponent } from './products/products.component';
 import { SyncLogsTrackingComponent } from './tracking/tracking.component';
 
 @NgModule({
-    declarations: [
-        SyncLogsComponent,
-        SyncLogsOrdersComponent,
-        SyncLogsInventoryComponent,
-        SyncLogsProductsComponent,
-        SyncLogsTrackingComponent,
-    ],
-    imports: [
-        SyncLogsRoutingModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatMenuModule,
-        MatPaginatorModule,
-        MatProgressBarModule,
-        MatRippleModule,
-        MatSortModule,
-        MatSelectModule,
-        MatSlideToggleModule,
-        MatTooltipModule,
-        SharedModule,
-    ],
+  declarations: [
+    SyncLogsComponent,
+    SyncLogsOrdersComponent,
+    SyncLogsInventoryComponent,
+    SyncLogsProductsComponent,
+    SyncLogsTrackingComponent,
+  ],
+  imports: [
+    SyncLogsRoutingModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    MatProgressBarModule,
+    MatRippleModule,
+    MatSortModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatTooltipModule,
+    SharedModule,
+  ],
 })
 export class SyncLogsModule {}

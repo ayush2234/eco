@@ -7,43 +7,43 @@ import { SyncLogsResolver } from './sync-logs.resolvers';
 import { SyncLogsTrackingComponent } from './tracking/tracking.component';
 
 const routes: Routes = [
-    {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: 'orders',
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'orders',
+  },
+  {
+    path: 'orders',
+    component: SyncLogsOrdersComponent,
+    resolve: {
+      syncLogs: SyncLogsResolver,
     },
-    {
-        path: 'orders',
-        component: SyncLogsOrdersComponent,
-        resolve: {
-            syncLogs: SyncLogsResolver,
-        },
+  },
+  {
+    path: 'products',
+    component: SyncLogsProductsComponent,
+    resolve: {
+      syncLogs: SyncLogsResolver,
     },
-    {
-        path: 'products',
-        component: SyncLogsProductsComponent,
-        resolve: {
-            syncLogs: SyncLogsResolver,
-        },
+  },
+  {
+    path: 'inventory',
+    component: SyncLogsInventoryComponent,
+    resolve: {
+      syncLogs: SyncLogsResolver,
     },
-    {
-        path: 'inventory',
-        component: SyncLogsInventoryComponent,
-        resolve: {
-            syncLogs: SyncLogsResolver,
-        },
+  },
+  {
+    path: 'tracking',
+    component: SyncLogsTrackingComponent,
+    resolve: {
+      syncLogs: SyncLogsResolver,
     },
-    {
-        path: 'tracking',
-        component: SyncLogsTrackingComponent,
-        resolve: {
-            syncLogs: SyncLogsResolver,
-        },
-    },
+  },
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule],
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
 export class SyncLogsRoutingModule {}

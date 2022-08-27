@@ -8,21 +8,15 @@ import { SettingsComponent } from 'app/layout/common/settings/settings.component
 import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
-    declarations: [
-        SettingsComponent
-    ],
-    imports     : [
-        CommonModule,
-        RouterModule,
-        MatIconModule,
-        MatTooltipModule,
-        FuseDrawerModule,
-        MatButtonModule
-    ],
-    exports     : [
-        SettingsComponent
-    ]
+  declarations: [SettingsComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatIconModule,
+    MatTooltipModule,
+    FuseDrawerModule,
+    MatButtonModule,
+  ],
+  exports: [SettingsComponent],
 })
-export class SettingsModule
-{
-}
+export class SettingsModule {}

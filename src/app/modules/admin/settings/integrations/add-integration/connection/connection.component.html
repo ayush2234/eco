@@ -1,132 +1,118 @@
 <div class="w-full max-w-3xl">
-    <!-- Form -->
-    <form [formGroup]="connectionForm">
-        <!-- Section -->
-        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
-            <!-- Name -->
-            <div class="sm:col-span-4">
-                <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <mat-label>Integration name</mat-label>
-                    <input [formControlName]="'name'" matInput />
-                </mat-form-field>
-            </div>
-            <!-- Username -->
-            <div class="sm:col-span-4">
-                <mat-form-field
-                    class="fuse-mat-no-subscript fuse-mat-emphasized-affix w-full"
-                >
-                    <mat-label>Store URL</mat-label>
-                    <div class="text-secondary" matPrefix>https://</div>
-                    <input [formControlName]="'neatStoreURL'" matInput />
-                </mat-form-field>
-            </div>
-            <!-- Title -->
-            <div class="sm:col-span-2">
-                <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <mat-label>Username</mat-label>
-                    <input [formControlName]="'username'" matInput />
-                </mat-form-field>
-            </div>
-            <!-- Company -->
-            <div class="sm:col-span-2">
-                <mat-form-field class="fuse-mat-no-subscript w-full">
-                    <mat-label>API key</mat-label>
-                    <input [formControlName]="'apiKey'" matInput />
-                </mat-form-field>
-            </div>
+  <!-- Form -->
+  <form [formGroup]="connectionForm">
+    <!-- Section -->
+    <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+      <!-- Name -->
+      <div class="sm:col-span-4">
+        <mat-form-field class="fuse-mat-no-subscript w-full">
+          <mat-label>Integration name</mat-label>
+          <input [formControlName]="'name'" matInput />
+        </mat-form-field>
+      </div>
+      <!-- Username -->
+      <div class="sm:col-span-4">
+        <mat-form-field
+          class="fuse-mat-no-subscript fuse-mat-emphasized-affix w-full">
+          <mat-label>Store URL</mat-label>
+          <div class="text-secondary" matPrefix>https://</div>
+          <input [formControlName]="'neatStoreURL'" matInput />
+        </mat-form-field>
+      </div>
+      <!-- Title -->
+      <div class="sm:col-span-2">
+        <mat-form-field class="fuse-mat-no-subscript w-full">
+          <mat-label>Username</mat-label>
+          <input [formControlName]="'username'" matInput />
+        </mat-form-field>
+      </div>
+      <!-- Company -->
+      <div class="sm:col-span-2">
+        <mat-form-field class="fuse-mat-no-subscript w-full">
+          <mat-label>API key</mat-label>
+          <input [formControlName]="'apiKey'" matInput />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="text-secondary mt-8">
+      For more information on API credentials for Maropost, please see the
+      following URL:
+    </div>
+
+    <!-- Divider -->
+    <div class="my-10 border-t"></div>
+
+    <!-- Section -->
+    <div class="w-full text-xl">Sync Options</div>
+    <div class="grid grid-cols-1 gap-4 w-full mt-4">
+      <!-- Comments -->
+      <div class="flex items-center justify-between">
+        <div
+          class="flex-auto leading-6 cursor-pointer"
+          (click)="products.toggle()">
+          Products
         </div>
-
-        <div class="text-secondary mt-8">
-            For more information on API credentials for Maropost, please see the
-            following URL:
+        <mat-slide-toggle
+          class="ml-2"
+          [color]="'primary'"
+          [formControlName]="'syncProducts'"
+          #products>
+        </mat-slide-toggle>
+      </div>
+      <!-- Mention -->
+      <div class="flex items-center justify-between">
+        <div
+          class="flex-auto leading-6 cursor-pointer"
+          (click)="inventory.toggle()">
+          Inventory
         </div>
-
-        <!-- Divider -->
-        <div class="my-10 border-t"></div>
-
-        <!-- Section -->
-        <div class="w-full text-xl">Sync Options</div>
-        <div class="grid grid-cols-1 gap-4 w-full mt-4">
-            <!-- Comments -->
-            <div class="flex items-center justify-between">
-                <div
-                    class="flex-auto leading-6 cursor-pointer"
-                    (click)="products.toggle()"
-                >
-                    Products
-                </div>
-                <mat-slide-toggle
-                    class="ml-2"
-                    [color]="'primary'"
-                    [formControlName]="'syncProducts'"
-                    #products
-                >
-                </mat-slide-toggle>
-            </div>
-            <!-- Mention -->
-            <div class="flex items-center justify-between">
-                <div
-                    class="flex-auto leading-6 cursor-pointer"
-                    (click)="inventory.toggle()"
-                >
-                    Inventory
-                </div>
-                <mat-slide-toggle
-                    class="ml-2"
-                    [color]="'primary'"
-                    [formControlName]="'syncInventory'"
-                    #inventory
-                >
-                </mat-slide-toggle>
-            </div>
-            <!-- Follow -->
-            <div class="flex items-center justify-between">
-                <div
-                    class="flex-auto leading-6 cursor-pointer"
-                    (click)="orders.toggle()"
-                >
-                    Orders
-                </div>
-                <mat-slide-toggle
-                    class="ml-2"
-                    [color]="'primary'"
-                    [formControlName]="'syncOrders'"
-                    #orders
-                >
-                </mat-slide-toggle>
-            </div>
-            <!-- Inquiry -->
-            <div class="flex items-center justify-between">
-                <div
-                    class="flex-auto leading-6 cursor-pointer"
-                    (click)="tracking.toggle()"
-                >
-                    Tracking
-                </div>
-                <mat-slide-toggle
-                    class="ml-2"
-                    [color]="'primary'"
-                    [formControlName]="'syncTracking'"
-                    #tracking
-                >
-                </mat-slide-toggle>
-            </div>
+        <mat-slide-toggle
+          class="ml-2"
+          [color]="'primary'"
+          [formControlName]="'syncInventory'"
+          #inventory>
+        </mat-slide-toggle>
+      </div>
+      <!-- Follow -->
+      <div class="flex items-center justify-between">
+        <div
+          class="flex-auto leading-6 cursor-pointer"
+          (click)="orders.toggle()">
+          Orders
         </div>
-
-        <!-- Divider -->
-        <div class="mt-11 mb-10 border-t"></div>
-
-        <!-- Actions -->
-        <div class="flex items-center justify-end">
-            <button mat-stroked-button type="button">Cancel</button>
-            <button
-                class="ml-4"
-                mat-flat-button
-                type="button"
-                [color]="'primary'"
-            >
-                Save
-            </button>
+        <mat-slide-toggle
+          class="ml-2"
+          [color]="'primary'"
+          [formControlName]="'syncOrders'"
+          #orders>
+        </mat-slide-toggle>
+      </div>
+      <!-- Inquiry -->
+      <div class="flex items-center justify-between">
+        <div
+          class="flex-auto leading-6 cursor-pointer"
+          (click)="tracking.toggle()">
+          Tracking
         </div>
-    </form>
+        <mat-slide-toggle
+          class="ml-2"
+          [color]="'primary'"
+          [formControlName]="'syncTracking'"
+          #tracking>
+        </mat-slide-toggle>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="mt-11 mb-10 border-t"></div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end">
+      <button mat-stroked-button type="button">Cancel</button>
+      <button class="ml-4" mat-flat-button type="button" [color]="'primary'">
+        Save
+      </button>
+    </div>
+  </form>
 </div>

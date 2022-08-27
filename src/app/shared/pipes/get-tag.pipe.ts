@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ITag } from 'app/layout/common/types/grid.types';
+import { Tag } from 'app/layout/common/grid/grid.types';
 import { SyncOption } from 'app/modules/admin/settings/integrations/integrations.types';
 
 @Pipe({
-    name: 'getTag',
+  name: 'getTag',
 })
 export class GetTagPipe implements PipeTransform {
-    transform(id: string, tags: ITag[]): ITag {
-        return tags?.find((tag) => tag.id === id);
-    }
+  transform(id: string, tags: Tag[]): Tag {
+    return tags?.find(tag => tag.id === id);
+  }
 }

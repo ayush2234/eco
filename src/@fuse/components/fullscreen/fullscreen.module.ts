@@ -6,19 +6,8 @@ import { FuseFullscreenComponent } from '@fuse/components/fullscreen/fullscreen.
 import { CommonModule } from '@angular/common';
 
 @NgModule({
-    declarations: [
-        FuseFullscreenComponent
-    ],
-    imports     : [
-        MatButtonModule,
-        MatIconModule,
-        MatTooltipModule,
-        CommonModule
-    ],
-    exports     : [
-        FuseFullscreenComponent
-    ]
+  declarations: [FuseFullscreenComponent],
+  imports: [MatButtonModule, MatIconModule, MatTooltipModule, CommonModule],
+  exports: [FuseFullscreenComponent],
 })
-export class FuseFullscreenModule
-{
-}
+export class FuseFullscreenModule {}

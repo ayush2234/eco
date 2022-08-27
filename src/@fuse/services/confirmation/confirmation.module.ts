@@ -7,25 +7,13 @@ import { FuseConfirmationDialogComponent } from '@fuse/services/confirmation/dia
 import { CommonModule } from '@angular/common';
 
 @NgModule({
-    declarations: [
-        FuseConfirmationDialogComponent
-    ],
-    imports     : [
-        MatButtonModule,
-        MatDialogModule,
-        MatIconModule,
-        CommonModule
-    ],
-    providers   : [
-        FuseConfirmationService
-    ]
+  declarations: [FuseConfirmationDialogComponent],
+  imports: [MatButtonModule, MatDialogModule, MatIconModule, CommonModule],
+  providers: [FuseConfirmationService],
 })
-export class FuseConfirmationModule
-{
-    /**
-     * Constructor
-     */
-    constructor(private _fuseConfirmationService: FuseConfirmationService)
-    {
-    }
+export class FuseConfirmationModule {
+  /**
+   * Constructor
+   */
+  constructor(private _fuseConfirmationService: FuseConfirmationService) {}
 }

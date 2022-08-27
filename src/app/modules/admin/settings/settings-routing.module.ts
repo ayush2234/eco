@@ -9,46 +9,46 @@ import { SettingAccountResolver } from './account/account.resolver';
 import { SettingsAccountComponent } from './account/account.component';
 
 const routes: Route[] = [
-    {
+  {
+    path: '',
+    component: SettingsComponent,
+    children: [
+      {
         path: '',
-        component: SettingsComponent,
-        children: [
-            {
-                path: '',
-                pathMatch: 'full',
-                redirectTo: 'integrations',
-            },
-            {
-                path: 'integrations',
-                component: AllIntegrationsComponent,
-                resolve: {
-                    integrations: ConnectionsResolver,
-                },
-            },
-            {
-                path: 'source-channel',
-                component: SourceChannelComponent,
-                resolve: {
-                    erps: ConnectionsResolver,
-                },
-            },
-            {
-                path: 'users',
-                component: SettingsUsersComponent,
-            },
-            {
-                path: 'account',
-                component: SettingsAccountComponent,
-                resolve: {
-                    user: SettingAccountResolver,
-                },
-            },
-        ],
-    },
+        pathMatch: 'full',
+        redirectTo: 'integrations',
+      },
+      {
+        path: 'integrations',
+        component: AllIntegrationsComponent,
+        resolve: {
+          integrations: ConnectionsResolver,
+        },
+      },
+      {
+        path: 'source-channel',
+        component: SourceChannelComponent,
+        resolve: {
+          erps: ConnectionsResolver,
+        },
+      },
+      {
+        path: 'users',
+        component: SettingsUsersComponent,
+      },
+      {
+        path: 'account',
+        component: SettingsAccountComponent,
+        resolve: {
+          user: SettingAccountResolver,
+        },
+      },
+    ],
+  },
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule],
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
 export class SettingssRoutingModule {}

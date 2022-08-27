@@ -12,21 +12,17 @@ import { AuthResetPasswordComponent } from 'app/modules/auth/reset-password/rese
 import { authResetPasswordRoutes } from 'app/modules/auth/reset-password/reset-password.routing';
 
 @NgModule({
-    declarations: [
-        AuthResetPasswordComponent
-    ],
-    imports     : [
-        RouterModule.forChild(authResetPasswordRoutes),
-        MatButtonModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        FuseCardModule,
-        FuseAlertModule,
-        SharedModule
-    ]
+  declarations: [AuthResetPasswordComponent],
+  imports: [
+    RouterModule.forChild(authResetPasswordRoutes),
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    FuseCardModule,
+    FuseAlertModule,
+    SharedModule,
+  ],
 })
-export class AuthResetPasswordModule
-{
-}
+export class AuthResetPasswordModule {}

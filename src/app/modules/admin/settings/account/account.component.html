@@ -1,154 +1,140 @@
 <div class="flex flex-col flex-auto w-full">
-    <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
-        <div class="flex items-center justify-between w-full">
-            <div>
-                <div class="text-3xl font-semibold tracking-tight leading-8">
-                    Account
-                </div>
-            </div>
+  <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
+    <div class="flex items-center justify-between w-full">
+      <div>
+        <div class="text-3xl font-semibold tracking-tight leading-8">
+          Account
         </div>
-        <div class="w-full max-w-3xl">
-            <form [formGroup]="accountForm">
-                <div class="w-full">
-                    <div class="text-xl mt-11">Profile</div>
-                </div>
-                <div class="grid grid-cols-4 gap-6 w-full mt-8">
-                    <div class="sm:col-span-4">
-                        <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Name</mat-label>
-                            <mat-icon
-                                class="icon-size-5"
-                                [svgIcon]="'heroicons_solid:user'"
-                                matPrefix
-                            ></mat-icon>
-                            <input [formControlName]="'name'" matInput />
-                        </mat-form-field>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Email</mat-label>
-                            <mat-icon
-                                class="icon-size-5"
-                                [svgIcon]="'heroicons_solid:mail'"
-                                matPrefix
-                            ></mat-icon>
-                            <input [formControlName]="'email'" matInput />
-                        </mat-form-field>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <mat-form-field class="fuse-mat-no-subscript w-full">
-                            <mat-label>Phone</mat-label>
-                            <mat-icon
-                                class="icon-size-5"
-                                [svgIcon]="'heroicons_solid:phone'"
-                                matPrefix
-                            ></mat-icon>
-                            <input [formControlName]="'phone'" matInput />
-                        </mat-form-field>
-                    </div>
-                </div>
-
-                <div class="w-full">
-                    <div class="text-xl mt-11">Change your password</div>
-                    <div class="mt-2 text-base leading-none text-secondary">
-                        You can only change your password twice within 24 hours
-                    </div>
-                </div>
-                <div class="grid grid-cols-4 gap-6 w-full mt-8">
-                    <div class="sm:col-span-4">
-                        <mat-form-field
-                            class="fuse-mat-no-subscript fuse-mat-emphasized-affix w-full"
-                        >
-                            <mat-label>Password</mat-label>
-                            <input
-                                id="password"
-                                matInput
-                                type="password"
-                                [formControlName]="'password'"
-                                #passwordField
-                            />
-                            <button
-                                mat-icon-button
-                                type="button"
-                                (click)="
-                                    passwordField.type === 'password'
-                                        ? (passwordField.type = 'text')
-                                        : (passwordField.type = 'password')
-                                "
-                                matSuffix
-                            >
-                                <mat-icon
-                                    class="icon-size-5"
-                                    *ngIf="passwordField.type === 'password'"
-                                    [svgIcon]="'heroicons_solid:eye'"
-                                ></mat-icon>
-                                <mat-icon
-                                    class="icon-size-5"
-                                    *ngIf="passwordField.type === 'text'"
-                                    [svgIcon]="'heroicons_solid:eye-off'"
-                                ></mat-icon>
-                            </button>
-                            <mat-error> Password is required </mat-error>
-                        </mat-form-field>
-                    </div>
-
-                    <div class="sm:col-span-4">
-                        <mat-form-field
-                            class="fuse-mat-no-subscript fuse-mat-emphasized-affix w-full"
-                        >
-                            <mat-label>New Password</mat-label>
-                            <input
-                                id="newPassword"
-                                matInput
-                                type="password"
-                                [formControlName]="'newPassword'"
-                                #passwordField
-                            />
-                            <button
-                                mat-icon-button
-                                type="button"
-                                (click)="
-                                    passwordField.type === 'password'
-                                        ? (passwordField.type = 'text')
-                                        : (passwordField.type = 'password')
-                                "
-                                matSuffix
-                            >
-                                <mat-icon
-                                    class="icon-size-5"
-                                    *ngIf="passwordField.type === 'password'"
-                                    [svgIcon]="'heroicons_solid:eye'"
-                                ></mat-icon>
-                                <mat-icon
-                                    class="icon-size-5"
-                                    *ngIf="passwordField.type === 'text'"
-                                    [svgIcon]="'heroicons_solid:eye-off'"
-                                ></mat-icon>
-                            </button>
-                            <mat-error> Password is required </mat-error>
-                        </mat-form-field>
-                        <div class="mt-2 text-sm leading-none text-secondary">
-                            Minimum 8 characters. Must include numbers, letters
-                            and special characters.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Divider -->
-                <div class="mt-11 mb-10 border-t"></div>
-
-                <!-- Actions -->
-                <div class="flex items-center justify-end">
-                    <button
-                        class="ml-4"
-                        mat-flat-button
-                        type="button"
-                        [color]="'primary'"
-                    >
-                        Save
-                    </button>
-                </div>
-            </form>
-        </div>
+      </div>
     </div>
+    <div class="w-full max-w-3xl">
+      <form [formGroup]="accountForm">
+        <div class="w-full">
+          <div class="text-xl mt-11">Profile</div>
+        </div>
+        <div class="grid grid-cols-4 gap-6 w-full mt-8">
+          <div class="sm:col-span-4">
+            <mat-form-field class="fuse-mat-no-subscript w-full">
+              <mat-label>Name</mat-label>
+              <mat-icon
+                class="icon-size-5"
+                [svgIcon]="'heroicons_solid:user'"
+                matPrefix></mat-icon>
+              <input [formControlName]="'name'" matInput />
+            </mat-form-field>
+          </div>
+          <div class="sm:col-span-2">
+            <mat-form-field class="fuse-mat-no-subscript w-full">
+              <mat-label>Email</mat-label>
+              <mat-icon
+                class="icon-size-5"
+                [svgIcon]="'heroicons_solid:mail'"
+                matPrefix></mat-icon>
+              <input [formControlName]="'email'" matInput />
+            </mat-form-field>
+          </div>
+          <div class="sm:col-span-2">
+            <mat-form-field class="fuse-mat-no-subscript w-full">
+              <mat-label>Phone</mat-label>
+              <mat-icon
+                class="icon-size-5"
+                [svgIcon]="'heroicons_solid:phone'"
+                matPrefix></mat-icon>
+              <input [formControlName]="'phone'" matInput />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="w-full">
+          <div class="text-xl mt-11">Change your password</div>
+          <div class="mt-2 text-base leading-none text-secondary">
+            You can only change your password twice within 24 hours
+          </div>
+        </div>
+        <div class="grid grid-cols-4 gap-6 w-full mt-8">
+          <div class="sm:col-span-4">
+            <mat-form-field
+              class="fuse-mat-no-subscript fuse-mat-emphasized-affix w-full">
+              <mat-label>Password</mat-label>
+              <input
+                id="password"
+                matInput
+                type="password"
+                [formControlName]="'password'"
+                #passwordField />
+              <button
+                mat-icon-button
+                type="button"
+                (click)="
+                  passwordField.type === 'password'
+                    ? (passwordField.type = 'text')
+                    : (passwordField.type = 'password')
+                "
+                matSuffix>
+                <mat-icon
+                  class="icon-size-5"
+                  *ngIf="passwordField.type === 'password'"
+                  [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                <mat-icon
+                  class="icon-size-5"
+                  *ngIf="passwordField.type === 'text'"
+                  [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
+              </button>
+              <mat-error> Password is required </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="sm:col-span-4">
+            <mat-form-field
+              class="fuse-mat-no-subscript fuse-mat-emphasized-affix w-full">
+              <mat-label>New Password</mat-label>
+              <input
+                id="newPassword"
+                matInput
+                type="password"
+                [formControlName]="'newPassword'"
+                #passwordField />
+              <button
+                mat-icon-button
+                type="button"
+                (click)="
+                  passwordField.type === 'password'
+                    ? (passwordField.type = 'text')
+                    : (passwordField.type = 'password')
+                "
+                matSuffix>
+                <mat-icon
+                  class="icon-size-5"
+                  *ngIf="passwordField.type === 'password'"
+                  [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                <mat-icon
+                  class="icon-size-5"
+                  *ngIf="passwordField.type === 'text'"
+                  [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
+              </button>
+              <mat-error> Password is required </mat-error>
+            </mat-form-field>
+            <div class="mt-2 text-sm leading-none text-secondary">
+              Minimum 8 characters. Must include numbers, letters and special
+              characters.
+            </div>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="mt-11 mb-10 border-t"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end">
+          <button
+            class="ml-4"
+            mat-flat-button
+            type="button"
+            [color]="'primary'">
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
