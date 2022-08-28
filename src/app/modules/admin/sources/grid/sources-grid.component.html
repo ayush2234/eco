@@ -330,3 +330,7 @@
     </div>
   </div>
 </div>
+
+<ng-container *ngIf="openAddSource">
+  <eco-admin-add-source (cancel)="cancelCreateSource()"></eco-admin-add-source
+></ng-container>

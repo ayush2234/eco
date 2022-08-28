@@ -68,11 +68,11 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   flashMessage: 'success' | 'error' | null = null;
   isLoading: boolean = false;
+  openAddSource: boolean = false;
   pagination: Pagination;
   searchInputControl: UntypedFormControl = new UntypedFormControl();
   selectedSource: Source | null = null;
   selectedSourceForm: UntypedFormGroup;
-  sourceTags: Tag[];
   restrictedToCompanyTags: Tag[];
   filteredRestrictedToCompanyTags: Tag[];
   private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -340,7 +340,7 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Update the selected source form
     this.selectedSourceForm
-      .get('restrictedToCompanies')
+      .get('restricted_to_companies')
       .patchValue(this.selectedSource.restricted_to_companies);
 
     // Mark for check
@@ -348,7 +348,7 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Toggle source tag
+   * Toggle tag
    *
    * @param tag
    * @param change
@@ -362,48 +362,19 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Should the create tag button be visible
-   *
-   * @param inputValue
-   */
-  shouldShowCreateIntegrationTagButton(inputValue: string): boolean {
-    return !!!(
-      inputValue === '' ||
-      this.sourceTags.findIndex(
-        tag => tag.title.toLowerCase() === inputValue.toLowerCase()
-      ) > -1
-    );
-  }
-
-  /**
-   * Should the create tag button be visible
-   *
-   * @param inputValue
-   */
-  shouldShowCreateRestrictedToCompanyTagButton(inputValue: string): boolean {
-    return !!!(
-      inputValue === '' ||
-      this.restrictedToCompanyTags.findIndex(
-        tag => tag.title.toLowerCase() === inputValue.toLowerCase()
-      ) > -1
-    );
-  }
-
-  /**
    * Create source
    */
   createSource(): void {
-    // Create the source
-    this._sourceService.createSource().subscribe(newsource => {
-      // Go to new source
-      this.selectedSource = newsource;
+    this.openAddSource = true;
+    this._changeDetectorRef.detectChanges();
+  }
 
-      // Fill the form
-      this.selectedSourceForm.patchValue(newsource);
-
-      // Mark for check
-      this._changeDetectorRef.markForCheck();
-    });
+  /**
+   * Cancel create source
+   */
+  cancelCreateSource(): void {
+    this.openAddSource = false;
+    this._changeDetectorRef.detectChanges();
   }
 
   /**
@@ -412,9 +383,6 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
   updateSelectedSource(): void {
     // Get the source object
     const source = this.selectedSourceForm.getRawValue();
-
-    // Remove the currentImageIndex field
-    delete source.currentImageIndex;
 
     // Update the source on the server
     this._sourceService.updateSource(source.source_id, source).subscribe(() => {
