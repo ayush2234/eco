@@ -1,85 +1,45 @@
+import { CdkPortal } from '@angular/cdk/portal';
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   OnDestroy,
   OnInit,
+  Output,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import {
-  debounceTime,
-  map,
-  merge,
-  Observable,
-  Subject,
-  switchMap,
-  takeUntil,
-} from 'rxjs';
-import { fuseAnimations } from '@fuse/animations';
+import { FuseDrawerComponent } from '@fuse/components/drawer';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
-import { Integration } from '../integration.types';
-import { IntegrationService } from '../integration.service';
-import { SourceService } from '../../sources/source.service';
+import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
+import { Tag } from 'app/layout/common/grid/grid.types';
+import { map, Subject, takeUntil } from 'rxjs';
 import { CompanyService } from '../../companies/company.service';
-
+import { SourceService } from '../../sources/source.service';
+import { IntegrationService } from '../integration.service';
+import { Integration } from '../integration.types';
 @Component({
-  selector: 'eco-integrations-grid',
-  templateUrl: './integrations-grid.component.html',
-  styles: [
-    /* language=SCSS */
-    `
-      .integrations-grid {
-        grid-template-columns: repeat(3, 1fr);
-
-        @screen sm {
-          grid-template-columns: repeat(3, 1fr) 72px;
-        }
-
-        @screen md {
-          grid-template-columns: repeat(5, 1fr) 72px;
-        }
-
-        @screen lg {
-          grid-template-columns: repeat(2, 2fr) 1fr 2fr repeat(3, 1fr) 72px;
-        }
-      }
-    `,
-  ],
+  selector: 'eco-admin-add-integration',
+  templateUrl: './add-integration.component.html',
+  styleUrls: ['./add-integration.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: fuseAnimations,
 })
-export class IntegrationsGridComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
-  @ViewChild(MatPaginator) private _paginator: MatPaginator;
-  @ViewChild(MatSort) private _sort: MatSort;
-
-  integrations$: Observable<Integration[]>;
-
-  flashMessage: 'success' | 'error' | null = null;
-  isLoading: boolean = false;
-  openAddIntegration: boolean = false;
-  pagination: Pagination;
-  searchInputControl: UntypedFormControl = new UntypedFormControl();
+export class AddIntegrationComponent implements OnInit, OnDestroy {
+  @ViewChild(CdkPortal, { static: true })
+  portalContent: CdkPortal;
+  @Output() cancel = new EventEmitter();
+  fuseDrawerOpened: boolean = true;
   selectedIntegration: Integration | null = null;
   selectedIntegrationForm: UntypedFormGroup;
   sourceTags: Tag[];
   filteredSourceTags: Tag[];
   restrictedToCompanyTags: Tag[];
   filteredRestrictedToCompanyTags: Tag[];
+
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
@@ -87,7 +47,7 @@ export class IntegrationsGridComponent
    */
   constructor(
     private _changeDetectorRef: ChangeDetectorRef,
-    private _fuseConfirmationService: FuseConfirmationService,
+    private _portalBridge: PortalBridgeService,
     private _formBuilder: UntypedFormBuilder,
     private _integrationService: IntegrationService,
     private _sourceService: SourceService,
@@ -98,10 +58,8 @@ export class IntegrationsGridComponent
   // @ Lifecycle hooks
   // -----------------------------------------------------------------------------------------------------
 
-  /**
-   * On init
-   */
   ngOnInit(): void {
+    this._portalBridge.setPortal(this.portalContent);
     // Create the selected integration form
     this.selectedIntegrationForm = this._formBuilder.group({
       integration_id: [''],
@@ -120,20 +78,8 @@ export class IntegrationsGridComponent
       installed_instances: [''],
     });
 
-    // Get the pagination
-    this._integrationService.pagination$
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((pagination: Pagination) => {
-        // Update the pagination
-        this.pagination = pagination;
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-      });
-
-    // Get the integrations
-    this.integrations$ = this._integrationService.integrations$;
-
+    // Set default value for integration
+    this.selectedIntegration = this.selectedIntegrationForm.getRawValue();
     // Get the sources
     this._sourceService.sources$
       .pipe(
@@ -171,75 +117,6 @@ export class IntegrationsGridComponent
         // Mark for check
         this._changeDetectorRef.markForCheck();
       });
-
-    // Subscribe to search input field value changes
-    this.searchInputControl.valueChanges
-      .pipe(
-        takeUntil(this._unsubscribeAll),
-        debounceTime(300),
-        switchMap(query => {
-          this.closeDetails();
-          this.isLoading = true;
-          return this._integrationService.getIntegrations(
-            0,
-            10,
-            'name',
-            'asc',
-            query
-          );
-        }),
-        map(() => {
-          this.isLoading = false;
-        })
-      )
-      .subscribe();
-  }
-
-  /**
-   * After view init
-   */
-  ngAfterViewInit(): void {
-    if (this._sort && this._paginator) {
-      // Set the initial sort
-      this._sort.sort({
-        id: 'name',
-        start: 'asc',
-        disableClear: true,
-      });
-
-      // Mark for check
-      this._changeDetectorRef.markForCheck();
-
-      // If the integration changes the sort order...
-      this._sort.sortChange
-        .pipe(takeUntil(this._unsubscribeAll))
-        .subscribe(() => {
-          // Reset back to the first page
-          this._paginator.pageIndex = 0;
-
-          // Close the details
-          this.closeDetails();
-        });
-
-      // Get integrations if sort or page changes
-      merge(this._sort.sortChange, this._paginator.page)
-        .pipe(
-          switchMap(() => {
-            this.closeDetails();
-            this.isLoading = true;
-            return this._integrationService.getIntegrations(
-              this._paginator.pageIndex,
-              this._paginator.pageSize,
-              this._sort.active,
-              this._sort.direction
-            );
-          }),
-          map(() => {
-            this.isLoading = false;
-          })
-        )
-        .subscribe();
-    }
   }
 
   /**
@@ -249,6 +126,7 @@ export class IntegrationsGridComponent
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
+    this.portalContent.detach();
   }
 
   // -----------------------------------------------------------------------------------------------------
@@ -256,41 +134,20 @@ export class IntegrationsGridComponent
   // -----------------------------------------------------------------------------------------------------
 
   /**
-   * Toggle integration details
-   *
-   * @param integrationId
+   * Update the selected integration using the form data
    */
-  toggleDetails(integrationId: string): void {
-    // If the integration is already selected...
-    if (
-      this.selectedIntegration &&
-      this.selectedIntegration.integration_id === integrationId
-    ) {
-      // Close the details
-      this.closeDetails();
-      return;
-    }
+  createIntegration(): void {
+    // Get the integration object
+    const integration = this.selectedIntegrationForm.getRawValue();
 
-    // Get the integration by id
-    this._integrationService
-      .getIntegrationById(integrationId)
-      .subscribe(integration => {
-        // Set the selected integration
-        this.selectedIntegration = integration;
+    // Remove the currentImageIndex field
+    delete integration.currentImageIndex;
 
-        // Fill the form
-        this.selectedIntegrationForm.patchValue(integration);
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-      });
-  }
-
-  /**
-   * Close the details
-   */
-  closeDetails(): void {
-    this.selectedIntegration = null;
+    // Update the integration on the server
+    this._integrationService.createIntegration(integration).subscribe(() => {
+      // Show a success message
+      this.fuseDrawerOpened = false;
+    });
   }
 
   /**
@@ -499,88 +356,19 @@ export class IntegrationsGridComponent
   }
 
   /**
-   * Create source
+   * FuseDrawer openedChanged
+   *
    */
-  createIntegration(): void {
-    this.openAddIntegration = true;
-    this._changeDetectorRef.detectChanges();
+  openedChanged(fuseDrawer): any {
+    !fuseDrawer?.opened && this.cancel.emit();
   }
 
   /**
-   * Cancel create source
+   * Cancel create integration
+   *
    */
-  cancelCreateIntegration(): void {
-    this.openAddIntegration = false;
-    this._changeDetectorRef.detectChanges();
-  }
-
-  /**
-   * Update the selected integration using the form data
-   */
-  updateSelectedIntegration(): void {
-    // Get the integration object
-    const integration = this.selectedIntegrationForm.getRawValue();
-
-    // Update the integration on the server
-    this._integrationService
-      .updateIntegration(integration.integration_id, integration)
-      .subscribe(() => {
-        // Show a success message
-        this.showFlashMessage('success');
-      });
-  }
-
-  /**
-   * Delete the selected integration using the form data
-   */
-  deleteSelectedIntegration(): void {
-    // Open the confirmation dialog
-    const confirmation = this._fuseConfirmationService.open({
-      title: 'Delete integration',
-      message:
-        'Are you sure you want to remove this integration? This action cannot be undone!',
-      actions: {
-        confirm: {
-          label: 'Delete',
-        },
-      },
-    });
-
-    // Subscribe to the confirmation dialog closed action
-    confirmation.afterClosed().subscribe(result => {
-      // If the confirm button pressed...
-      if (result === 'confirmed') {
-        // Get the integration object
-        const integration = this.selectedIntegrationForm.getRawValue();
-
-        // Delete the integration on the server
-        this._integrationService
-          .deleteIntegration(integration.integration_id)
-          .subscribe(() => {
-            // Close the details
-            this.closeDetails();
-          });
-      }
-    });
-  }
-
-  /**
-   * Show flash message
-   */
-  showFlashMessage(type: 'success' | 'error'): void {
-    // Show the message
-    this.flashMessage = type;
-
-    // Mark for check
-    this._changeDetectorRef.markForCheck();
-
-    // Hide it after 3 seconds
-    setTimeout(() => {
-      this.flashMessage = null;
-
-      // Mark for check
-      this._changeDetectorRef.markForCheck();
-    }, 3000);
+  onCancel(): any {
+    this.fuseDrawerOpened = false;
   }
 
   /**

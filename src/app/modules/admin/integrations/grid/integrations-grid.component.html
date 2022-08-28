@@ -393,3 +393,8 @@
     </div>
   </div>
 </div>
+
+<ng-container *ngIf="openAddIntegration">
+  <eco-admin-add-integration
+    (cancel)="cancelCreateIntegration()"></eco-admin-add-integration
+></ng-container>

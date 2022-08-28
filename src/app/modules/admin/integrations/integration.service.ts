@@ -159,19 +159,26 @@ export class IntegrationService {
   /**
    * Create integration
    */
-  createIntegration(): Observable<Integration> {
+  createIntegration(integration: Integration): Observable<Integration> {
+    const api = this._config?.apiConfig?.baseUrl;
     return this.integrations$.pipe(
       take(1),
       switchMap(integrations =>
-        this._httpClient.post<Integration>('api/integrations', {}).pipe(
-          map(newIntegration => {
-            // Update the integrations with the new integration
-            this._integrations.next([newIntegration, ...integrations]);
+        this._httpClient
+          .post<ApiResponse<Integration>>(
+            `${api}/admin/integration`,
+            integration
+          )
+          .pipe(
+            map(response => {
+              const { data: newIntegration } = response;
+              // Update the integrations with the new integration
+              this._integrations.next([newIntegration, ...integrations]);
 
-            // Return the new integration
-            return newIntegration;
-          })
-        )
+              // Return the new integration
+              return newIntegration;
+            })
+          )
       )
     );
   }
