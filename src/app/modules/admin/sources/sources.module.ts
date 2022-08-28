@@ -16,9 +16,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from 'app/shared/shared.module';
+import { AddSourceComponent } from './add-source/add-source.component';
 
 @NgModule({
-  declarations: [SourcesGridComponent],
+  declarations: [SourcesGridComponent, AddSourceComponent],
   imports: [
     SourcesRoutingModule,
     MatButtonModule,

@@ -153,20 +153,23 @@ export class SourceService {
   /**
    * Create source
    */
-  createSource(): Observable<Source> {
+  createSource(source: Source): Observable<Source> {
     const api = this._config?.apiConfig?.baseUrl;
     return this.sources$.pipe(
       take(1),
       switchMap(sources =>
-        this._httpClient.post<Source>('api/sources', {}).pipe(
-          map(newSource => {
-            // Update the sources with the new source
-            this._sources.next([newSource, ...sources]);
+        this._httpClient
+          .post<ApiResponse<Source>>(`${api}/admin/source`, source)
+          .pipe(
+            map(response => {
+              const { data: newSource } = response;
+              // Update the sources with the new source
+              this._sources.next([newSource, ...sources]);
 
-            // Return the new source
-            return newSource;
-          })
-        )
+              // Return the new source
+              return newSource;
+            })
+          )
       )
     );
   }
