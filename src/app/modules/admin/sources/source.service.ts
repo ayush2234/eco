@@ -127,7 +127,6 @@ export class SourceService {
    * Get source by id
    */
   getSourceById(id: string): Observable<Source> {
-    const api = this._config?.apiConfig?.baseUrl;
     return this._sources.pipe(
       take(1),
       map(sources => {

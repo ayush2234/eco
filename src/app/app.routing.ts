@@ -132,7 +132,7 @@ export const appRoutes: Route[] = [
         path: 'companies',
         loadChildren: () =>
           import('app/modules/admin/companies/companies.module').then(
-            m => m.TenantsModule
+            m => m.CompaniesModule
           ),
       },
       {

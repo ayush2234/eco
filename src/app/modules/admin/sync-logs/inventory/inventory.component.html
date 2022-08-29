@@ -247,7 +247,7 @@
                       [formControlName]="'active'"
                       [color]="'primary'">
                       {{
-                        selectedSyncLogForm.get('active').value === true
+                        selectedSyncLogForm.get('active').value
                           ? 'Active'
                           : 'Disabled'
                       }}
@@ -277,10 +277,12 @@
                     </div>
                   </div>
 
-                  <!-- Tenants -->
+                  <!-- Companies -->
                   <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
                     <!-- Tags -->
-                    <span class="mb-px font-medium leading-tight">Tenants</span>
+                    <span class="mb-px font-medium leading-tight"
+                      >Companies</span
+                    >
                     <div
                       class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
                       <!-- Header -->
@@ -292,7 +294,7 @@
                           <input
                             class="min-w-0 ml-2 py-1 border-0"
                             type="text"
-                            placeholder="Search tenant"
+                            placeholder="Search company"
                             (input)="filterTags($event)"
                             (keydown)="filterTagsInputKeyDown($event)"
                             [maxLength]="50"
