@@ -5,7 +5,6 @@ import { GetSyncOptionPipe } from './get-sync-option.pipe';
 import { GetSelectOptionsPipe } from './get-select-options.pipe';
 import { GetMappingsPipe } from './get-mappings.pipe';
 import { GetTagPipe } from './get-tag.pipe';
-import { GetLimitPipe } from './get-limit.pipe';
 
 const pipes = [
   GetInitialsPipe,
@@ -13,7 +12,6 @@ const pipes = [
   GetSelectOptionsPipe,
   GetMappingsPipe,
   GetTagPipe,
-  GetLimitPipe,
 ];
 
 @NgModule({

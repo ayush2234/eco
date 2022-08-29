@@ -74,12 +74,12 @@
 
                   <!-- Status -->
                   <div class="hidden lg:block">
-                    <ng-container *ngIf="integration?.is_beta === 'Y'">
+                    <ng-container *ngIf="integration?.is_beta">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container *ngIf="!integration.is_beta === 'N'">
+                    <ng-container *ngIf="!integration.is_beta">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
@@ -177,7 +177,7 @@
                       [formControlName]="'is_beta'"
                       [color]="'primary'">
                       {{
-                        selectedIntegrationForm.get('is_beta').value === 'Y'
+                        selectedIntegrationForm.get('is_beta').value
                           ? 'Active'
                           : 'Disabled'
                       }}
@@ -189,7 +189,7 @@
                       [formControlName]="'is_custom'"
                       [color]="'primary'">
                       {{
-                        selectedIntegrationForm.get('is_custom').value === 'Y'
+                        selectedIntegrationForm.get('is_custom').value
                           ? 'Active'
                           : 'Disabled'
                       }}
@@ -202,7 +202,7 @@
                       [color]="'primary'">
                       {{
                         selectedIntegrationForm.get('force_test_connection')
-                          .value === 'Y'
+                          .value
                           ? 'Active'
                           : 'Disabled'
                       }}

@@ -78,12 +78,12 @@
 
                   <!-- Status -->
                   <div class="hidden lg:block">
-                    <ng-container *ngIf="company?.is_active === 'Y'">
+                    <ng-container *ngIf="company?.is_active">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container *ngIf="company?.is_active === 'N'">
+                    <ng-container *ngIf="!company?.is_active">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
@@ -100,32 +100,33 @@
 
                   <!-- SKUs -->
                   <div class="hidden md:block truncate">
-                    <!-- {{ company?.limit[3].skus | getLimit }} -->
+                    {{ company?.sku_used }} / {{ company?.sku_limit }}
                   </div>
 
                   <!-- hasCustom -->
                   <div class="hidden sm:block">
-                    {{ company?.allow_beta === 'Y' ? 'Yes' : 'No' }}
+                    {{ company?.allow_beta ? 'Yes' : 'No' }}
                   </div>
 
                   <!-- Users -->
                   <div class="hidden md:block truncate">
-                    <!-- {{ company?.limit[0].users | getLimit }} -->
+                    {{ company?.user_used }} / {{ company?.user_limit }}
                   </div>
 
                   <!-- Integrations -->
                   <div class="hidden md:block truncate">
-                    <!-- {{ company?.limit[1].integrations | getLimit }} -->
+                    {{ company?.integration_used }} /
+                    {{ company?.integration_limit }}
                   </div>
 
                   <!-- Active -->
                   <div class="hidden lg:block">
-                    <ng-container *ngIf="company.is_active === 'Y'">
+                    <ng-container *ngIf="company.is_active">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container *ngIf="company.is_active === 'N'">
+                    <ng-container *ngIf="!company.is_active">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
@@ -197,7 +198,7 @@
                       [formControlName]="'is_active'"
                       [color]="'primary'">
                       {{
-                        selectedCompanyForm.get('is_active').value === 'Y'
+                        selectedCompanyForm.get('is_active').value
                           ? 'Active'
                           : 'Disabled'
                       }}

@@ -164,7 +164,7 @@
                       [formControlName]="'is_beta'"
                       [color]="'primary'">
                       {{
-                        selectedSourceForm.get('is_beta').value === true
+                        selectedSourceForm.get('is_beta').value
                           ? 'Active'
                           : 'Disabled'
                       }}
@@ -176,7 +176,7 @@
                       [formControlName]="'is_custom'"
                       [color]="'primary'">
                       {{
-                        selectedSourceForm.get('is_custom').value === true
+                        selectedSourceForm.get('is_custom').value
                           ? 'Active'
                           : 'Disabled'
                       }}
@@ -188,8 +188,7 @@
                       [formControlName]="'force_connection_test'"
                       [color]="'primary'">
                       {{
-                        selectedSourceForm.get('force_connection_test')
-                          .value === true
+                        selectedSourceForm.get('force_connection_test').value
                           ? 'Active'
                           : 'Disabled'
                       }}
