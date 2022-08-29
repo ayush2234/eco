@@ -32,7 +32,7 @@ export class ApiInterceptor implements HttpInterceptor {
     let newReq = req.clone();
 
     // Request
-    if (newReq.body) {
+    if (newReq.body && !(newReq.body instanceof FormData)) {
       newReq = newReq.clone({
         body: ApiUtils.toApiObject(req.body),
       });

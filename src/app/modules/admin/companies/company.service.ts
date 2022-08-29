@@ -162,19 +162,23 @@ export class CompanyService {
   /**
    * Create company
    */
-  createCompany(): Observable<Company> {
+  createCompany(company: Company): Observable<Company> {
+    const api = this._config?.apiConfig?.baseUrl;
     return this.companies$.pipe(
       take(1),
       switchMap(companies =>
-        this._httpClient.post<Company>('api/companies', {}).pipe(
-          map(newCompany => {
-            // Update the companies with the new company
-            this._companies.next([newCompany, ...companies]);
+        this._httpClient
+          .post<ApiResponse<Company>>(`${api}/admin/company`, company)
+          .pipe(
+            map(response => {
+              const { data: newCompany } = response;
+              // Update the companies with the new company
+              this._companies.next([newCompany, ...companies]);
 
-            // Return the new company
-            return newCompany;
-          })
-        )
+              // Return the new company
+              return newCompany;
+            })
+          )
       )
     );
   }
@@ -186,16 +190,16 @@ export class CompanyService {
    * @param company
    */
   updateCompany(id: string, company: Company): Observable<Company> {
+    const api = this._config?.apiConfig?.baseUrl;
+
     return this.companies$.pipe(
       take(1),
       switchMap(companies =>
         this._httpClient
-          .patch<Company>('api/companies', {
-            id,
-            company,
-          })
+          .put<ApiResponse<Company>>(`${api}/admin/company/${id}`, company)
           .pipe(
-            map(updatedCompany => {
+            map(response => {
+              const { data: updatedCompany } = response;
               // Find the index of the updated company
               const index = companies.findIndex(item => item.company_id === id);
 
@@ -219,28 +223,27 @@ export class CompanyService {
    * @param id
    */
   deleteCompany(id: string): Observable<boolean> {
+    const api = this._config?.apiConfig?.baseUrl;
     return this.companies$.pipe(
       take(1),
       switchMap(companies =>
-        this._httpClient
-          .delete('api/companies', {
-            params: { id },
+        this._httpClient.delete(`${api}/admin/company/${id}`).pipe(
+          map((response: ApiResponse<string>) => {
+            const { message } = response;
+            const isDeleted = message === 'success';
+            // Find the index of the deleted company
+            const index = companies.findIndex(item => item.company_id === id);
+
+            // Delete the company
+            companies.splice(index, 1);
+
+            // Update the companies
+            this._companies.next(companies);
+
+            // Return the deleted status
+            return isDeleted;
           })
-          .pipe(
-            map((isDeleted: boolean) => {
-              // Find the index of the deleted company
-              const index = companies.findIndex(item => item.company_id === id);
-
-              // Delete the company
-              companies.splice(index, 1);
-
-              // Update the companies
-              this._companies.next(companies);
-
-              // Return the deleted status
-              return isDeleted;
-            })
-          )
+        )
       )
     );
   }
