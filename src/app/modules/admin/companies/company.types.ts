@@ -11,12 +11,14 @@ export interface Company {
   referrer: string;
   is_active: string;
   allow_beta: string;
-  limits: any[];
+  user_used: number;
+  user_limit: number;
+  source_used: number;
+  source_limit: number;
+  integration_used: number;
+  integration_limit: number;
+  sku_used: number;
+  sku_limit: number;
   restricted_to_sources: string[];
   restricted_to_integrations: string[];
-}
-
-export interface Limit {
-  limit: number;
-  used: number;
 }

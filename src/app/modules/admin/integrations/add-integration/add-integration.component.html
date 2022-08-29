@@ -41,7 +41,7 @@
                     [formControlName]="'is_beta'"
                     [color]="'primary'">
                     {{
-                      selectedIntegrationForm.get('is_beta').value === 'Y'
+                      selectedIntegrationForm.get('is_beta').value
                         ? 'Active'
                         : 'Disabled'
                     }}
@@ -53,7 +53,7 @@
                     [formControlName]="'is_custom'"
                     [color]="'primary'">
                     {{
-                      selectedIntegrationForm.get('is_custom').value === 'Y'
+                      selectedIntegrationForm.get('is_custom').value
                         ? 'Active'
                         : 'Disabled'
                     }}
@@ -65,8 +65,7 @@
                     [formControlName]="'force_test_connection'"
                     [color]="'primary'">
                     {{
-                      selectedIntegrationForm.get('force_test_connection')
-                        .value === 'Y'
+                      selectedIntegrationForm.get('force_test_connection').value
                         ? 'Active'
                         : 'Disabled'
                     }}

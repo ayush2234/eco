@@ -70,6 +70,7 @@ export class CompaniesGridComponent
 
   flashMessage: 'success' | 'error' | null = null;
   isLoading: boolean = false;
+  openAddCompany: boolean = false;
   pagination: Pagination;
   searchInputControl: UntypedFormControl = new UntypedFormControl();
   selectedCompany: Company | null = null;
@@ -101,13 +102,14 @@ export class CompaniesGridComponent
     this.selectedCompanyForm = this._formBuilder.group({
       company_id: [''],
       company_name: [''],
-      note: ['', [Validators.required]],
+      note: [''],
       referrer: [''],
       is_active: [''],
       allow_beta: [''],
-      users_limit: [''],
-      integrations_limit: [''],
-      skus_limit: [''],
+      user_limit: [''],
+      source_limit: [0],
+      integration_limit: [''],
+      sku_limit: [''],
       restricted_to_sources: [[]],
       restricted_to_integrations: [[]],
     });
@@ -366,17 +368,16 @@ export class CompaniesGridComponent
    * Create company
    */
   createCompany(): void {
-    // Create the company
-    this._companyService.createCompany().subscribe(newCompany => {
-      // Go to new company
-      this.selectedCompany = newCompany;
+    this.openAddCompany = true;
+    this._changeDetectorRef.detectChanges();
+  }
 
-      // Fill the form
-      this.selectedCompanyForm.patchValue(newCompany);
-
-      // Mark for check
-      this._changeDetectorRef.markForCheck();
-    });
+  /**
+   * Cancel create source
+   */
+  cancelCreateCompany(): void {
+    this.openAddCompany = false;
+    this._changeDetectorRef.detectChanges();
   }
 
   /**
@@ -390,10 +391,12 @@ export class CompaniesGridComponent
     delete company.currentImageIndex;
 
     // Update the company on the server
-    this._companyService.updateCompany(company.id, company).subscribe(() => {
-      // Show a success message
-      this.showFlashMessage('success');
-    });
+    this._companyService
+      .updateCompany(company.company_id, company)
+      .subscribe(() => {
+        // Show a success message
+        this.showFlashMessage('success');
+      });
   }
 
   /**
@@ -420,7 +423,7 @@ export class CompaniesGridComponent
         const company = this.selectedCompanyForm.getRawValue();
 
         // Delete the company on the server
-        this._companyService.deleteCompany(company.id).subscribe(() => {
+        this._companyService.deleteCompany(company.company_id).subscribe(() => {
           // Close the details
           this.closeDetails();
         });

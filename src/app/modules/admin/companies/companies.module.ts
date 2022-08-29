@@ -17,9 +17,10 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from 'app/shared/shared.module';
 import { CompaniesGridComponent } from './grid/companies-grid.component';
+import { AddCompanyComponent } from './add-company/add-company.component';
 
 @NgModule({
-  declarations: [CompaniesGridComponent],
+  declarations: [CompaniesGridComponent, AddCompanyComponent],
   imports: [
     TenantsRoutingModule,
     MatButtonModule,
@@ -38,4 +39,4 @@ import { CompaniesGridComponent } from './grid/companies-grid.component';
     SharedModule,
   ],
 })
-export class TenantsModule {}
+export class CompaniesModule {}

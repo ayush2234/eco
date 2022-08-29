@@ -37,7 +37,7 @@
                     [formControlName]="'is_beta'"
                     [color]="'primary'">
                     {{
-                      selectedSourceForm.get('is_beta').value === true
+                      selectedSourceForm.get('is_beta').value
                         ? 'Active'
                         : 'Disabled'
                     }}
@@ -49,7 +49,7 @@
                     [formControlName]="'is_custom'"
                     [color]="'primary'">
                     {{
-                      selectedSourceForm.get('is_custom').value === true
+                      selectedSourceForm.get('is_custom').value
                         ? 'Active'
                         : 'Disabled'
                     }}
@@ -116,7 +116,7 @@
                           <input
                             class="min-w-0 ml-2 py-1 border-0"
                             type="text"
-                            placeholder="Search tenant"
+                            placeholder="Search company"
                             (input)="filterRestrictedToCompanyTags($event)"
                             (keydown)="
                               filterRestrictedToCompanyTagsInputKeyDown($event)
