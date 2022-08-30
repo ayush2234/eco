@@ -124,7 +124,7 @@ export const appRoutes: Route[] = [
       {
         path: 'settings',
         loadChildren: () =>
-          import('app/modules/admin/settings/settings.module').then(
+          import('app/modules/settings/settings.module').then(
             m => m.SettingsModule
           ),
       },

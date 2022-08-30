@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { SyncOption } from 'app/modules/admin/settings/integrations/integrations.types';
+import { SyncOption } from 'app/modules/settings/integrations/integration.types';
 
 @Pipe({
   name: 'getSyncOption',

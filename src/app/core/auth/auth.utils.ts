@@ -15,10 +15,6 @@ export class AuthUtils {
   // @ Public methods
   // -----------------------------------------------------------------------------------------------------
 
-  static get accessToken(): string {
-    return localStorage.getItem('accessToken') ?? '';
-  }
-
   /**
    * Is token expired?
    *
