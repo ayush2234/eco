@@ -32,6 +32,7 @@ import { CompanyService } from '../company.service';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { Company } from '../company.types';
 import { IntegrationService } from '../../integrations/integration.service';
+import { SourceService } from '../../sources/source.service';
 
 @Component({
   selector: 'eco-companies-grid',
@@ -77,6 +78,8 @@ export class CompaniesGridComponent
   selectedCompanyForm: UntypedFormGroup;
   restrictedToIntegrationTags: Tag[];
   filteredRestrictedToIntegrationTags: Tag[];
+  restrictedToSourceTags: Tag[];
+  filteredRestrictedToSourceTags: Tag[];
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
@@ -87,7 +90,8 @@ export class CompaniesGridComponent
     private _fuseConfirmationService: FuseConfirmationService,
     private _formBuilder: UntypedFormBuilder,
     private _companyService: CompanyService,
-    private _integrationService: IntegrationService
+    private _integrationService: IntegrationService,
+    private _sourceService: SourceService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -107,7 +111,7 @@ export class CompaniesGridComponent
       is_active: [''],
       allow_beta: [''],
       user_limit: [''],
-      source_limit: [0],
+      source_limit: [''],
       integration_limit: [''],
       sku_limit: [''],
       restricted_to_sources: [[]],
@@ -142,6 +146,25 @@ export class CompaniesGridComponent
         // Update the tags
         this.restrictedToIntegrationTags = integrations;
         this.filteredRestrictedToIntegrationTags = integrations;
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+      });
+
+    // Get the sources
+    this._sourceService.sources$
+      .pipe(
+        takeUntil(this._unsubscribeAll),
+        map(sources =>
+          sources.map(source => {
+            return { id: source.source_id, title: source.name };
+          })
+        )
+      )
+      .subscribe((integrations: Tag[]) => {
+        // Update the tags
+        this.restrictedToSourceTags = integrations;
+        this.filteredRestrictedToSourceTags = integrations;
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
@@ -274,6 +297,21 @@ export class CompaniesGridComponent
   }
 
   /**
+   * Filter tags
+   *
+   * @param event
+   */
+  filterRestrictedToSourceTags(event): void {
+    // Get the value
+    const value = event.target.value.toLowerCase();
+
+    // Filter the tags
+    this.filteredRestrictedToSourceTags = this.restrictedToSourceTags.filter(
+      tag => tag.title.toLowerCase().includes(value)
+    );
+  }
+
+  /**
    * Filter tags input key down event
    *
    * @param event
@@ -306,6 +344,42 @@ export class CompaniesGridComponent
     } else {
       // Otherwise add the tag to the company
       this.addRestrictedToIntegrationTagToCompany(tag);
+    }
+  }
+
+  /**
+   * Filter tags input key down event
+   *
+   * @param event
+   */
+  filterRestrictedToSourceTagsInputKeyDown(event): void {
+    // Return if the pressed key is not 'Enter'
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    // If there is no tag available...
+    if (this.filteredRestrictedToSourceTags.length === 0) {
+      // Clear the input
+      event.target.value = '';
+
+      // Return
+      return;
+    }
+
+    // If there is a tag...
+    const tag = this.filteredRestrictedToSourceTags[0];
+    const isTagApplied = this.selectedCompany.restricted_to_sources.find(
+      id => id === tag.id
+    );
+
+    // If the found tag is already applied to the company...
+    if (isTagApplied) {
+      // Remove the tag from the company
+      this.removeRestrictedToSourceTagFromCompany(tag);
+    } else {
+      // Otherwise add the tag to the company
+      this.addRestrictedToSourceTagToCompany(tag);
     }
   }
 
@@ -351,6 +425,47 @@ export class CompaniesGridComponent
   }
 
   /**
+   * Add tag to the company
+   *
+   * @param tag
+   */
+  addRestrictedToSourceTagToCompany(tag: Tag): void {
+    // Add the tag
+    this.selectedCompany.restricted_to_sources.unshift(tag.id);
+
+    // Update the selected company form
+    this.selectedCompanyForm
+      .get('restricted_to_sources')
+      .patchValue(this.selectedCompany.restricted_to_sources);
+
+    // Mark for check
+    this._changeDetectorRef.markForCheck();
+  }
+
+  /**
+   * Remove tag from the company
+   *
+   * @param tag
+   */
+  removeRestrictedToSourceTagFromCompany(tag: Tag): void {
+    // Remove the tag
+    this.selectedCompany.restricted_to_sources.splice(
+      this.selectedCompany.restricted_to_sources.findIndex(
+        item => item === tag.id
+      ),
+      1
+    );
+
+    // Update the selected company form
+    this.selectedCompanyForm
+      .get('restricted_to_sources')
+      .patchValue(this.selectedCompany.restricted_to_sources);
+
+    // Mark for check
+    this._changeDetectorRef.markForCheck();
+  }
+
+  /**
    * Toggle company tag
    *
    * @param tag
@@ -361,6 +476,20 @@ export class CompaniesGridComponent
       this.addRestrictedToIntegrationTagToCompany(tag);
     } else {
       this.removeRestrictedToIntegrationTagFromCompany(tag);
+    }
+  }
+
+  /**
+   * Toggle company tag
+   *
+   * @param tag
+   * @param change
+   */
+  toggleRestrictedToSourceTag(tag: Tag, change: MatCheckboxChange): void {
+    if (change.checked) {
+      this.addRestrictedToSourceTagToCompany(tag);
+    } else {
+      this.removeRestrictedToSourceTagFromCompany(tag);
     }
   }
 

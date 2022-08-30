@@ -4,6 +4,7 @@ import { CompaniesGridComponent } from './grid/companies-grid.component';
 import {
   CompanyIntegrationResolver,
   CompanyResolver,
+  CompanySourceResolver,
 } from './company.resolvers';
 
 const routes: Routes = [
@@ -18,6 +19,7 @@ const routes: Routes = [
     resolve: {
       companies: CompanyResolver,
       integrations: CompanyIntegrationResolver,
+      sources: CompanySourceResolver,
     },
   },
 ];

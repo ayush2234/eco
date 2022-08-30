@@ -29,7 +29,7 @@
           class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
           <form class="flex flex-col w-full" [formGroup]="selectedCompanyForm">
             <div class="flex flex-col sm:flex-row p-8">
-              <!-- Company ID and status -->
+              <!-- Status -->
               <div
                 class="flex flex-col items-center sm:items-start mb-8 sm:mb-0">
                 <div class="flex flex-col">
@@ -39,6 +39,18 @@
                     [color]="'primary'">
                     {{
                       selectedCompanyForm.get('is_active').value
+                        ? 'Active'
+                        : 'Disabled'
+                    }}
+                  </mat-slide-toggle>
+                </div>
+                <div class="flex flex-col mt-8">
+                  <span class="font-semibold mb-2">Allow Beta</span>
+                  <mat-slide-toggle
+                    [formControlName]="'allow_beta'"
+                    [color]="'primary'">
+                    {{
+                      selectedCompanyForm.get('allow_beta').value
                         ? 'Active'
                         : 'Disabled'
                     }}
@@ -57,15 +69,19 @@
 
                   <!-- Limits -->
                   <div class="flex">
-                    <mat-form-field class="w-1/3 pr-2">
+                    <mat-form-field class="w-1/4 pr-2">
                       <mat-label>User Limit</mat-label>
                       <input matInput [formControlName]="'user_limit'" />
                     </mat-form-field>
-                    <mat-form-field class="w-1/3 px-2">
+                    <mat-form-field class="w-1/4 px-2">
+                      <mat-label>Source Limit</mat-label>
+                      <input matInput [formControlName]="'source_limit'" />
+                    </mat-form-field>
+                    <mat-form-field class="w-1/4 px-2">
                       <mat-label>Integration Limit</mat-label>
                       <input matInput [formControlName]="'integration_limit'" />
                     </mat-form-field>
-                    <mat-form-field class="w-1/3 pl-2">
+                    <mat-form-field class="w-1/4 pl-2">
                       <mat-label>SKU Limit</mat-label>
                       <input matInput [formControlName]="'sku_limit'" />
                     </mat-form-field>
@@ -83,59 +99,116 @@
                   </div>
                 </div>
 
-                <!-- Restricted to integrations -->
-                <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
-                  <!-- Tags -->
-                  <span class="mb-px font-medium leading-tight"
-                    >Restricted to integrations</span
-                  >
-                  <div
-                    class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
-                    <!-- Header -->
-                    <div class="flex items-center -my-px py-2 px-3">
-                      <div class="flex items-center flex-auto min-w-0">
-                        <mat-icon
-                          class="icon-size-5"
-                          [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                        <input
-                          class="min-w-0 ml-2 py-1 border-0"
-                          type="text"
-                          placeholder="Integration name"
-                          (input)="filterRestrictedToIntegrationTags($event)"
-                          (keydown)="
-                            filterRestrictedToIntegrationTagsInputKeyDown(
-                              $event
-                            )
-                          "
-                          [maxLength]="50"
-                          #newTagInput />
+                <!-- Tags -->
+                <div class="flex justify-between w-1/2">
+                  <!-- Restricted to sources -->
+                  <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+                    <!-- Tags -->
+                    <span class="mb-px font-medium leading-tight"
+                      >Restricted to sources</span
+                    >
+                    <div
+                      class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
+                      <!-- Header -->
+                      <div class="flex items-center -my-px py-2 px-3">
+                        <div class="flex items-center flex-auto min-w-0">
+                          <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                          <input
+                            class="min-w-0 ml-2 py-1 border-0"
+                            type="text"
+                            placeholder="Source name"
+                            (input)="filterRestrictedToSourceTags($event)"
+                            (keydown)="
+                              filterRestrictedToSourceTagsInputKeyDown($event)
+                            "
+                            [maxLength]="50"
+                            #newTagInput />
+                        </div>
+                      </div>
+                      <!-- Available tags -->
+                      <div
+                        class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
+                        <!-- Tags -->
+                        <ng-container>
+                          <ng-container
+                            *ngFor="
+                              let tag of filteredRestrictedToSourceTags;
+                              trackBy: trackByFn
+                            ">
+                            <mat-checkbox
+                              class="flex items-center h-10 min-h-10 px-4"
+                              [color]="'primary'"
+                              [checked]="
+                                selectedCompany.restricted_to_sources.includes(
+                                  tag.id
+                                )
+                              "
+                              (change)="
+                                toggleRestrictedToSourceTag(tag, $event)
+                              ">
+                              {{ tag.title }}
+                            </mat-checkbox>
+                          </ng-container>
+                        </ng-container>
                       </div>
                     </div>
-                    <!-- Available tags -->
+                  </div>
+                  <!-- Restricted to integrations -->
+                  <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+                    <!-- Tags -->
+                    <span class="mb-px font-medium leading-tight"
+                      >Restricted to integrations</span
+                    >
                     <div
-                      class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
-                      <!-- Tags -->
-                      <ng-container>
-                        <ng-container
-                          *ngFor="
-                            let tag of filteredRestrictedToIntegrationTags;
-                            trackBy: trackByFn
-                          ">
-                          <mat-checkbox
-                            class="flex items-center h-10 min-h-10 px-4"
-                            [color]="'primary'"
-                            [checked]="
-                              selectedCompany.restricted_to_integrations.includes(
-                                tag.id
+                      class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
+                      <!-- Header -->
+                      <div class="flex items-center -my-px py-2 px-3">
+                        <div class="flex items-center flex-auto min-w-0">
+                          <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                          <input
+                            class="min-w-0 ml-2 py-1 border-0"
+                            type="text"
+                            placeholder="Integration name"
+                            (input)="filterRestrictedToIntegrationTags($event)"
+                            (keydown)="
+                              filterRestrictedToIntegrationTagsInputKeyDown(
+                                $event
                               )
                             "
-                            (change)="
-                              toggleRestrictedToIntegrationTag(tag, $event)
+                            [maxLength]="50"
+                            #newTagInput />
+                        </div>
+                      </div>
+                      <!-- Available tags -->
+                      <div
+                        class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
+                        <!-- Tags -->
+                        <ng-container>
+                          <ng-container
+                            *ngFor="
+                              let tag of filteredRestrictedToIntegrationTags;
+                              trackBy: trackByFn
                             ">
-                            {{ tag.title }}
-                          </mat-checkbox>
+                            <mat-checkbox
+                              class="flex items-center h-10 min-h-10 px-4"
+                              [color]="'primary'"
+                              [checked]="
+                                selectedCompany.restricted_to_integrations.includes(
+                                  tag.id
+                                )
+                              "
+                              (change)="
+                                toggleRestrictedToIntegrationTag(tag, $event)
+                              ">
+                              {{ tag.title }}
+                            </mat-checkbox>
+                          </ng-container>
                         </ng-container>
-                      </ng-container>
+                      </div>
                     </div>
                   </div>
                 </div>
