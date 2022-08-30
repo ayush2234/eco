@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { SelectOption } from 'app/modules/admin/settings/integrations/integrations.types';
+import { SelectOption } from 'app/modules/settings/integrations/integration.types';
 
 @Pipe({
   name: 'getSelectOptions',

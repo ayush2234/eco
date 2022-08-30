@@ -17,6 +17,7 @@ import { GetUserByTokenResponse, User } from 'app/core/user/user.types';
 import { appConfig } from '../config/app.config';
 import { AuthUtils } from '../auth/auth.utils';
 import { ApiResponse } from '../api/api.types';
+import { LocalStorageUtils } from '../common/local-storage.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -39,18 +40,6 @@ export class UserService {
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
   // -----------------------------------------------------------------------------------------------------
-
-  /**
-   * Setter & getter for token expiration date
-   */
-  set tokenExpirationDate(expirationDate: number) {
-    expirationDate &&
-      localStorage.setItem('tokenExpirationDate', expirationDate.toString());
-  }
-
-  get tokenExpirationDate(): number {
-    return +localStorage.getItem('tokenExpirationDate') ?? 0;
-  }
 
   /**
    * Setter & getter for user
@@ -137,7 +126,7 @@ export class UserService {
    */
   get(): Observable<ApiResponse<GetUserByTokenResponse>> {
     const api = this._config?.apiConfig?.baseUrl;
-    const token = AuthUtils.accessToken;
+    const token = LocalStorageUtils.accessToken;
 
     return this._httpClient
       .get<ApiResponse<GetUserByTokenResponse>>(
@@ -150,7 +139,8 @@ export class UserService {
           } = response;
 
           // Store the token expiration date in the local storage
-          this.tokenExpirationDate = user?.expire_at;
+          LocalStorageUtils.tokenExpirationDate = user?.expire_at;
+          LocalStorageUtils.companyId = '1ed1f118-421d-6a88-8f0a-0605e1fd6890';
 
           this._user.next(user);
         })
