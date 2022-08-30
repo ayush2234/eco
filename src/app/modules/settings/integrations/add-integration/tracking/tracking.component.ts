@@ -6,7 +6,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { Integration, SyncOption } from '../../integrations.types';
+import { Integration, SyncOption } from '../add-integration.types';
 import { SyncOptionService } from '../common/sync-option/sync-option.service';
 
 @Component({
@@ -67,13 +67,13 @@ export class AddIntegrationTrackingComponent implements OnInit {
    */
   activatePanel(): void {
     const activatedSyncOption = { ...this.syncOption, isActive: true };
-    this._addIntegrationService.wipIntegration = {
-      ...this.integration,
-      syncOptions: this.integration?.syncOptions?.map(syncOption =>
-        syncOption.key === this.syncOption.key
-          ? activatedSyncOption
-          : syncOption
-      ),
-    };
+    // this._addIntegrationService.wipIntegration = {
+    //   ...this.integration,
+    //   syncOptions: this.integration?.syncOptions?.map(syncOption =>
+    //     syncOption.key === this.syncOption.key
+    //       ? activatedSyncOption
+    //       : syncOption
+    //   ),
+    // };
   }
 }

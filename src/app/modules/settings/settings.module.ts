@@ -13,7 +13,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { SharedModule } from 'app/shared/shared.module';
 import { SettingsSidebarModule } from './common/sidebar/sidebar.module';
 import { SettingsComponent } from './settings.component';
-import { AllIntegrationsComponent } from './integrations/all-integrations/all-integrations.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AddIntegrationModule } from './integrations/add-integration/add-integration.module';
 import { SettingssRoutingModule } from './settings-routing.module';
@@ -22,18 +21,17 @@ import { SettingsUsersComponent } from './users/users.component';
 import { SettingsAccountComponent } from './account/account.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { IntegrationsModule } from './integrations/integrations.module';
 
 @NgModule({
   declarations: [
     SettingsComponent,
-    AllIntegrationsComponent,
     SourceChannelComponent,
     SettingsUsersComponent,
     SettingsAccountComponent,
   ],
   imports: [
     SettingssRoutingModule,
-    MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
@@ -53,6 +51,7 @@ import { MatInputModule } from '@angular/material/input';
     SharedModule,
     SettingsSidebarModule,
     AddIntegrationModule,
+    IntegrationsModule,
   ],
 })
 export class SettingsModule {}

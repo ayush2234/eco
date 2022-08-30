@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, tap, switchMap, map } from 'rxjs';
-import { Integration, SelectOption } from '../../../integrations.types';
+import { Integration, SelectOption } from '../../add-integration.types';
 
 @Injectable({
   providedIn: 'root',

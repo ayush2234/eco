@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Tag } from 'app/layout/common/grid/grid.types';
-import { SyncOption } from 'app/modules/admin/settings/integrations/integrations.types';
+import { SyncOption } from 'app/modules/settings/integrations/integration.types';
 
 @Pipe({
   name: 'getTag',

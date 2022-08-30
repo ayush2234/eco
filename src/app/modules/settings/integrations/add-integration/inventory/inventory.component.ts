@@ -5,8 +5,6 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { SelectOption } from '../../integrations.types';
 import { SyncOptionComponent } from '../common/sync-option/sync-option.component';
 import { SyncOptionService } from '../common/sync-option/sync-option.service';
 

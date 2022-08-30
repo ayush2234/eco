@@ -3,7 +3,7 @@ import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
 import { Subject, takeUntil } from 'rxjs';
-import { Integration } from '../integrations/integrations.types';
+import { Integration } from '../integrations/integration.types';
 
 @Component({
   selector: 'eco-settings-account',

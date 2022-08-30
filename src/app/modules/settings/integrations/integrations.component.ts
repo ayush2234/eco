@@ -5,21 +5,25 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { SyncOptionService } from '../add-integration/common/sync-option/sync-option.service';
-import { IntegrationsService } from '../integrations.service';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { SyncOptionService } from './add-integration/common/sync-option/sync-option.service';
+import { IntegrationsService } from './integrations.service';
+import { IntegrationSettings } from './integration.types';
 
 @Component({
-  selector: 'eco-all-integrations',
-  templateUrl: './all-integrations.component.html',
+  selector: 'eco-integrations-settings',
+  templateUrl: './integrations.component.html',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AllIntegrationsComponent implements OnInit, OnDestroy {
+export class IntegrationsComponent implements OnInit, OnDestroy {
   installed: any;
   available: any;
   openAddIntegration: boolean = false;
   selectedIntegration$ = this._addIntegrationService.selectedIntegration$;
+
+  integrations$: Observable<IntegrationSettings[]>;
+
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**

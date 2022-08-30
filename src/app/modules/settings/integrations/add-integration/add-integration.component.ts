@@ -18,7 +18,7 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { CdkPortal } from '@angular/cdk/portal';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
 import { SyncOptionService } from './common/sync-option/sync-option.service';
-import { Integration, SyncOption } from '../integrations.types';
+import { Integration, SyncOption } from './add-integration.types';
 
 const badgeActiveClasses =
   'px-2 bg-green-500 text-sm text-on-primary rounded-full';

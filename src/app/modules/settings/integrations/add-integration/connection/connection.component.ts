@@ -10,7 +10,7 @@ import {
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { Integration, SyncOption } from '../../integrations.types';
+import { Integration, SyncOption } from '../add-integration.types';
 import { SyncOptionService } from '../common/sync-option/sync-option.service';
 
 @Component({
@@ -150,9 +150,9 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
   }
 
   private setWipIntegration(syncOptions: SyncOption[]): void {
-    this._addIntegrationService.wipIntegration = {
-      ...this.integration,
-      syncOptions,
-    };
+    // this._addIntegrationService.wipIntegration = {
+    //   ...this.integration,
+    //   syncOptions,
+    // };
   }
 }

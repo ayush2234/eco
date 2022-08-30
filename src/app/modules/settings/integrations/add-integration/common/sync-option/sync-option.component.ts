@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { Integration, SyncOption } from '../../../integrations.types';
+import { Integration, SyncOption } from '../../add-integration.types';
 import { SyncOptionService } from './sync-option.service';
 
 @Component({
