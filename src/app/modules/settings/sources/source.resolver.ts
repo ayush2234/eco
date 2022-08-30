@@ -4,17 +4,18 @@ import {
   Resolve,
   RouterStateSnapshot,
 } from '@angular/router';
+import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 import { Observable } from 'rxjs';
-import { IntegrationsService } from './integrations.service';
+import { SourceService } from './source.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ConnectionsResolver implements Resolve<any> {
+export class SourceResolver implements Resolve<any> {
   /**
    * Constructor
    */
-  constructor(private _integrationsService: IntegrationsService) {}
+  constructor(private _sourcesService: SourceService) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods
@@ -30,6 +31,7 @@ export class ConnectionsResolver implements Resolve<any> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<any> {
-    return this._integrationsService.getConnections();
+    const companyId = LocalStorageUtils.companyId;
+    return this._sourcesService.getSourceSettings(companyId);
   }
 }

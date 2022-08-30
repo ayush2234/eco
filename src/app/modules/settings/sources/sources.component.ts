@@ -5,26 +5,28 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { IntegrationsService } from '../integrations.service';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { SourceService } from './source.service';
+import { Source, SourceInstance } from './source.types';
 
 @Component({
-  selector: 'eco-source-channel',
-  templateUrl: './source-channel.component.html',
+  selector: 'eco-sources-settings',
+  templateUrl: './sources.component.html',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SourceChannelComponent implements OnInit, OnDestroy {
-  installed: any;
-  available: any;
-  openAddIntegration: boolean = false;
-  selectedIntegration: any;
+export class SourcesComponent implements OnInit, OnDestroy {
+  openAddSource: boolean = false;
+
+  sourceInstances$: Observable<SourceInstance[]>;
+  availableSources$: Observable<Source[]>;
+
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
    * Constructor
    */
-  constructor(private _integrationsService: IntegrationsService) {}
+  constructor(private _sourceService: SourceService) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -34,14 +36,8 @@ export class SourceChannelComponent implements OnInit, OnDestroy {
    * On init
    */
   ngOnInit(): void {
-    // Get source channel data
-    this._integrationsService.erps$
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(data => {
-        // Store the data
-        this.installed = data?.installed;
-        this.available = data?.available;
-      });
+    this.sourceInstances$ = this._sourceService.sourceInstances$;
+    this.availableSources$ = this._sourceService.availableSources$;
   }
 
   /**
@@ -65,5 +61,16 @@ export class SourceChannelComponent implements OnInit, OnDestroy {
    */
   trackByFn(index: number, item: any): any {
     return item.id || index;
+  }
+
+  /**
+   * Add source
+   *
+   * @param index
+   * @param item
+   */
+  addSource(source: any): any {
+    this.openAddSource = true;
+    // this._addSourceService.setSelectedSource(source?.id);
   }
 }

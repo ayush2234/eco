@@ -45,7 +45,7 @@
     </div>
     <div
       class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 w-full min-w-0">
-      <ng-container *ngFor="let integration of installed">
+      <ng-container *ngFor="let instance of integrationInstances$ | async">
         <div
           class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
           <!-- Avatar & Info -->
@@ -53,22 +53,21 @@
             <div class="flex-shrink-0">
               <img
                 class="w-15 h-15 rounded-full"
-                [src]="integration.icon"
-                alt="Integration Icon" />
+                [src]="instance.integration?.icon" />
             </div>
             <div class="flex-1 min-w-0">
               <p
                 class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                {{ integration.name }}
+                {{ instance.integration?.name }}
               </p>
               <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                {{ integration.installationName }}
+                {{ instance.name }}
               </p>
             </div>
           </div>
           <div class="flex items-center space-x-4">
             <p class="text-sm p-8 pt-2 text-secondary">
-              {{ integration.description }}
+              {{ instance.integration?.name }}
             </p>
           </div>
           <!-- Footer -->
@@ -82,7 +81,7 @@
               <mat-slide-toggle
                 class="ml-3"
                 [color]="'primary'"
-                [checked]="integration.isActive">
+                [checked]="instance?.active_status">
               </mat-slide-toggle>
             </div>
           </div>
@@ -100,16 +99,13 @@
     </div>
     <div
       class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 w-full min-w-0">
-      <ng-container *ngFor="let integration of available">
+      <ng-container *ngFor="let integration of availableIntegrations$ | async">
         <div
           class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
           <!-- Avatar & Info -->
           <div class="flex items-center p-8 pb-0 space-x-4">
             <div class="flex-shrink-0">
-              <img
-                class="w-15 h-15 rounded-full"
-                [src]="integration.icon"
-                alt="Integration Icon" />
+              <img class="w-15 h-15 rounded-full" [src]="integration.icon" />
             </div>
             <div class="flex-1 min-w-0">
               <p
@@ -117,7 +113,7 @@
                 {{ integration.name }}
               </p>
               <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                {{ integration.installationName }}
+                {{ integration.name }}
               </p>
             </div>
           </div>
@@ -145,6 +141,6 @@
     </div>
   </div>
 </div>
-<eco-add-integration
+<!-- <eco-add-integration
   *ngIf="openAddIntegration && selectedIntegration$ | async"
-  (cancel)="openAddIntegration = false"></eco-add-integration>
+  (cancel)="openAddIntegration = false"></eco-add-integration> -->

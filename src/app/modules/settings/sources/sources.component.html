@@ -20,8 +20,7 @@
         <button
           class="hidden sm:inline-flex ml-3"
           mat-flat-button
-          [color]="'primary'"
-          (click)="openAddIntegration = true">
+          [color]="'primary'">
           <span class="ml-2">Add integration</span>
         </button>
 
@@ -45,30 +44,27 @@
     </div>
     <div
       class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 w-full min-w-0">
-      <ng-container *ngFor="let integration of installed">
+      <ng-container *ngFor="let instance of sourceInstances$ | async">
         <div
           class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
           <!-- Avatar & Info -->
           <div class="flex items-center p-8 pb-0 space-x-4">
             <div class="flex-shrink-0">
-              <img
-                class="w-15 h-15 rounded-full"
-                [src]="integration.icon"
-                alt="Integration Icon" />
+              <img class="w-15 h-15 rounded-full" [src]="instance.icon" />
             </div>
             <div class="flex-1 min-w-0">
               <p
                 class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                {{ integration.name }}
+                {{ instance.name }}
               </p>
               <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                {{ integration.installationName }}
+                {{ instance.source_install_name }}
               </p>
             </div>
           </div>
           <div class="flex items-center space-x-4">
             <p class="text-sm p-8 pt-2 text-secondary">
-              {{ integration.description }}
+              {{ instance.description }}
             </p>
           </div>
           <!-- Footer -->
@@ -82,7 +78,7 @@
               <mat-slide-toggle
                 class="ml-3"
                 [color]="'primary'"
-                [checked]="integration.isActive">
+                [checked]="instance.isActive">
               </mat-slide-toggle>
             </div>
           </div>
@@ -100,30 +96,27 @@
     </div>
     <div
       class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 w-full min-w-0">
-      <ng-container *ngFor="let integration of available">
+      <ng-container *ngFor="let source of availableSources$ | async">
         <div
           class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
           <!-- Avatar & Info -->
           <div class="flex items-center p-8 pb-0 space-x-4">
             <div class="flex-shrink-0">
-              <img
-                class="w-15 h-15 rounded-full"
-                [src]="integration.icon"
-                alt="Integration Icon" />
+              <img class="w-15 h-15 rounded-full" [src]="source.icon" />
             </div>
             <div class="flex-1 min-w-0">
               <p
                 class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                {{ integration.name }}
+                {{ source.name }}
               </p>
               <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                {{ integration.installationName }}
+                {{ '' }}
               </p>
             </div>
           </div>
           <div class="flex items-center space-x-4">
             <p class="text-sm p-8 pt-2 text-secondary">
-              {{ integration.description }}
+              {{ source.description }}
             </p>
           </div>
           <!-- Footer -->
@@ -133,7 +126,7 @@
                 mat-flat-button
                 [color]="'primary'"
                 class="w-full"
-                (click)="addIntegration(integration)">
+                (click)="addIntegration(source)">
                 <span class="inline-flex items-center">
                   <span>Add integration</span>
                 </span>
@@ -145,7 +138,7 @@
     </div>
   </div>
 </div>
-<eco-add-integration
+<!-- <eco-add-integration
   *ngIf="openAddIntegration"
   [integration]="selectedIntegration"
-  (cancel)="openAddIntegration = false"></eco-add-integration>
+  (cancel)="openAddIntegration = false"></eco-add-integration> -->

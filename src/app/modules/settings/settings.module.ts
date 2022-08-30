@@ -16,7 +16,6 @@ import { SettingsComponent } from './settings.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AddIntegrationModule } from './integrations/add-integration/add-integration.module';
 import { SettingssRoutingModule } from './settings-routing.module';
-import { SourceChannelComponent } from './integrations/source-channel/source-channel.component';
 import { SettingsUsersComponent } from './users/users.component';
 import { SettingsAccountComponent } from './account/account.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,7 +25,6 @@ import { IntegrationsModule } from './integrations/integrations.module';
 @NgModule({
   declarations: [
     SettingsComponent,
-    SourceChannelComponent,
     SettingsUsersComponent,
     SettingsAccountComponent,
   ],

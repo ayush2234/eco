@@ -6,9 +6,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { SyncOptionService } from './add-integration/common/sync-option/sync-option.service';
-import { IntegrationsService } from './integrations.service';
-import { IntegrationSettings } from './integration.types';
+import { IntegrationService } from './integration.service';
+import { Integration, IntegrationInstance } from './integration.types';
 
 @Component({
   selector: 'eco-integrations-settings',
@@ -17,22 +16,17 @@ import { IntegrationSettings } from './integration.types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IntegrationsComponent implements OnInit, OnDestroy {
-  installed: any;
-  available: any;
   openAddIntegration: boolean = false;
-  selectedIntegration$ = this._addIntegrationService.selectedIntegration$;
 
-  integrations$: Observable<IntegrationSettings[]>;
+  integrationInstances$: Observable<IntegrationInstance[]>;
+  availableIntegrations$: Observable<Integration[]>;
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
    * Constructor
    */
-  constructor(
-    private _integrationsService: IntegrationsService,
-    private _addIntegrationService: SyncOptionService
-  ) {}
+  constructor(private _integrationService: IntegrationService) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -42,14 +36,9 @@ export class IntegrationsComponent implements OnInit, OnDestroy {
    * On init
    */
   ngOnInit(): void {
-    // Get installed data
-    this._integrationsService.integrations$
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(data => {
-        // Store the data
-        this.installed = data?.installed;
-        this.available = data?.available;
-      });
+    this.integrationInstances$ = this._integrationService.integrationInstances$;
+    this.availableIntegrations$ =
+      this._integrationService.availableIntegrations$;
   }
 
   /**
@@ -83,6 +72,6 @@ export class IntegrationsComponent implements OnInit, OnDestroy {
    */
   addIntegration(integration: any): any {
     this.openAddIntegration = true;
-    this._addIntegrationService.setSelectedIntegration(integration?.id);
+    // this._addIntegrationService.setSelectedIntegration(integration?.id);
   }
 }
