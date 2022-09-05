@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
@@ -28,7 +29,10 @@ export class FuseLoadingBarComponent implements OnChanges, OnInit, OnDestroy {
   /**
    * Constructor
    */
-  constructor(private _fuseLoadingService: FuseLoadingService) {}
+  constructor(
+    private _fuseLoadingService: FuseLoadingService,
+    private _changeDetectorRef: ChangeDetectorRef
+  ) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -70,6 +74,7 @@ export class FuseLoadingBarComponent implements OnChanges, OnInit, OnDestroy {
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(value => {
         this.show = value;
+        this._changeDetectorRef.detectChanges();
       });
   }
 

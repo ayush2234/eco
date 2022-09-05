@@ -84,7 +84,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
     private _changeDetectorRef: ChangeDetectorRef,
     private _fuseMediaWatcherService: FuseMediaWatcherService,
     private _portalBridge: PortalBridgeService,
-    private _addIntegrationService: SyncOptionService
+    private _syncOptionService: SyncOptionService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this._portalBridge.setPortal(this.portalContent);
-    this.wipIntegration$ = this._addIntegrationService.wipIntegration$.pipe(
+    this.wipIntegration$ = this._syncOptionService.wipIntegration$.pipe(
       tap(data => {
         // Setup available panels
         this.setPanels(data?.syncOptions);

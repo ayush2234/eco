@@ -6,6 +6,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { Observable, Subject, takeUntil } from 'rxjs';
+import { SyncOptionService } from './add-integration/common/sync-option/sync-option.service';
 import { IntegrationService } from './integration.service';
 import { Integration, IntegrationInstance } from './integration.types';
 
@@ -20,13 +21,17 @@ export class IntegrationsComponent implements OnInit, OnDestroy {
 
   integrationInstances$: Observable<IntegrationInstance[]>;
   availableIntegrations$: Observable<Integration[]>;
+  selectedIntegration$ = this._syncOptionService.selectedIntegration$;
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
    * Constructor
    */
-  constructor(private _integrationService: IntegrationService) {}
+  constructor(
+    private _integrationService: IntegrationService,
+    private _syncOptionService: SyncOptionService
+  ) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -70,8 +75,8 @@ export class IntegrationsComponent implements OnInit, OnDestroy {
    * @param index
    * @param item
    */
-  addIntegration(integration: any): any {
+  addIntegration(integration: Integration): any {
     this.openAddIntegration = true;
-    // this._addIntegrationService.setSelectedIntegration(integration?.id);
+    this._syncOptionService.setSelectedIntegration(integration.source_id);
   }
 }
