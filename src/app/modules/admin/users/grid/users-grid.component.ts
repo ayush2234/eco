@@ -32,6 +32,7 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { UserService } from '../../../../core/user/user.service';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { User } from 'app/core/user/user.types';
+import { CompanyService } from '../../companies/company.service';
 
 @Component({
   selector: 'eco-users-grid',
@@ -67,14 +68,14 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
   users$: Observable<User[]>;
 
   flashMessage: 'success' | 'error' | null = null;
+  openAddUser: boolean = false;
   isLoading: boolean = false;
   pagination: Pagination;
   searchInputControl: UntypedFormControl = new UntypedFormControl();
   selectedUser: User | null = null;
   selectedUserForm: UntypedFormGroup;
-  tags: Tag[];
-  filteredTags: Tag[];
-  tagsEditMode: boolean = false;
+  companyTags: Tag[];
+  filteredCompanyTags: Tag[];
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
@@ -84,7 +85,8 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
     private _changeDetectorRef: ChangeDetectorRef,
     private _fuseConfirmationService: FuseConfirmationService,
     private _formBuilder: UntypedFormBuilder,
-    private _userService: UserService
+    private _userService: UserService,
+    private _companyService: CompanyService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -100,11 +102,10 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
       id: [''],
       name: ['', [Validators.required]],
       email: [''],
-      password: [''],
       role: [''],
-      active: [''],
-      notes: [''],
-      tags: [[]],
+      active_status: [''],
+      note: [''],
+      companies: [[]],
     });
 
     // Get the pagination
@@ -121,13 +122,20 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // Get the users
     this.users$ = this._userService.users$;
 
-    // Get the tags
-    this._userService.tags$
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((tags: Tag[]) => {
+    // Get the companies
+    this._companyService.companies$
+      .pipe(
+        takeUntil(this._unsubscribeAll),
+        map(companies =>
+          companies.map(company => {
+            return { id: company.company_id, title: company.company_name };
+          })
+        )
+      )
+      .subscribe((companies: Tag[]) => {
         // Update the tags
-        this.tags = tags;
-        this.filteredTags = tags;
+        this.companyTags = companies;
+        this.filteredCompanyTags = companies;
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
@@ -244,43 +252,33 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Toggle the tags edit mode
-   */
-  toggleTagsEditMode(): void {
-    this.tagsEditMode = !this.tagsEditMode;
-  }
-
-  /**
-   * Filter tags
+   * Filter companies
    *
    * @param event
    */
-  filterTags(event): void {
+  filterCompanyTags(event): void {
     // Get the value
     const value = event.target.value.toLowerCase();
 
-    // Filter the tags
-    this.filteredTags = this.tags.filter(tag =>
+    // Filter the companies
+    this.filteredCompanyTags = this.companyTags.filter(tag =>
       tag.title.toLowerCase().includes(value)
     );
   }
 
   /**
-   * Filter tags input key down event
+   * Filter companies input key down event
    *
    * @param event
    */
-  filterTagsInputKeyDown(event): void {
+  filterCompanyTagsInputKeyDown(event): void {
     // Return if the pressed key is not 'Enter'
     if (event.key !== 'Enter') {
       return;
     }
 
     // If there is no tag available...
-    if (this.filteredTags.length === 0) {
-      // Create the tag
-      this.createTag(event.target.value);
-
+    if (this.filteredCompanyTags.length === 0) {
       // Clear the input
       event.target.value = '';
 
@@ -289,67 +287,17 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     // If there is a tag...
-    const tag = this.filteredTags[0];
-    const isTagApplied = this.selectedUser.tags.find(id => id === tag.id);
+    const tag = this.filteredCompanyTags[0];
+    const isTagApplied = this.selectedUser.companies.find(id => id === tag.id);
 
     // If the found tag is already applied to the user...
     if (isTagApplied) {
       // Remove the tag from the user
-      this.removeTagFromUser(tag);
+      this.removeCompanyTagFromUser(tag);
     } else {
       // Otherwise add the tag to the user
-      this.addTagToUser(tag);
+      this.addCompanyTagToUser(tag);
     }
-  }
-
-  /**
-   * Create a new tag
-   *
-   * @param title
-   */
-  createTag(title: string): void {
-    const tag = {
-      title,
-    };
-
-    // Create tag on the server
-    this._userService.createTag(tag).subscribe(response => {
-      // Add the tag to the user
-      this.addTagToUser(response);
-    });
-  }
-
-  /**
-   * Update the tag title
-   *
-   * @param tag
-   * @param event
-   */
-  updateTagTitle(tag: Tag, event): void {
-    // Update the title on the tag
-    tag.title = event.target.value;
-
-    // Update the tag on the server
-    this._userService
-      .updateTag(tag.id, tag)
-      .pipe(debounceTime(300))
-      .subscribe();
-
-    // Mark for check
-    this._changeDetectorRef.markForCheck();
-  }
-
-  /**
-   * Delete the tag
-   *
-   * @param tag
-   */
-  deleteTag(tag: Tag): void {
-    // Delete the tag from the server
-    this._userService.deleteTag(tag.id).subscribe();
-
-    // Mark for check
-    this._changeDetectorRef.markForCheck();
   }
 
   /**
@@ -357,12 +305,14 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
    *
    * @param tag
    */
-  addTagToUser(tag: Tag): void {
+  addCompanyTagToUser(tag: Tag): void {
     // Add the tag
-    this.selectedUser.tags.unshift(tag.id);
+    this.selectedUser.companies.unshift(tag.id);
 
     // Update the selected user form
-    this.selectedUserForm.get('tags').patchValue(this.selectedUser.tags);
+    this.selectedUserForm
+      .get('companies')
+      .patchValue(this.selectedUser.companies);
 
     // Mark for check
     this._changeDetectorRef.markForCheck();
@@ -373,15 +323,17 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
    *
    * @param tag
    */
-  removeTagFromUser(tag: Tag): void {
+  removeCompanyTagFromUser(tag: Tag): void {
     // Remove the tag
-    this.selectedUser.tags.splice(
-      this.selectedUser.tags.findIndex(item => item === tag.id),
+    this.selectedUser.companies.splice(
+      this.selectedUser.companies.findIndex(item => item === tag.id),
       1
     );
 
     // Update the selected user form
-    this.selectedUserForm.get('tags').patchValue(this.selectedUser.tags);
+    this.selectedUserForm
+      .get('companies')
+      .patchValue(this.selectedUser.companies);
 
     // Mark for check
     this._changeDetectorRef.markForCheck();
@@ -393,43 +345,28 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param tag
    * @param change
    */
-  toggleITag(tag: Tag, change: MatCheckboxChange): void {
+  toggleCompanyTag(tag: Tag, change: MatCheckboxChange): void {
     if (change.checked) {
-      this.addTagToUser(tag);
+      this.addCompanyTagToUser(tag);
     } else {
-      this.removeTagFromUser(tag);
+      this.removeCompanyTagFromUser(tag);
     }
   }
 
   /**
-   * Should the create tag button be visible
-   *
-   * @param inputValue
+   * Create source
    */
-  shouldShowCreateTagButton(inputValue: string): boolean {
-    return !!!(
-      inputValue === '' ||
-      this.tags.findIndex(
-        tag => tag.title.toLowerCase() === inputValue.toLowerCase()
-      ) > -1
-    );
+  createUser(): void {
+    this.openAddUser = true;
+    this._changeDetectorRef.detectChanges();
   }
 
   /**
-   * Create user
+   * Cancel create source
    */
-  createUser(): void {
-    // Create the user
-    this._userService.createUser().subscribe(newuser => {
-      // Go to new user
-      this.selectedUser = newuser;
-
-      // Fill the form
-      this.selectedUserForm.patchValue(newuser);
-
-      // Mark for check
-      this._changeDetectorRef.markForCheck();
-    });
+  cancelCreateUser(): void {
+    this.openAddUser = false;
+    this._changeDetectorRef.detectChanges();
   }
 
   /**

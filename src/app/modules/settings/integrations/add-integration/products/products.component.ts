@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Integration, SyncOption } from '../../integration.types';
+import { SyncOptionComponent } from '../common/sync-option/sync-option.component';
 import { SyncOptionService } from '../common/sync-option/sync-option.service';
 
 @Component({
@@ -15,8 +16,10 @@ import { SyncOptionService } from '../common/sync-option/sync-option.service';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddIntegrationProductsComponent implements OnInit {
-  @Input() integration: Integration;
+export class AddIntegrationProductsComponent
+  extends SyncOptionComponent
+  implements OnInit
+{
   @Input() syncOption: SyncOption;
   productsForm: UntypedFormGroup;
 
@@ -24,9 +27,11 @@ export class AddIntegrationProductsComponent implements OnInit {
    * Constructor
    */
   constructor(
-    private _formBuilder: UntypedFormBuilder,
-    private _addIntegrationService: SyncOptionService
-  ) {}
+    public _syncOptionService: SyncOptionService,
+    public _formBuilder: UntypedFormBuilder
+  ) {
+    super(_syncOptionService);
+  }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -56,20 +61,5 @@ export class AddIntegrationProductsComponent implements OnInit {
    */
   trackByFn(index: number, item: any): any {
     return item.id || index;
-  }
-
-  /**
-   * Activate panel
-   */
-  activatePanel(): void {
-    // const activatedSyncOption = { ...this.syncOption, isActive: true };
-    // this._addIntegrationService.wipIntegration = {
-    //   ...this.integration,
-    //   syncOptions: this.integration?.syncOptions?.map(syncOption =>
-    //     syncOption.key === this.syncOption.key
-    //       ? activatedSyncOption
-    //       : syncOption
-    //   ),
-    // };
   }
 }

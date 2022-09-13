@@ -18,9 +18,10 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from 'app/shared/shared.module';
 import { UsersGridComponent } from './grid/users-grid.component';
+import { AddUserComponent } from './add-user/add-user.component';
 
 @NgModule({
-  declarations: [UsersComponent, UsersGridComponent],
+  declarations: [UsersComponent, UsersGridComponent, AddUserComponent],
   imports: [
     TenantsRoutingModule,
     MatButtonModule,
