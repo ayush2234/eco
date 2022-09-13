@@ -5,10 +5,13 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
+import { ApiResponse } from 'app/core/api/api.types';
 import { UserService } from 'app/core/user/user.service';
-import { User } from 'app/core/user/user.types';
+import { User, UserListResponse } from 'app/core/user/user.types';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { catchError, Observable, throwError } from 'rxjs';
+import { CompanyService } from '../companies/company.service';
+import { CompanyListResponse } from '../companies/company.types';
 
 @Injectable({
   providedIn: 'root',
@@ -32,10 +35,7 @@ export class UserResolver implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<{
-    pagination: Pagination;
-    users: User[];
-  }> {
+  ): Observable<ApiResponse<UserListResponse>> {
     return this._userService.getUsers();
   }
 }
@@ -43,11 +43,11 @@ export class UserResolver implements Resolve<any> {
 @Injectable({
   providedIn: 'root',
 })
-export class UserTagResolver implements Resolve<any> {
+export class UserCompanyResolver implements Resolve<any> {
   /**
    * Constructor
    */
-  constructor(private _userService: UserService) {}
+  constructor(private _companyService: CompanyService) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods
@@ -62,7 +62,7 @@ export class UserTagResolver implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<Tag[]> {
-    return this._userService.getTags();
+  ): Observable<ApiResponse<CompanyListResponse>> {
+    return this._companyService.getCompanies();
   }
 }

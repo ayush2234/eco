@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   BehaviorSubject,
-  filter,
   map,
   Observable,
   of,
@@ -13,11 +12,17 @@ import {
   throwError,
 } from 'rxjs';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
-import { GetUserByTokenResponse, User } from 'app/core/user/user.types';
+import {
+  CreateUser,
+  GetUserByTokenResponse,
+  User,
+  UserListResponse,
+} from 'app/core/user/user.types';
 import { appConfig } from '../config/app.config';
 import { AuthUtils } from '../auth/auth.utils';
 import { ApiResponse } from '../api/api.types';
 import { LocalStorageUtils } from '../common/local-storage.utils';
+import { GridUtils } from 'app/layout/common/grid/grid.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +35,9 @@ export class UserService {
   private _pagination: BehaviorSubject<Pagination | null> = new BehaviorSubject(
     null
   );
-  private _tags: BehaviorSubject<Tag[] | null> = new BehaviorSubject(null);
+  private _companyTags: BehaviorSubject<Tag[] | null> = new BehaviorSubject(
+    null
+  );
 
   /**
    * Constructor
@@ -73,7 +80,7 @@ export class UserService {
    * Getter for tags
    */
   get tags$(): Observable<Tag[]> {
-    return this._tags.asObservable();
+    return this._companyTags.asObservable();
   }
 
   // -----------------------------------------------------------------------------------------------------
@@ -96,15 +103,11 @@ export class UserService {
     sort: string = 'name',
     order: 'asc' | 'desc' | '' = 'asc',
     search: string = ''
-  ): Observable<{
-    pagination: Pagination;
-    users: User[];
-  }> {
+  ): Observable<ApiResponse<UserListResponse>> {
+    const api = this._config?.apiConfig?.baseUrl;
+
     return this._httpClient
-      .get<{
-        pagination: Pagination;
-        users: User[];
-      }>('api/users', {
+      .get<ApiResponse<UserListResponse>>(`${api}/admin/users`, {
         params: {
           page: '' + page,
           size: '' + size,
@@ -115,8 +118,10 @@ export class UserService {
       })
       .pipe(
         tap(response => {
-          this._pagination.next(response.pagination);
-          this._users.next(response.users);
+          const { data } = response;
+          const pagination = GridUtils.getPagination(data);
+          this._pagination.next(pagination);
+          this._users.next(data?.users);
         })
       );
   }
@@ -176,19 +181,24 @@ export class UserService {
   /**
    * Create user
    */
-  createUser(): Observable<User> {
+  createUser(user: CreateUser): Observable<User> {
+    const api = this._config?.apiConfig?.baseUrl;
+
     return this.users$.pipe(
       take(1),
       switchMap(users =>
-        this._httpClient.post<User>('api/user', {}).pipe(
-          map(newUser => {
-            // Update the users with the new user
-            this._users.next([newUser, ...users]);
+        this._httpClient
+          .post<ApiResponse<User>>(`${api}/admin/user`, user)
+          .pipe(
+            map(response => {
+              const { data: newUser } = response;
+              // Update the users with the new user
+              this._users.next([newUser, ...users]);
 
-            // Return the new user
-            return newUser;
-          })
-        )
+              // Return the new user
+              return newUser;
+            })
+          )
       )
     );
   }
@@ -200,16 +210,16 @@ export class UserService {
    * @param user
    */
   updateUser(id: string, user: User): Observable<User> {
+    const api = this._config?.apiConfig?.baseUrl;
+
     return this.users$.pipe(
       take(1),
       switchMap(users =>
         this._httpClient
-          .patch<User>('api/user', {
-            id,
-            user,
-          })
+          .put<ApiResponse<User>>(`${api}/admin/user/${id}`, user)
           .pipe(
-            map(updatedUser => {
+            map(response => {
+              const { data: updatedUser } = response;
               // Find the index of the updated user
               const index = users.findIndex(item => item.id === id);
 
@@ -233,6 +243,8 @@ export class UserService {
    * @param id
    */
   deleteUser(id: string): Observable<boolean> {
+    const api = this._config?.apiConfig?.baseUrl;
+
     return this.users$.pipe(
       take(1),
       switchMap(users =>
@@ -254,131 +266,6 @@ export class UserService {
               // Return the deleted status
               return isDeleted;
             })
-          )
-      )
-    );
-  }
-
-  /**
-   * Get tags
-   */
-  getTags(): Observable<Tag[]> {
-    return this._httpClient
-      .get<Tag[]>('api/apps/ecommerce/inventory/tags')
-      .pipe(
-        tap(tags => {
-          this._tags.next(tags);
-        })
-      );
-  }
-
-  /**
-   * Create tag
-   *
-   * @param tag
-   */
-  createTag(tag: Tag): Observable<Tag> {
-    return this.tags$.pipe(
-      take(1),
-      switchMap(tags =>
-        this._httpClient
-          .post<Tag>('api/apps/ecommerce/inventory/tag', {
-            tag,
-          })
-          .pipe(
-            map(newTag => {
-              // Update the tags with the new tag
-              this._tags.next([...tags, newTag]);
-
-              // Return new tag from observable
-              return newTag;
-            })
-          )
-      )
-    );
-  }
-
-  /**
-   * Update the tag
-   *
-   * @param id
-   * @param tag
-   */
-  updateTag(id: string, tag: Tag): Observable<Tag> {
-    return this.tags$.pipe(
-      take(1),
-      switchMap(tags =>
-        this._httpClient
-          .patch<Tag>('api/apps/ecommerce/inventory/tag', {
-            id,
-            tag,
-          })
-          .pipe(
-            map(updatedTag => {
-              // Find the index of the updated tag
-              const index = tags.findIndex(item => item.id === id);
-
-              // Update the tag
-              tags[index] = updatedTag;
-
-              // Update the tags
-              this._tags.next(tags);
-
-              // Return the updated tag
-              return updatedTag;
-            })
-          )
-      )
-    );
-  }
-
-  /**
-   * Delete the tag
-   *
-   * @param id
-   */
-  deleteTag(id: string): Observable<boolean> {
-    return this.tags$.pipe(
-      take(1),
-      switchMap(tags =>
-        this._httpClient
-          .delete('api/apps/ecommerce/inventory/tag', {
-            params: { id },
-          })
-          .pipe(
-            map((isDeleted: boolean) => {
-              // Find the index of the deleted tag
-              const index = tags.findIndex(item => item.id === id);
-
-              // Delete the tag
-              tags.splice(index, 1);
-
-              // Update the tags
-              this._tags.next(tags);
-
-              // Return the deleted status
-              return isDeleted;
-            }),
-            filter(isDeleted => isDeleted),
-            switchMap(isDeleted =>
-              this.users$.pipe(
-                take(1),
-                map(users => {
-                  // Iterate through the contacts
-                  users.forEach(user => {
-                    const tagIndex = user.tags.findIndex(tag => tag === id);
-
-                    // If the contact has the tag, remove it
-                    if (tagIndex > -1) {
-                      user.tags.splice(tagIndex, 1);
-                    }
-                  });
-
-                  // Return the deleted status
-                  return isDeleted;
-                })
-              )
-            )
           )
       )
     );
