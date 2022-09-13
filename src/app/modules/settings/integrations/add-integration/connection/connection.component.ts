@@ -30,7 +30,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
    */
   constructor(
     private _formBuilder: UntypedFormBuilder,
-    private _addIntegrationService: SyncOptionService
+    private _syncOptionService: SyncOptionService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -150,9 +150,9 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
   }
 
   private setWipIntegration(syncOptions: SyncOption[]): void {
-    // this._addIntegrationService.wipIntegration = {
-    //   ...this.integration,
-    //   syncOptions,
-    // };
+    this._syncOptionService.wipIntegration = {
+      ...this.integration,
+      syncOptions,
+    };
   }
 }

@@ -102,10 +102,6 @@ export class SettingsSidebarComponent {
             type: 'basic',
             icon: 'heroicons_outline:clipboard-list',
             link: '/settings/integrations',
-            badge: {
-              title: '49',
-              classes: 'px-2 bg-primary text-on-primary rounded-full',
-            },
           },
           {
             title: 'Source channel',

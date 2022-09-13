@@ -76,12 +76,12 @@
 
                   <!-- Status -->
                   <div class="hidden lg:block">
-                    <ng-container *ngIf="user.active">
+                    <ng-container *ngIf="user.active_status">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container *ngIf="!user.active">
+                    <ng-container *ngIf="!user.active_status">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
@@ -139,10 +139,10 @@
                   <div class="flex flex-col">
                     <span class="font-semibold mb-2">Active</span>
                     <mat-slide-toggle
-                      [formControlName]="'active'"
+                      [formControlName]="'active_status'"
                       [color]="'primary'">
                       {{
-                        selectedUserForm.get('active').value
+                        selectedUserForm.get('active_status').value
                           ? 'Active'
                           : 'Disabled'
                       }}
@@ -205,7 +205,7 @@
                       </mat-form-field>
                       <mat-form-field class="w-2/3 pl-2">
                         <mat-label>Notes</mat-label>
-                        <input matInput [formControlName]="'notes'" />
+                        <input matInput [formControlName]="'note'" />
                       </mat-form-field>
                     </div>
                   </div>
@@ -228,24 +228,11 @@
                             class="min-w-0 ml-2 py-1 border-0"
                             type="text"
                             placeholder="Search company"
-                            (input)="filterTags($event)"
-                            (keydown)="filterTagsInputKeyDown($event)"
+                            (input)="filterCompanyTags($event)"
+                            (keydown)="filterCompanyTagsInputKeyDown($event)"
                             [maxLength]="50"
                             #newTagInput />
                         </div>
-                        <button
-                          class="ml-3 w-8 h-8 min-h-8"
-                          mat-icon-button
-                          (click)="toggleTagsEditMode()">
-                          <mat-icon
-                            *ngIf="!tagsEditMode"
-                            class="icon-size-5"
-                            [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
-                          <mat-icon
-                            *ngIf="tagsEditMode"
-                            class="icon-size-5"
-                            [svgIcon]="'heroicons_solid:check'"></mat-icon>
-                        </button>
                       </div>
                       <!-- Available tags -->
                       <div
@@ -254,79 +241,28 @@
                         <ng-container *ngIf="!tagsEditMode">
                           <ng-container
                             *ngFor="
-                              let tag of filteredTags;
+                              let tag of filteredCompanyTags;
                               trackBy: trackByFn
                             ">
                             <mat-checkbox
                               class="flex items-center h-10 min-h-10 px-4"
                               [color]="'primary'"
-                              [checked]="selectedUser.tags.includes(tag.id)"
-                              (change)="toggleUserTag(tag, $event)">
+                              [checked]="
+                                selectedUser.companies?.includes(tag.id)
+                              "
+                              (change)="toggleCompanyTag(tag, $event)">
                               {{ tag.title }}
                             </mat-checkbox>
                           </ng-container>
                         </ng-container>
-                        <!-- Tags editing -->
-                        <ng-container *ngIf="tagsEditMode">
-                          <div class="p-4 space-y-2">
-                            <ng-container
-                              *ngFor="
-                                let tag of filteredTags;
-                                trackBy: trackByFn
-                              ">
-                              <mat-form-field
-                                class="fuse-mat-dense fuse-mat-no-subscript w-full">
-                                <input
-                                  matInput
-                                  [value]="tag.title"
-                                  (input)="updateTagTitle(tag, $event)" />
-                                <button
-                                  mat-icon-button
-                                  (click)="deleteTag(tag)"
-                                  matSuffix>
-                                  <mat-icon
-                                    class="icon-size-5"
-                                    [svgIcon]="
-                                      'heroicons_solid:trash'
-                                    "></mat-icon>
-                                </button>
-                              </mat-form-field>
-                            </ng-container>
-                          </div>
-                        </ng-container>
-                        <div
-                          class="flex items-center h-10 min-h-10 -ml-0.5 pl-4 pr-3 leading-none cursor-pointer border-t hover:bg-gray-50 dark:hover:bg-hover"
-                          *ngIf="shouldShowCreateTagButton(newTagInput.value)"
-                          (click)="
-                            createTag(newTagInput.value); newTagInput.value = ''
-                          "
-                          matRipple>
-                          <mat-icon
-                            class="mr-2 icon-size-5"
-                            [svgIcon]="
-                              'heroicons_solid:plus-circle'
-                            "></mat-icon>
-                          <div class="break-all">
-                            Create "<b>{{ newTagInput.value }}</b
-                            >"
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div
-                class="flex items-center justify-between w-full border-t px-8 py-4">
-                <button
-                  class="-ml-4"
-                  mat-button
-                  [color]="'warn'"
-                  (click)="deleteSelectedUser()">
-                  Delete
-                </button>
-                <div class="flex items-center">
+              <div class="flex items-center w-full border-t px-8 py-4">
+                <div class="flex items-center ml-auto mr-0">
                   <div class="flex items-center mr-4" *ngIf="flashMessage">
                     <ng-container *ngIf="flashMessage === 'success'">
                       <mat-icon
@@ -363,3 +299,7 @@
     </div>
   </div>
 </div>
+
+<ng-container *ngIf="openAddUser">
+  <eco-admin-add-user (cancel)="cancelCreateUser()"></eco-admin-add-user
+></ng-container>
