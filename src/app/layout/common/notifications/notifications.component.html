@@ -1,5 +1,5 @@
 <!-- Notifications toggle -->
-<button mat-icon-button (click)="openPanel()" #notificationsOrigin>
+<button  mat-icon-button (click)="openPanel()" #notificationsOrigin>
   <ng-container *ngIf="unreadCount > 0">
     <span
       class="absolute top-0 right-0 left-0 flex items-center justify-center h-3">
@@ -9,7 +9,9 @@
       </span>
     </span>
   </ng-container>
-  <mat-icon [svgIcon]="'heroicons_outline:bell'"></mat-icon>
+  <mat-icon
+    [ngStyle]="{ color: 'white' }"
+    [svgIcon]="'heroicons_outline:bell'"></mat-icon>
 </button>
 
 <!-- Notifications panel -->
@@ -153,7 +155,8 @@
           <div
             class="flex flex-0 items-center justify-center w-14 h-14 rounded-full bg-primary-100">
             <mat-icon
-              class="text-primary-500-700"
+            [ngStyle]="{'color':'white'}"
+              class="text-primary-500-700 text-white"
               [svgIcon]="'heroicons_outline:bell'"></mat-icon>
           </div>
           <div class="mt-5 text-2xl font-semibold tracking-tight">

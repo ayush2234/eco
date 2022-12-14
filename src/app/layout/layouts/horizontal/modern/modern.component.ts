@@ -8,7 +8,8 @@ import {
 } from '@fuse/components/navigation';
 import { Navigation } from 'app/core/navigation/navigation.types';
 import { NavigationService } from 'app/core/navigation/navigation.service';
-
+import { User } from 'app/core/user/user.types';
+import { UserService } from 'app/core/user/user.service';
 @Component({
   selector: 'modern-layout',
   templateUrl: './modern.component.html',
@@ -17,6 +18,7 @@ import { NavigationService } from 'app/core/navigation/navigation.service';
 export class ModernLayoutComponent implements OnInit, OnDestroy {
   isScreenSmall: boolean;
   navigation: Navigation;
+  user: User;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
@@ -27,7 +29,8 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _navigationService: NavigationService,
     private _fuseMediaWatcherService: FuseMediaWatcherService,
-    private _fuseNavigationService: FuseNavigationService
+    private _fuseNavigationService: FuseNavigationService,
+    private _userService: UserService,
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -62,6 +65,11 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
       .subscribe(({ matchingAliases }) => {
         // Check if the screen is small
         this.isScreenSmall = !matchingAliases.includes('md');
+      });
+      this._userService.user$
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((user: User) => {
+        this.user = user;
       });
   }
 
