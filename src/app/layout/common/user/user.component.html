@@ -6,7 +6,7 @@
       *ngIf="showAvatar && user.avatar"
       [src]="user.avatar" />
     <div
-      class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-400 text-gray-700"
+      class="flex items-center justify-center w-8 h-8 rounded-full  text-indigo-700 bg-indigo-500"
       *ngIf="!showAvatar || !user.avatar">
       <span>{{ user.name | getInitials }}</span>
     </div>
