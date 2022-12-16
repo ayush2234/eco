@@ -162,9 +162,6 @@ export class UserService {
         // Find the user
         const user = users.find(item => item.id === id) || null;
 
-        // Update the user
-        this._user.next(user);
-
         // Return the user
         return user;
       }),
