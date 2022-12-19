@@ -16,10 +16,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { FuseDrawerComponent } from '@fuse/components/drawer';
-import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { UserService } from 'app/core/user/user.service';
-import { CreateUser, User } from 'app/core/user/user.types';
+import { CreateUser } from 'app/core/user/user.types';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
 import { Tag } from 'app/layout/common/grid/grid.types';
 import { map, Subject, takeUntil } from 'rxjs';
