@@ -18,7 +18,7 @@ export class AuthService {
   constructor(
     private _httpClient: HttpClient,
     private _userService: UserService
-  ) {}
+  ) { }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
@@ -45,6 +45,13 @@ export class AuthService {
 
   get tokenExpirationDate(): number {
     return +localStorage.getItem('tokenExpirationDate') ?? 0;
+  }
+  // setter & getter for role
+  set role(role: string) {
+    role && localStorage.setItem('role', role);
+  }
+  get role(): string {
+    return localStorage.getItem('role') ?? '';
   }
 
   // -----------------------------------------------------------------------------------------------------
@@ -89,11 +96,13 @@ export class AuthService {
       .post<ApiResponse<AuthUserResponse>>(`${api}/auth/login`, formData)
       .pipe(
         switchMap((response: ApiResponse<AuthUserResponse>) => {
+       
           const { data } = response;
           // Store the access token in the local storage
           this.accessToken = data?.access_token;
           this.tokenExpirationDate = data?.user?.expire_at;
-
+          // store the role in the local storage
+          this.role = data?.user.role;
           // Set the authenticated flag to true
           this._authenticated = true;
 
@@ -150,7 +159,8 @@ export class AuthService {
   signOut(): Observable<any> {
     // Remove the access token from the local storage
     localStorage.removeItem('accessToken');
-
+    //Remove the role from the local storage
+    localStorage.removeItem('role');
     // Set the authenticated flag to false
     this._authenticated = false;
 
@@ -189,6 +199,7 @@ export class AuthService {
    */
   check(): Observable<boolean> {
     // Check if the user is logged in
+
     if (this._authenticated) {
       return of(true);
     }

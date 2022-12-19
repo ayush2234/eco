@@ -34,7 +34,7 @@ export class AuthSignInComponent implements OnInit {
     private _authService: AuthService,
     private _formBuilder: UntypedFormBuilder,
     private _router: Router
-  ) {}
+  ) { }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -84,6 +84,18 @@ export class AuthSignInComponent implements OnInit {
 
         // Navigate to the redirect url
         this._router.navigateByUrl(redirectURL);
+
+        //getting current logged in user role
+
+        const currentLoggedIn = localStorage.getItem('role')
+
+        //navigating user to orders page
+
+        if (currentLoggedIn === 'user') {//TODO
+          console.log('role', currentLoggedIn)
+          this._router.navigateByUrl('sync-logs/orders')
+        }
+
       },
       response => {
         // Re-enable the form
