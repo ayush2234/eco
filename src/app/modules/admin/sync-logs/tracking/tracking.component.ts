@@ -29,8 +29,8 @@ import {
 import { fuseAnimations } from '@fuse/animations';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
-import { SyncLogsService } from '../sync-logs.service';
-import { SyncLog } from '../sync-logs.types';
+import { SyncLogsService } from '../../../user/sync-logs/sync-logs.service';
+import { SyncLog } from '../../../user/sync-logs/sync-logs.types';
 
 @Component({
   selector: 'eco-sync-logs-tracking',

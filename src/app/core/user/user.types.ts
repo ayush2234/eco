@@ -5,7 +5,16 @@ export interface UserListResponse extends Pageable {
 }
 
 export interface GetUserByTokenResponse {
-  user: User;
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  status?: string;
+  expire_at: number;
+  role: string;
+  companies?: string[];
+  active_status?: string;
+  note?: string;
   access_token: string;
   ttl: number;
 }
@@ -14,13 +23,16 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  avatar: string;
-  status: string;
+  avatar?: string;
+  status?: string;
   expire_at: number;
   role: string;
   companies?: string[];
-  active_status: string;
+  active_status?: string;
   note?: string;
+  access_token: string;
+  ttl: number;
+
 }
 
 export interface CreateUser {

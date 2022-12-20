@@ -156,7 +156,7 @@ export class CompaniesGridComponent
       .pipe(
         takeUntil(this._unsubscribeAll),
         map(sources =>
-          sources.map(source => {
+          sources?.map(source => {
             return { id: source.source_id, title: source.name };
           })
         )

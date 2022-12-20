@@ -75,27 +75,12 @@ export class AuthSignInComponent implements OnInit {
     this._authService.signIn(this.signInForm.value).subscribe(
       () => {
         // Set the redirect url.
-        // The '/signed-in-redirect' is a dummy url to catch the request and redirect the user
-        // to the correct page after a successful sign in. This way, that url can be set via
-        // routing file and we don't have to touch here.
-        const redirectURL =
+         const redirectURL =
           this._activatedRoute.snapshot.queryParamMap.get('redirectURL') ||
           '/signed-in-redirect';
 
         // Navigate to the redirect url
         this._router.navigateByUrl(redirectURL);
-
-        //getting current logged in user role
-
-        const currentLoggedIn = localStorage.getItem('role')
-
-        //navigating user to orders page
-
-        if (currentLoggedIn === 'user') {//TODO
-          console.log('role', currentLoggedIn)
-          this._router.navigateByUrl('sync-logs/orders')
-        }
-
       },
       response => {
         // Re-enable the form

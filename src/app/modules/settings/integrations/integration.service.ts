@@ -7,7 +7,7 @@ import {
   IntegrationSettings,
 } from './integration.types';
 import { appConfig } from 'app/core/config/app.config';
-import { ApiResponse } from 'app/core/api/api.types';
+import { ApiResponse, EcommifyApiResponse } from 'app/core/api/api.types';
 import { isEmpty } from 'lodash';
 
 @Injectable({
@@ -53,18 +53,18 @@ export class IntegrationService {
   getIntegrationSettings(companyId: string): Observable<IntegrationSettings> {
     const api = this._config.apiConfig.baseUrl;
     return this._httpClient
-      .get<ApiResponse<IntegrationSettings[]>>(
+      .get<EcommifyApiResponse<IntegrationSettings[]>>(
         `${api}/${companyId}/integrations`
       )
       .pipe(
         map(response => {
-          const { data } = response;
+          const { result } = response;
 
-          if (!isEmpty(data)) {
-            this._integrationInstances.next(data[0].instances);
-            this._availableIntegrations.next(data[0].available);
+          if (!isEmpty(result)) {
+            this._integrationInstances.next(result[0].instances);
+            this._availableIntegrations.next(result[0].available);
 
-            return data[0];
+            return result[0];
           }
 
           return null;
