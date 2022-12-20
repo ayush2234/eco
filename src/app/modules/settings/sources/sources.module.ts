@@ -16,9 +16,10 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AddSourceComponent } from './add-source/add-source.component';
 
 @NgModule({
-  declarations: [SourcesComponent],
+  declarations: [SourcesComponent, AddSourceComponent],
   imports: [
     SourcesRoutingModule,
     MatFormFieldModule,

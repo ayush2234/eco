@@ -1,0 +1,158 @@
+<ng-container *cdkPortal>
+  <fuse-drawer
+    class="w-screen min-w-screen max-w-screen-sm sm:w-25vw sm:min-w-100 z-999"
+    fixed
+    [mode]="'over'"
+    [name]="'addIntegrationDrawer'"
+    [position]="'right'"
+    [opened]="fuseDrawerOpened"
+    (openedChanged)="openedChanged(fuseDrawer)"
+    #fuseDrawer>
+    <div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+      <div class="flex items-center justify-between m-8 mr-6 sm:my-10">
+        <div class="text-3xl font-bold tracking-tight leading-none">
+          {{ !isEdit ? 'Add' : 'Update' }} Source
+        </div>
+        <div class="lg:hidden">
+          <button mat-icon-button (click)="fuseDrawer.close()">
+            <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="w-full p-8 pr-6 pt-0 sm:pb-10">
+        <!-- Form -->
+        <form [formGroup]="sourceForm">
+          <!-- MarapostSource Section -->
+          <div
+            class="grid sm:grid-cols-4 gap-6 w-full mt-8"
+            *ngIf="selectedSource.source_form === 'maropostSource'">
+            <!-- Store Url -->
+            <div class="sm:col-span-4">
+              <mat-form-field class="fuse-mat-no-subscript w-full">
+                <mat-label>Store Domain Url</mat-label>
+                <input formControlName="storeUrl" matInput />
+              </mat-form-field>
+              <mat-error
+                class="text-sm"
+                *ngIf="
+                  sourceForm.get('storeUrl').touched &&
+                  sourceForm.get('storeUrl').errors?.required
+                ">
+                Store Domain URL is required
+              </mat-error>
+            </div>
+          </div>
+
+          <!--SalsifySource Section -->
+          <div
+            class="grid sm:grid-cols-4 gap-6 w-full mt-8"
+            *ngIf="selectedSource.source_form === 'SalsifySource'">
+            <!-- API Key -->
+            <div class="sm:col-span-4">
+              <mat-form-field class="fuse-mat-no-subscript w-full">
+                <mat-label>API Key</mat-label>
+                <input formControlName="apiKey" matInput />
+              </mat-form-field>
+              <mat-error
+                class="text-sm"
+                *ngIf="
+                  sourceForm.get('apiKey').touched &&
+                  sourceForm.get('apiKey').errors?.required
+                ">
+                API Key is required
+              </mat-error>
+            </div>
+          </div>
+
+          <!--MagentoSource Section -->
+          <div
+            class="grid sm:grid-cols-4 gap-6 w-full mt-8"
+            *ngIf="selectedSource.source_form === 'MagentoSource'">
+            <!-- Consumer Key -->
+            <div class="sm:col-span-4">
+              <mat-form-field class="fuse-mat-no-subscript w-full">
+                <mat-label>Consumer Key</mat-label>
+                <input formControlName="consumerKey" matInput />
+              </mat-form-field>
+              <mat-error
+                class="text-sm"
+                *ngIf="
+                  sourceForm.get('consumerKey').touched &&
+                  sourceForm.get('consumerKey').errors?.required
+                ">
+                Consumer Key is required
+              </mat-error>
+            </div>
+
+            <!-- Consumer Secret -->
+            <div class="sm:col-span-4">
+              <mat-form-field class="fuse-mat-no-subscript w-full">
+                <mat-label>Consumer Secret</mat-label>
+                <input formControlName="consumerSecret" matInput />
+              </mat-form-field>
+              <mat-error
+                class="text-sm"
+                *ngIf="
+                  sourceForm.get('consumerSecret').touched &&
+                  sourceForm.get('consumerSecret').errors?.required
+                ">
+                Consumer Secret is required
+              </mat-error>
+            </div>
+
+            <!-- Access Token -->
+            <div class="sm:col-span-4">
+              <mat-form-field class="fuse-mat-no-subscript w-full">
+                <mat-label>Access Token</mat-label>
+                <input formControlName="accessToken" matInput />
+              </mat-form-field>
+              <mat-error
+                class="text-sm"
+                *ngIf="
+                  sourceForm.get('accessToken').touched &&
+                  sourceForm.get('accessToken').errors?.required
+                ">
+                Access Token is required
+              </mat-error>
+            </div>
+
+            <!-- Access Token Secret -->
+            <div class="sm:col-span-4">
+              <mat-form-field class="fuse-mat-no-subscript w-full">
+                <mat-label>Access Token Secret</mat-label>
+                <input formControlName="accessTokenSecret" matInput />
+              </mat-form-field>
+              <mat-error
+                class="text-sm"
+                *ngIf="
+                  sourceForm.get('accessTokenSecret').touched &&
+                  sourceForm.get('accessTokenSecret').errors?.required
+                ">
+                Access Token Secret is required
+              </mat-error>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-11 mb-10 border-t"></div>
+          <div class="flex items-center justify-end">
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="fuseDrawer.close()">
+              Cancel
+            </button>
+            <button
+              class="ml-4"
+              mat-flat-button
+              type="button"
+              [color]="'primary'"
+              (click)="loginSource()">
+              {{ isEdit ? 'Update' : 'Save' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </fuse-drawer>
+</ng-container>

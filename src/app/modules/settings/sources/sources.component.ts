@@ -17,6 +17,8 @@ import { Source, SourceInstance } from './source.types';
 })
 export class SourcesComponent implements OnInit, OnDestroy {
   openAddSource: boolean = false;
+  selectedSource: Source;
+  isEdit: boolean = false;
 
   sourceInstances$: Observable<SourceInstance[]>;
   availableSources$: Observable<Source[]>;
@@ -64,12 +66,13 @@ export class SourcesComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Add source
-   *
-   * @param index
-   * @param item
+   * Add/Update source form opens here
+   * @param source selected source
+   * @param isEdit is this the Edit form or Add form
    */
-  addSource(source: any): any {
+  addSource(source: any, isEdit: boolean): any {
+    this.isEdit = isEdit;
+    this.selectedSource = source;
     this.openAddSource = true;
     // this._addSourceService.setSelectedSource(source?.id);
   }
