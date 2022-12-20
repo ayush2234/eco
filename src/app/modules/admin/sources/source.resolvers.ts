@@ -4,7 +4,7 @@ import {
   Resolve,
   RouterStateSnapshot,
 } from '@angular/router';
-import { ApiResponse } from 'app/core/api/api.types';
+import { ApiResponse, EcommifyApiResponse } from 'app/core/api/api.types';
 import { Tag } from 'app/layout/common/grid/grid.types';
 import { Observable } from 'rxjs';
 import { CompanyService } from '../companies/company.service';
@@ -61,7 +61,7 @@ export class SourceCompanyResolver implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<ApiResponse<CompanyListResponse>> {
+  ): Observable<EcommifyApiResponse<CompanyListResponse>> {
     return this._companyService.getCompanies();
   }
 }

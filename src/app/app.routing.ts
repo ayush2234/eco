@@ -3,20 +3,21 @@ import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
+import { LandingHomeComponent } from './modules/landing/home/home.component';
 
 // @formatter:off
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 export const appRoutes: Route[] = [
   // Redirect empty path to '/example'
-  { path: '', pathMatch: 'full', redirectTo: 'settings' },
+  { path: '', pathMatch: 'full', redirectTo: 'signed-in-redirect' },
 
   // Redirect signed in user to the '/example'
   //
   // After the user signs in, the sign in page will redirect the user to the 'signed-in-redirect'
   // path. Below is another redirection for that path to redirect the user to the desired
   // location. This is a small convenience to keep all main routes together here on this file.
-  { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: 'settings' },
+  { path: 'signed-in-redirect', pathMatch: 'full', component: LandingHomeComponent },
 
   // Auth routes for guests
   {
@@ -93,76 +94,23 @@ export const appRoutes: Route[] = [
     ],
   },
 
-  // Landing routes
-  {
-    path: '',
-    component: LayoutComponent,
-    data: {
-      layout: 'empty',
-    },
-    children: [
-      {
-        path: 'home',
-        loadChildren: () =>
-          import('app/modules/landing/home/home.module').then(
-            m => m.LandingHomeModule
-          ),
-      },
-    ],
-  },
-
   // Admin routes
   {
-    path: '',
-    canActivate: [AuthGuard],
-    canActivateChild: [AuthGuard],
-    component: LayoutComponent,
-    resolve: {
-      initialData: InitialDataResolver,
-    },
-    children: [
-      {
-        path: 'settings',
-        loadChildren: () =>
-          import('app/modules/settings/settings.module').then(
-            m => m.SettingsModule
-          ),
+      path: 'admin',
+      canActivate: [AuthGuard],
+      canActivateChild: [AuthGuard],
+      component: LayoutComponent,
+      resolve: {
+        initialData: InitialDataResolver,
       },
-      {
-        path: 'companies',
-        loadChildren: () =>
-          import('app/modules/admin/companies/companies.module').then(
-            m => m.CompaniesModule
-          ),
-      },
-      {
-        path: 'users',
-        loadChildren: () =>
-          import('app/modules/admin/users/users.module').then(
-            m => m.UsersModule
-          ),
-      },
-      {
-        path: 'sync-logs',
-        loadChildren: () =>
-          import('app/modules/admin/sync-logs/sync-logs.module').then(
-            m => m.SyncLogsModule
-          ),
-      },
-      {
-        path: 'integrations',
-        loadChildren: () =>
-          import('app/modules/admin/integrations/integrations.module').then(
-            m => m.IntegrationsModule
-          ),
-      },
-      {
-        path: 'sources',
-        loadChildren: () =>
-          import('app/modules/admin/sources/sources.module').then(
-            m => m.SourcesModule
-          ),
-      },
-    ],
-  },
-];
+      children: [
+        {
+          path: '',
+          loadChildren: () =>
+            import('app/modules/admin/admin.module').then(
+              m => m.AdminModule
+            ),
+        },
+      ],
+    }
+  ];

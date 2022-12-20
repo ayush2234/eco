@@ -19,6 +19,7 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
   isScreenSmall: boolean;
   navigation: Navigation;
   user: User;
+  role:string;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
@@ -52,6 +53,10 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
    * On init
    */
   ngOnInit(): void {
+
+    //get role of current logged in user
+    this.role=localStorage.getItem('role')
+
     // Subscribe to navigation data
     this._navigationService.navigation$
       .pipe(takeUntil(this._unsubscribeAll))

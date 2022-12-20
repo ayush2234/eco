@@ -14,7 +14,7 @@ import {
 } from 'rxjs';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { appConfig } from 'app/core/config/app.config';
-import { ApiResponse } from 'app/core/api/api.types';
+import { ApiResponse, EcommifyApiResponse } from 'app/core/api/api.types';
 import { GridUtils } from 'app/layout/common/grid/grid.utils';
 import { Company, CompanyListResponse } from './company.types';
 
@@ -99,11 +99,11 @@ export class CompanyService {
     sort: string = 'name',
     order: 'asc' | 'desc' | '' = 'asc',
     search: string = ''
-  ): Observable<ApiResponse<CompanyListResponse>> {
+  ): Observable<EcommifyApiResponse<CompanyListResponse>> {
     const api = this._config?.apiConfig?.baseUrl;
 
     return this._httpClient
-      .get<ApiResponse<CompanyListResponse>>(`${api}/admin/companies`, {
+      .get<EcommifyApiResponse<CompanyListResponse>>(`${api}/admin/companies`, {
         params: {
           page: '' + page,
           size: '' + size,
@@ -114,10 +114,10 @@ export class CompanyService {
       })
       .pipe(
         tap(response => {
-          const { data } = response;
-          const pagination = GridUtils.getPagination(data);
+          const { result } = response;
+          const pagination = GridUtils.getPagination(result);
           this._pagination.next(pagination);
-          this._companies.next(data?.companies);
+          this._companies.next(result?.companies);
         })
       );
   }
