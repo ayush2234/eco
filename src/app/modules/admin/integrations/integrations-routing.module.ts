@@ -11,10 +11,10 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'list',
+    redirectTo: 'admin',
   },
   {
-    path: 'list',
+    path: 'integrations',
     component: IntegrationsGridComponent,
     resolve: {
       integrations: IntegrationResolver,
@@ -28,4 +28,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class IntegrationsRoutingModule {}
+export class IntegrationsRoutingModule { }
