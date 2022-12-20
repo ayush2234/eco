@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { UserService } from 'app/core/user/user.service';
 import { appConfig } from '../config/app.config';
-import { ApiResponse } from '../api/api.types';
+import { ApiResponse, EcommifyApiResponse } from '../api/api.types';
 import { AuthUserResponse } from './auth.types';
 import { AuthUtils } from './auth.utils';
 
@@ -93,21 +93,22 @@ export class AuthService {
     formData.append('password', credentials?.password);
 
     return this._httpClient
-      .post<ApiResponse<AuthUserResponse>>(`${api}/auth/login`, formData)
+      .post<EcommifyApiResponse<AuthUserResponse>>(`${api}/auth/login`, formData)
       .pipe(
-        switchMap((response: ApiResponse<AuthUserResponse>) => {
+        switchMap((response: EcommifyApiResponse<AuthUserResponse>) => {
        
-          const { data } = response;
+          const { result } = response;
           // Store the access token in the local storage
-          this.accessToken = data?.access_token;
-          this.tokenExpirationDate = data?.user?.expire_at;
+          this.accessToken = result?.access_token;
+          this.tokenExpirationDate = result?.user?.expire_at;
           // store the role in the local storage
-          this.role = data?.user.role;
+          this.role = result?.user.role;
           // Set the authenticated flag to true
           this._authenticated = true;
+          console.log(result.user)
 
           // Store the user on the user service
-          this._userService.user = data?.user;
+          this._userService.user = result?.user;
 
           // Return a new observable with the response
           return of(response);

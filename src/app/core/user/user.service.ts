@@ -20,7 +20,7 @@ import {
 } from 'app/core/user/user.types';
 import { appConfig } from '../config/app.config';
 import { AuthUtils } from '../auth/auth.utils';
-import { ApiResponse } from '../api/api.types';
+import { ApiResponse, EcommifyApiResponse } from '../api/api.types';
 import { LocalStorageUtils } from '../common/local-storage.utils';
 import { GridUtils } from 'app/layout/common/grid/grid.utils';
 
@@ -129,18 +129,18 @@ export class UserService {
   /**
    * Get the current logged in user data
    */
-  get(): Observable<ApiResponse<GetUserByTokenResponse>> {
+  get(): Observable<EcommifyApiResponse<GetUserByTokenResponse>> {
     const api = this._config?.apiConfig?.baseUrl;
     const token = LocalStorageUtils.accessToken;
 
     return this._httpClient
-      .get<ApiResponse<GetUserByTokenResponse>>(
+      .get<EcommifyApiResponse<GetUserByTokenResponse>>(
         `${api}/auth/get-user-details-by-token?token=${token}`
       )
       .pipe(
         tap(response => {
           const {
-            data: { user },
+            result: { user },
           } = response;
 
           // Store the token expiration date in the local storage
