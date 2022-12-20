@@ -14,7 +14,7 @@ import {
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { Integration, IntegrationListResponse } from './integration.types';
 import { appConfig } from 'app/core/config/app.config';
-import { ApiResponse } from 'app/core/api/api.types';
+import { ApiResponse, EcommifyApiResponse } from 'app/core/api/api.types';
 import { GridUtils } from 'app/layout/common/grid/grid.utils';
 
 @Injectable({
@@ -93,11 +93,11 @@ export class IntegrationService {
     sort: string = 'name',
     order: 'asc' | 'desc' | '' = 'asc',
     search: string = ''
-  ): Observable<ApiResponse<IntegrationListResponse>> {
+  ): Observable<EcommifyApiResponse<IntegrationListResponse>> {
     const api = this._config?.apiConfig?.baseUrl;
 
     return this._httpClient
-      .get<ApiResponse<IntegrationListResponse>>(`${api}/admin/integrations`, {
+      .get<EcommifyApiResponse<IntegrationListResponse>>(`${api}/admin/integrations`, {
         params: {
           page: '' + page,
           size: '' + size,
@@ -108,10 +108,10 @@ export class IntegrationService {
       })
       .pipe(
         tap(response => {
-          const { data } = response;
-          const pagination = GridUtils.getPagination(data);
+          const { result } = response;
+          const pagination = GridUtils.getPagination(result);
           this._pagination.next(pagination);
-          this._integrations.next(data?.integrations);
+          this._integrations.next(result?.integrations);
         })
       );
   }

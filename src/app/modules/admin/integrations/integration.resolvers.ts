@@ -4,7 +4,7 @@ import {
   Resolve,
   RouterStateSnapshot,
 } from '@angular/router';
-import { ApiResponse } from 'app/core/api/api.types';
+import { ApiResponse, EcommifyApiResponse } from 'app/core/api/api.types';
 import { Observable } from 'rxjs';
 import { CompanyService } from '../companies/company.service';
 import { CompanyListResponse } from '../companies/company.types';
@@ -35,7 +35,7 @@ export class IntegrationResolver implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<ApiResponse<IntegrationListResponse>> {
+  ): Observable<EcommifyApiResponse<IntegrationListResponse>> {
     return this._integrationService.getIntegrations();
   }
 }
@@ -62,7 +62,7 @@ export class IntegrationSourceResolver implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<ApiResponse<SourceListResponse>> {
+  ): Observable<EcommifyApiResponse<SourceListResponse>> {
     return this._sourceService.getSources();
   }
 }
@@ -89,7 +89,7 @@ export class IntegrationCompanyResolver implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<ApiResponse<CompanyListResponse>> {
+  ): Observable<EcommifyApiResponse<CompanyListResponse>> {
     return this._companyService.getCompanies();
   }
 }

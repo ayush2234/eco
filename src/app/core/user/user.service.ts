@@ -103,11 +103,11 @@ export class UserService {
     sort: string = 'name',
     order: 'asc' | 'desc' | '' = 'asc',
     search: string = ''
-  ): Observable<ApiResponse<UserListResponse>> {
+  ): Observable<EcommifyApiResponse<UserListResponse>> {
     const api = this._config?.apiConfig?.baseUrl;
 
     return this._httpClient
-      .get<ApiResponse<UserListResponse>>(`${api}/admin/users`, {
+      .get<EcommifyApiResponse<UserListResponse>>(`${api}/admin/users`, {
         params: {
           page: '' + page,
           size: '' + size,
@@ -118,10 +118,10 @@ export class UserService {
       })
       .pipe(
         tap(response => {
-          const { data } = response;
-          const pagination = GridUtils.getPagination(data);
+          const { result } = response;
+          const pagination = GridUtils.getPagination(result);
           this._pagination.next(pagination);
-          this._users.next(data?.users);
+          this._users.next(result?.users);
         })
       );
   }
@@ -139,10 +139,7 @@ export class UserService {
       )
       .pipe(
         tap(response => {
-          const {
-            result: { user },
-          } = response;
-
+          const user=response.result
           // Store the token expiration date in the local storage
           LocalStorageUtils.tokenExpirationDate = user?.expire_at;
           LocalStorageUtils.companyId = '1ed1f118-421d-6a88-8f0a-0605e1fd6890';
