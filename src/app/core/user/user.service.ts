@@ -139,10 +139,7 @@ export class UserService {
       )
       .pipe(
         tap(response => {
-          const {
-            result: { user },
-          } = response;
-
+          const user=response.result
           // Store the token expiration date in the local storage
           LocalStorageUtils.tokenExpirationDate = user?.expire_at;
           LocalStorageUtils.companyId = '1ed1f118-421d-6a88-8f0a-0605e1fd6890';

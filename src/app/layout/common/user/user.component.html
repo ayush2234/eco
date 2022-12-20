@@ -3,12 +3,12 @@
   <span class="relative">
     <img
       class="w-10 h-10 rounded-full"
-      *ngIf="showAvatar && user.avatar"
-      [src]="user.avatar" />
+      *ngIf="showAvatar && user?.avatar"
+      [src]="user?.avatar" />
     <div
       class="flex items-center justify-center w-8 h-8 rounded-full  text-indigo-700 bg-indigo-500"
-      *ngIf="!showAvatar || !user.avatar">
-      <span>{{ user.name | getInitials }}</span>
+      *ngIf="!showAvatar || !user?.avatar">
+      <span>{{ user?.name | getInitials }}</span>
     </div>
   </span>
 </button>
@@ -17,7 +17,7 @@
   <button mat-menu-item>
     <span class="flex flex-col leading-none">
       <span>Signed in as</span>
-      <span class="mt-1.5 text-md font-medium">{{ user.email }}</span>
+      <span class="mt-1.5 text-md font-medium">{{ user?.email }}</span>
     </span>
   </button>
   <mat-divider class="my-2"></mat-divider>

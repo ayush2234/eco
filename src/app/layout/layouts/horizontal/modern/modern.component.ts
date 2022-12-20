@@ -10,6 +10,7 @@ import { Navigation } from 'app/core/navigation/navigation.types';
 import { NavigationService } from 'app/core/navigation/navigation.service';
 import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/core/user/user.service';
+import { AuthService } from 'app/core/auth/auth.service';
 @Component({
   selector: 'modern-layout',
   templateUrl: './modern.component.html',
@@ -19,7 +20,7 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
   isScreenSmall: boolean;
   navigation: Navigation;
   user: User;
-  role:string;
+  role: string;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
@@ -32,7 +33,8 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
     private _fuseMediaWatcherService: FuseMediaWatcherService,
     private _fuseNavigationService: FuseNavigationService,
     private _userService: UserService,
-  ) {}
+    private authService: AuthService
+  ) { }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
@@ -55,7 +57,7 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     //get role of current logged in user
-    this.role=localStorage.getItem('role')
+    this.role = this.authService.role;
 
     // Subscribe to navigation data
     this._navigationService.navigation$
@@ -71,7 +73,7 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
         // Check if the screen is small
         this.isScreenSmall = !matchingAliases.includes('md');
       });
-      this._userService.user$
+    this._userService.user$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((user: User) => {
         this.user = user;

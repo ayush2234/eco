@@ -29,12 +29,12 @@ import {
 import { fuseAnimations } from '@fuse/animations';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
-import { SyncLogsService } from '../../../user/sync-logs/sync-logs.service';
-import { SyncLog } from '../../../user/sync-logs/sync-logs.types';
+import { SyncLogsService } from '../sync-logs.service';
+import { SyncLog } from '../sync-logs.types';
 
 @Component({
-  selector: 'eco-sync-logs-tracking',
-  templateUrl: './tracking.component.html',
+  selector: 'eco-sync-logs-orders',
+  templateUrl: './orders.component.html',
   styles: [
     /* language=SCSS */
     `
@@ -61,9 +61,8 @@ import { SyncLog } from '../../../user/sync-logs/sync-logs.types';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: fuseAnimations,
 })
-export class SyncLogsTrackingComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class SyncLogsOrdersComponent
+  implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) private _paginator: MatPaginator;
   @ViewChild(MatSort) private _sort: MatSort;
 
@@ -88,7 +87,7 @@ export class SyncLogsTrackingComponent
     private _fuseConfirmationService: FuseConfirmationService,
     private _formBuilder: UntypedFormBuilder,
     private _syncLogService: SyncLogsService
-  ) {}
+  ) { }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -114,6 +113,7 @@ export class SyncLogsTrackingComponent
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((pagination: Pagination) => {
         // Update the pagination
+
         this.pagination = pagination;
 
         // Mark for check

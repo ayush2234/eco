@@ -6,7 +6,6 @@ export interface ApiResponse<Type> {
 // New Generic response type
 export interface EcommifyApiResponse<Type> {
   result: Type,
-  resultInfo: [],
   message: string,
   success: boolean
 }

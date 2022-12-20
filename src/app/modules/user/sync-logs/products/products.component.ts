@@ -14,7 +14,6 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import {
@@ -33,8 +32,8 @@ import { SyncLogsService } from '../../../user/sync-logs/sync-logs.service';
 import { SyncLog } from '../../../user/sync-logs/sync-logs.types';
 
 @Component({
-  selector: 'eco-sync-logs-tracking',
-  templateUrl: './tracking.component.html',
+  selector: 'eco-sync-logs-products',
+  templateUrl: './products.component.html',
   styles: [
     /* language=SCSS */
     `
@@ -61,9 +60,8 @@ import { SyncLog } from '../../../user/sync-logs/sync-logs.types';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: fuseAnimations,
 })
-export class SyncLogsTrackingComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class SyncLogsProductsComponent
+  implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) private _paginator: MatPaginator;
   @ViewChild(MatSort) private _sort: MatSort;
 
@@ -88,7 +86,7 @@ export class SyncLogsTrackingComponent
     private _fuseConfirmationService: FuseConfirmationService,
     private _formBuilder: UntypedFormBuilder,
     private _syncLogService: SyncLogsService
-  ) {}
+  ) { }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -114,6 +112,7 @@ export class SyncLogsTrackingComponent
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((pagination: Pagination) => {
         // Update the pagination
+
         this.pagination = pagination;
 
         // Mark for check

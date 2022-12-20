@@ -9,7 +9,13 @@ const routes: Routes = [
       m => m.DashboardModule
     ),
 },
- 
+{
+  path: 'sync-logs',
+  loadChildren: () =>
+    import('app/modules/user/sync-logs/sync-logs.module').then(
+      m => m.SyncLogsModule
+    ),
+},
 ];
 
 @NgModule({

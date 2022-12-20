@@ -97,7 +97,7 @@ export const userNavigationItems: FuseNavigationItem[] = [
         title: 'Products',
         type: 'basic',
         // icon: 'heroicons_outline:shopping-cart',
-        link: '/sync-logs/products',
+        link: '/user/sync-logs/products',
       },
 
       {
@@ -105,7 +105,7 @@ export const userNavigationItems: FuseNavigationItem[] = [
         title: 'Orders',
         type: 'basic',
         // icon: 'heroicons_outline:user-group',
-        link: '/sync-logs/orders',
+        link: '/user/sync-logs/orders',
       },
 
   //   ],

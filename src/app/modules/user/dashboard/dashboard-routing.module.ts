@@ -12,11 +12,7 @@ const routes: Routes = [
   {
     path: 'integration-status',
     component: IntegrationStatusComponent,
-    // resolve: {
-    //   companies: CompanyResolver,
-    //   integrations: CompanyIntegrationResolver,
-    //   sources: CompanySourceResolver,
-    // },
+ 
   },
   {
     path: 'products',
