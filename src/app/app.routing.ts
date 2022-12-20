@@ -112,5 +112,25 @@ export const appRoutes: Route[] = [
             ),
         },
       ],
+    },
+
+    //User routes
+    {
+      path: 'user',
+      canActivate: [AuthGuard],
+      canActivateChild: [AuthGuard],
+      component: LayoutComponent,
+      resolve: {
+        initialData: InitialDataResolver,
+      },
+      children: [
+        {
+          path: '',
+          loadChildren: () =>
+            import('app/modules/user/user.module').then(
+              m => m.UserModule
+            ),
+        },
+      ],
     }
   ];

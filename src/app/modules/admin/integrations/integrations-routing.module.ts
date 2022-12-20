@@ -11,10 +11,10 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'admin',
+    redirectTo: 'list',
   },
   {
-    path: 'integrations',
+    path: 'list',
     component: IntegrationsGridComponent,
     resolve: {
       integrations: IntegrationResolver,

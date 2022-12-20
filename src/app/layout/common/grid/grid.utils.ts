@@ -23,13 +23,13 @@ export class GridUtils {
    * @param token
    * @param offsetSeconds
    */
-  static getPagination(data: Pageable): Pagination {
+  static getPagination(result: Pageable): Pagination {
     // Get available queries
-    const page = parseInt(data?.page_number.toString() ?? '1', 10) - 1;
-    const size = parseInt(data?.item_per_page.toString() ?? '10', 10);
+    const page = parseInt(result?.page_number?.toString() ?? '1', 10) - 1;
+    const size = parseInt(result?.item_per_page?.toString() ?? '10', 10);
 
     // Paginate - Start
-    const length = data?.total_records;
+    const length = result?.total_records;
 
     // Calculate pagination details
     const begin = page * size;

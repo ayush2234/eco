@@ -62,7 +62,7 @@ export class IntegrationSourceResolver implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<ApiResponse<SourceListResponse>> {
+  ): Observable<EcommifyApiResponse<SourceListResponse>> {
     return this._sourceService.getSources();
   }
 }

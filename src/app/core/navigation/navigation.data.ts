@@ -50,25 +50,25 @@ export const adminNavigationItems: FuseNavigationItem[] = [
       title: 'Dashboards',
       type: 'basic',
       // icon: 'heroicons_outline:user-group',
-      link: '/dashboards',
+      link: '/admin/dashboard',
     },
       {
         id: 'admin.companies',
         title: 'Companies',
         type: 'basic',
         // icon: 'heroicons_outline:user-group',
-        link: '/companies',
+        link: '/admin/companies',
       },
       {
         id: 'admin.users',
         title: 'Users',
         type: 'basic',
         // icon: 'heroicons_outline:user-group',
-        link: '/users',
+        link: '/admin/users',
       },
 ];
 
-//user nav items
+// sub user nav items
 
 export const userNavigationItems: FuseNavigationItem[] = [
   {
@@ -81,14 +81,14 @@ export const userNavigationItems: FuseNavigationItem[] = [
         title: 'Integration Status',
         type: 'basic',
         icon: 'heroicons_outline:document-duplicate',
-        link: '/dashboards/integration-status',
+        link: '/user/integration-status',
       },
       {
         id: 'dashboards.products',
         title: 'Products (coming soon)',
         type: 'basic',
         icon: 'heroicons_outline:chart-pie',
-        link: '/dashboards/products',
+        link: '/user/products',
       },
     ],
   },

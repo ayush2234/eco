@@ -7,10 +7,10 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'sources',
+    redirectTo: 'list',
   },
   {
-    path: 'sources',
+    path: 'list',
     component: SourcesGridComponent,
     resolve: {
       sources: SourceResolver,

@@ -15,7 +15,7 @@ import {
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { Source, SourceListResponse } from './source.types';
 import { appConfig } from 'app/core/config/app.config';
-import { ApiResponse } from 'app/core/api/api.types';
+import { ApiResponse, EcommifyApiResponse } from 'app/core/api/api.types';
 import { GridUtils } from 'app/layout/common/grid/grid.utils';
 
 @Injectable({
@@ -89,10 +89,10 @@ export class SourceService {
     sort: string = 'name',
     order: 'asc' | 'desc' | '' = 'asc',
     search: string = ''
-  ): Observable<ApiResponse<SourceListResponse>> {
+  ): Observable<EcommifyApiResponse<SourceListResponse>> {
     const api = this._config?.apiConfig?.baseUrl;
     return this._httpClient
-      .get<ApiResponse<SourceListResponse>>(`${api}/admin/sources`, {
+      .get<EcommifyApiResponse<SourceListResponse>>(`${api}/admin/sources`, {
         params: {
           page: '' + page,
           size: '' + size,
@@ -103,10 +103,10 @@ export class SourceService {
       })
       .pipe(
         tap(response => {
-          const { data } = response;
-          const pagination = GridUtils.getPagination(data);
+          const { result } = response;
+          const pagination = GridUtils.getPagination(result);
           this._pagination.next(pagination);
-          this._sources.next(data?.sources);
+          this._sources.next(result?.sources);
         })
       );
   }
@@ -158,10 +158,10 @@ export class SourceService {
       take(1),
       switchMap(sources =>
         this._httpClient
-          .post<ApiResponse<Source>>(`${api}/admin/source`, source)
+          .post<EcommifyApiResponse<Source>>(`${api}/admin/source`, source)
           .pipe(
             map(response => {
-              const { data: newSource } = response;
+              const { result: newSource } = response;
               // Update the sources with the new source
               this._sources.next([newSource, ...sources]);
 
@@ -185,10 +185,10 @@ export class SourceService {
       take(1),
       switchMap(sources =>
         this._httpClient
-          .put<ApiResponse<Source>>(`${api}/admin/source/${id}`, source)
+          .put<EcommifyApiResponse<Source>>(`${api}/admin/source/${id}`, source)
           .pipe(
             map(response => {
-              const { data: updatedSource } = response;
+              const { result: updatedSource } = response;
               // Find the index of the updated source
               const index = sources.findIndex(item => item.source_id === id);
 
@@ -217,7 +217,7 @@ export class SourceService {
       take(1),
       switchMap(sources =>
         this._httpClient.delete(`${api}/admin/source/${id}`).pipe(
-          map((response: ApiResponse<string>) => {
+          map((response: EcommifyApiResponse<string>) => {
             const { message } = response;
             const isDeleted = message === 'success';
             // Find the index of the deleted source
