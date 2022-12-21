@@ -139,9 +139,15 @@ export class UserService {
       )
       .pipe(
         tap(response => {
-          const user=response.result
+          const user = response.result;
           // Store the token expiration date in the local storage
           LocalStorageUtils.tokenExpirationDate = user?.expire_at;
+          if (user.role === 'masterUser' || user.role === 'user') {
+            if (user.companies && user.companies.length > 0) {
+              LocalStorageUtils.companyId = user.companies[0].company_id;
+              LocalStorageUtils.companyName = user.companies[0].company_name;
+            }
+          }
           LocalStorageUtils.companyId = '1ed1f118-421d-6a88-8f0a-0605e1fd6890';
 
           this._user.next(user);

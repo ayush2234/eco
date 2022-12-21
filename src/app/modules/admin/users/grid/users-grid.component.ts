@@ -288,7 +288,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // If there is a tag...
     const tag = this.filteredCompanyTags[0];
-    const isTagApplied = this.selectedUser.companies.find(id => id === tag.id);
+    const isTagApplied = this.selectedUser.companies.find(it => it.company_id === tag.id);
 
     // If the found tag is already applied to the user...
     if (isTagApplied) {
@@ -307,7 +307,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   addCompanyTagToUser(tag: Tag): void {
     // Add the tag
-    this.selectedUser.companies.unshift(tag.id);
+    this.selectedUser.companies.unshift({company_id: tag.id});
 
     // Update the selected user form
     this.selectedUserForm
@@ -326,7 +326,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
   removeCompanyTagFromUser(tag: Tag): void {
     // Remove the tag
     this.selectedUser.companies.splice(
-      this.selectedUser.companies.findIndex(item => item === tag.id),
+      this.selectedUser.companies.findIndex(item => item.company_id === tag.id),
       1
     );
 
