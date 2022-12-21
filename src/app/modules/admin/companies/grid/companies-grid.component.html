@@ -58,7 +58,9 @@
               <div class="hidden lg:block">Users</div>
               <div class="hidden lg:block">Integrations</div>
               <div class="hidden lg:block">Active</div>
+              <div class="hidden lg:block">Action</div>
               <div class="hidden sm:block">Details</div>
+              
             </div>
             <!-- Rows -->
             <ng-container *ngIf="companies$ | async as companies">
@@ -121,28 +123,34 @@
 
                   <!-- Active -->
                   <div class="hidden lg:block">
-                    <ng-container *ngIf="company.is_active">
+                    <ng-container *ngIf="company?.is_active">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container *ngIf="!company.is_active">
+                    <ng-container *ngIf="!company?.is_active">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
                     </ng-container>
                   </div>
+                  <!-- login as button-->
 
+                  <div>
+                    <button [color]="'primary'" mat-button (click)="switchRole()">
+                      Login As
+                    </button>
+                  </div>
                   <!-- Details button -->
                   <div>
                     <button
                       class="min-w-10 min-h-7 h-7 px-2 leading-6"
                       mat-stroked-button
-                      (click)="toggleDetails(company.company_id)">
+                      (click)="toggleDetails(company?.company_id)">
                       <mat-icon
                         class="icon-size-5"
                         [svgIcon]="
-                          selectedCompany?.company_id === company.company_id
+                          selectedCompany?.company_id === company?.company_id
                             ? 'heroicons_solid:chevron-up'
                             : 'heroicons_solid:chevron-down'
                         "></mat-icon>
@@ -151,7 +159,7 @@
                 </div>
                 <div class="grid">
                   <ng-container
-                    *ngIf="selectedCompany?.company_id === company.company_id">
+                    *ngIf="selectedCompany?.company_id === company?.company_id">
                     <ng-container
                       *ngTemplateOutlet="
                         rowDetailsTemplate;

@@ -11,20 +11,20 @@ export class LandingHomeComponent implements OnInit {
   /**
    * Constructor
    */
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {}
 
   // Need to chek and redirect user to respective page.
   ngOnInit(): void {
     const role = this.authService.role;
-    if(!role){
-      this.router.navigate(['/sign-in'])
+    if (!role) {
+      this.router.navigate(['/sign-in']);
     }
-    if (role == 'user') {
-      this.router.navigate(['/user'])
+    if (role == 'user' || role === 'masterUser') {
+      this.router.navigate(['user/dashboard']);
     } else if (role == 'superAdmin' || role == 'admin') {
-      this.router.navigate(['admin/dashboard'])
-    } else{
-      this.router.navigate(['/sign-in'])
+      this.router.navigate(['admin/dashboard']);
+    } else {
+      this.router.navigate(['/sign-in']);
     }
   }
 }

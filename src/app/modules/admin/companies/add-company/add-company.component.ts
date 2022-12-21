@@ -10,7 +10,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
 import { Tag } from 'app/layout/common/grid/grid.types';
@@ -63,11 +63,11 @@ export class AddCompanyComponent implements OnInit, OnDestroy {
     // Create the selected company form
     this.selectedCompanyForm = this._formBuilder.group({
       company_id: [''],
-      company_name: [''],
+      company_name: ['',[Validators.required]],
       note: [''],
       referrer: [''],
-      is_active: [''],
-      allow_beta: [''],
+      is_active: [false],
+      allow_beta: [false],
       user_limit: [''],
       source_limit: [0],
       integration_limit: [''],
@@ -143,10 +143,18 @@ export class AddCompanyComponent implements OnInit, OnDestroy {
     delete company.currentImageIndex;
 
     // Update the company on the server
-    this._companyService.createCompany(company).subscribe(() => {
+    this._companyService.createCompany(company).subscribe((res) => {
       // Show a success message
+      console.log(res)
       this.fuseDrawerOpened = false;
-    });
+    },(error)=>{
+      console.log(error)
+      if(error){
+        console.log(error.error)
+      }
+    }
+   )
+    ;
   }
 
   /**
