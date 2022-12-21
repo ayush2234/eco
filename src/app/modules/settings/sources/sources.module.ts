@@ -1,3 +1,5 @@
+import { MatRippleModule } from '@angular/material/core';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgModule } from '@angular/core';
 import { SharedModule } from 'app/shared/shared.module';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,10 +18,11 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AddSourceComponent } from './add-source/add-source.component';
+import { MatSelectModule } from '@angular/material/select';
+import { AddSourceModule } from './add-source/add-source.module';
 
 @NgModule({
-  declarations: [SourcesComponent, AddSourceComponent],
+  declarations: [SourcesComponent],
   imports: [
     SourcesRoutingModule,
     MatFormFieldModule,
@@ -37,6 +40,17 @@ import { AddSourceComponent } from './add-source/add-source.component';
     MatProgressBarModule,
     MatSortModule,
     MatTableModule,
+    MatTooltipModule,
+    SharedModule,
+    AddSourceModule,
+    MatSelectModule,
+    SourcesRoutingModule,
+    MatPaginatorModule,
+    MatProgressBarModule,
+    MatRippleModule,
+    MatSortModule,
+    MatSelectModule,
+    MatSlideToggleModule,
     MatTooltipModule,
     SharedModule,
   ],

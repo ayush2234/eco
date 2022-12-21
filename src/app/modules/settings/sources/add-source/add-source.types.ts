@@ -1,17 +1,3 @@
-// export interface Source {
-//   source_id: string;
-//   storeUrl: string;
-//   //   integrationId: string;
-//   //   erpId: string;
-//   //   name: string;
-//   //   icon: string;
-//   //   description: string;
-//   //   isCustom: boolean;
-//   //   connectionForm: string;
-//   //   forceTestConnection: boolean;
-//   //   syncOptions: SyncOption[];
-// }
-
 export interface SyncOption {
   key: string;
   name: string;

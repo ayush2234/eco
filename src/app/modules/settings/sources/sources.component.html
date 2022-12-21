@@ -17,13 +17,6 @@
             [svgIcon]="'heroicons_solid:cog'"></mat-icon>
           <span class="ml-2">Settings</span>
         </button>
-        <!-- <button
-          class="hidden sm:inline-flex ml-3"
-          mat-flat-button
-          [color]="'primary'"
-          (click)="addSource(null)">
-          <span class="ml-2">Add source</span>
-        </button> -->
 
         <!-- Actions menu (visible on xs) -->
         <div class="sm:hidden">
@@ -77,9 +70,10 @@
                 </span>
               </button>
               <mat-slide-toggle
+                (change)="getInstallListActiveInactive(instance, $event)"
                 class="ml-3"
                 [color]="'primary'"
-                [checked]="instance.isActive">
+                [checked]="instance.active_status === 'Y'">
               </mat-slide-toggle>
             </div>
           </div>
@@ -139,8 +133,10 @@
     </div>
   </div>
 </div>
+<!-- Add Source sidebar -->
 <eco-add-source
   *ngIf="openAddSource"
   [selectedSource]="selectedSource"
   [isEdit]="isEdit"
-  (cancel)="openAddSource = false"></eco-add-source>
+  (cancel)="openAddSource = false">
+</eco-add-source>
