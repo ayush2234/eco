@@ -35,4 +35,13 @@ export class LocalStorageUtils {
   static set companyId(value) {
     localStorage.setItem('companyId', value);
   }
+
+  
+  static get companyName(): string {
+    return localStorage.getItem('companyName') ?? '';
+  }
+
+  static set companyName(value) {
+    localStorage.setItem('companyName', value);
+  }
 }

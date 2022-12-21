@@ -6,6 +6,7 @@ import { appConfig } from '../config/app.config';
 import { ApiResponse, EcommifyApiResponse } from '../api/api.types';
 import { AuthUserResponse } from './auth.types';
 import { AuthUtils } from './auth.utils';
+import { User } from '../user/user.types';
 
 @Injectable()
 export class AuthService {
@@ -93,22 +94,20 @@ export class AuthService {
     formData.append('password', credentials?.password);
 
     return this._httpClient
-      .post<EcommifyApiResponse<AuthUserResponse>>(`${api}/auth/login`, formData)
+      .post<EcommifyApiResponse<User>>(`${api}/auth/login`, formData)
       .pipe(
-        switchMap((response: EcommifyApiResponse<AuthUserResponse>) => {
-       
+        switchMap((response: EcommifyApiResponse<User>) => {
           const { result } = response;
           // Store the access token in the local storage
           this.accessToken = result?.access_token;
-          this.tokenExpirationDate = result?.user?.expire_at;
+          this.tokenExpirationDate = result?.expire_at;
           // store the role in the local storage
-          this.role = result?.user.role;
+          this.role = result?.role;
           // Set the authenticated flag to true
           this._authenticated = true;
-          console.log(result.user)
 
           // Store the user on the user service
-          this._userService.user = result?.user;
+          this._userService.user = result;
 
           // Return a new observable with the response
           return of(response);

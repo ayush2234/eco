@@ -5,7 +5,7 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
-import { ApiResponse } from 'app/core/api/api.types';
+import { ApiResponse, EcommifyApiResponse } from 'app/core/api/api.types';
 import { UserService } from 'app/core/user/user.service';
 import { User, UserListResponse } from 'app/core/user/user.types';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
@@ -35,7 +35,7 @@ export class UserResolver implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<ApiResponse<UserListResponse>> {
+  ): Observable<EcommifyApiResponse<UserListResponse>> {
     return this._userService.getUsers();
   }
 }
@@ -62,7 +62,7 @@ export class UserCompanyResolver implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<ApiResponse<CompanyListResponse>> {
+  ): Observable<EcommifyApiResponse<CompanyListResponse>> {
     return this._companyService.getCompanies();
   }
 }

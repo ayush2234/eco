@@ -27,6 +27,7 @@ fuse-horizontal-navigation {
                     padding: 0 16px;
                     cursor: pointer;
                     user-select: none;
+                   
 
                     .fuse-horizontal-navigation-item-icon {
                         margin-right: 12px;
@@ -37,16 +38,21 @@ fuse-horizontal-navigation {
 
         /* Basic - When item active (current link) */
         fuse-horizontal-navigation-basic-item {
-
+         
             .fuse-horizontal-navigation-item-active,
             .fuse-horizontal-navigation-item-active-forced {
 
-                .fuse-horizontal-navigation-item-title {
-                    @apply text-primary #{'!important'};
-                }
+       background-color: rgba(255,255,255,0.05)!important;
 
+              
+             
+                .fuse-horizontal-navigation-item-title {
+                    @apply text-white  #{'!important'}
+                  
+                }
+              
                 .fuse-horizontal-navigation-item-subtitle {
-                    @apply text-primary-400 #{'!important'};
+                    @apply bg-accent #{'!important'};
 
                     .dark & {
                         @apply text-primary-600 #{'!important'};
@@ -57,6 +63,7 @@ fuse-horizontal-navigation {
                     @apply text-primary #{'!important'};
                 }
             }
+
         }
 
         /* Branch - When menu open */

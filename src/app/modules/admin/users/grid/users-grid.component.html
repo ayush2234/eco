@@ -56,7 +56,10 @@
 
                   <!-- Role -->
                   <div class="hidden sm:block">
-                    {{ user.role }}
+                    {{ user.role ==='superAdmin'?'Super Admin':'' }}
+                    {{ user.role ==='admin'?'Admin':'' }}
+                    {{ user.role ==='masterUser'?'Master User':'' }}
+                    {{ user.role ==='user'?'User':'' }}
                   </div>
 
                   <!-- Status -->
@@ -167,6 +170,9 @@
                           </mat-option>
                           <mat-option value="admin">
                             Admin
+                          </mat-option>
+                          <mat-option value="masterUser">
+                            Master User
                           </mat-option>
                           <mat-option value="user">
                             User
