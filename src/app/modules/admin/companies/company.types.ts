@@ -19,6 +19,6 @@ export interface Company {
   integration_limit: number;
   sku_used: number;
   sku_limit: number;
-  restricted_to_sources: string[];
-  restricted_to_integrations: string[];
+  restricted_to_sources?: string[];
+  restricted_to_integrations?: string[];
 }

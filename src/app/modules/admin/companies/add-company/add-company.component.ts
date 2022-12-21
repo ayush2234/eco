@@ -10,7 +10,11 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
 import { Tag } from 'app/layout/common/grid/grid.types';
@@ -30,9 +34,10 @@ import { Company } from '../company.types';
 export class AddCompanyComponent implements OnInit, OnDestroy {
   @ViewChild(CdkPortal, { static: true })
   portalContent: CdkPortal;
+  errorMsg: string;
   @Output() cancel = new EventEmitter();
   fuseDrawerOpened: boolean = true;
-
+  flashMessage: 'success' | 'error' | null = null;
   selectedCompany: Company | null = null;
   selectedCompanyForm: UntypedFormGroup;
   restrictedToIntegrationTags: Tag[];
@@ -60,18 +65,17 @@ export class AddCompanyComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._portalBridge.setPortal(this.portalContent);
     // Create the selected company form
-    // Create the selected company form
     this.selectedCompanyForm = this._formBuilder.group({
       company_id: [''],
-      company_name: ['',[Validators.required]],
+      company_name: ['', [Validators.required]],
       note: [''],
       referrer: [''],
       is_active: [false],
       allow_beta: [false],
-      user_limit: [''],
-      source_limit: [0],
-      integration_limit: [''],
-      sku_limit: [''],
+      user_limit: ['', [Validators.required]],
+      source_limit: [0, [Validators.required]],
+      integration_limit: ['', [Validators.required]],
+      sku_limit: ['', [Validators.required]],
       restricted_to_sources: [[]],
       restricted_to_integrations: [[]],
     });
@@ -143,18 +147,25 @@ export class AddCompanyComponent implements OnInit, OnDestroy {
     delete company.currentImageIndex;
 
     // Update the company on the server
-    this._companyService.createCompany(company).subscribe((res) => {
-      // Show a success message
-      console.log(res)
-      this.fuseDrawerOpened = false;
-    },(error)=>{
-      console.log(error)
-      if(error){
-        console.log(error.error)
+    this._companyService.createCompany(company).subscribe(
+      () => {
+        // Show a success message
+
+        // this.fuseDrawerOpened = false;
+        this.showFlashMessage('success');
+        if (this.flashMessage === 'success') {
+          this.selectedCompanyForm.reset();
+        }
+      },
+      error => {
+        this.showFlashMessage('error');
+        if (error) {
+          this.errorMsg = Object.values(error.error.errors).toString();
+        } else {
+          this.errorMsg = 'Something went wrong.Please try again';
+        }
       }
-    }
-   )
-    ;
+    );
   }
 
   /**
@@ -385,7 +396,22 @@ export class AddCompanyComponent implements OnInit, OnDestroy {
   onCancel(): any {
     this.fuseDrawerOpened = false;
   }
+  showFlashMessage(type: 'success' | 'error'): void {
+    // Show the message
 
+    this.flashMessage = type;
+
+    // Mark for check
+    this._changeDetectorRef.markForCheck();
+
+    // Hide it after 3 seconds
+    setTimeout(() => {
+      this.flashMessage = null;
+
+      // Mark for check
+      this._changeDetectorRef.markForCheck();
+    }, 5000);
+  }
   /**
    * Track by function for ngFor loops
    *
