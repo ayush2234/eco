@@ -116,6 +116,8 @@ export class AddUserComponent implements OnInit, OnDestroy {
    * On destroy
    */
   ngOnDestroy(): void {
+    //to close the side drawer for backdrop
+    this.fuseDrawerOpened=false;
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
