@@ -136,6 +136,7 @@
 <!-- Add Source sidebar -->
 <eco-add-source
   *ngIf="openAddSource"
+  [selectedFormType]="selectedFormType"
   [selectedSource]="selectedSource"
   [isEdit]="isEdit"
   (cancel)="openAddSource = false">

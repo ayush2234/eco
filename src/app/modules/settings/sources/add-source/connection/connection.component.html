@@ -4,7 +4,9 @@
     <!-- MarapostSource Section -->
     <div
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
-      *ngIf="selectedSource.source_form === 'maropostSource'">
+      *ngIf="
+        sourceFormEnum[selectedFormType] === sourceFormEnum.maropostSource
+      ">
       <!-- Store Url -->
       <div class="sm:col-span-4">
         <mat-form-field class="fuse-mat-no-subscript w-full">
@@ -25,7 +27,7 @@
     <!--SalsifySource Section -->
     <div
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
-      *ngIf="selectedSource.source_form === 'SalsifySource'">
+      *ngIf="sourceFormEnum[selectedFormType] === sourceFormEnum.SalsifySource">
       <!-- API Key -->
       <div class="sm:col-span-4">
         <mat-form-field class="fuse-mat-no-subscript w-full">
@@ -46,7 +48,7 @@
     <!--MagentoSource Section -->
     <div
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
-      *ngIf="selectedSource.source_form === 'MagentoSource'">
+      *ngIf="sourceFormEnum[selectedFormType] === sourceFormEnum.MagentoSource">
       <!-- Consumer Key -->
       <div class="sm:col-span-4">
         <mat-form-field class="fuse-mat-no-subscript w-full">
@@ -115,7 +117,7 @@
     <!--DearSource Section -->
     <div
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
-      *ngIf="selectedSource.source_form === 'DearSource'">
+      *ngIf="sourceFormEnum[selectedFormType] === sourceFormEnum.DearSource">
       <!-- Account Id -->
       <div class="sm:col-span-4">
         <mat-form-field class="fuse-mat-no-subscript w-full">

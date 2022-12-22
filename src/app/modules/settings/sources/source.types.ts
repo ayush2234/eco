@@ -46,6 +46,7 @@ export interface Source {
 
 export class SourcePayload {
   source_id: string;
+  source_instance_id?: string;
   name: string;
   connectionPanel = new ConnectionPanel();
   active_status: 'Y' | 'N';
@@ -86,4 +87,11 @@ export class MagentoAttributes {
 export class DearAttributes {
   account_id: string;
   application_key: string;
+}
+
+export enum SourceFormEnum {
+  'maropostSource',
+  'SalsifySource',
+  'MagentoSource',
+  'DearSource',
 }

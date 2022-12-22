@@ -21,7 +21,7 @@
           <div class="flex items-center justify-between m-8 mr-6 sm:my-10">
             <!-- Title -->
             <div class="text-3xl font-bold tracking-tight leading-none">
-              Add Source
+              {{ !isEdit ? 'Add' : 'Update' }} Source
             </div>
             <!-- Close button -->
             <div class="lg:hidden">
@@ -101,6 +101,7 @@
                   <eco-add-source-connection
                     [isEdit]="isEdit"
                     [fuseDrawer]="fuseDrawer"
+                    [selectedFormType]="selectedFormType"
                     [selectedSource]="selectedSource">
                   </eco-add-source-connection>
                 </ng-container>

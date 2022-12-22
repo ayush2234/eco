@@ -74,6 +74,25 @@ export class SourceService {
   }
 
   /**
+   * View source instance
+   */
+  getSourceInstance(companyId: string, instanceId: string): Observable<any> {
+    const api = this._config.apiConfig.baseUrl;
+    return this._httpClient
+      .get<ApiResponse<any>>(
+        `${api}/${companyId}/source/instance/${instanceId}`
+      )
+      .pipe(
+        map(response => {
+          if (!isEmpty(response['result'])) {
+            return response['result'];
+          }
+          return null;
+        })
+      );
+  }
+
+  /**
    * Create source instance api
    */
   createSourceInstance(
