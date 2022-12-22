@@ -1,8 +1,16 @@
-<ng-container *cdkPortal><fuse-drawer class="w-screen min-w-screen sm:w-65vw sm:min-w-100 z-999" fixed [mode]="'over'"
-    [name]="'addIntegrationDrawer'" [position]="'right'" [opened]="fuseDrawerOpened"
-    (openedChanged)="openedChanged(fuseDrawer)" #fuseDrawer>
+<ng-container *cdkPortal
+  ><fuse-drawer
+    class="w-screen min-w-screen sm:w-65vw sm:min-w-100 z-999"
+    fixed
+    [mode]="'over'"
+    [name]="'addIntegrationDrawer'"
+    [position]="'right'"
+    [opened]="fuseDrawerOpened"
+    (openedChanged)="openedChanged(fuseDrawer)"
+    #fuseDrawer>
     <!-- Title -->
-    <div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+    <div
+      class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
       <!-- Header -->
       <div
         class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
@@ -17,18 +25,21 @@
       <!-- Main -->
       <div class="flex flex-auto overflow-hidden">
         <!-- sources list -->
-        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+        <div
+          class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
           <form class="flex flex-col w-full" [formGroup]="selectedUserForm">
             <div class="flex flex-col sm:flex-row p-8">
               <!-- user images and status -->
               <div class="flex flex-col">
                 <div class="flex flex-col">
                   <span class="font-semibold mb-2">Active</span>
-                  <mat-slide-toggle [formControlName]="'is_active'" [color]="'primary'">
+                  <mat-slide-toggle
+                    [formControlName]="'is_active'"
+                    [color]="'primary'">
                     {{
-                    selectedUserForm.get('is_active').value
-                    ? 'Active'
-                    : 'Disabled'
+                      selectedUserForm.get('is_active').value
+                        ? 'Active'
+                        : 'Disabled'
                     }}
                   </mat-slide-toggle>
                 </div>
@@ -41,25 +52,42 @@
                   <mat-form-field class="w-full">
                     <mat-label>Name</mat-label>
                     <input matInput [formControlName]="'name'" />
+                    <mat-error> Name is required </mat-error>
                   </mat-form-field>
                   <div class="flex">
                     <mat-form-field class="w-1/2 pr-2">
                       <mat-label>Email</mat-label>
                       <input matInput [formControlName]="'email'" />
+                      <mat-error> Email is required </mat-error>
                     </mat-form-field>
 
                     <!-- Password field -->
-                    <mat-form-field *ngIf="selectedUserForm.get('password')" class="w-1/2 pl-2">
+                    <mat-form-field
+                      *ngIf="selectedUserForm.get('password')"
+                      class="w-1/2 pl-2">
                       <mat-label>Password</mat-label>
-                      <input id="password" matInput type="password" [formControlName]="'password'" #passwordField />
-                      <button mat-icon-button type="button" (click)="
+                      <input
+                        id="password"
+                        matInput
+                        type="password"
+                        [formControlName]="'password'"
+                        #passwordField />
+                      <button
+                        mat-icon-button
+                        type="button"
+                        (click)="
                           passwordField.type === 'password'
                             ? (passwordField.type = 'text')
                             : (passwordField.type = 'password')
-                        " matSuffix>
-                        <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'password'"
+                        "
+                        matSuffix>
+                        <mat-icon
+                          class="icon-size-5"
+                          *ngIf="passwordField.type === 'password'"
                           [svgIcon]="'heroicons_solid:eye'"></mat-icon>
-                        <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'text'"
+                        <mat-icon
+                          class="icon-size-5"
+                          *ngIf="passwordField.type === 'text'"
                           [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
                       </button>
                       <mat-error> Password is required </mat-error>
@@ -81,6 +109,7 @@
                         <mat-option value="masterUser">Master User</mat-option>
                         <mat-option value="user">User</mat-option>
                       </mat-select>
+                      <mat-error> Role is required </mat-error>
                     </mat-form-field>
                     <mat-form-field class="w-2/3 pl-2">
                       <mat-label>Notes</mat-label>
@@ -93,25 +122,37 @@
                 <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
                   <!-- Tags -->
                   <span class="mb-px font-medium leading-tight">Companies</span>
-                  <div class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
+                  <div
+                    class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
                     <!-- Header -->
                     <div class="flex items-center -my-px py-2 px-3">
                       <div class="flex items-center flex-auto min-w-0">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                        <input class="min-w-0 ml-2 py-1 border-0" type="text" placeholder="Search company"
-                          (input)="filterCompanyTags($event)" (keydown)="filterCompanyTagsInputKeyDown($event)"
-                          [maxLength]="50" #newTagInput />
+                        <mat-icon
+                          class="icon-size-5"
+                          [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                        <input
+                          class="min-w-0 ml-2 py-1 border-0"
+                          type="text"
+                          placeholder="Search company"
+                          (input)="filterCompanyTags($event)"
+                          (keydown)="filterCompanyTagsInputKeyDown($event)"
+                          [maxLength]="50"
+                          #newTagInput />
                       </div>
                     </div>
                     <!-- Available tags -->
-                    <div class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
+                    <div
+                      class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
                       <!-- Tags -->
                       <ng-container *ngIf="!tagsEditMode">
-                        <ng-container *ngFor="
+                        <ng-container
+                          *ngFor="
                             let tag of filteredCompanyTags;
                             trackBy: trackByFn
                           ">
-                          <mat-checkbox class="flex items-center h-10 min-h-10 px-4" [color]="'primary'"
+                          <mat-checkbox
+                            class="flex items-center h-10 min-h-10 px-4"
+                            [color]="'primary'"
                             [checked]="selectedUser.companies?.includes(tag.id)"
                             (change)="toggleCompanyTag(tag, $event)">
                             {{ tag.title }}
@@ -128,18 +169,31 @@
               <div class="flex items-center ml-auto mr-0">
                 <div class="flex items-center mr-4" *ngIf="flashMessage">
                   <ng-container *ngIf="flashMessage === 'success'">
-                    <mat-icon class="text-green-500" [svgIcon]="'heroicons_outline:check'"></mat-icon>
-                    <span class="ml-2">User updated</span>
+                    <mat-icon
+                      class="text-green-500"
+                      [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                    <span class="ml-2">User created</span>
                   </ng-container>
                   <ng-container *ngIf="flashMessage === 'error'">
-                    <mat-icon class="text-red-500" [svgIcon]="'heroicons_outline:x'"></mat-icon>
-                    <span class="ml-2">An error occurred, try again!</span>
+                    <mat-icon
+                      class="text-red-500"
+                      [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                    <span class="ml-2">{{ errorMsg }}</span>
                   </ng-container>
                 </div>
-                <button mat-flat-button class="mr-2" type="button" (click)="onCancel()">
+                <button
+                  mat-flat-button
+                  class="mr-2"
+                  type="button"
+                  (click)="onCancel()">
                   Cancel
                 </button>
-                <button mat-flat-button [color]="'primary'" type="button" (click)="createUser()">
+                <button
+                  mat-flat-button
+                  [color]="'primary'"
+                  type="button"
+                  (click)="createUser()"
+                  [disabled]="selectedUserForm.invalid">
                   Save
                 </button>
               </div>

@@ -40,9 +40,9 @@ export class AddUserComponent implements OnInit, OnDestroy {
   selectedUserForm: UntypedFormGroup;
   companyTags: Tag[];
   filteredCompanyTags: Tag[];
-
+  flashMessage: 'success' | 'error' | null = null;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+  errorMsg: string;
   /**
    * Constructor
    */
@@ -65,9 +65,9 @@ export class AddUserComponent implements OnInit, OnDestroy {
     this.selectedUserForm = this._formBuilder.group({
       id: [''],
       name: ['', [Validators.required]],
-      email: [''],
-      password: [''],
-      role: [''],
+      email: ['', [Validators.required]],
+      password: ['', Validators.required],
+      role: ['', [Validators.required]],
       is_active: [false],
       note: [''],
       companies: [[]],
@@ -95,11 +95,29 @@ export class AddUserComponent implements OnInit, OnDestroy {
         this._changeDetectorRef.markForCheck();
       });
   }
+  showFlashMessage(type: 'success' | 'error'): void {
+    // Show the message
+
+    this.flashMessage = type;
+
+    // Mark for check
+    this._changeDetectorRef.markForCheck();
+
+    // Hide it after 3 seconds
+    setTimeout(() => {
+      this.flashMessage = null;
+
+      // Mark for check
+      this._changeDetectorRef.markForCheck();
+    }, 5000);
+  }
 
   /**
    * On destroy
    */
   ngOnDestroy(): void {
+    //to close the side drawer for backdrop
+    this.fuseDrawerOpened=false;
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
@@ -116,26 +134,36 @@ export class AddUserComponent implements OnInit, OnDestroy {
   createUser(): void {
     // Get the user object
     const user = this.selectedUserForm.getRawValue();
-
     // Remove the currentImageIndex field
     delete user.currentImageIndex;
-
     // Update the user on the server
-    this._userService.createUser(user).subscribe(() => {
-      // Show a success message
-      this.fuseDrawerOpened = false;
-    });
+    this._userService.createUser(user).subscribe(
+      () => {
+        // Show a success message
+        this.showFlashMessage('success');
+        if (this.flashMessage === 'success') {
+          this.selectedUserForm.reset();
+        }
+      },
+      error => {
+        this.showFlashMessage('error');
+        if (error) {
+          this.errorMsg = Object.values(error.error.errors).toString();
+        } else {
+          this.errorMsg = 'Something went wrong.Please try again';
+        }
+      }
+    );
   }
-
   /**
    * Filter companies
+   *
    *
    * @param event
    */
   filterCompanyTags(event): void {
     // Get the value
     const value = event.target.value.toLowerCase();
-
     // Filter the companies
     this.filteredCompanyTags = this.companyTags.filter(tag =>
       tag.title.toLowerCase().includes(value)
