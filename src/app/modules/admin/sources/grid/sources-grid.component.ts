@@ -99,13 +99,13 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // Create the selected source form
     this.selectedSourceForm = this._formBuilder.group({
       source_id: [''],
-      name: [[]],
+      name: ['', Validators.required],
       icon: [''],
       description: [''],
       is_beta: [''],
       is_custom: [''],
       force_connection_test: [''],
-      source_form: [''],
+      source_form: ['', Validators.required],
       dateCreated: [''],
       dateUpdated: [''],
       installedInstances: [''],
@@ -383,7 +383,7 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
   updateSelectedSource(): void {
     // Get the source object
     const source = this.selectedSourceForm.getRawValue();
-
+    console.log(source);
     // Update the source on the server
     this._sourceService.updateSource(source.source_id, source).subscribe(() => {
       // Show a success message

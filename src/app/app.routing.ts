@@ -4,6 +4,7 @@ import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
 import { LandingHomeComponent } from './modules/landing/home/home.component';
+import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -17,7 +18,11 @@ export const appRoutes: Route[] = [
   // After the user signs in, the sign in page will redirect the user to the 'signed-in-redirect'
   // path. Below is another redirection for that path to redirect the user to the desired
   // location. This is a small convenience to keep all main routes together here on this file.
-  { path: 'signed-in-redirect', pathMatch: 'full', component: LandingHomeComponent },
+  {
+    path: 'signed-in-redirect',
+    pathMatch: 'full',
+    component: LandingHomeComponent,
+  },
 
   // Auth routes for guests
   {
@@ -96,41 +101,64 @@ export const appRoutes: Route[] = [
 
   // Admin routes
   {
-      path: 'admin',
-      canActivate: [AuthGuard],
-      canActivateChild: [AuthGuard],
-      component: LayoutComponent,
-      resolve: {
-        initialData: InitialDataResolver,
-      },
-      children: [
-        {
-          path: '',
-          loadChildren: () =>
-            import('app/modules/admin/admin.module').then(
-              m => m.AdminModule
-            ),
-        },
-      ],
+    path: 'admin',
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
+    component: LayoutComponent,
+    resolve: {
+      initialData: InitialDataResolver,
     },
-
-    //User routes
-    {
-      path: 'user',
-      canActivate: [AuthGuard],
-      canActivateChild: [AuthGuard],
-      component: LayoutComponent,
-      resolve: {
-        initialData: InitialDataResolver,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('app/modules/admin/admin.module').then(m => m.AdminModule),
       },
-      children: [
-        {
-          path: '',
-          loadChildren: () =>
-            import('app/modules/user/user.module').then(
-              m => m.UserModule
-            ),
-        },
-      ],
-    }
-  ];
+    ],
+  },
+
+  //User routes
+  {
+    path: 'user',
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
+    component: LayoutComponent,
+    resolve: {
+      initialData: InitialDataResolver,
+    },
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('app/modules/user/user.module').then(m => m.UserModule),
+      },
+    ],
+  },
+
+  // page not found
+
+  // {
+  //   path:'**',
+  //   component:PageNotFoundComponent,
+  // }
+  {
+    path: '',
+
+    component: LayoutComponent,
+    resolve: {
+      initialData: InitialDataResolver,
+    },
+    data: {
+      layout: 'empty',
+    },
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('app/modules/page-not-found/page-not-found.module').then(
+            m => m.PageNotFoundModule
+          ),
+      },
+    ],
+  },
+];

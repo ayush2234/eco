@@ -66,7 +66,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatSort) private _sort: MatSort;
 
   users$: Observable<User[]>;
-
+  errorMsg: string;
   flashMessage: 'success' | 'error' | null = null;
   openAddUser: boolean = false;
   isLoading: boolean = false;
@@ -101,8 +101,8 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedUserForm = this._formBuilder.group({
       id: [''],
       name: ['', [Validators.required]],
-      email: [''],
-      role: [''],
+      email: ['', [Validators.required]],
+      role: ['', [Validators.required]],
       active_status: [''],
       note: [''],
       companies: [[]],
@@ -288,7 +288,9 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // If there is a tag...
     const tag = this.filteredCompanyTags[0];
-    const isTagApplied = this.selectedUser.companies.find(it => it.company_id === tag.id);
+    const isTagApplied = this.selectedUser.companies.find(
+      it => it.company_id === tag.id
+    );
 
     // If the found tag is already applied to the user...
     if (isTagApplied) {
@@ -307,7 +309,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   addCompanyTagToUser(tag: Tag): void {
     // Add the tag
-    this.selectedUser.companies.unshift({company_id: tag.id});
+    this.selectedUser.companies.unshift({ company_id: tag.id });
 
     // Update the selected user form
     this.selectedUserForm
@@ -380,10 +382,20 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
     delete user.currentImageIndex;
 
     // Update the user on the server
-    this._userService.updateUser(user.id, user).subscribe(() => {
-      // Show a success message
-      this.showFlashMessage('success');
-    });
+    this._userService.updateUser(user.id, user).subscribe(
+      () => {
+        // Show a success message
+        this.showFlashMessage('success');
+      },
+      error => {
+        this.showFlashMessage('error');
+        if (error) {
+          this.errorMsg = Object.values(error.error.errors).toString();
+        } else {
+          this.errorMsg = 'Something went wrong.Please try again';
+        }
+      }
+    );
   }
 
   /**
@@ -444,6 +456,6 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param item
    */
   trackByFn(index: number, item: any): any {
-    return item.id || index;
+    return item?.id || index;
   }
 }

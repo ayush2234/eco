@@ -60,7 +60,6 @@
               <div class="hidden lg:block">Active</div>
               <div class="hidden lg:block">Action</div>
               <div class="hidden sm:block">Details</div>
-              
             </div>
             <!-- Rows -->
             <ng-container *ngIf="companies$ | async as companies">
@@ -137,7 +136,10 @@
                   <!-- login as button-->
 
                   <div>
-                    <button [color]="'primary'" mat-button (click)="switchRole()">
+                    <button
+                      [color]="'primary'"
+                      mat-button
+                      (click)="switchRole()">
                       Login As
                     </button>
                   </div>
@@ -226,6 +228,7 @@
                     <mat-form-field class="w-full">
                       <mat-label>Company Name</mat-label>
                       <input matInput [formControlName]="'company_name'" />
+                      <mat-error>Company name is required</mat-error>
                     </mat-form-field>
 
                     <!-- Limits -->
@@ -233,19 +236,23 @@
                       <mat-form-field class="w-1/4 pr-2">
                         <mat-label>User Limit</mat-label>
                         <input matInput [formControlName]="'user_limit'" />
+                        <mat-error>Company name is required</mat-error>
                       </mat-form-field>
                       <mat-form-field class="w-1/4 px-2">
                         <mat-label>Source Limit</mat-label>
                         <input matInput [formControlName]="'source_limit'" />
+                        <mat-error>Source Limit is required</mat-error>
                       </mat-form-field>
                       <mat-form-field class="w-1/4 px-2">
                         <mat-label>Integration Limit</mat-label>
+                        <mat-error>Integration Limit is required</mat-error>
                         <input
                           matInput
                           [formControlName]="'integration_limit'" />
                       </mat-form-field>
                       <mat-form-field class="w-1/4 pl-2">
                         <mat-label>SKU Limit</mat-label>
+                        <mat-error>SKU Limit is required</mat-error>
                         <input matInput [formControlName]="'sku_limit'" />
                       </mat-form-field>
                     </div>
@@ -361,7 +368,7 @@
                                 class="flex items-center h-10 min-h-10 px-4"
                                 [color]="'primary'"
                                 [checked]="
-                                  selectedCompany.restricted_to_integrations.includes(
+                                  selectedCompany?.restricted_to_integrations?.includes(
                                     tag.id
                                   )
                                 "
@@ -387,7 +394,7 @@
                         class="text-green-500"
                         [svgIcon]="'heroicons_outline:check'"></mat-icon>
                       <span class="ml-2">Company updated</span>
-                    </ng-container>
+                    </ng-container> 
                     <ng-container *ngIf="flashMessage === 'error'">
                       <mat-icon
                         class="text-red-500"
@@ -398,7 +405,8 @@
                   <button
                     mat-flat-button
                     [color]="'primary'"
-                    (click)="updateSelectedCompany()">
+                    (click)="updateSelectedCompany()"
+                    [disabled]="selectedCompanyForm.invalid">
                     Update
                   </button>
                 </div>

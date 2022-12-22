@@ -77,6 +77,7 @@
                   <mat-form-field class="w-full">
                     <mat-label>Name</mat-label>
                     <input matInput [formControlName]="'name'" />
+                    <mat-error>Source name is required</mat-error>
                   </mat-form-field>
                   <!-- Description -->
                   <mat-form-field class="w-full">
@@ -93,6 +94,7 @@
                     <mat-form-field class="w-2/3 pl-2">
                       <mat-label>Form Schema</mat-label>
                       <input matInput [formControlName]="'source_form'" />
+                      <mat-error>Form schema is required</mat-error>
                     </mat-form-field>
                   </div>
                 </div>
@@ -160,13 +162,13 @@
                     <mat-icon
                       class="text-green-500"
                       [svgIcon]="'heroicons_outline:check'"></mat-icon>
-                    <span class="ml-2">Source updated</span>
+                    <span class="ml-2">Source created</span>
                   </ng-container>
                   <ng-container *ngIf="flashMessage === 'error'">
                     <mat-icon
                       class="text-red-500"
                       [svgIcon]="'heroicons_outline:x'"></mat-icon>
-                    <span class="ml-2">An error occurred, try again!</span>
+                    <span class="ml-2">{{ errorMsg }}</span>
                   </ng-container>
                 </div>
                 <button
@@ -180,7 +182,8 @@
                   mat-flat-button
                   [color]="'primary'"
                   type="button"
-                  (click)="createSource()">
+                  (click)="createSource()"
+                  [disabled]="selectedSourceForm.invalid">
                   Save
                 </button>
               </div>
