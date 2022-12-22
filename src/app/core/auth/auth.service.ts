@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { UserService } from 'app/core/user/user.service';
 import { appConfig } from '../config/app.config';
-import { ApiResponse, EcommifyApiResponse } from '../api/api.types';
+import { EcommifyApiResponse } from '../api/api.types';
 import { AuthUserResponse } from './auth.types';
 import { AuthUtils } from './auth.utils';
 import { User } from '../user/user.types';
@@ -19,7 +19,7 @@ export class AuthService {
   constructor(
     private _httpClient: HttpClient,
     private _userService: UserService
-  ) { }
+  ) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors

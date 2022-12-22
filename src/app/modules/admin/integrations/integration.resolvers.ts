@@ -4,7 +4,7 @@ import {
   Resolve,
   RouterStateSnapshot,
 } from '@angular/router';
-import { ApiResponse, EcommifyApiResponse } from 'app/core/api/api.types';
+import { EcommifyApiResponse } from 'app/core/api/api.types';
 import { Observable } from 'rxjs';
 import { CompanyService } from '../companies/company.service';
 import { CompanyListResponse } from '../companies/company.types';

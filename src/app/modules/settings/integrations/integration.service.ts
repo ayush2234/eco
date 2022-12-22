@@ -7,7 +7,7 @@ import {
   IntegrationSettings,
 } from './integration.types';
 import { appConfig } from 'app/core/config/app.config';
-import { ApiResponse, EcommifyApiResponse } from 'app/core/api/api.types';
+import { EcommifyApiResponse } from 'app/core/api/api.types';
 import { isEmpty } from 'lodash';
 
 @Injectable({

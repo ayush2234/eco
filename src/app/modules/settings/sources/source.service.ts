@@ -8,9 +8,10 @@ import {
   SourceSettings,
 } from './source.types';
 import { appConfig } from 'app/core/config/app.config';
-import { ApiResponse } from 'app/core/api/api.types';
+
 import { isEmpty } from 'lodash';
 import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
+import { EcommifyApiResponse } from 'app/core/api/api.types';
 
 @Injectable({
   providedIn: 'root',
@@ -55,17 +56,17 @@ export class SourceService {
   getSourceSettings(companyId: string): Observable<SourceSettings> {
     const api = this._config.apiConfig.baseUrl;
     return this._httpClient
-      .get<ApiResponse<SourceSettings>>(`${api}/${companyId}/sources`)
+      .get<EcommifyApiResponse<SourceSettings>>(`${api}/${companyId}/sources`)
       .pipe(
         map(response => {
-          //   const { result } = response;
+          const { result } = response;
 
-          if (!isEmpty(response['result']?.sources)) {
-            const { sources } = response['result'];
+          if (!isEmpty(result?.sources)) {
+            const { sources } = result;
             this._sourceInstances.next(sources[0].instances);
             this._availableSources.next(sources[0].available);
 
-            return response['result'][0];
+            return result[0];
           }
 
           return null;
@@ -79,7 +80,7 @@ export class SourceService {
   getSourceInstance(companyId: string, instanceId: string): Observable<any> {
     const api = this._config.apiConfig.baseUrl;
     return this._httpClient
-      .get<ApiResponse<any>>(
+      .get<EcommifyApiResponse<any>>(
         `${api}/${companyId}/source/instance/${instanceId}`
       )
       .pipe(
@@ -101,12 +102,15 @@ export class SourceService {
   ): Observable<any> {
     const api = this._config.apiConfig.baseUrl;
     return this._httpClient
-      .post<ApiResponse<any>>(`${api}/${companyId}/source/instance`, payload)
+      .post<EcommifyApiResponse<any>>(
+        `${api}/${companyId}/source/instance`,
+        payload
+      )
       .pipe(
         map(response => {
-          const { data } = response;
+          const { result } = response;
           this.updateSources();
-          return data;
+          return result;
         })
       );
   }
@@ -124,7 +128,7 @@ export class SourceService {
       take(1),
       switchMap(sources =>
         this._httpClient
-          .put<ApiResponse<any>>(
+          .put<EcommifyApiResponse<any>>(
             `${api}/${companyId}/source/instance/${instanceId}`,
             payload
           )
@@ -150,7 +154,7 @@ export class SourceService {
   ): Observable<any> {
     const api = this._config.apiConfig.serviceUrl;
     return this._httpClient
-      .post<ApiResponse<any>>(`${api}/oauth/maropost/${companyId}`, {
+      .post<EcommifyApiResponse<any>>(`${api}/oauth/maropost/${companyId}`, {
         store_domain,
       })
       .pipe(

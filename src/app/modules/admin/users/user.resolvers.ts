@@ -5,7 +5,7 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
-import { ApiResponse, EcommifyApiResponse } from 'app/core/api/api.types';
+import { EcommifyApiResponse } from 'app/core/api/api.types';
 import { UserService } from 'app/core/user/user.service';
 import { User, UserListResponse } from 'app/core/user/user.types';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
