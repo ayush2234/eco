@@ -55,6 +55,7 @@
               <div class="hidden sm:block">Date Created</div>
               <div class="hidden sm:block">Date Updated</div>
               <div class="hidden sm:block">Installed</div>
+              <div class="hidden sm:block">Details</div>
             </div>
             <!-- Rows -->
             <ng-container *ngIf="integrations$ | async as integrations">
@@ -217,6 +218,7 @@
                     <mat-form-field class="w-full">
                       <mat-label>Name</mat-label>
                       <input matInput [formControlName]="'name'" />
+                      <mat-error>Integration name is required</mat-error>
                     </mat-form-field>
                     <!-- Description -->
                     <mat-form-field class="w-full">
@@ -374,7 +376,8 @@
                   <button
                     mat-flat-button
                     [color]="'primary'"
-                    (click)="updateSelectedIntegration()">
+                    (click)="updateSelectedIntegration()"
+                    [disabled]="selectedIntegrationForm.invalid">
                     Update
                   </button>
                 </div>

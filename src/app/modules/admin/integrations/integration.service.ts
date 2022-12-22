@@ -240,7 +240,7 @@ export class IntegrationService {
       take(1),
       switchMap(integrations =>
         this._httpClient.delete(`${api}/admin/integration/${id}`).pipe(
-          map((response: ApiResponse<string>) => {
+          map((response: EcommifyApiResponse<string>) => {
             const { message } = response;
             const isDeleted = message === 'success';
 

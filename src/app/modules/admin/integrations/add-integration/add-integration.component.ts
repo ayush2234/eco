@@ -10,7 +10,11 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { FuseDrawerComponent } from '@fuse/components/drawer';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
@@ -39,9 +43,9 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
   filteredSourceTags: Tag[];
   restrictedToCompanyTags: Tag[];
   filteredRestrictedToCompanyTags: Tag[];
-
+  flashMessage: 'success' | 'error' | null = null;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+  errorMsg: string;
   /**
    * Constructor
    */
@@ -63,9 +67,9 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
     // Create the selected integration form
     this.selectedIntegrationForm = this._formBuilder.group({
       integration_id: [''],
-      source_id: [[]],
+      source_id: ['', Validators.required],
       restricted_to_companies: [[]],
-      name: [''],
+      name: ['', Validators.required],
       icon: [''],
       description: [''],
       is_beta: [''],
@@ -144,10 +148,38 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
     delete integration.currentImageIndex;
 
     // Update the integration on the server
-    this._integrationService.createIntegration(integration).subscribe(() => {
-      // Show a success message
-      this.fuseDrawerOpened = false;
-    });
+    this._integrationService.createIntegration(integration).subscribe(
+      () => {
+        // Show a success message
+        // this.fuseDrawerOpened = false;
+        this.showFlashMessage('success');
+        if (this.flashMessage === 'success') {
+          this.selectedIntegrationForm.reset();
+        }
+      },
+      error => {
+        // Show a error message
+        this.showFlashMessage('error');
+        if (error) {
+          this.errorMsg = Object.values(error.error.errors).toString();
+        } else {
+          this.errorMsg = 'Something went wrong.Please try again';
+        }
+      }
+    );
+  }
+
+  showFlashMessage(type: 'success' | 'error'): void {
+    // Show the message
+    this.flashMessage = type;
+    // Mark for check
+    this._changeDetectorRef.markForCheck();
+    // Hide it after 3 seconds
+    setTimeout(() => {
+      this.flashMessage = null;
+      // Mark for check
+      this._changeDetectorRef.markForCheck();
+    }, 5000);
   }
 
   /**
