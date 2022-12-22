@@ -4,6 +4,7 @@ import { SettingsComponent } from './settings.component';
 import { SettingsUsersComponent } from './users/users.component';
 import { SettingAccountResolver } from './account/account.resolver';
 import { SettingsAccountComponent } from './account/account.component';
+import { CustomIntegrationRequestComponent } from './custom-integration-request/custom-integration-request.component';
 
 const routes: Route[] = [
   {
@@ -28,6 +29,10 @@ const routes: Route[] = [
           import('app/modules/settings/sources/sources.module').then(
             m => m.SourcesModule
           ),
+      },
+      {
+        path: 'custom-integration-request',
+       component:CustomIntegrationRequestComponent
       },
       {
         path: 'users',

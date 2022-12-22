@@ -10,7 +10,7 @@ import {
   isNull,
   isUndefined,
 } from 'lodash';
-import { ApiResponse } from './api.types';
+import { EcommifyApiResponse } from './api.types';
 
 export class ApiUtils {
   /**
@@ -48,13 +48,13 @@ export class ApiUtils {
    *
    * @param data
    */
-  static toUiObject(response: ApiResponse<any>): any {
+  static toUiObject(response: EcommifyApiResponse<any>): any {
     // Return if there is no data
     if (!response) {
       return response;
     }
 
-    const { data: responseData } = response;
+    const { result: responseData } = response;
 
     // Return if there is no data
     if (!responseData) {
