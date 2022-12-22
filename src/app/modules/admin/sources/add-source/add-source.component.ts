@@ -10,10 +10,12 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { FuseDrawerComponent } from '@fuse/components/drawer';
-import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
 import { Tag } from 'app/layout/common/grid/grid.types';
 import { map, Subject, takeUntil } from 'rxjs';
@@ -37,9 +39,9 @@ export class AddSourceComponent implements OnInit, OnDestroy {
   selectedSourceForm: UntypedFormGroup;
   restrictedToCompanyTags: Tag[];
   filteredRestrictedToCompanyTags: Tag[];
-
+  errorMsg: string;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+  flashMessage: 'success' | 'error' | null = null;
   /**
    * Constructor
    */
@@ -60,13 +62,13 @@ export class AddSourceComponent implements OnInit, OnDestroy {
     // Create the selected source form
     this.selectedSourceForm = this._formBuilder.group({
       source_id: [''],
-      name: [[]],
+      name: ['', Validators.required],
       icon: [''],
       description: [''],
       is_beta: [''],
       is_custom: [''],
       force_connection_test: [''],
-      source_form: [''],
+      source_form: ['', Validators.required],
       dateCreated: [''],
       dateUpdated: [''],
       installedInstances: [''],
@@ -121,10 +123,37 @@ export class AddSourceComponent implements OnInit, OnDestroy {
     delete source.currentImageIndex;
 
     // Update the source on the server
-    this._sourceService.createSource(source).subscribe(() => {
-      // Show a success message
-      this.fuseDrawerOpened = false;
-    });
+    this._sourceService.createSource(source).subscribe(
+      () => {
+        // Show a success message
+        this.showFlashMessage('success');
+        if (this.flashMessage === 'success') {
+          this.selectedSourceForm.reset();
+        }
+      },
+      error => {
+        // Show a error message
+        this.showFlashMessage('error');
+        if (error) {
+          this.errorMsg = Object.values(error.error.errors).toString();
+        } else {
+          this.errorMsg = 'Something went wrong.Please try again';
+        }
+      }
+    );
+  }
+
+  showFlashMessage(type: 'success' | 'error'): void {
+    // Show the message
+    this.flashMessage = type;
+    // Mark for check
+    this._changeDetectorRef.markForCheck();
+    // Hide it after 3 seconds
+    setTimeout(() => {
+      this.flashMessage = null;
+      // Mark for check
+      this._changeDetectorRef.markForCheck();
+    }, 5000);
   }
 
   /**

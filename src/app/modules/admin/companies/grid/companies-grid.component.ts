@@ -106,15 +106,15 @@ export class CompaniesGridComponent
     // Create the selected company form
     this.selectedCompanyForm = this._formBuilder.group({
       company_id: [''],
-      company_name: [''],
+      company_name: ['', Validators.required],
       note: [''],
       referrer: [''],
       is_active: [''],
       allow_beta: [''],
-      user_limit: [''],
-      source_limit: [''],
-      integration_limit: [''],
-      sku_limit: [''],
+      user_limit: ['',Validators.required],
+      source_limit: ['',Validators.required],
+      integration_limit: ['',Validators.required],
+      sku_limit: ['',Validators.required],
       restricted_to_sources: [[]],
       restricted_to_integrations: [[]],
     });

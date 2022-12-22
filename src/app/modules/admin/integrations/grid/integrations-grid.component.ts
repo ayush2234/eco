@@ -107,7 +107,7 @@ export class IntegrationsGridComponent
       integration_id: [''],
       source_id: [[]],
       restricted_to_companies: [[]],
-      name: [''],
+      name: ['', Validators.required],
       icon: [''],
       description: [''],
       is_beta: [''],

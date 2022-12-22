@@ -54,6 +54,7 @@
               <div class="hidden sm:block">Date Created</div>
               <div class="hidden sm:block">Date Updated</div>
               <div class="hidden sm:block">Installed</div>
+              <div class="hidden sm:block">Details</div>
             </div>
             <!-- Rows -->
             <ng-container *ngIf="sources$ | async as sources">
@@ -219,6 +220,7 @@
                       <mat-form-field class="w-2/3 pl-2">
                         <mat-label>Form Schema</mat-label>
                         <input matInput [formControlName]="'source_form'" />
+                        <mat-error>Form Schema is required</mat-error>
                       </mat-form-field>
                     </div>
                   </div>
