@@ -76,7 +76,7 @@ export class SourcesComponent implements OnInit, OnDestroy {
    * @param source selected source
    * @param isEdit is this the Edit form or Add form
    */
-  addSource(source: any, isEdit: boolean): any {
+  addSource(source: any, isEdit: boolean): void {
     this.isEdit = isEdit;
     this.selectedFormType = source.source_form;
     if (!isEdit) {

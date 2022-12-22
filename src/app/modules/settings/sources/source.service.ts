@@ -77,10 +77,13 @@ export class SourceService {
   /**
    * View source instance
    */
-  getSourceInstance(companyId: string, instanceId: string): Observable<any> {
+  getSourceInstance(
+    companyId: string,
+    instanceId: string
+  ): Observable<SourcePayload> {
     const api = this._config.apiConfig.baseUrl;
     return this._httpClient
-      .get<EcommifyApiResponse<any>>(
+      .get<EcommifyApiResponse<SourcePayload>>(
         `${api}/${companyId}/source/instance/${instanceId}`
       )
       .pipe(
@@ -99,10 +102,10 @@ export class SourceService {
   createSourceInstance(
     companyId: string,
     payload: SourcePayload
-  ): Observable<any> {
+  ): Observable<SourcePayload> {
     const api = this._config.apiConfig.baseUrl;
     return this._httpClient
-      .post<EcommifyApiResponse<any>>(
+      .post<EcommifyApiResponse<SourcePayload>>(
         `${api}/${companyId}/source/instance`,
         payload
       )
@@ -122,13 +125,13 @@ export class SourceService {
     companyId: string,
     payload: SourcePayload,
     instanceId: string
-  ): Observable<any> {
+  ): Observable<SourcePayload> {
     const api = this._config.apiConfig.baseUrl;
     return this.sourceInstances$.pipe(
       take(1),
       switchMap(sources =>
         this._httpClient
-          .put<EcommifyApiResponse<any>>(
+          .put<EcommifyApiResponse<SourcePayload>>(
             `${api}/${companyId}/source/instance/${instanceId}`,
             payload
           )

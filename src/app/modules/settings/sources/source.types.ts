@@ -34,14 +34,6 @@ export interface Source {
   source_install_name?: string;
   source_instance_id?: string;
   active_status?: string;
-
-  api_key?: string;
-  account_id?: string;
-  application_key?: string;
-  access_token_secret?: any;
-  access_token?: any;
-  consumer_secret?: any;
-  consumer_key?: any;
 }
 
 export class SourcePayload {
