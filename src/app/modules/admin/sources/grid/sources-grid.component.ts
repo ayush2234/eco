@@ -76,7 +76,7 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
   restrictedToCompanyTags: Tag[];
   filteredRestrictedToCompanyTags: Tag[];
   private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+  errorMsg: string;
   /**
    * Constructor
    */
@@ -385,10 +385,20 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
     const source = this.selectedSourceForm.getRawValue();
     console.log(source);
     // Update the source on the server
-    this._sourceService.updateSource(source.source_id, source).subscribe(() => {
-      // Show a success message
-      this.showFlashMessage('success');
-    });
+    this._sourceService.updateSource(source.source_id, source).subscribe(
+      () => {
+        // Show a success message
+        this.showFlashMessage('success');
+      },
+      error => {
+        this.showFlashMessage('error');
+        if (error) {
+          this.errorMsg = Object.values(error.error.errors).toString();
+        } else {
+          this.errorMsg = 'Something went wrong.Please try again';
+        }
+      }
+    );
   }
 
   /**

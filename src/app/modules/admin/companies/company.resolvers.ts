@@ -4,7 +4,7 @@ import {
   Resolve,
   RouterStateSnapshot,
 } from '@angular/router';
-import { ApiResponse, EcommifyApiResponse } from 'app/core/api/api.types';
+import { EcommifyApiResponse } from 'app/core/api/api.types';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { Observable } from 'rxjs';
 import { IntegrationService } from '../integrations/integration.service';

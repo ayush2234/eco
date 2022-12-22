@@ -3,8 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { Source, SourceInstance, SourceSettings } from './source.types';
 import { appConfig } from 'app/core/config/app.config';
-import { ApiResponse } from 'app/core/api/api.types';
+
 import { isEmpty } from 'lodash';
+import { EcommifyApiResponse } from 'app/core/api/api.types';
 
 @Injectable({
   providedIn: 'root',
@@ -49,17 +50,17 @@ export class SourceService {
   getSourceSettings(companyId: string): Observable<SourceSettings> {
     const api = this._config.apiConfig.baseUrl;
     return this._httpClient
-      .get<ApiResponse<SourceSettings>>(`${api}/${companyId}/sources`)
+      .get<EcommifyApiResponse<SourceSettings>>(`${api}/${companyId}/sources`)
       .pipe(
         map(response => {
-          const { data } = response;
+          const { result } = response;
 
-          if (!isEmpty(data?.sources)) {
-            const { sources } = data;
+          if (!isEmpty(result?.sources)) {
+            const { sources } = result;
             this._sourceInstances.next(sources[0].instances);
             this._availableSources.next(sources[0].available);
 
-            return data[0];
+            return result[0];
           }
 
           return null;

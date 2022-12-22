@@ -20,7 +20,7 @@ import {
 } from 'app/core/user/user.types';
 import { appConfig } from '../config/app.config';
 import { AuthUtils } from '../auth/auth.utils';
-import { ApiResponse, EcommifyApiResponse } from '../api/api.types';
+import { EcommifyApiResponse } from '../api/api.types';
 import { LocalStorageUtils } from '../common/local-storage.utils';
 import { GridUtils } from 'app/layout/common/grid/grid.utils';
 

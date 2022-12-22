@@ -15,7 +15,7 @@ import {
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { Source, SourceListResponse } from './source.types';
 import { appConfig } from 'app/core/config/app.config';
-import { ApiResponse, EcommifyApiResponse } from 'app/core/api/api.types';
+import { EcommifyApiResponse } from 'app/core/api/api.types';
 import { GridUtils } from 'app/layout/common/grid/grid.utils';
 
 @Injectable({

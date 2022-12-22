@@ -21,12 +21,14 @@ import { SettingsAccountComponent } from './account/account.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { IntegrationsModule } from './integrations/integrations.module';
+import { CustomIntegrationRequestComponent } from './custom-integration-request/custom-integration-request.component';
 
 @NgModule({
   declarations: [
     SettingsComponent,
     SettingsUsersComponent,
     SettingsAccountComponent,
+    CustomIntegrationRequestComponent,
   ],
   imports: [
     SettingssRoutingModule,

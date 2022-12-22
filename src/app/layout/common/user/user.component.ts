@@ -51,7 +51,6 @@ export class UserComponent implements OnInit, OnDestroy {
     this._userService.user$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((user: User) => {
-        console.log(user)
         this.user = user;
 
         // Mark for check
