@@ -73,20 +73,24 @@
                     <mat-form-field class="w-1/2 pr-2">
                       <mat-label>User Limit</mat-label>
                       <input matInput [formControlName]="'user_limit'" />
+                      <mat-error>User limit is required</mat-error>
                     </mat-form-field>
                     <mat-form-field class="w-1/2 px-2">
                       <mat-label>Source Limit</mat-label>
                       <input matInput [formControlName]="'source_limit'" />
+                      <mat-error>Source limit is required</mat-error>
                     </mat-form-field>
                   </div>
                   <div class="flex">
                     <mat-form-field class="w-1/2 pr-2">
                       <mat-label>Integration Limit</mat-label>
                       <input matInput [formControlName]="'integration_limit'" />
+                      <mat-error>Integration limit is required</mat-error>
                     </mat-form-field>
                     <mat-form-field class="w-1/2 px-2">
                       <mat-label>SKU Limit</mat-label>
                       <input matInput [formControlName]="'sku_limit'" />
+                      <mat-error>SKU is required</mat-error>
                     </mat-form-field>
                   </div>
 

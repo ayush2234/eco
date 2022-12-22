@@ -188,10 +188,10 @@ export class UserService {
       take(1),
       switchMap(users =>
         this._httpClient
-          .post<ApiResponse<User>>(`${api}/admin/user`, user)
+          .post<EcommifyApiResponse<User>>(`${api}/admin/user`, user)
           .pipe(
             map(response => {
-              const { data: newUser } = response;
+              const { result: newUser } = response;
               // Update the users with the new user
               this._users.next([newUser, ...users]);
 

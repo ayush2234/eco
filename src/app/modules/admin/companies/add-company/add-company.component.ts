@@ -126,6 +126,8 @@ export class AddCompanyComponent implements OnInit, OnDestroy {
    * On destroy
    */
   ngOnDestroy(): void {
+    //to close the side drawer for backdrop
+    this.fuseDrawerOpened=false;
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
@@ -159,6 +161,7 @@ export class AddCompanyComponent implements OnInit, OnDestroy {
       },
       error => {
         this.showFlashMessage('error');
+             this.fuseDrawerOpened = false;
         if (error) {
           this.errorMsg = Object.values(error.error.errors).toString();
         } else {
