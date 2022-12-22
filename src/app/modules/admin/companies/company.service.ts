@@ -168,10 +168,10 @@ export class CompanyService {
       take(1),
       switchMap(companies =>
         this._httpClient
-          .post<ApiResponse<Company>>(`${api}/admin/company`, company)
+          .post<EcommifyApiResponse<Company>>(`${api}/admin/company`, company)
           .pipe(
             map(response => {
-              const { data: newCompany } = response;
+              const { result: newCompany } = response;
               // Update the companies with the new company
               this._companies.next([newCompany, ...companies]);
 
@@ -196,10 +196,13 @@ export class CompanyService {
       take(1),
       switchMap(companies =>
         this._httpClient
-          .put<ApiResponse<Company>>(`${api}/admin/company/${id}`, company)
+          .put<EcommifyApiResponse<Company>>(
+            `${api}/admin/company/${id}`,
+            company
+          )
           .pipe(
             map(response => {
-              const { data: updatedCompany } = response;
+              const { result: updatedCompany } = response;
               // Find the index of the updated company
               const index = companies.findIndex(item => item.company_id === id);
 
@@ -228,7 +231,7 @@ export class CompanyService {
       take(1),
       switchMap(companies =>
         this._httpClient.delete(`${api}/admin/company/${id}`).pipe(
-          map((response: ApiResponse<string>) => {
+          map((response: EcommifyApiResponse<string>) => {
             const { message } = response;
             const isDeleted = message === 'success';
             // Find the index of the deleted company

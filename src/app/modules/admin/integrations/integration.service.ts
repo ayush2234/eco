@@ -97,15 +97,18 @@ export class IntegrationService {
     const api = this._config?.apiConfig?.baseUrl;
 
     return this._httpClient
-      .get<EcommifyApiResponse<IntegrationListResponse>>(`${api}/admin/integrations`, {
-        params: {
-          page: '' + page,
-          size: '' + size,
-          sort,
-          order,
-          search,
-        },
-      })
+      .get<EcommifyApiResponse<IntegrationListResponse>>(
+        `${api}/admin/integrations`,
+        {
+          params: {
+            page: '' + page,
+            size: '' + size,
+            sort,
+            order,
+            search,
+          },
+        }
+      )
       .pipe(
         tap(response => {
           const { result } = response;
@@ -165,13 +168,13 @@ export class IntegrationService {
       take(1),
       switchMap(integrations =>
         this._httpClient
-          .post<ApiResponse<Integration>>(
+          .post<EcommifyApiResponse<Integration>>(
             `${api}/admin/integration`,
             integration
           )
           .pipe(
             map(response => {
-              const { data: newIntegration } = response;
+              const { result: newIntegration } = response;
               // Update the integrations with the new integration
               this._integrations.next([newIntegration, ...integrations]);
 
@@ -199,13 +202,13 @@ export class IntegrationService {
       take(1),
       switchMap(integrations =>
         this._httpClient
-          .put<ApiResponse<Integration>>(
+          .put<EcommifyApiResponse<Integration>>(
             `${api}/admin/integration/${id}`,
             integration
           )
           .pipe(
             map(response => {
-              const { data: updatedIntegration } = response;
+              const { result: updatedIntegration } = response;
               // Find the index of the updated integration
               const index = integrations.findIndex(
                 item => item.integration_id === id

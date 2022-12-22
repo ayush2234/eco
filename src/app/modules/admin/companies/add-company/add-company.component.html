@@ -65,23 +65,26 @@
                   <mat-form-field class="w-full">
                     <mat-label>Company Name</mat-label>
                     <input matInput [formControlName]="'company_name'" />
+                    <mat-error>Company name is required</mat-error>
                   </mat-form-field>
 
                   <!-- Limits -->
                   <div class="flex">
-                    <mat-form-field class="w-1/4 pr-2">
+                    <mat-form-field class="w-1/2 pr-2">
                       <mat-label>User Limit</mat-label>
                       <input matInput [formControlName]="'user_limit'" />
                     </mat-form-field>
-                    <mat-form-field class="w-1/4 px-2">
+                    <mat-form-field class="w-1/2 px-2">
                       <mat-label>Source Limit</mat-label>
                       <input matInput [formControlName]="'source_limit'" />
                     </mat-form-field>
-                    <mat-form-field class="w-1/4 px-2">
+                  </div>
+                  <div class="flex">
+                    <mat-form-field class="w-1/2 pr-2">
                       <mat-label>Integration Limit</mat-label>
                       <input matInput [formControlName]="'integration_limit'" />
                     </mat-form-field>
-                    <mat-form-field class="w-1/4 pl-2">
+                    <mat-form-field class="w-1/2 px-2">
                       <mat-label>SKU Limit</mat-label>
                       <input matInput [formControlName]="'sku_limit'" />
                     </mat-form-field>
@@ -222,13 +225,14 @@
                     <mat-icon
                       class="text-green-500"
                       [svgIcon]="'heroicons_outline:check'"></mat-icon>
-                    <span class="ml-2">Company updated</span>
+                    <span class="ml-2">Company created</span>
                   </ng-container>
+
                   <ng-container *ngIf="flashMessage === 'error'">
                     <mat-icon
                       class="text-red-500"
                       [svgIcon]="'heroicons_outline:x'"></mat-icon>
-                    <span class="ml-2">An error occurred, try again!</span>
+                    <span class="ml-2">{{ errorMsg }}</span>
                   </ng-container>
                 </div>
                 <button
@@ -242,6 +246,7 @@
                   mat-flat-button
                   [color]="'primary'"
                   type="button"
+                  [disabled]="selectedCompanyForm.invalid"
                   (click)="createCompany()">
                   Save
                 </button>
