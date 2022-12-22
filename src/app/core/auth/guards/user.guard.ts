@@ -35,7 +35,10 @@ export class UserGuard implements CanActivate {
           url.match('/user/dashboard/products') ||
           url.match('/user/sync-logs/products') ||
           url.match('/user/sync-logs/orders') ||
-          url.match('/user/settings/integrations')
+          url.match('/user/settings/integrations')||
+          url.match('/user/settings/source-channel') ||
+          url.match('/user/settings/custom-integration-request')||
+          url.match('/user/settings/users')
         ) {
           return true;
         }
