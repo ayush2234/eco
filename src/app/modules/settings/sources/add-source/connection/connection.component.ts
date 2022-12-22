@@ -185,9 +185,13 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
 
   updateSourceInstance() {
     let payload = new SourcePayload();
-    payload.source_id = this.selectedSource.source_id;
     payload.name = this.selectedSource.name;
-    payload.active_status = this.selectedSource.active_status ? 'Y' : 'N';
+    payload.active_status =
+      typeof this.selectedSource.active_status == 'boolean'
+        ? this.selectedSource.active_status
+          ? 'Y'
+          : 'N'
+        : this.selectedSource.active_status;
     payload.connectionPanel.attributes = this.getAttributes();
     this._sourceService
       .updateSourceInstance(

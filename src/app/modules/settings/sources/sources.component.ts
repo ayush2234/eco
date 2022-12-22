@@ -110,6 +110,9 @@ export class SourcesComponent implements OnInit, OnDestroy {
       .getSourceInstance(LocalStorageUtils.companyId, data.source_instance_id)
       .subscribe(res => {
         res.active_status = event.checked ? 'Y' : 'N';
+        delete res['source_instance_id'];
+        delete res['source_id'];
+        delete res['company_id'];
         this._sourceService
           .updateSourceInstance(
             LocalStorageUtils.companyId,

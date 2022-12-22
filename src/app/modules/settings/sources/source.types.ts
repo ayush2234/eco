@@ -49,7 +49,7 @@ export class SourcePayload {
   source_instance_id?: string;
   name: string;
   connectionPanel = new ConnectionPanel();
-  active_status: 'Y' | 'N';
+  active_status: 'Y' | 'N' | boolean;
 }
 
 export class ConnectionPanel {
