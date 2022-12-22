@@ -81,6 +81,7 @@ export class CompaniesGridComponent
   filteredRestrictedToIntegrationTags: Tag[];
   restrictedToSourceTags: Tag[];
   filteredRestrictedToSourceTags: Tag[];
+  errorMsg: string;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
@@ -111,10 +112,10 @@ export class CompaniesGridComponent
       referrer: [''],
       is_active: [''],
       allow_beta: [''],
-      user_limit: ['',Validators.required],
-      source_limit: ['',Validators.required],
-      integration_limit: ['',Validators.required],
-      sku_limit: ['',Validators.required],
+      user_limit: ['', Validators.required],
+      source_limit: ['', Validators.required],
+      integration_limit: ['', Validators.required],
+      sku_limit: ['', Validators.required],
       restricted_to_sources: [[]],
       restricted_to_integrations: [[]],
     });
@@ -526,12 +527,21 @@ export class CompaniesGridComponent
     delete company.currentImageIndex;
 
     // Update the company on the server
-    this._companyService
-      .updateCompany(company.company_id, company)
-      .subscribe(() => {
+    this._companyService.updateCompany(company.company_id, company).subscribe(
+      () => {
         // Show a success message
         this.showFlashMessage('success');
-      });
+      },
+      error => {
+        this.showFlashMessage('error');
+
+        if (error) {
+          this.errorMsg = Object.values(error.error.errors).toString();
+        } else {
+          this.errorMsg = 'Something went wrong.Please try again';
+        }
+      }
+    );
   }
 
   /**

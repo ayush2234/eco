@@ -80,6 +80,7 @@ export class IntegrationsGridComponent
   filteredSourceTags: Tag[];
   restrictedToCompanyTags: Tag[];
   filteredRestrictedToCompanyTags: Tag[];
+  errorMsg: string;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
@@ -524,10 +525,21 @@ export class IntegrationsGridComponent
     // Update the integration on the server
     this._integrationService
       .updateIntegration(integration.integration_id, integration)
-      .subscribe(() => {
-        // Show a success message
-        this.showFlashMessage('success');
-      });
+      .subscribe(
+        () => {
+          // Show a success message
+          this.showFlashMessage('success');
+        },
+        error => {
+          this.showFlashMessage('error');
+
+          if (error) {
+            this.errorMsg = Object.values(error.error.errors).toString();
+          } else {
+            this.errorMsg = 'Something went wrong.Please try again';
+          }
+        }
+      );
   }
 
   /**
