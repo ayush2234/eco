@@ -52,6 +52,7 @@ export class AddSourceComponent implements OnInit, OnDestroy {
   @Input() selectedSource: SourcePayload;
   @Input() selectedFormType: string;
   @Input() isEdit: boolean = false;
+  @Input() isOpen: boolean = false;
 
   /**
    * Constructor
@@ -142,6 +143,12 @@ export class AddSourceComponent implements OnInit, OnDestroy {
    *
    */
   openedChanged(fuseDrawer): any {
-    !fuseDrawer?.opened && this.cancel.emit();
+    this.isOpen ? null : fuseDrawer.close();
+    !fuseDrawer?.opened && this.closeDrawer();
+  }
+
+  closeDrawer() {
+    this.isOpen = false;
+    this.cancel.emit();
   }
 }
