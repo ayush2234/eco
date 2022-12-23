@@ -389,6 +389,7 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
       () => {
         // Show a success message
         this.showFlashMessage('success');
+        this.closeDetails();
       },
       error => {
         this.showFlashMessage('error');
