@@ -2,15 +2,24 @@
   <!-- Form -->
   <form [formGroup]="connectionForm">
     <!-- Section -->
+    <!-- API Key Mirakl -->
     <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
-      <!-- Name -->
+          <div class="sm:col-span-4">
+        <mat-form-field class="fuse-mat-no-subscript w-full">
+          <mat-label>API key</mat-label>
+          <input [formControlName]="'MiraklapiKey'" matInput />
+        </mat-form-field>
+      </div>
+       <!-- Divider -->
+    <div class="my-10 border-t"></div>
+      <!-- Integration Name -->
       <div class="sm:col-span-4">
         <mat-form-field class="fuse-mat-no-subscript w-full">
           <mat-label>Integration name</mat-label>
           <input [formControlName]="'name'" matInput />
         </mat-form-field>
       </div>
-      <!-- Username -->
+      <!-- StoreURL -->
       <div class="sm:col-span-4">
         <mat-form-field
           class="fuse-mat-no-subscript fuse-mat-emphasized-affix w-full">
@@ -19,14 +28,14 @@
           <input [formControlName]="'neatStoreURL'" matInput />
         </mat-form-field>
       </div>
-      <!-- Title -->
+      <!-- Username -->
       <div class="sm:col-span-2">
         <mat-form-field class="fuse-mat-no-subscript w-full">
           <mat-label>Username</mat-label>
           <input [formControlName]="'username'" matInput />
         </mat-form-field>
       </div>
-      <!-- Company -->
+      <!-- API Key -->
       <div class="sm:col-span-2">
         <mat-form-field class="fuse-mat-no-subscript w-full">
           <mat-label>API key</mat-label>
@@ -36,7 +45,7 @@
     </div>
 
     <div class="text-secondary mt-8">
-      For more information on API credentials for Maropost, please see the
+      For more information on API credentials for Mirakl, please see the
       following URL:
     </div>
 
