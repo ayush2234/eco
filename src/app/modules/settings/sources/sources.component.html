@@ -17,12 +17,6 @@
             [svgIcon]="'heroicons_solid:cog'"></mat-icon>
           <span class="ml-2">Settings</span>
         </button>
-        <button
-          class="hidden sm:inline-flex ml-3"
-          mat-flat-button
-          [color]="'primary'">
-          <span class="ml-2">Add Source</span>
-        </button>
 
         <!-- Actions menu (visible on xs) -->
         <div class="sm:hidden">
@@ -70,15 +64,16 @@
           <!-- Footer -->
           <div class="flex flex-col w-full mt-auto">
             <div class="flex items-center justify-between p-8 pt-0">
-              <a mat-stroked-button routerLink="#">
+              <button mat-stroked-button (click)="addSource(instance, true)">
                 <span class="inline-flex items-center">
                   <span class="truncate">Configuration</span>
                 </span>
-              </a>
+              </button>
               <mat-slide-toggle
+                (change)="getInstallListActiveInactive(instance, $event)"
                 class="ml-3"
                 [color]="'primary'"
-                [checked]="instance.isActive">
+                [checked]="instance.active_status === 'Y'">
               </mat-slide-toggle>
             </div>
           </div>
@@ -86,11 +81,11 @@
       </ng-container>
     </div>
 
-    <!-- Add new integration -->
+    <!-- Add new source -->
     <div class="flex items-center justify-between pt-8 w-full">
       <div>
         <div class="font-medium font-semibold tracking-tight">
-          Add new integration
+          Add new source
         </div>
       </div>
     </div>
@@ -126,7 +121,7 @@
                 mat-flat-button
                 [color]="'primary'"
                 class="w-full"
-                (click)="addIntegration(source)">
+                (click)="addSource(source, false)">
                 <span class="inline-flex items-center">
                   <span>Add Source</span>
                 </span>
@@ -138,7 +133,11 @@
     </div>
   </div>
 </div>
-<!-- <eco-add-integration
-  *ngIf="openAddIntegration"
-  [integration]="selectedIntegration"
-  (cancel)="openAddIntegration = false"></eco-add-integration> -->
+<!-- Add Source sidebar -->
+<eco-add-source
+  *ngIf="openAddSource"
+  [selectedFormType]="selectedFormType"
+  [selectedSource]="selectedSource"
+  [isEdit]="isEdit"
+  (cancel)="openAddSource = false">
+</eco-add-source>

@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
-import { Source, SourceInstance, SourceSettings } from './source.types';
+import { BehaviorSubject, map, Observable, switchMap, take, tap } from 'rxjs';
+import {
+  Source,
+  SourceInstance,
+  SourcePayload,
+  SourceSettings,
+} from './source.types';
 import { appConfig } from 'app/core/config/app.config';
 
 import { isEmpty } from 'lodash';
+import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 import { EcommifyApiResponse } from 'app/core/api/api.types';
 
 @Injectable({
@@ -66,5 +72,105 @@ export class SourceService {
           return null;
         })
       );
+  }
+
+  /**
+   * View source instance
+   */
+  getSourceInstance(
+    companyId: string,
+    instanceId: string
+  ): Observable<SourcePayload> {
+    const api = this._config.apiConfig.baseUrl;
+    return this._httpClient
+      .get<EcommifyApiResponse<SourcePayload>>(
+        `${api}/${companyId}/source/instance/${instanceId}`
+      )
+      .pipe(
+        map(response => {
+          if (!isEmpty(response['result'])) {
+            return response['result'];
+          }
+          return null;
+        })
+      );
+  }
+
+  /**
+   * Create source instance api
+   */
+  createSourceInstance(
+    companyId: string,
+    payload: SourcePayload
+  ): Observable<SourcePayload> {
+    const api = this._config.apiConfig.baseUrl;
+    return this._httpClient
+      .post<EcommifyApiResponse<SourcePayload>>(
+        `${api}/${companyId}/source/instance`,
+        payload
+      )
+      .pipe(
+        map(response => {
+          const { result } = response;
+          this.updateSources();
+          return result;
+        })
+      );
+  }
+
+  /**
+   * Update source instance api
+   */
+  updateSourceInstance(
+    companyId: string,
+    payload: SourcePayload,
+    instanceId: string
+  ): Observable<SourcePayload> {
+    const api = this._config.apiConfig.baseUrl;
+    return this.sourceInstances$.pipe(
+      take(1),
+      switchMap(sources =>
+        this._httpClient
+          .put<EcommifyApiResponse<SourcePayload>>(
+            `${api}/${companyId}/source/instance/${instanceId}`,
+            payload
+          )
+          .pipe(
+            map(response => {
+              if (!isEmpty(response['result'])) {
+                this.updateSources();
+                return response['result'];
+              }
+              return null;
+            })
+          )
+      )
+    );
+  }
+
+  /**
+   * Get Marapost O-Auth api
+   */
+  getMarapostOauthUrl(
+    companyId: string,
+    store_domain: string
+  ): Observable<any> {
+    const api = this._config.apiConfig.serviceUrl;
+    return this._httpClient
+      .post<EcommifyApiResponse<any>>(`${api}/oauth/maropost/${companyId}`, {
+        store_domain,
+      })
+      .pipe(
+        map(response => {
+          return response;
+        })
+      );
+  }
+
+  /**
+   * Update Sources list in UI
+   */
+  updateSources(): void {
+    this.getSourceSettings(LocalStorageUtils.companyId).subscribe();
   }
 }
