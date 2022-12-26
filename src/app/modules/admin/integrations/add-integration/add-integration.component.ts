@@ -128,7 +128,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     //to close the side drawer for backdrop
-    this.fuseDrawerOpened=false;
+    this.fuseDrawerOpened = false;
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
@@ -156,6 +156,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
         // this.fuseDrawerOpened = false;
         this.showFlashMessage('success');
         if (this.flashMessage === 'success') {
+          this.fuseDrawerOpened = false;
           this.selectedIntegrationForm.reset();
         }
       },

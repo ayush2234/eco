@@ -96,7 +96,7 @@ export class CompanyService {
   getCompanies(
     page: number = 0,
     size: number = 10,
-    sort: string = 'name',
+    sort: string = 'company_name',
     order: 'asc' | 'desc' | '' = 'asc',
     search: string = ''
   ): Observable<EcommifyApiResponse<CompanyListResponse>> {
