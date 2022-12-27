@@ -117,7 +117,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     //to close the side drawer for backdrop
-    this.fuseDrawerOpened=false;
+    this.fuseDrawerOpened = false;
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
@@ -142,6 +142,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
         // Show a success message
         this.showFlashMessage('success');
         if (this.flashMessage === 'success') {
+          this.fuseDrawerOpened = false;
           this.selectedUserForm.reset();
         }
       },
