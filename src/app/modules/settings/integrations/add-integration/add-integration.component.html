@@ -7,6 +7,7 @@
     [position]="'right'"
     [opened]="fuseDrawerOpened"
     (openedChanged)="openedChanged(fuseDrawer)"
+    *ngIf="isOpen"
     #fuseDrawer
     ><div
       *ngIf="wipIntegration$ | async as integration"

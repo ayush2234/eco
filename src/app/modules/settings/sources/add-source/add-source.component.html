@@ -3,10 +3,11 @@
     class="w-screen min-w-screen sm:w-65vw sm:min-w-100 z-999"
     fixed
     [mode]="'over'"
-    [name]="'addIntegrationDrawer'"
+    [name]="'addSourceDrawer'"
     [position]="'right'"
     [opened]="fuseDrawerOpened"
     (openedChanged)="openedChanged(fuseDrawer)"
+    *ngIf="isOpen"
     #fuseDrawer
     ><div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
       <mat-drawer-container class="flex-auto sm:h-full">

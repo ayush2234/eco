@@ -8,6 +8,7 @@ import {
   EventEmitter,
   OnDestroy,
   OnInit,
+  Input,
   Output,
   ViewChild,
   ViewEncapsulation,
@@ -76,6 +77,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
   selectedPanel: string = 'connection';
   wipIntegration$: Observable<Integration>;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
+  @Input() isOpen = false;
 
   /**
    * Constructor
@@ -173,9 +175,14 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
    *
    */
   openedChanged(fuseDrawer): any {
-    !fuseDrawer?.opened && this.cancel.emit();
+    this.isOpen ? null : fuseDrawer.close();
+    !fuseDrawer?.opened && this.closeDrawer();
   }
 
+  closeDrawer() {
+    this.isOpen = false;
+    this.cancel.emit();
+  }
   private setPanels(data: SyncOption[]): void {
     this.panels = addIntegrationPanels.reduce(
       (acc, panel) => {

@@ -52,6 +52,7 @@ export class SourcesComponent implements OnInit, OnDestroy {
    * On destroy
    */
   ngOnDestroy(): void {
+    this.openAddSource = false;
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
