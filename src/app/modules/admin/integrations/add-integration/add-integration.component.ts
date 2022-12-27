@@ -72,9 +72,9 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
       name: ['', Validators.required],
       icon: [''],
       description: [''],
-      is_beta: [''],
-      is_custom: [''],
-      force_test_connection: [''],
+      is_beta: [false],
+      is_custom: [false],
+      force_test_connection: [false],
       json_form_schema_file: [''],
       created_at: [''],
       notes: [''],
@@ -145,6 +145,11 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
   createIntegration(): void {
     // Get the integration object
     const integration = this.selectedIntegrationForm.getRawValue();
+    integration.force_connection_test = integration.force_connection_test
+      ? 'Y'
+      : 'N';
+    integration.is_beta = integration.is_beta ? 'Y' : 'N';
+    integration.is_custom = integration.is_custom ? 'Y' : 'N';
 
     // Remove the currentImageIndex field
     delete integration.currentImageIndex;
