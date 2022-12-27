@@ -57,7 +57,7 @@
               <div class="hidden lg:block">hasCustom</div>
               <div class="hidden lg:block">Users</div>
               <div class="hidden lg:block">Integrations</div>
-              <div class="hidden lg:block">Active</div>
+              <!-- <div class="hidden lg:block">Active</div> -->
               <div class="hidden lg:block">Action</div>
               <div class="hidden sm:block">Details</div>
             </div>
@@ -79,12 +79,12 @@
 
                   <!-- Status -->
                   <div class="hidden lg:block">
-                    <ng-container *ngIf="company?.is_active">
+                    <ng-container *ngIf="company?.is_active_bool == true">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container *ngIf="!company?.is_active">
+                    <ng-container *ngIf="company?.is_active_bool == false">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
@@ -106,7 +106,7 @@
 
                   <!-- hasCustom -->
                   <div class="hidden sm:block">
-                    {{ company?.allow_beta ? 'Yes' : 'No' }}
+                    {{ company?.allow_beta_bool == true ? 'Yes' : 'No' }}
                   </div>
 
                   <!-- Users -->
@@ -121,7 +121,7 @@
                   </div>
 
                   <!-- Active -->
-                  <div class="hidden lg:block">
+                  <!-- <div class="hidden lg:block">
                     <ng-container *ngIf="company?.is_active">
                       <mat-icon
                         class="text-green-400 icon-size-5"
@@ -132,7 +132,7 @@
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
                     </ng-container>
-                  </div>
+                  </div> -->
                   <!-- login as button-->
 
                   <div>
@@ -394,12 +394,12 @@
                         class="text-green-500"
                         [svgIcon]="'heroicons_outline:check'"></mat-icon>
                       <span class="ml-2">Company updated</span>
-                    </ng-container> 
+                    </ng-container>
                     <ng-container *ngIf="flashMessage === 'error'">
                       <mat-icon
                         class="text-red-500"
                         [svgIcon]="'heroicons_outline:x'"></mat-icon>
-                      <span class="ml-2">An error occurred, try again!</span>
+                      <span class="ml-2">{{ errorMsg }}</span>
                     </ng-container>
                   </div>
                   <button
