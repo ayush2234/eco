@@ -276,6 +276,18 @@ export class IntegrationsGridComponent
     this._integrationService
       .getIntegrationById(integrationId)
       .subscribe(integration => {
+        integration.is_beta =
+          integration.is_beta == 'Y' || integration.is_beta == true
+            ? true
+            : false;
+        integration.is_custom =
+          integration.is_custom == 'Y' || integration.is_custom == true
+            ? true
+            : false;
+        integration.active_status =
+          integration.active_status == 'Y' || integration.active_status == true
+            ? true
+            : false;
         // Set the selected integration
         this.selectedIntegration = integration;
 

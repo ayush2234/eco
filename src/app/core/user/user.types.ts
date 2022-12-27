@@ -13,16 +13,16 @@ export interface GetUserByTokenResponse {
   expire_at: number;
   role: string;
   companies?: Company[];
-  
+
   active_status?: string;
   note?: string;
   access_token: string;
   ttl: number;
 }
 
-export interface Company{
+export interface Company {
   company_id: string;
-  company_name?:string;
+  company_name?: string;
 }
 export interface User {
   id: string;
@@ -33,11 +33,10 @@ export interface User {
   expire_at: number;
   role: string;
   companies?: Company[];
-  active_status?: string;
+  active_status?: string | boolean;
   note?: string;
   access_token: string;
   ttl: number;
-
 }
 
 export interface CreateUser {

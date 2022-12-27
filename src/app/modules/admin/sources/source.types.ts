@@ -9,11 +9,11 @@ export interface Source {
   name: string;
   icon?: string;
   description: string;
-  is_custom: string;
-  is_beta: string;
-  active_status: string;
+  is_custom: string | boolean;
+  is_beta: string | boolean;
+  active_status: string | boolean;
   source_form: string;
-  force_connection_test: string;
+  force_connection_test: string | boolean;
   installed_instances: number;
   created_at: string;
   created_by: string;
