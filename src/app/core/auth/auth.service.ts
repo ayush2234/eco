@@ -4,7 +4,7 @@ import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { UserService } from 'app/core/user/user.service';
 import { appConfig } from '../config/app.config';
 import { EcommifyApiResponse } from '../api/api.types';
-import { AuthUserResponse } from './auth.types';
+
 import { AuthUtils } from './auth.utils';
 import { User } from '../user/user.types';
 
@@ -12,7 +12,7 @@ import { User } from '../user/user.types';
 export class AuthService {
   private _config = appConfig;
   private _authenticated: boolean = false;
-
+  public companies = [];
   /**
    * Constructor
    */
@@ -108,6 +108,7 @@ export class AuthService {
 
           // Store the user on the user service
           this._userService.user = result;
+          this.companies = response.result.companies;
 
           // Return a new observable with the response
           return of(response);

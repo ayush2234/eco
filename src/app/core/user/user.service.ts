@@ -38,6 +38,7 @@ export class UserService {
   private _companyTags: BehaviorSubject<Tag[] | null> = new BehaviorSubject(
     null
   );
+  company = [];
 
   /**
    * Constructor
@@ -118,10 +119,13 @@ export class UserService {
       })
       .pipe(
         tap(response => {
-          const { result } = response;
-          const pagination = GridUtils.getPagination(result);
+          const updatedUsers = response.result.users.map(user => {
+            user.active_status = user.active_status === 'Y' ? true : false;
+            return user;
+          });
+          const pagination = GridUtils.getPagination(response.result);
           this._pagination.next(pagination);
-          this._users.next(result?.users);
+          this._users.next(updatedUsers);
         })
       );
   }
@@ -192,6 +196,8 @@ export class UserService {
           .pipe(
             map(response => {
               const { result: newUser } = response;
+              newUser.active_status =
+                newUser.active_status === 'Y' ? true : false;
               // Update the users with the new user
               this._users.next([newUser, ...users]);
 
@@ -220,6 +226,9 @@ export class UserService {
           .pipe(
             map(response => {
               const { result: updatedUser } = response;
+              // updated response of a user
+              updatedUser.active_status =
+                updatedUser.active_status === 'Y' ? true : false;
               // Find the index of the updated user
               const index = users.findIndex(item => item.id === id);
 

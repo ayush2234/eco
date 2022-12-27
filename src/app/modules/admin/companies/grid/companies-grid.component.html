@@ -79,12 +79,12 @@
 
                   <!-- Status -->
                   <div class="hidden lg:block">
-                    <ng-container *ngIf="company?.is_active_bool == true">
+                    <ng-container *ngIf="company?.is_active == true">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container *ngIf="company?.is_active_bool == false">
+                    <ng-container *ngIf="company?.is_active== false">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>

@@ -5,6 +5,7 @@ import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
 import { LandingHomeComponent } from './modules/landing/home/home.component';
 import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
+import { NotAuthorizedModule } from 'app/modules/not-authorized/not-authorized.module';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -135,12 +136,7 @@ export const appRoutes: Route[] = [
     ],
   },
 
-  // page not found
-
-  // {
-  //   path:'**',
-  //   component:PageNotFoundComponent,
-  // }
+  //page-not-found
   {
     path: '',
 
@@ -157,6 +153,26 @@ export const appRoutes: Route[] = [
         loadChildren: () =>
           import('app/modules/page-not-found/page-not-found.module').then(
             m => m.PageNotFoundModule
+          ),
+      },
+    ],
+  },
+  //not authorized
+  {
+    path: '',
+    component: LayoutComponent,
+    resolve: {
+      initialData: InitialDataResolver,
+    },
+    data: {
+      layout: 'empty',
+    },
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('app/modules/not-authorized/not-authorized.module').then(
+            m => m.NotAuthorizedModule
           ),
       },
     ],
