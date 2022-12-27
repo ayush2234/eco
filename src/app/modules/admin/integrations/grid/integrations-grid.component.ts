@@ -527,6 +527,7 @@ export class IntegrationsGridComponent
       .updateIntegration(integration.integration_id, integration)
       .subscribe(
         () => {
+          this.closeDetails();
           // Show a success message
           this.showFlashMessage('success');
         },

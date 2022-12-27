@@ -7,11 +7,12 @@ import {
 import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 import { Observable } from 'rxjs';
 import { SourceService } from './source.service';
+import { SourceSettings } from './source.types';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SourceResolver implements Resolve<any> {
+export class SourceResolver implements Resolve<SourceSettings> {
   /**
    * Constructor
    */
@@ -30,7 +31,7 @@ export class SourceResolver implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<any> {
+  ): Observable<SourceSettings> {
     const companyId = LocalStorageUtils.companyId;
     return this._sourcesService.getSourceSettings(companyId);
   }

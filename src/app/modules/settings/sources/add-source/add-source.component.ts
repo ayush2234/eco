@@ -6,65 +6,36 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Input,
   OnDestroy,
   OnInit,
-  Input,
   Output,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
-import { Observable, Subject, takeUntil, tap } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { CdkPortal } from '@angular/cdk/portal';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
-import { SyncOptionService } from './common/sync-option/sync-option.service';
-import { Integration, SyncOption } from './add-integration.types';
-
-const badgeActiveClasses =
-  'px-2 bg-green-500 text-sm text-on-primary rounded-full';
-const badgeInactiveClasses =
-  'px-2 bg-primary text-sm text-on-primary rounded-full';
-const addIntegrationPanels = [
+import { Source, SourcePayload } from '../source.types';
+const addSourcePanels = [
   {
     id: 'connection',
     icon: 'heroicons_outline:user-circle',
     title: 'Connection',
     description: '',
   },
-  {
-    id: 'products',
-    icon: 'heroicons_outline:lock-closed',
-    title: 'Products',
-    description: '',
-  },
-  {
-    id: 'inventory',
-    icon: 'heroicons_outline:credit-card',
-    title: 'Inventory',
-    description: '',
-  },
-  {
-    id: 'orders',
-    icon: 'heroicons_outline:bell',
-    title: 'Orders',
-    description: '',
-  },
-  {
-    id: 'tracking',
-    icon: 'heroicons_outline:user-group',
-    title: 'Tracking',
-    description: '',
-  },
 ];
+
 @Component({
-  selector: 'eco-add-integration',
-  templateUrl: './add-integration.component.html',
-  styleUrls: ['./add-integration.component.scss'],
+  selector: 'eco-add-source',
+  templateUrl: './add-source.component.html',
+  styleUrls: ['./add-source.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddIntegrationComponent implements OnInit, OnDestroy {
+export class AddSourceComponent implements OnInit, OnDestroy {
   @ViewChild(CdkPortal, { static: true })
   portalContent: CdkPortal;
   @ViewChild('drawer') drawer: MatDrawer;
@@ -72,12 +43,16 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
   drawerMode: 'over' | 'side' = 'side';
   drawerOpened: boolean = true;
   fuseDrawerOpened: boolean = true;
-  panels: any[] = [];
+  panels: any[] = addSourcePanels;
   panelsConfig: any;
   selectedPanel: string = 'connection';
-  wipIntegration$: Observable<Integration>;
+  wipSource$: Observable<Source>;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
-  @Input() isOpen = false;
+
+  @Input() selectedSource: SourcePayload;
+  @Input() selectedFormType: string;
+  @Input() isEdit: boolean = false;
+  @Input() isOpen: boolean = false;
 
   /**
    * Constructor
@@ -85,8 +60,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
   constructor(
     private _changeDetectorRef: ChangeDetectorRef,
     private _fuseMediaWatcherService: FuseMediaWatcherService,
-    private _portalBridge: PortalBridgeService,
-    private _syncOptionService: SyncOptionService
+    private _portalBridge: PortalBridgeService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -98,12 +72,6 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this._portalBridge.setPortal(this.portalContent);
-    this.wipIntegration$ = this._syncOptionService.wipIntegration$.pipe(
-      tap(data => {
-        // Setup available panels
-        this.setPanels(data?.syncOptions);
-      })
-    );
 
     // Subscribe to media changes
     this._fuseMediaWatcherService.onMediaChange$
@@ -182,33 +150,5 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
   closeDrawer() {
     this.isOpen = false;
     this.cancel.emit();
-  }
-  private setPanels(data: SyncOption[]): void {
-    this.panels = addIntegrationPanels.reduce(
-      (acc, panel) => {
-        const syncOption = data?.find(({ key }) => key === panel.id);
-        const styledPanel = {
-          ...panel,
-          badge: {
-            title: syncOption?.isActive ? 'Active' : 'Inactive',
-            classes: syncOption?.isActive
-              ? badgeActiveClasses
-              : badgeInactiveClasses,
-          },
-        };
-
-        return data?.some(({ key }) => key === panel.id)
-          ? [...acc, styledPanel]
-          : [...acc];
-      },
-      [
-        {
-          id: 'connection',
-          icon: 'heroicons_outline:user-circle',
-          title: 'Connection',
-          description: '',
-        },
-      ]
-    );
   }
 }

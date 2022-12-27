@@ -3,15 +3,13 @@
     class="w-screen min-w-screen sm:w-65vw sm:min-w-100 z-999"
     fixed
     [mode]="'over'"
-    [name]="'addIntegrationDrawer'"
+    [name]="'addSourceDrawer'"
     [position]="'right'"
     [opened]="fuseDrawerOpened"
     (openedChanged)="openedChanged(fuseDrawer)"
     *ngIf="isOpen"
     #fuseDrawer
-    ><div
-      *ngIf="wipIntegration$ | async as integration"
-      class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+    ><div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
       <mat-drawer-container class="flex-auto sm:h-full">
         <!-- Drawer -->
         <mat-drawer
@@ -24,7 +22,7 @@
           <div class="flex items-center justify-between m-8 mr-6 sm:my-10">
             <!-- Title -->
             <div class="text-3xl font-bold tracking-tight leading-none">
-              Add Integration
+              {{ !isEdit ? 'Add' : 'Update' }} Source
             </div>
             <!-- Close button -->
             <div class="lg:hidden">
@@ -89,10 +87,10 @@
               <!-- Panel title -->
               <div
                 class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
-                {{ getPanelInfo(selectedPanel).title }}
+                {{ getPanelInfo(selectedPanel)?.title }}
               </div>
               <div class="mt-0.5 text-secondary">
-                {{ getPanelInfo(selectedPanel).description }}
+                {{ getPanelInfo(selectedPanel)?.description }}
               </div>
             </div>
 
@@ -101,42 +99,12 @@
               <ng-container [ngSwitch]="selectedPanel">
                 <!-- Connection -->
                 <ng-container *ngSwitchCase="'connection'">
-                  <eco-add-integration-connection
-                    [integration]="
-                      integration
-                    "></eco-add-integration-connection>
-                </ng-container>
-                <!-- Products -->
-                <ng-container *ngSwitchCase="'products'">
-                  <eco-add-integration-products
-                    [integration]="integration"
-                    [syncOption]="
-                      integration?.syncOptions | getSyncOption: selectedPanel
-                    "></eco-add-integration-products>
-                </ng-container>
-                <!-- Inventory -->
-                <ng-container *ngSwitchCase="'inventory'">
-                  <eco-add-integration-inventory
-                    [integration]="integration"
-                    [syncOption]="
-                      integration?.syncOptions | getSyncOption: selectedPanel
-                    "></eco-add-integration-inventory>
-                </ng-container>
-                <!-- Orders -->
-                <ng-container *ngSwitchCase="'orders'">
-                  <eco-add-integration-orders
-                    [integration]="integration"
-                    [syncOption]="
-                      integration?.syncOptions | getSyncOption: selectedPanel
-                    "></eco-add-integration-orders>
-                </ng-container>
-                <!-- Tracking -->
-                <ng-container *ngSwitchCase="'tracking'">
-                  <eco-add-integration-tracking
-                    [integration]="integration"
-                    [syncOption]="
-                      integration?.syncOptions | getSyncOption: selectedPanel
-                    "></eco-add-integration-tracking>
+                  <eco-add-source-connection
+                    [isEdit]="isEdit"
+                    [fuseDrawer]="fuseDrawer"
+                    [selectedFormType]="selectedFormType"
+                    [selectedSource]="selectedSource">
+                  </eco-add-source-connection>
                 </ng-container>
               </ng-container>
             </div>

@@ -387,8 +387,10 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // Update the source on the server
     this._sourceService.updateSource(source.source_id, source).subscribe(
       () => {
+        this.closeDetails();
         // Show a success message
         this.showFlashMessage('success');
+        this.closeDetails();
       },
       error => {
         this.showFlashMessage('error');

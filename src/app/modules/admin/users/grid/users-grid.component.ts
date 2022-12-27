@@ -384,6 +384,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // Update the user on the server
     this._userService.updateUser(user.id, user).subscribe(
       () => {
+        this.closeDetails();
         // Show a success message
         this.showFlashMessage('success');
       },

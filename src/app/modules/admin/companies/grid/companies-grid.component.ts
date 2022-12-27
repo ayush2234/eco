@@ -533,6 +533,7 @@ export class CompaniesGridComponent
     // Update the company on the server
     this._companyService.updateCompany(company.company_id, company).subscribe(
       () => {
+        this.closeDetails();
         // Show a success message
         this.showFlashMessage('success');
       },
