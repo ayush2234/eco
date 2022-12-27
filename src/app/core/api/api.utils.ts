@@ -127,10 +127,10 @@ export class ApiUtils {
 
     if (isString(data)) {
       switch (data.toLowerCase()) {
-        case 'y' || 'Y':
+        case 'y':
           data = true;
           break;
-        case 'n' || 'N':
+        case 'n':
           data = false;
           break;
         default:
