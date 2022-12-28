@@ -70,8 +70,12 @@ export class ApiUtils {
         data[key] = this.sanitizeUiObject(data[key]);
       });
     }
+    let outPut = {
+      ...response,
+      result: data,
+    };
 
-    return { ...cloneDeep(response), data };
+    return outPut;
   }
 
   // -----------------------------------------------------------------------------------------------------

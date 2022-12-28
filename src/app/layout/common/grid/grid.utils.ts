@@ -25,11 +25,17 @@ export class GridUtils {
    */
   static getPagination(result: Pageable): Pagination {
     // Get available queries
-    const page = parseInt(result?.page_number?.toString() ?? '1', 10) - 1;
-    const size = parseInt(result?.item_per_page?.toString() ?? '10', 10);
+    const page = parseInt(
+      result?.result_info.page_number?.toString() ?? '1',
+      10
+    );
+    const size = parseInt(
+      result?.result_info.item_per_page?.toString() ?? '10',
+      10
+    );
 
     // Paginate - Start
-    const length = result?.total_records;
+    const length = result?.result_info.total_records;
 
     // Calculate pagination details
     const begin = page * size;

@@ -180,7 +180,13 @@ export class CompaniesGridComponent
         switchMap(query => {
           this.closeDetails();
           this.isLoading = true;
-          return this._companyService.getCompanies(0, 10, 'name', 'asc', query);
+          return this._companyService.getCompanies(
+            0,
+            10,
+            'company_name',
+            'asc',
+            query
+          );
         }),
         map(() => {
           this.isLoading = false;
@@ -196,7 +202,7 @@ export class CompaniesGridComponent
     if (this._sort && this._paginator) {
       // Set the initial sort
       this._sort.sort({
-        id: 'name',
+        id: 'company_name',
         start: 'asc',
         disableClear: true,
       });
