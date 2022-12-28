@@ -73,12 +73,16 @@
 
                   <!-- Status -->
                   <div class="hidden lg:block">
-                    <ng-container *ngIf="source.is_beta">
+                    <ng-container
+                      *ngIf="source.is_beta === 'Y' || source.is_beta === true">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container *ngIf="!source.is_beta">
+                    <ng-container
+                      *ngIf="
+                        source.is_beta === 'N' || source.is_beta === false
+                      ">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
@@ -131,7 +135,7 @@
                       *ngTemplateOutlet="
                         rowDetailsTemplate;
                         context: {
-                          $implicit: source
+                          $implicit: selectedSource
                         }
                       "></ng-container>
                   </ng-container>
@@ -163,6 +167,7 @@
                     <span class="font-semibold mb-2">IsBeta</span>
                     <mat-slide-toggle
                       [formControlName]="'is_beta'"
+                      [checked]="false"
                       [color]="'primary'">
                       {{
                         selectedSourceForm.get('is_beta').value

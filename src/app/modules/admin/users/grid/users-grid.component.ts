@@ -233,6 +233,8 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Get the user by id
     this._userService.getUserById(userId).subscribe(user => {
+      user.active_status =
+        user.active_status == 'Y' || user.active_status == true ? true : false;
       // Set the selected user
       this.selectedUser = user;
 
@@ -377,6 +379,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
   updateSelectedUser(): void {
     // Get the user object
     const user = this.selectedUserForm.getRawValue();
+    user.active_status = user.active_status == 'Y' ? true : false;
 
     // Remove the currentImageIndex field
     delete user.currentImageIndex;
