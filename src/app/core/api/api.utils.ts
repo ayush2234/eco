@@ -62,12 +62,18 @@ export class ApiUtils {
     }
     const data = cloneDeep(responseData);
 
-    // Convert all string boolean properties to boolean;
-    Object.keys(data).forEach(key => {
-      data[key] = this.sanitizeUiObject(data[key]);
-    });
+    if (typeof data === 'object') {
+      // Convert all string boolean properties to boolean;
+      Object.keys(data).forEach(key => {
+        data[key] = this.sanitizeUiObject(data[key]);
+      });
+    }
+    let outPut = {
+      ...response,
+      result: data,
+    };
 
-    return { ...cloneDeep(response), data };
+    return outPut;
   }
 
   // -----------------------------------------------------------------------------------------------------

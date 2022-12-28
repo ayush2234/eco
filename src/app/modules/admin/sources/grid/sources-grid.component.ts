@@ -383,7 +383,6 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
   updateSelectedSource(): void {
     // Get the source object
     const source = this.selectedSourceForm.getRawValue();
-    console.log(source);
     // Update the source on the server
     this._sourceService.updateSource(source.source_id, source).subscribe(
       () => {
