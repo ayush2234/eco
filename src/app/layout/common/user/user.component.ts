@@ -12,7 +12,8 @@ import { BooleanInput } from '@angular/cdk/coercion';
 import { Subject, takeUntil } from 'rxjs';
 import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/core/user/user.service';
-
+import { AuthService } from 'app/core/auth/auth.service';
+import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 @Component({
   selector: 'user',
   templateUrl: './user.component.html',
@@ -27,7 +28,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   @Input() showAvatar: boolean = true;
   user: User;
-
+  role: string;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
@@ -36,7 +37,8 @@ export class UserComponent implements OnInit, OnDestroy {
   constructor(
     private _changeDetectorRef: ChangeDetectorRef,
     private _router: Router,
-    private _userService: UserService
+    private _userService: UserService,
+    private authService: AuthService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -47,6 +49,8 @@ export class UserComponent implements OnInit, OnDestroy {
    * On init
    */
   ngOnInit(): void {
+    //getting role from the auth service
+    this.role = this.authService.role;
     // Subscribe to user changes
     this._userService.user$
       .pipe(takeUntil(this._unsubscribeAll))
@@ -96,5 +100,24 @@ export class UserComponent implements OnInit, OnDestroy {
    */
   signOut(): void {
     this._router.navigate(['/sign-out']);
+  }
+  //show go back button
+  showBackButton() {
+    if (
+      (this.role === 'superAdmin' || this.role === 'admin') &&
+      LocalStorageUtils.impersonate
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  //Go back to admin or super admin we sign in as impersanate
+  goBacktoAdmin() {
+    localStorage.removeItem('impersonate');
+    localStorage.removeItem('companyId');
+    localStorage.removeItem('companyName');
+    this._router.navigate(['/admin/companies/list']);
   }
 }

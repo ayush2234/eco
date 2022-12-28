@@ -9,6 +9,7 @@ import {
   userNavigationItems,
 } from './navigation.data';
 import { AuthService } from '../auth/auth.service';
+import { LocalStorageUtils } from '../common/local-storage.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -73,20 +74,23 @@ export class NavigationService {
 
   get(): Observable<Navigation> {
     const currentLoggedInRole = this.authService.role;
-
-    if (currentLoggedInRole === 'superAdmin') {
+    const imperonsate = LocalStorageUtils.impersonate;
+    if (
+      imperonsate &&
+      (currentLoggedInRole === 'superAdmin' || currentLoggedInRole === 'admin')
+    ) {
+      this._navigation.next(this.masterUserNavigation);
+      return of(this.masterUserNavigation);
+    } else if (currentLoggedInRole === 'superAdmin') {
       this._navigation.next(this.superAdminNavigation);
       return of(this.superAdminNavigation);
-    }
-    if (currentLoggedInRole === 'admin') {
+    } else if (currentLoggedInRole === 'admin') {
       this._navigation.next(this.adminNavigation);
       return of(this.adminNavigation);
-    }
-    if (currentLoggedInRole === 'user') {
+    } else if (currentLoggedInRole === 'user') {
       this._navigation.next(this.userNavigation);
       return of(this.userNavigation);
-    }
-    if (currentLoggedInRole === 'masterUser') {
+    } else if (currentLoggedInRole === 'masterUser') {
       this._navigation.next(this.masterUserNavigation);
       return of(this.masterUserNavigation);
     }

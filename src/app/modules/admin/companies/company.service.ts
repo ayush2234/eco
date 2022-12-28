@@ -114,14 +114,11 @@ export class CompanyService {
       })
       .pipe(
         tap(response => {
-          const updatedCompanies = response.result.companies.map(ev => {
-            ev.is_active= ev.is_active === 'Y' ? true : false;
-            ev.allow_beta = ev.allow_beta === 'Y' ? true : false;
-            return ev;
-          });
-          const pagination = GridUtils.getPagination(response.result);
+          const { result } = response;
+
+          const pagination = GridUtils.getPagination(result);
           this._pagination.next(pagination);
-          this._companies.next(updatedCompanies);
+          this._companies.next(result.companies);
         })
       );
   }
@@ -176,12 +173,7 @@ export class CompanyService {
           .pipe(
             map(response => {
               const { result: newCompany } = response;
-              //updated response of a company
-              newCompany.allow_beta =
-                newCompany.allow_beta === 'Y' ? true : false;
-              newCompany.is_active =
-                newCompany.is_active === 'Y' ? true : false;
-              // Update the companies with the new company
+
               this._companies.next([newCompany, ...companies]);
 
               // Return the new company
@@ -212,12 +204,7 @@ export class CompanyService {
           .pipe(
             map(response => {
               const { result: updatedCompany } = response;
-              //updated response of a company
-              updatedCompany.allow_beta =
-                updatedCompany.allow_beta === 'Y' ? true : false;
-              updatedCompany.is_active =
-                updatedCompany.is_active === 'Y' ? true : false;
-              // Find the index of the updated company
+
               const index = companies.findIndex(item => item.company_id === id);
 
               // Update the company

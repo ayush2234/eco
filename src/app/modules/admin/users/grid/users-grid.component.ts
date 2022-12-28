@@ -48,7 +48,7 @@ import { CompanyService } from '../../companies/company.service';
         }
 
         @screen md {
-          grid-template-columns: repeat(5, 1fr) 72px;
+          grid-template-columns: repeat(4, 1fr) 72px;
         }
 
         @screen lg {
@@ -234,8 +234,6 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Get the user by id
     this._userService.getUserById(userId).subscribe(user => {
-      user.active_status =
-        user.active_status == 'Y' || user.active_status == true ? true : false;
       // Set the selected user
 
       this.selectedUser = user;
@@ -381,7 +379,6 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
   updateSelectedUser(): void {
     // Get the user object
     const user = this.selectedUserForm.getRawValue();
-    user.active_status = user.active_status == 'Y' ? true : false;
 
     // Remove the currentImageIndex field
     delete user.currentImageIndex;
@@ -389,7 +386,6 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // Update the user on the server
     this._userService.updateUser(user.id, user).subscribe(
       () => {
-        console.log(user)
         this.closeDetails();
         // Show a success message
         this.showFlashMessage('success');

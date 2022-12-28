@@ -25,6 +25,10 @@
     <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
     <span>Profile</span>
   </button>
+  <button mat-menu-item *ngIf="showBackButton()">
+    <mat-icon [svgIcon]="'heroicons_outline:arrow-circle-left'"></mat-icon>
+    <span (click)="goBacktoAdmin()">Back to admin</span>
+  </button>
   <button mat-menu-item>
     <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
     <span>Settings</span>
