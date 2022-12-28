@@ -12,7 +12,6 @@ import { User } from '../user/user.types';
 export class AuthService {
   private _config = appConfig;
   private _authenticated: boolean = false;
-  public companies = [];
   /**
    * Constructor
    */
@@ -98,18 +97,18 @@ export class AuthService {
       .pipe(
         switchMap((response: EcommifyApiResponse<User>) => {
           const { result } = response;
+          if(result){
           // Store the access token in the local storage
           this.accessToken = result?.access_token;
           this.tokenExpirationDate = result?.expire_at;
+
           // store the role in the local storage
           this.role = result?.role;
-          // Set the authenticated flag to true
-          this._authenticated = true;
-
+          // // Set the authenticated flag to true
+          // this._authenticated = true;
           // Store the user on the user service
           this._userService.user = result;
-          this.companies = response.result.companies;
-
+          }
           // Return a new observable with the response
           return of(response);
         })

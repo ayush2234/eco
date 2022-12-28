@@ -272,9 +272,10 @@ export class CompaniesGridComponent
 
     // Get the company by id
     this._companyService.getCompanyById(companyId).subscribe(company => {
-      company.allow_beta = company.allow_beta == 'Y' ? true : false;
-      company.is_active = company.is_active == 'Y' ? true : false;
-
+      company.allow_beta =
+        company.allow_beta == 'Y' || company.allow_beta == true ? true : false;
+      company.is_active =
+        company.is_active == 'Y' || company.is_active == true ? true : false;
       // Set the selected company
       this.selectedCompany = company;
 
