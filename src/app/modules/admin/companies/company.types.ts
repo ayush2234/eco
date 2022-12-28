@@ -9,8 +9,8 @@ export interface Company {
   company_name: string;
   note: string;
   referrer: string;
-  is_active: string;
-  allow_beta: string;
+  is_active: string | boolean;
+  allow_beta: string | boolean;
   user_used: number;
   user_limit: number;
   source_used: number;

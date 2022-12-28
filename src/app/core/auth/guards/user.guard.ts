@@ -6,10 +6,8 @@ import {
   RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
-import {
-  masterUserNavigationItems,
-  userNavigationItems,
-} from 'app/core/navigation/navigation.data';
+
+import { UserService } from 'app/core/user/user.service';
 import { Observable } from 'rxjs';
 import { AuthService } from '../auth.service';
 
@@ -17,7 +15,11 @@ import { AuthService } from '../auth.service';
   providedIn: 'root',
 })
 export class UserGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private userService: UserService
+  ) {}
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
@@ -28,33 +30,37 @@ export class UserGuard implements CanActivate {
     | UrlTree {
     const url = state.url;
 
-    if (this.authService.role !== 'user' || 'masterUser') {
-      if (this.authService.role === 'masterUser') {
-        if (
-          url.match('/user/dashboard/integration-status') ||
-          url.match('/user/dashboard/products') ||
-          url.match('/user/sync-logs/products') ||
-          url.match('/user/sync-logs/orders') ||
-          url.match('/user/settings/integrations')||
-          url.match('/user/settings/source-channel') ||
-          url.match('/user/settings/custom-integration-request')||
-          url.match('/user/settings/users')
-        ) {
-          return true;
+    if (this.authService.companies && this.authService.companies.length > 0) {
+      if (this.authService.role !== 'user' || 'masterUser') {
+        if (this.authService.role === 'masterUser') {
+          if (
+            url.match('/user/dashboard/integration-status') ||
+            url.match('/user/dashboard/products') ||
+            url.match('/user/sync-logs/products') ||
+            url.match('/user/sync-logs/orders') ||
+            url.match('/user/settings/integrations') ||
+            url.match('/user/settings/source-channel') ||
+            url.match('/user/settings/custom-integration-request') ||
+            url.match('/user/settings/users')
+          ) {
+            return true;
+          }
         }
-      }
-      if (this.authService.role === 'user') {
-        if (
-          url.match('/user/dashboard/integration-status') ||
-          url.match('/user/dashboard/products') ||
-          url.match('/user/sync-logs/products') ||
-          url.match('/user/sync-logs/orders')
-        ) {
-          return true;
+        if (this.authService.role === 'user') {
+          if (
+            url.match('/user/dashboard/integration-status') ||
+            url.match('/user/dashboard/products') ||
+            url.match('/user/sync-logs/products') ||
+            url.match('/user/sync-logs/orders')
+          ) {
+            return true;
+          }
         }
+        this.router.navigate(['page-not-found']);
+        return false;
       }
-      this.router.navigate(['**']);
-      return false;
     }
+    this.router.navigate(['not-authorized']);
+    return false;
   }
 }

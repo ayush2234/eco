@@ -10,9 +10,9 @@ export interface Integration {
   name: string;
   icon: string;
   description: string;
-  is_custom: string;
-  is_beta: string;
-  active_status: string;
+  is_custom: string | boolean;
+  is_beta: string | boolean;
+  active_status: string | boolean;
   force_test_connection: string;
   json_form_schema_file: string;
   installed_instances: number;

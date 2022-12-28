@@ -45,7 +45,7 @@ export class AdminGuard implements CanActivate {
           return true;
         }
       }
-      this.router.navigate(['**']);
+      this.router.navigate(['page-not-found']);
       return false;
     }
   }

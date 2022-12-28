@@ -65,9 +65,9 @@ export class AddSourceComponent implements OnInit, OnDestroy {
       name: ['', Validators.required],
       icon: [''],
       description: [''],
-      is_beta: [''],
-      is_custom: [''],
-      force_connection_test: [''],
+      is_beta: [false],
+      is_custom: [false],
+      force_connection_test: [false],
       source_form: ['', Validators.required],
       dateCreated: [''],
       dateUpdated: [''],
@@ -120,6 +120,9 @@ export class AddSourceComponent implements OnInit, OnDestroy {
   createSource(): void {
     // Get the source object
     const source = this.selectedSourceForm.getRawValue();
+    source.force_connection_test = source.force_connection_test ? 'Y' : 'N';
+    source.is_beta = source.is_beta ? 'Y' : 'N';
+    source.is_custom = source.is_custom ? 'Y' : 'N';
 
     // Remove the currentImageIndex field
     delete source.currentImageIndex;

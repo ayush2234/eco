@@ -276,6 +276,10 @@ export class IntegrationsGridComponent
     this._integrationService
       .getIntegrationById(integrationId)
       .subscribe(integration => {
+        integration.is_beta = integration.is_beta == 'Y' ? true : false;
+        integration.is_custom = integration.is_custom == 'Y' ? true : false;
+        integration.active_status =
+          integration.active_status == 'Y' ? true : false;
         // Set the selected integration
         this.selectedIntegration = integration;
 
@@ -521,6 +525,9 @@ export class IntegrationsGridComponent
   updateSelectedIntegration(): void {
     // Get the integration object
     const integration = this.selectedIntegrationForm.getRawValue();
+    integration.is_beta = integration.is_beta ? 'Y' : 'N';
+    integration.is_custom = integration.is_custom ? 'Y' : 'N';
+    integration.active_status = integration.active_status ? 'Y' : 'N';
 
     // Update the integration on the server
     this._integrationService

@@ -57,7 +57,10 @@
                   <div class="flex">
                     <mat-form-field class="w-1/2 pr-2">
                       <mat-label>Email</mat-label>
-                      <input matInput [formControlName]="'email'" />
+                      <input
+                        matInput
+                        [formControlName]="'email'"
+                        [autocomplete]="'off'" />
                       <mat-error> Email is required </mat-error>
                     </mat-form-field>
 
@@ -68,6 +71,7 @@
                       <mat-label>Password</mat-label>
                       <input
                         id="password"
+                        [autocomplete]="[off]"
                         matInput
                         type="password"
                         [formControlName]="'password'"
@@ -96,10 +100,6 @@
 
                   <!-- Referrer -->
                   <div class="flex">
-                    <!-- <mat-form-field class="w-1/3 pr-2">
-                      <mat-label>Role</mat-label>
-                      <input matInput [formControlName]="'role'" />
-                    </mat-form-field> -->
                     <mat-form-field class="w-1/3 pr-2">
                       <mat-label>Role</mat-label>
                       <mat-select [formControlName]="'role'">

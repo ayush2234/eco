@@ -13,6 +13,7 @@ import { LayoutModule } from 'app/layout/layout.module';
 import { AppComponent } from 'app/app.component';
 import { appRoutes } from 'app/app.routing';
 import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
+import { NotAuthorizedComponent } from './modules/not-authorized/not-authorized.component';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -20,7 +21,7 @@ const routerConfig: ExtraOptions = {
 };
 
 @NgModule({
-  declarations: [AppComponent, PageNotFoundComponent],
+  declarations: [AppComponent, PageNotFoundComponent, NotAuthorizedComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

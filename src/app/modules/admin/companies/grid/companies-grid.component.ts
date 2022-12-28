@@ -33,7 +33,6 @@ import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { Company } from '../company.types';
 import { IntegrationService } from '../../integrations/integration.service';
 import { SourceService } from '../../sources/source.service';
-import { items } from 'app/mock-api/apps/file-manager/data';
 
 @Component({
   selector: 'eco-companies-grid',
@@ -53,7 +52,7 @@ import { items } from 'app/mock-api/apps/file-manager/data';
         }
 
         @screen lg {
-          grid-template-columns: 1fr 3fr repeat(9, 1fr) 72px;
+          grid-template-columns: 1fr 3fr repeat(8, 1fr) 72px;
         }
       }
     `,
@@ -180,7 +179,13 @@ export class CompaniesGridComponent
         switchMap(query => {
           this.closeDetails();
           this.isLoading = true;
-          return this._companyService.getCompanies(0, 10, 'name', 'asc', query);
+          return this._companyService.getCompanies(
+            0,
+            10,
+            'company_name',
+            'asc',
+            query
+          );
         }),
         map(() => {
           this.isLoading = false;
@@ -196,7 +201,7 @@ export class CompaniesGridComponent
     if (this._sort && this._paginator) {
       // Set the initial sort
       this._sort.sort({
-        id: 'name',
+        id: 'company_name',
         start: 'asc',
         disableClear: true,
       });
@@ -267,6 +272,9 @@ export class CompaniesGridComponent
 
     // Get the company by id
     this._companyService.getCompanyById(companyId).subscribe(company => {
+      company.allow_beta = company.allow_beta == 'Y' ? true : false;
+      company.is_active = company.is_active == 'Y' ? true : false;
+
       // Set the selected company
       this.selectedCompany = company;
 
@@ -282,7 +290,6 @@ export class CompaniesGridComponent
    * Close the details
    */
   closeDetails(): void {
-    console.log(this.selectedCompany);
     this.selectedCompany = null;
   }
 
@@ -523,6 +530,9 @@ export class CompaniesGridComponent
     // Get the company object
     const company = this.selectedCompanyForm.getRawValue();
 
+    company.allow_beta = company.allow_beta ? 'Y' : 'N';
+    company.is_active = company.is_active ? 'Y' : 'N';
+
     // Remove the currentImageIndex field
     delete company.currentImageIndex;
 
@@ -593,7 +603,7 @@ export class CompaniesGridComponent
 
       // Mark for check
       this._changeDetectorRef.markForCheck();
-    }, 3000);
+    }, 5000);
   }
 
   /**
@@ -603,7 +613,6 @@ export class CompaniesGridComponent
    * @param item
    */
   trackByFn(index: number, item: any): any {
-    // console.log(item.id)
     return item?.id || index;
   }
 }
