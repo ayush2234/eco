@@ -97,17 +97,17 @@ export class AuthService {
       .pipe(
         switchMap((response: EcommifyApiResponse<User>) => {
           const { result } = response;
-          if(result){
-          // Store the access token in the local storage
-          this.accessToken = result?.access_token;
-          this.tokenExpirationDate = result?.expire_at;
+          if (result) {
+            // Store the access token in the local storage
+            this.accessToken = result?.access_token;
+            this.tokenExpirationDate = result?.expire_at;
 
-          // store the role in the local storage
-          this.role = result?.role;
-          // // Set the authenticated flag to true
-          // this._authenticated = true;
-          // Store the user on the user service
-          this._userService.user = result;
+            // store the role in the local storage
+            this.role = result?.role;
+            // // Set the authenticated flag to true
+            // this._authenticated = true;
+            // Store the user on the user service
+            this._userService.user = result;
           }
           // Return a new observable with the response
           return of(response);
@@ -161,6 +161,12 @@ export class AuthService {
     localStorage.removeItem('accessToken');
     //Remove the role from the local storage
     localStorage.removeItem('role');
+    //Remove the company Id from local storage
+    localStorage.removeItem('companyId');
+    //Remove the company name from local storage
+    localStorage.removeItem('companyName');
+    //Remove the impersonate from local storage
+    localStorage.removeItem('impersonate');
     // Set the authenticated flag to false
     this._authenticated = false;
 

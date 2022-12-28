@@ -23,6 +23,7 @@ import { AuthUtils } from '../auth/auth.utils';
 import { EcommifyApiResponse } from '../api/api.types';
 import { LocalStorageUtils } from '../common/local-storage.utils';
 import { GridUtils } from 'app/layout/common/grid/grid.utils';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +43,7 @@ export class UserService {
   /**
    * Constructor
    */
-  constructor(private _httpClient: HttpClient) {}
+  constructor(private _httpClient: HttpClient, private _router: Router) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
@@ -120,15 +121,14 @@ export class UserService {
       .pipe(
         tap(response => {
           const updatedUsers = response.result.users.map(user => {
-            user.active_status = user.active_status === 'Y' ? true : false;
             let companyList = [];
             user.companies.map(it => {
               companyList.push(it.company_id);
             });
             user.companies = companyList;
-
             return user;
           });
+
           const pagination = GridUtils.getPagination(response.result);
           this._pagination.next(pagination);
           this._users.next(updatedUsers);
@@ -150,15 +150,17 @@ export class UserService {
       .pipe(
         tap(response => {
           const user = response.result;
+
           // Store the token expiration date in the local storage
           LocalStorageUtils.tokenExpirationDate = user?.expire_at;
           if (user.role === 'masterUser' || user.role === 'user') {
             if (user.companies && user.companies.length > 0) {
               LocalStorageUtils.companyId = user.companies[0].company_id;
               LocalStorageUtils.companyName = user.companies[0].company_name;
+            } else {
+              this._router.navigate(['not-authorized']);
             }
           }
-
 
           this._user.next(user);
         })
@@ -202,8 +204,6 @@ export class UserService {
           .pipe(
             map(response => {
               const { result: newUser } = response;
-              newUser.active_status =
-                newUser.active_status === 'Y' ? true : false;
 
               let companyList = [];
               newUser.companies.map(it => {
@@ -239,9 +239,7 @@ export class UserService {
           .pipe(
             map(response => {
               const { result: updatedUser } = response;
-              // updated response of a user
-              updatedUser.active_status =
-                updatedUser.active_status === 'Y' ? true : false;
+
               let companyList = [];
               updatedUser.companies.map(it => {
                 companyList.push(it.company_id);

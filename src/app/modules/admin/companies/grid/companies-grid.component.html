@@ -49,16 +49,16 @@
               matSort
               matSortDisableClear>
               <div>Company ID</div>
-              <div class="hidden md:block">Company Name</div>
+              <div class="hidden sm:block">Company Name</div>
               <div class="hidden sm:block">Status</div>
-              <div class="hidden lg:block">Referrer</div>
-              <div class="hidden lg:block">Date Added</div>
-              <div class="hidden lg:block">SKUs</div>
-              <div class="hidden lg:block">hasCustom</div>
-              <div class="hidden lg:block">Users</div>
-              <div class="hidden lg:block">Integrations</div>
+              <div class="hidden sm:block">Referrer</div>
+              <!-- <div class="hidden sm:block">Date Added</div> -->
+              <div class="hidden sm:block">SKUs</div>
+              <div class="hidden sm:block">hasCustom</div>
+              <div class="hidden sm:block">Users</div>
+              <div class="hidden sm:block">Integrations</div>
               <!-- <div class="hidden lg:block">Active</div> -->
-              <div class="hidden lg:block">Action</div>
+              <div class="hidden sm:block">Action</div>
               <div class="hidden sm:block">Details</div>
             </div>
             <!-- Rows -->
@@ -68,31 +68,23 @@
                 <div
                   class="companies-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
                   <!-- Company ID -->
-                  <div class="hidden md:block truncate">
+                  <div class="hidden sm:block truncate">
                     {{ company?.company_id }}
                   </div>
 
                   <!-- Company Name -->
-                  <div class="hidden md:block truncate">
+                  <div class="hidden sm:block truncate">
                     {{ company?.company_name }}
                   </div>
 
                   <!-- Status -->
-                  <div class="hidden lg:block">
-                    <ng-container
-                      *ngIf="
-                        company?.is_active === 'Y' ||
-                        company?.is_active === true
-                      ">
+                  <div class="hidden sm:block">
+                    <ng-container *ngIf="company?.is_active === true">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container
-                      *ngIf="
-                        company?.is_active === 'N' ||
-                        company?.is_active === false
-                      ">
+                    <ng-container *ngIf="company?.is_active === false">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
@@ -103,9 +95,9 @@
                   <div class="hidden sm:block">{{ company?.referrer }}</div>
 
                   <!-- Date Added -->
-                  <div class="hidden sm:block">
+                  <!-- <div class="hidden sm:block">
                     {{ '12/22/2021' | date: 'dd/MM/yyyy' }}
-                  </div>
+                  </div> -->
 
                   <!-- SKUs -->
                   <div class="hidden md:block truncate">
@@ -114,7 +106,7 @@
 
                   <!-- hasCustom -->
                   <div class="hidden sm:block">
-                    {{ company?.allow_beta_bool == true ? 'Yes' : 'No' }}
+                    {{ company?.allow_beta == true ? 'Yes' : 'No' }}
                   </div>
 
                   <!-- Users -->
@@ -129,7 +121,7 @@
                   </div>
 
                   <!-- Active -->
-                  <div class="hidden lg:block">
+                  <!-- <div class="hidden lg:block">
                     <ng-container
                       *ngIf="
                         company?.is_active === 'Y' ||
@@ -155,7 +147,7 @@
                     <button
                       [color]="'primary'"
                       mat-button
-                      (click)="switchRole()">
+                      (click)="switchRole(company)">
                       Login As
                     </button>
                   </div>

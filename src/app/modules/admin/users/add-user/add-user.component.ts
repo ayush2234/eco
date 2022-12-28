@@ -134,7 +134,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   createUser(): void {
     // Get the user object
     const user = this.selectedUserForm.getRawValue();
-    user.is_active = user.is_active ? 'Y' : 'N';
+
     // Remove the currentImageIndex field
     delete user.currentImageIndex;
     // Update the user on the server

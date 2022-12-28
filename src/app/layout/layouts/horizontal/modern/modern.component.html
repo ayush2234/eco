@@ -23,10 +23,10 @@
 </ng-container>
 
 <!-- Wrapper -->
-<div class="flex flex-col flex-auto w-full min-w-0 ">
+<div class="flex flex-col flex-auto w-full min-w-0">
   <!-- Header -->
   <div
-    class="relative flex flex-0 items-center w-full h-16 sm:h-15 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card text-white  bg-indigo-800 dark:bg-transparent print:hidden">
+    class="relative flex flex-0 items-center w-full h-16 sm:h-15 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card text-white bg-indigo-800 dark:bg-transparent print:hidden">
     <ng-container *ngIf="!isScreenSmall">
       <!-- Logo -->
       <div class="flex items-center mx-2 lg:mr-2">
@@ -68,7 +68,7 @@
         <mat-icon [svgIcon]="'heroicons_outline:chat-alt-2'"></mat-icon>
       </button> -->
       <!-- <user></user> -->
-      <div *ngIf="role==='masterUser'" routerLink="settings" >
+      <div *ngIf="showSettings()" routerLink="settings">
         <button mat-icon-button>
           <mat-icon
             [ngStyle]="{ color: 'white' }"
@@ -87,8 +87,8 @@
               {{ user?.name }}
             </div>
             <div
-              class="w-full  whitespace-nowrap text-xs text-ellipsis overflow-hidden leading-normal text-current opacity-50">
-              {{companyName}} 
+              class="w-full whitespace-nowrap text-xs text-ellipsis overflow-hidden leading-normal text-current opacity-50">
+              {{ companyName }}
             </div>
             <!-- <div
               class="w-full mt-0.5 whitespace-nowrap text-sm text-ellipsis overflow-hidden leading-normal text-current opacity-50">

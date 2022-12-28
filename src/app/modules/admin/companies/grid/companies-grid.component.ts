@@ -33,6 +33,8 @@ import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { Company } from '../company.types';
 import { IntegrationService } from '../../integrations/integration.service';
 import { SourceService } from '../../sources/source.service';
+import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'eco-companies-grid',
@@ -41,18 +43,18 @@ import { SourceService } from '../../sources/source.service';
     /* language=SCSS */
     `
       .companies-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(5, 1fr);
 
         @screen sm {
-          grid-template-columns: repeat(3, 1fr) 72px;
-        }
-
-        @screen md {
           grid-template-columns: repeat(5, 1fr) 72px;
         }
 
+        @screen md {
+          grid-template-columns: repeat(9, 1fr) 72px;
+        }
+
         @screen lg {
-          grid-template-columns: 1fr 3fr repeat(8, 1fr) 72px;
+          grid-template-columns: 1fr 3fr repeat(7, 1fr) 72px;
         }
       }
     `,
@@ -92,7 +94,8 @@ export class CompaniesGridComponent
     private _formBuilder: UntypedFormBuilder,
     private _companyService: CompanyService,
     private _integrationService: IntegrationService,
-    private _sourceService: SourceService
+    private _sourceService: SourceService,
+    private _router: Router
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -241,8 +244,11 @@ export class CompaniesGridComponent
     }
   }
   //switch to login as
-  switchRole() {
-    console.log('Switch');
+  switchRole(company: Company) {
+    LocalStorageUtils.companyId = company.company_id;
+    LocalStorageUtils.companyName = company.company_name;
+    LocalStorageUtils.impersonate = 'true';
+    this._router.navigate(['/user/dashboard/integration-status']);
   }
   /**
    * On destroy
@@ -530,9 +536,6 @@ export class CompaniesGridComponent
   updateSelectedCompany(): void {
     // Get the company object
     const company = this.selectedCompanyForm.getRawValue();
-
-    company.allow_beta = company.allow_beta ? 'Y' : 'N';
-    company.is_active = company.is_active ? 'Y' : 'N';
 
     // Remove the currentImageIndex field
     delete company.currentImageIndex;
