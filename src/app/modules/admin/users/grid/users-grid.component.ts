@@ -379,6 +379,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
   updateSelectedUser(): void {
     // Get the user object
     const user = this.selectedUserForm.getRawValue();
+    user.active_status = user.active_status == 'Y' ? true : false;
 
     // Remove the currentImageIndex field
     delete user.currentImageIndex;

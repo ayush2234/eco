@@ -533,6 +533,9 @@ export class IntegrationsGridComponent
   updateSelectedIntegration(): void {
     // Get the integration object
     const integration = this.selectedIntegrationForm.getRawValue();
+    integration.is_beta = integration.is_beta ? 'Y' : 'N';
+    integration.is_custom = integration.is_custom ? 'Y' : 'N';
+    integration.active_status = integration.active_status ? 'Y' : 'N';
 
     // Update the integration on the server
     this._integrationService

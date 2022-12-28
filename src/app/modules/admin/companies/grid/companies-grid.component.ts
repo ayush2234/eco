@@ -527,6 +527,9 @@ export class CompaniesGridComponent
     // Get the company object
     const company = this.selectedCompanyForm.getRawValue();
 
+    company.allow_beta = company.allow_beta ? 'Y' : 'N';
+    company.is_active = company.is_active ? 'Y' : 'N';
+
     // Remove the currentImageIndex field
     delete company.currentImageIndex;
 
