@@ -44,4 +44,13 @@ export class LocalStorageUtils {
   static set companyName(value) {
     localStorage.setItem('companyName', value);
   }
+ 
+  static set impersonate(value) {
+    localStorage.setItem('impersonate', value);
+  }
+  static get impersonate(){
+    return localStorage.getItem('impersonate');
+  }
+  
+ 
 }
