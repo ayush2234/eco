@@ -4,7 +4,7 @@ import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { UserService } from 'app/core/user/user.service';
 import { appConfig } from '../config/app.config';
 import { EcommifyApiResponse } from '../api/api.types';
-import { AuthUserResponse } from './auth.types';
+
 import { AuthUtils } from './auth.utils';
 import { User } from '../user/user.types';
 
@@ -12,7 +12,6 @@ import { User } from '../user/user.types';
 export class AuthService {
   private _config = appConfig;
   private _authenticated: boolean = false;
-
   /**
    * Constructor
    */
@@ -98,17 +97,18 @@ export class AuthService {
       .pipe(
         switchMap((response: EcommifyApiResponse<User>) => {
           const { result } = response;
+          if(result){
           // Store the access token in the local storage
           this.accessToken = result?.access_token;
           this.tokenExpirationDate = result?.expire_at;
+
           // store the role in the local storage
           this.role = result?.role;
-          // Set the authenticated flag to true
-          this._authenticated = true;
-
+          // // Set the authenticated flag to true
+          // this._authenticated = true;
           // Store the user on the user service
           this._userService.user = result;
-
+          }
           // Return a new observable with the response
           return of(response);
         })
