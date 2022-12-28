@@ -79,12 +79,20 @@
 
                   <!-- Status -->
                   <div class="hidden lg:block">
-                    <ng-container *ngIf="company?.is_active == true">
+                    <ng-container
+                      *ngIf="
+                        company?.is_active === 'Y' ||
+                        company?.is_active === true
+                      ">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container *ngIf="company?.is_active== false">
+                    <ng-container
+                      *ngIf="
+                        company?.is_active === 'N' ||
+                        company?.is_active === false
+                      ">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
@@ -121,13 +129,21 @@
                   </div>
 
                   <!-- Active -->
-                  <!-- <div class="hidden lg:block">
-                    <ng-container *ngIf="company?.is_active">
+                  <div class="hidden lg:block">
+                    <ng-container
+                      *ngIf="
+                        company?.is_active === 'Y' ||
+                        company?.is_active === true
+                      ">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container *ngIf="!company?.is_active">
+                    <ng-container
+                      *ngIf="
+                        company?.is_active === 'N' ||
+                        company?.is_active === false
+                      ">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
