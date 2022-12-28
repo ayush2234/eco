@@ -41,10 +41,10 @@ import { CompanyService } from '../../companies/company.service';
     /* language=SCSS */
     `
       .users-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(5, 1fr);
 
         @screen sm {
-          grid-template-columns: repeat(3, 1fr) 72px;
+          grid-template-columns: repeat(4, 1fr) 72px;
         }
 
         @screen md {
@@ -52,7 +52,7 @@ import { CompanyService } from '../../companies/company.service';
         }
 
         @screen lg {
-          grid-template-columns: 1fr 3fr repeat(2, 1fr) 72px;
+          grid-template-columns: 1fr 2fr repeat(2, 1fr) 72px;
         }
       }
     `,
@@ -123,6 +123,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
     this.users$ = this._userService.users$;
 
     // Get the companies
+
     this._companyService.companies$
       .pipe(
         takeUntil(this._unsubscribeAll),
@@ -236,6 +237,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
       user.active_status =
         user.active_status == 'Y' || user.active_status == true ? true : false;
       // Set the selected user
+
       this.selectedUser = user;
 
       // Fill the form
@@ -309,9 +311,9 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
    *
    * @param tag
    */
-  addCompanyTagToUser(tag: Tag): void {
+  addCompanyTagToUser(tag): void {
     // Add the tag
-    this.selectedUser.companies.unshift({ company_id: tag.id });
+    this.selectedUser.companies.unshift(tag.id);
 
     // Update the selected user form
     this.selectedUserForm
@@ -387,6 +389,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
     // Update the user on the server
     this._userService.updateUser(user.id, user).subscribe(
       () => {
+        console.log(user)
         this.closeDetails();
         // Show a success message
         this.showFlashMessage('success');

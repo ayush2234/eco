@@ -57,7 +57,7 @@
               <div class="hidden lg:block">hasCustom</div>
               <div class="hidden lg:block">Users</div>
               <div class="hidden lg:block">Integrations</div>
-              <div class="hidden lg:block">Active</div>
+              <!-- <div class="hidden lg:block">Active</div> -->
               <div class="hidden lg:block">Action</div>
               <div class="hidden sm:block">Details</div>
             </div>
@@ -114,7 +114,7 @@
 
                   <!-- hasCustom -->
                   <div class="hidden sm:block">
-                    {{ company?.allow_beta ? 'Yes' : 'No' }}
+                    {{ company?.allow_beta_bool == true ? 'Yes' : 'No' }}
                   </div>
 
                   <!-- Users -->
@@ -148,7 +148,7 @@
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
                     </ng-container>
-                  </div>
+                  </div> -->
                   <!-- login as button-->
 
                   <div>
@@ -415,7 +415,7 @@
                       <mat-icon
                         class="text-red-500"
                         [svgIcon]="'heroicons_outline:x'"></mat-icon>
-                      <span class="ml-2">An error occurred, try again!</span>
+                      <span class="ml-2">{{ errorMsg }}</span>
                     </ng-container>
                   </div>
                   <button

@@ -97,6 +97,7 @@ export class UserService {
    * @param order
    * @param search
    */
+
   getUsers(
     page: number = 0,
     size: number = 10,
@@ -118,10 +119,19 @@ export class UserService {
       })
       .pipe(
         tap(response => {
-          const { result } = response;
-          const pagination = GridUtils.getPagination(result);
+          const updatedUsers = response.result.users.map(user => {
+            user.active_status = user.active_status === 'Y' ? true : false;
+            let companyList = [];
+            user.companies.map(it => {
+              companyList.push(it.company_id);
+            });
+            user.companies = companyList;
+
+            return user;
+          });
+          const pagination = GridUtils.getPagination(response.result);
           this._pagination.next(pagination);
-          this._users.next(result?.users);
+          this._users.next(updatedUsers);
         })
       );
   }
@@ -148,7 +158,7 @@ export class UserService {
               LocalStorageUtils.companyName = user.companies[0].company_name;
             }
           }
-          LocalStorageUtils.companyId = '1ed1f118-421d-6a88-8f0a-0605e1fd6890';
+
 
           this._user.next(user);
         })
@@ -192,6 +202,15 @@ export class UserService {
           .pipe(
             map(response => {
               const { result: newUser } = response;
+              newUser.active_status =
+                newUser.active_status === 'Y' ? true : false;
+
+              let companyList = [];
+              newUser.companies.map(it => {
+                companyList.push(it.company_id);
+              });
+              newUser.companies = companyList;
+
               // Update the users with the new user
               this._users.next([newUser, ...users]);
 
@@ -220,6 +239,14 @@ export class UserService {
           .pipe(
             map(response => {
               const { result: updatedUser } = response;
+              // updated response of a user
+              updatedUser.active_status =
+                updatedUser.active_status === 'Y' ? true : false;
+              let companyList = [];
+              updatedUser.companies.map(it => {
+                companyList.push(it.company_id);
+              });
+              updatedUser.companies = companyList;
               // Find the index of the updated user
               const index = users.findIndex(item => item.id === id);
 

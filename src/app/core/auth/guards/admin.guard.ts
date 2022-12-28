@@ -23,9 +23,9 @@ export class AdminGuard implements CanActivate {
     | boolean
     | UrlTree {
     const url = state.url;
-
-    if (this.authService.role !== 'superAdmin' || 'admin') {
-      if (this.authService.role === 'superAdmin') {
+    const role = this.authService.role;
+    if (role === 'superAdmin' || role === 'admin') {
+      if (role === 'superAdmin') {
         if (
           url.match('/admin/dashboard') ||
           url.match('/admin/companies/list') ||
@@ -36,7 +36,7 @@ export class AdminGuard implements CanActivate {
           return true;
         }
       }
-      if (this.authService.role === 'admin') {
+      if (role === 'admin') {
         if (
           url.match('/admin/dashboard') ||
           url.match('/admin/companies/list') ||
@@ -45,7 +45,8 @@ export class AdminGuard implements CanActivate {
           return true;
         }
       }
-      this.router.navigate(['**']);
+    } else {
+      this.router.navigate(['page-not-found']);
       return false;
     }
   }

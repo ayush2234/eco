@@ -4,7 +4,6 @@ import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
 import { LandingHomeComponent } from './modules/landing/home/home.component';
-import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -96,6 +95,13 @@ export const appRoutes: Route[] = [
             m => m.AuthUnlockSessionModule
           ),
       },
+      {
+        path: 'not-authorized',
+        loadChildren: () =>
+          import('app/modules/not-authorized/not-authorized.module').then(
+            m => m.NotAuthorizedModule
+          ),
+      },
     ],
   },
 
@@ -135,12 +141,6 @@ export const appRoutes: Route[] = [
     ],
   },
 
-  // page not found
-
-  // {
-  //   path:'**',
-  //   component:PageNotFoundComponent,
-  // }
   {
     path: '',
 

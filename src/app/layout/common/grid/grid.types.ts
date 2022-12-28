@@ -13,10 +13,12 @@ export interface Tag {
 }
 
 export interface Pageable {
-  result_info: {
-    total_records: number;
-    total_pages: number;
-    page_number: number;
-    item_per_page: number;
-  };
+ result_info: ResultInfo
+}
+
+export interface ResultInfo {
+  total_records: number;
+  total_pages: number;
+  page_number: number;
+  item_per_page: number;
 }

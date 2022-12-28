@@ -33,7 +33,6 @@ import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { Company } from '../company.types';
 import { IntegrationService } from '../../integrations/integration.service';
 import { SourceService } from '../../sources/source.service';
-import { items } from 'app/mock-api/apps/file-manager/data';
 
 @Component({
   selector: 'eco-companies-grid',
@@ -53,7 +52,7 @@ import { items } from 'app/mock-api/apps/file-manager/data';
         }
 
         @screen lg {
-          grid-template-columns: 1fr 3fr repeat(9, 1fr) 72px;
+          grid-template-columns: 1fr 3fr repeat(8, 1fr) 72px;
         }
       }
     `,
@@ -292,7 +291,6 @@ export class CompaniesGridComponent
    * Close the details
    */
   closeDetails(): void {
-    console.log(this.selectedCompany);
     this.selectedCompany = null;
   }
 
@@ -606,7 +604,7 @@ export class CompaniesGridComponent
 
       // Mark for check
       this._changeDetectorRef.markForCheck();
-    }, 3000);
+    }, 5000);
   }
 
   /**
@@ -616,7 +614,6 @@ export class CompaniesGridComponent
    * @param item
    */
   trackByFn(index: number, item: any): any {
-    // console.log(item.id)
     return item?.id || index;
   }
 }

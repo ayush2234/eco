@@ -13,7 +13,7 @@ export interface GetUserByTokenResponse {
   expire_at: number;
   role: string;
   companies?: Company[];
-  active_status?: string;
+  active_status: string | boolean;
   note?: string;
   access_token: string;
   ttl: number;
