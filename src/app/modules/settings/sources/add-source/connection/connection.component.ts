@@ -69,7 +69,7 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
         if (event.origin !== appConfig.apiConfig.serviceUrl) {
           return;
         }
-        console.log(event.data);
+
         if (!this.sourceForm.valid && this.selectedSource) {
           this.sourceForm.markAllAsTouched();
           return;

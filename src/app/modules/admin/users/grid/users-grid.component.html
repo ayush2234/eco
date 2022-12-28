@@ -65,7 +65,7 @@
                   </div>
 
                   <!-- Name -->
-                  <div class=" break-all">
+                  <div class="break-all">
                     {{ user.name }}
                   </div>
 
@@ -78,21 +78,13 @@
                   </div>
 
                   <!-- Status -->
-                  <div class="hidden lg:block">
-                    <ng-container
-                      *ngIf="
-                        user.active_status === 'Y' ||
-                        user.active_status === true
-                      ">
+                  <div class="hidden sm:block">
+                    <ng-container *ngIf="user.active_status === true">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container
-                      *ngIf="
-                        user.active_status === 'N' ||
-                        user.active_status === false
-                      ">
+                    <ng-container *ngIf="user.active_status === false">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
@@ -212,7 +204,6 @@
 
                     <!-- Referrer -->
                     <div class="flex">
-                    
                       <mat-form-field class="w-1/3 pr-2">
                         <mat-label>Role</mat-label>
                         <mat-select [formControlName]="'role'">

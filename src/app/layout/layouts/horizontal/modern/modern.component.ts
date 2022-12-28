@@ -11,6 +11,7 @@ import { NavigationService } from 'app/core/navigation/navigation.service';
 import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/core/user/user.service';
 import { AuthService } from 'app/core/auth/auth.service';
+import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 @Component({
   selector: 'modern-layout',
   templateUrl: './modern.component.html',
@@ -77,13 +78,28 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((user: User) => {
         this.user = user;
-        this.companyName =
-          user.companies && user.companies.length > 0
-            ? user.companies[0].company_name
-            : 'Wolfgroup';
+        if (LocalStorageUtils.impersonate == 'true') {
+          this.companyName = LocalStorageUtils.companyName;
+        } else {
+          this.companyName =
+            user.companies && user.companies.length > 0
+              ? user.companies[0].company_name
+              : 'Wolfgroup';
+        }
       });
   }
-
+  showSettings() {
+    if (this.role === 'masterUser') {
+      return true;
+    } else if (
+      (this.role === 'admin' || this.role === 'superAdmin') &&
+      LocalStorageUtils.impersonate
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   /**
    * On destroy
    */
