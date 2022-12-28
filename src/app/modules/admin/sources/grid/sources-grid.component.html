@@ -163,6 +163,7 @@
                     <span class="font-semibold mb-2">IsBeta</span>
                     <mat-slide-toggle
                       [formControlName]="'is_beta'"
+                      [checked]="false"
                       [color]="'primary'">
                       {{
                         selectedSourceForm.get('is_beta').value
