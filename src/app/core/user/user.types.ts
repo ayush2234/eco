@@ -32,7 +32,7 @@ export interface User {
   expire_at: number;
   role: string;
   companies?: Company[];
-  active_status: string | boolean;
+  active_status?: string | boolean;
   note?: string;
   access_token: string;
   ttl: number;

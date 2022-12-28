@@ -36,9 +36,11 @@ export class ApiUtils {
     // Convert all boolean properties to string value;
     const data = cloneDeep(request);
 
-    Object.keys(data).forEach(key => {
-      data[key] = this.sanitizeApiObject(data[key]);
-    });
+    if (typeof data === 'object') {
+      Object.keys(data).forEach(key => {
+        data[key] = this.sanitizeApiObject(data[key]);
+      });
+    }
 
     return data;
   }
@@ -62,10 +64,12 @@ export class ApiUtils {
     }
     const data = cloneDeep(responseData);
 
-    // Convert all string boolean properties to boolean;
-    Object.keys(data).forEach(key => {
-      data[key] = this.sanitizeUiObject(data[key]);
-    });
+    if (typeof data === 'object') {
+      // Convert all string boolean properties to boolean;
+      Object.keys(data).forEach(key => {
+        data[key] = this.sanitizeUiObject(data[key]);
+      });
+    }
 
     return { ...cloneDeep(response), data };
   }

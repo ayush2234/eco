@@ -163,7 +163,7 @@ export class SourceService {
             map(response => {
               const { result: newSource } = response;
               // Update the sources with the new source
-              this._sources.next([newSource, ...sources]);
+              this._sources.next([newSource['source'], ...sources]);
 
               // Return the new source
               return newSource;

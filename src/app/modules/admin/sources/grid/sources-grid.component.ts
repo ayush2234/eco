@@ -237,6 +237,9 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Get the source by id
     this._sourceService.getSourceById(sourceId).subscribe(source => {
+      source.is_beta = source.is_beta == 'Y' ? true : false;
+      source.is_custom = source.is_custom == 'Y' ? true : false;
+      source.active_status = source.active_status == 'Y' ? true : false;
       // Set the selected source
       this.selectedSource = source;
 
@@ -383,7 +386,9 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
   updateSelectedSource(): void {
     // Get the source object
     const source = this.selectedSourceForm.getRawValue();
-    console.log(source);
+    source.is_beta = source.is_beta ? 'Y' : 'N';
+    source.is_custom = source.is_custom ? 'Y' : 'N';
+    source.active_status = source.active_status ? 'Y' : 'N';
     // Update the source on the server
     this._sourceService.updateSource(source.source_id, source).subscribe(
       () => {
