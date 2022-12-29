@@ -75,20 +75,12 @@
 
                   <!-- Status -->
                   <div class="hidden lg:block">
-                    <ng-container
-                      *ngIf="
-                        integration?.is_beta === 'Y' ||
-                        integration?.is_beta === true
-                      ">
+                    <ng-container *ngIf="integration?.active_status">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container
-                      *ngIf="
-                        integration.is_beta === 'N' ||
-                        integration?.is_beta === false
-                      ">
+                    <ng-container *ngIf="!integration?.active_status">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>
@@ -180,6 +172,18 @@
               <div class="flex flex-col sm:flex-row p-8">
                 <!-- Status -->
                 <div class="flex flex-col justify-between">
+                  <div class="flex flex-col">
+                    <span class="font-semibold mb-2">Active</span>
+                    <mat-slide-toggle
+                      [formControlName]="'active_status'"
+                      [color]="'primary'">
+                      {{
+                        selectedIntegrationForm?.get('active_status').value
+                          ? 'Active'
+                          : 'Disabled'
+                      }}
+                    </mat-slide-toggle>
+                  </div>
                   <div class="flex flex-col">
                     <span class="font-semibold mb-2">IsBeta</span>
                     <mat-slide-toggle

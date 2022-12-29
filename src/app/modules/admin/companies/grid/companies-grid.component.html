@@ -79,12 +79,12 @@
 
                   <!-- Status -->
                   <div class="hidden sm:block">
-                    <ng-container *ngIf="company?.is_active === true">
+                    <ng-container *ngIf="company?.is_active">
                       <mat-icon
                         class="text-green-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:check'"></mat-icon>
                     </ng-container>
-                    <ng-container *ngIf="company?.is_active === false">
+                    <ng-container *ngIf="!company?.is_active">
                       <mat-icon
                         class="text-gray-400 icon-size-5"
                         [svgIcon]="'heroicons_solid:x'"></mat-icon>

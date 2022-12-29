@@ -111,6 +111,7 @@ export class IntegrationsGridComponent
       name: ['', Validators.required],
       icon: [''],
       description: [''],
+      active_status: [''],
       is_beta: [''],
       is_custom: [''],
       force_test_connection: [''],
@@ -276,18 +277,6 @@ export class IntegrationsGridComponent
     this._integrationService
       .getIntegrationById(integrationId)
       .subscribe(integration => {
-        integration.is_beta =
-          integration.is_beta == 'Y' || integration.is_beta == true
-            ? true
-            : false;
-        integration.is_custom =
-          integration.is_custom == 'Y' || integration.is_custom == true
-            ? true
-            : false;
-        integration.active_status =
-          integration.active_status == 'Y' || integration.active_status == true
-            ? true
-            : false;
         // Set the selected integration
         this.selectedIntegration = integration;
 
@@ -533,9 +522,6 @@ export class IntegrationsGridComponent
   updateSelectedIntegration(): void {
     // Get the integration object
     const integration = this.selectedIntegrationForm.getRawValue();
-    integration.is_beta = integration.is_beta ? 'Y' : 'N';
-    integration.is_custom = integration.is_custom ? 'Y' : 'N';
-    integration.active_status = integration.active_status ? 'Y' : 'N';
 
     // Update the integration on the server
     this._integrationService
