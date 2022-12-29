@@ -156,7 +156,6 @@ export class AddCompanyComponent implements OnInit, OnDestroy {
         // this.fuseDrawerOpened = false;
         this.showFlashMessage('success');
         if (this.flashMessage === 'success') {
-          this.fuseDrawerOpened = false;
           this.selectedCompanyForm.reset();
         }
       },
