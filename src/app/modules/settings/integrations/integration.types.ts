@@ -1,3 +1,7 @@
+export interface IntegrationSettingResponse {
+  integrations: IntegrationSettings[];
+}
+
 export interface IntegrationSettings {
   instances: IntegrationInstance[];
   available: Integration[];
