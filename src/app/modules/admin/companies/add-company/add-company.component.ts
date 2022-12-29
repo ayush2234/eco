@@ -89,7 +89,11 @@ export class AddCompanyComponent implements OnInit, OnDestroy {
         takeUntil(this._unsubscribeAll),
         map(integrations =>
           integrations.map(integration => {
-            return { id: integration.integration_id, title: integration.name };
+            return {
+              id: integration.integration_id,
+              title: integration.name,
+              source_id: integration.source_id,
+            };
           })
         )
       )
@@ -329,6 +333,14 @@ export class AddCompanyComponent implements OnInit, OnDestroy {
       .get('restricted_to_sources')
       .patchValue(this.selectedCompany.restricted_to_sources);
 
+    //updated integration tags based on source id
+    this.filteredRestrictedToIntegrationTags =
+      this.restrictedToIntegrationTags.filter(integration => {
+        return this.selectedCompany.restricted_to_sources.includes(
+          integration.source_id
+        );
+      });
+
     // Mark for check
     this._changeDetectorRef.markForCheck();
   }
@@ -352,6 +364,22 @@ export class AddCompanyComponent implements OnInit, OnDestroy {
       .get('restricted_to_sources')
       .patchValue(this.selectedCompany.restricted_to_sources);
 
+     //updated integration tags based on source id
+     
+    this.filteredRestrictedToIntegrationTags =
+      this.restrictedToIntegrationTags.filter(it => {
+        return this.selectedCompany.restricted_to_sources.includes(
+          it.source_id
+        );
+      });
+    if (this.selectedCompany.restricted_to_sources.length === 0) {
+      this.filteredRestrictedToIntegrationTags =
+        this.restrictedToIntegrationTags;
+        this.selectedCompany.restricted_to_integrations.splice(
+          0,
+          this.selectedCompany.restricted_to_integrations.length
+        );
+    }
     // Mark for check
     this._changeDetectorRef.markForCheck();
   }
