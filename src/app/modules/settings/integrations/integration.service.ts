@@ -4,6 +4,7 @@ import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import {
   Integration,
   IntegrationInstance,
+  IntegrationSettingResponse,
   IntegrationSettings,
 } from './integration.types';
 import { appConfig } from 'app/core/config/app.config';
@@ -53,18 +54,20 @@ export class IntegrationService {
   getIntegrationSettings(companyId: string): Observable<IntegrationSettings> {
     const api = this._config.apiConfig.baseUrl;
     return this._httpClient
-      .get<EcommifyApiResponse<IntegrationSettings[]>>(
+      .get<EcommifyApiResponse<IntegrationSettingResponse>>(
         `${api}/${companyId}/integrations`
       )
       .pipe(
         map(response => {
-          const { result } = response;
+          const {
+            result: { integrations },
+          } = response;
 
-          if (!isEmpty(result)) {
-            this._integrationInstances.next(result[0].instances);
-            this._availableIntegrations.next(result[0].available);
+          if (!isEmpty(integrations)) {
+            this._integrationInstances.next(integrations[0]?.instances);
+            this._availableIntegrations.next(integrations[0]?.available);
 
-            return result[0];
+            return integrations[0];
           }
 
           return null;
