@@ -72,6 +72,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
       name: ['', Validators.required],
       icon: [''],
       description: [''],
+      active_status: [false],
       is_beta: [false],
       is_custom: [false],
       force_test_connection: [false],
@@ -145,11 +146,6 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
   createIntegration(): void {
     // Get the integration object
     const integration = this.selectedIntegrationForm.getRawValue();
-    integration.force_connection_test = integration.force_connection_test
-      ? 'Y'
-      : 'N';
-    integration.is_beta = integration.is_beta ? 'Y' : 'N';
-    integration.is_custom = integration.is_custom ? 'Y' : 'N';
 
     // Remove the currentImageIndex field
     delete integration.currentImageIndex;
@@ -161,7 +157,6 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
         // this.fuseDrawerOpened = false;
         this.showFlashMessage('success');
         if (this.flashMessage === 'success') {
-          this.fuseDrawerOpened = false;
           this.selectedIntegrationForm.reset();
         }
       },

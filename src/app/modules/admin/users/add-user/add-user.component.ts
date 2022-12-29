@@ -143,7 +143,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
         // Show a success message
         this.showFlashMessage('success');
         if (this.flashMessage === 'success') {
-          this.fuseDrawerOpened = false;
           this.selectedUserForm.reset();
         }
       },

@@ -65,6 +65,7 @@ export class AddSourceComponent implements OnInit, OnDestroy {
       name: ['', Validators.required],
       icon: [''],
       description: [''],
+      active_status: [false],
       is_beta: [false],
       is_custom: [false],
       force_connection_test: [false],
@@ -120,9 +121,7 @@ export class AddSourceComponent implements OnInit, OnDestroy {
   createSource(): void {
     // Get the source object
     const source = this.selectedSourceForm.getRawValue();
-    source.force_connection_test = source.force_connection_test ? 'Y' : 'N';
-    source.is_beta = source.is_beta ? 'Y' : 'N';
-    source.is_custom = source.is_custom ? 'Y' : 'N';
+    debugger;
 
     // Remove the currentImageIndex field
     delete source.currentImageIndex;
@@ -133,7 +132,6 @@ export class AddSourceComponent implements OnInit, OnDestroy {
         // Show a success message
         this.showFlashMessage('success');
         if (this.flashMessage === 'success') {
-          this.fuseDrawerOpened = false;
           this.selectedSourceForm.reset();
         }
       },

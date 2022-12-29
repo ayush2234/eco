@@ -32,6 +32,18 @@
               <!-- Source status -->
               <div class="flex flex-col justify-between">
                 <div class="flex flex-col">
+                  <span class="font-semibold mb-2">Active</span>
+                  <mat-slide-toggle
+                    [formControlName]="'active_status'"
+                    [color]="'primary'">
+                    {{
+                      selectedSourceForm.get('active_status').value
+                        ? 'Active'
+                        : 'Disabled'
+                    }}
+                  </mat-slide-toggle>
+                </div>
+                <div class="flex flex-col">
                   <span class="font-semibold mb-2">IsBeta</span>
                   <mat-slide-toggle
                     [formControlName]="'is_beta'"
