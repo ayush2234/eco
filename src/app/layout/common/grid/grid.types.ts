@@ -10,6 +10,7 @@ export interface Pagination {
 export interface Tag {
   id?: string;
   title?: string;
+  source_id?:string;
 }
 
 export interface Pageable {
