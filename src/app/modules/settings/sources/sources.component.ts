@@ -19,7 +19,8 @@ import { Source, SourceInstance, SourcePayload } from './source.types';
 })
 export class SourcesComponent implements OnInit, OnDestroy {
   openAddSource: boolean = false;
-  selectedSource: SourcePayload;
+  selectedSource: SourceInstance;
+  selectedSourceInstance: SourcePayload;
   selectedFormType: string;
   isEdit: boolean = false;
 
@@ -78,6 +79,8 @@ export class SourcesComponent implements OnInit, OnDestroy {
    * @param isEdit is this the Edit form or Add form
    */
   addSource(source: any, isEdit: boolean): void {
+    this.selectedSource = null;
+    this.selectedSourceInstance = null;
     this.isEdit = isEdit;
     this.selectedFormType = source.source_form;
     if (!isEdit) {
@@ -89,7 +92,8 @@ export class SourcesComponent implements OnInit, OnDestroy {
       .getSourceInstance(LocalStorageUtils.companyId, source.source_instance_id)
       .subscribe(
         res => {
-          this.selectedSource = res;
+          this.selectedSourceInstance = res;
+          this.selectedSource = source;
           this.openAddSource = true;
           this._changeDetectorRef.markForCheck();
         },
