@@ -7,6 +7,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
+import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 import { SourceService } from './source.service';
 import { Source, SourceInstance, SourcePayload } from './source.types';
@@ -26,6 +27,7 @@ export class SourcesComponent implements OnInit, OnDestroy {
 
   sourceInstances$: Observable<SourceInstance[]>;
   availableSources$: Observable<Source[]>;
+  moment = moment;
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 

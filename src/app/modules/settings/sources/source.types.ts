@@ -20,8 +20,10 @@ export interface SourceInstance {
   pass_connection_test: string;
   is_beta: string;
   source_install_name: string;
-  source_form: string;
   need_auth: boolean;
+  connection_status: boolean;
+  last_connection_time: string;
+  source_platform: string;
 }
 
 export interface Source {
@@ -31,7 +33,7 @@ export interface Source {
   description: string;
   is_beta: string;
   is_installed: string;
-  source_form: string;
+  source_platform: string;
   source_install_name?: string;
   source_instance_id?: string;
   active_status?: string;

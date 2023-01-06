@@ -83,7 +83,7 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
   }
 
   createForm(): void {
-    switch (SourceFormEnum[this.selectedSource.source_form]) {
+    switch (SourceFormEnum[this.selectedSource.source_platform]) {
       case SourceFormEnum.maropost:
         // Create the form maropostSource
         this.sourceForm = this._formBuilder.group({
@@ -168,7 +168,8 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
       return;
     }
     if (
-      SourceFormEnum[this.selectedSource.source_form] == SourceFormEnum.maropost
+      SourceFormEnum[this.selectedSource.source_platform] ==
+      SourceFormEnum.maropost
     ) {
       this._sourceService
         .getMarapostOauthUrl(
@@ -244,7 +245,7 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
       | MagentoAttributes
       | DearAttributes
       | any;
-    switch (SourceFormEnum[this.selectedSource.source_form]) {
+    switch (SourceFormEnum[this.selectedSource.source_platform]) {
       case SourceFormEnum.maropost:
         attribute = this.verificationData;
         attribute.storeUrl = this.sourceForm.get('storeUrl').value;

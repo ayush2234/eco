@@ -5,7 +5,8 @@
     <div
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
       *ngIf="
-        sourceFormEnum[selectedSource.source_form] === sourceFormEnum.maropost
+        sourceFormEnum[selectedSource.source_platform] ===
+        sourceFormEnum.maropost
       ">
       <!-- Store Url -->
       <div class="sm:col-span-4">
@@ -21,7 +22,15 @@
           ">
           Store Domain URL is required
         </mat-error>
-        <div class="flex items-center mt-1" *ngIf="selectedSource.need_auth">
+        <div
+          class="flex items-center mt-1"
+          *ngIf="
+            !selectedSource.connection_status
+              ? selectedSource.need_auth
+                ? true
+                : false
+              : false
+          ">
           <button
             class=""
             mat-flat-button
@@ -38,7 +47,8 @@
     <div
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
       *ngIf="
-        sourceFormEnum[selectedSource.source_form] === sourceFormEnum.salsify
+        sourceFormEnum[selectedSource.source_platform] ===
+        sourceFormEnum.salsify
       ">
       <!-- API Key -->
       <div class="sm:col-span-4">
@@ -61,7 +71,8 @@
     <div
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
       *ngIf="
-        sourceFormEnum[selectedSource.source_form] === sourceFormEnum.magento
+        sourceFormEnum[selectedSource.source_platform] ===
+        sourceFormEnum.magento
       ">
       <!-- Consumer Key -->
       <div class="sm:col-span-4">
@@ -132,7 +143,7 @@
     <div
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
       *ngIf="
-        sourceFormEnum[selectedSource.source_form] ===
+        sourceFormEnum[selectedSource.source_platform] ===
         sourceFormEnum.dearinventory
       ">
       <!-- Account Id -->
