@@ -5,7 +5,8 @@
     <div
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
       *ngIf="
-        sourceFormEnum[selectedFormType] === sourceFormEnum.maropostSource
+        sourceFormEnum[selectedSource.source_platform] ===
+        sourceFormEnum.maropost
       ">
       <!-- Store Url -->
       <div class="sm:col-span-4">
@@ -21,13 +22,34 @@
           ">
           Store Domain URL is required
         </mat-error>
+        <div
+          class="flex items-center mt-1"
+          *ngIf="
+            !selectedSource.connection_status
+              ? selectedSource.need_auth
+                ? true
+                : false
+              : false
+          ">
+          <button
+            class=""
+            mat-flat-button
+            type="button"
+            [color]="'primary'"
+            (click)="verifyMarapost()">
+            Verify
+          </button>
+        </div>
       </div>
     </div>
 
     <!--SalsifySource Section -->
     <div
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
-      *ngIf="sourceFormEnum[selectedFormType] === sourceFormEnum.SalsifySource">
+      *ngIf="
+        sourceFormEnum[selectedSource.source_platform] ===
+        sourceFormEnum.salsify
+      ">
       <!-- API Key -->
       <div class="sm:col-span-4">
         <mat-form-field class="fuse-mat-no-subscript w-full">
@@ -48,7 +70,10 @@
     <!--MagentoSource Section -->
     <div
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
-      *ngIf="sourceFormEnum[selectedFormType] === sourceFormEnum.MagentoSource">
+      *ngIf="
+        sourceFormEnum[selectedSource.source_platform] ===
+        sourceFormEnum.magento
+      ">
       <!-- Consumer Key -->
       <div class="sm:col-span-4">
         <mat-form-field class="fuse-mat-no-subscript w-full">
@@ -117,7 +142,10 @@
     <!--DearSource Section -->
     <div
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
-      *ngIf="sourceFormEnum[selectedFormType] === sourceFormEnum.DearSource">
+      *ngIf="
+        sourceFormEnum[selectedSource.source_platform] ===
+        sourceFormEnum.dearinventory
+      ">
       <!-- Account Id -->
       <div class="sm:col-span-4">
         <mat-form-field class="fuse-mat-no-subscript w-full">
