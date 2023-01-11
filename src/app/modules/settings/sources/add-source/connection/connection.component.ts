@@ -22,10 +22,9 @@ import {
   DearAttributes,
   MagentoAttributes,
   MarapostAttributes,
-  MarapostUpdateAttributes,
   SalsifyAttributes,
-  Source,
   SourceFormEnum,
+  SourceInstance,
   SourcePayload,
 } from '../../source.types';
 
@@ -36,8 +35,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddSourceConnectionComponent implements OnInit, OnDestroy {
-  @Input() selectedSource: SourcePayload;
-  @Input() selectedFormType: string;
+  @Input() selectedSourceInstance: SourcePayload;
+  @Input() selectedSource: SourceInstance;
+  verificationData: any = {};
   @Input() isEdit: boolean = false;
   @Input() fuseDrawer: any;
   sourceForm: UntypedFormGroup;
@@ -70,55 +70,65 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
           return;
         }
 
-        if (!this.sourceForm.valid && this.selectedSource) {
+        if (!this.sourceForm.valid && this.selectedSourceInstance) {
           this.sourceForm.markAllAsTouched();
           return;
         }
-        this.isEdit ? this.updateSourceInstance() : this.createSourceInstance();
+        if (event && event.data) {
+          this.verificationData = event.data;
+        }
       },
       false
     );
   }
 
   createForm(): void {
-    switch (SourceFormEnum[this.selectedFormType]) {
-      case SourceFormEnum.maropostSource:
+    switch (SourceFormEnum[this.selectedSource.source_platform]) {
+      case SourceFormEnum.maropost:
         // Create the form maropostSource
         this.sourceForm = this._formBuilder.group({
           storeUrl: [
-            this.selectedSource?.connectionPanel?.attributes['storeUrl'],
+            this.selectedSourceInstance?.connectionPanel?.attributes[
+              'storeUrl'
+            ],
             [Validators.required],
           ],
         });
         break;
 
-      case SourceFormEnum.SalsifySource:
+      case SourceFormEnum.salsify:
         // Create the form SalsifySource
         this.sourceForm = this._formBuilder.group({
           apiKey: [
-            this.selectedSource?.connectionPanel?.attributes['api_key'],
+            this.selectedSourceInstance?.connectionPanel?.attributes['api_key'],
             [Validators.required],
           ],
         });
         break;
 
-      case SourceFormEnum.MagentoSource:
+      case SourceFormEnum.magento:
         // Create the form MagentoSource
         this.sourceForm = this._formBuilder.group({
           consumerKey: [
-            this.selectedSource?.connectionPanel?.attributes['consumer_key'],
+            this.selectedSourceInstance?.connectionPanel?.attributes[
+              'consumer_key'
+            ],
             [Validators.required],
           ],
           consumerSecret: [
-            this.selectedSource?.connectionPanel?.attributes['consumer_secret'],
+            this.selectedSourceInstance?.connectionPanel?.attributes[
+              'consumer_secret'
+            ],
             [Validators.required],
           ],
           accessToken: [
-            this.selectedSource?.connectionPanel?.attributes['access_token'],
+            this.selectedSourceInstance?.connectionPanel?.attributes[
+              'access_token'
+            ],
             [Validators.required],
           ],
           accessTokenSecret: [
-            this.selectedSource?.connectionPanel?.attributes[
+            this.selectedSourceInstance?.connectionPanel?.attributes[
               'access_token_secret'
             ],
             [Validators.required],
@@ -126,15 +136,19 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
         });
         break;
 
-      case SourceFormEnum.DearSource:
+      case SourceFormEnum.dearinventory:
         // Create the form DearSource
         this.sourceForm = this._formBuilder.group({
           accountId: [
-            this.selectedSource?.connectionPanel?.attributes['account_id'],
+            this.selectedSourceInstance?.connectionPanel?.attributes[
+              'account_id'
+            ],
             [Validators.required],
           ],
           applicationKey: [
-            this.selectedSource?.connectionPanel?.attributes['application_key'],
+            this.selectedSourceInstance?.connectionPanel?.attributes[
+              'application_key'
+            ],
             [Validators.required],
           ],
         });
@@ -148,13 +162,14 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
   /**
    * login into the source
    */
-  loginSource() {
+  verifyMarapost() {
     if (!this.sourceForm.valid) {
       this.sourceForm.markAllAsTouched();
       return;
     }
     if (
-      SourceFormEnum[this.selectedFormType] == SourceFormEnum.maropostSource
+      SourceFormEnum[this.selectedSource.source_platform] ==
+      SourceFormEnum.maropost
     ) {
       this._sourceService
         .getMarapostOauthUrl(
@@ -165,9 +180,19 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
           const newWindow = this.openWindow('', 'message');
           newWindow.location.href = res.auth_url;
         });
-    } else {
-      this.isEdit ? this.updateSourceInstance() : this.createSourceInstance();
     }
+  }
+
+  /**
+   * login into the source
+   */
+  loginSource() {
+    if (!this.sourceForm.valid) {
+      this.sourceForm.markAllAsTouched();
+      return;
+    }
+
+    this.isEdit ? this.updateSourceInstance() : this.createSourceInstance();
   }
 
   createSourceInstance() {
@@ -187,17 +212,17 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
     let payload = new SourcePayload();
     payload.name = this.selectedSource.name;
     payload.active_status =
-      typeof this.selectedSource.active_status == 'boolean'
-        ? this.selectedSource.active_status
+      typeof this.selectedSourceInstance.active_status == 'boolean'
+        ? this.selectedSourceInstance.active_status
           ? 'Y'
           : 'N'
-        : this.selectedSource.active_status;
+        : this.selectedSourceInstance.active_status;
     payload.connectionPanel.attributes = this.getAttributes();
     this._sourceService
       .updateSourceInstance(
         LocalStorageUtils.companyId,
         payload,
-        this.selectedSource?.source_instance_id
+        this.selectedSourceInstance?.source_instance_id
       )
       .subscribe(res => {
         this.fuseDrawer.close();
@@ -210,28 +235,26 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
    */
   getAttributes():
     | MarapostAttributes
-    | MarapostUpdateAttributes
     | SalsifyAttributes
     | MagentoAttributes
-    | DearAttributes {
+    | DearAttributes
+    | any {
     let attribute:
       | MarapostAttributes
-      | MarapostUpdateAttributes
       | SalsifyAttributes
       | MagentoAttributes
-      | DearAttributes;
-    switch (SourceFormEnum[this.selectedFormType]) {
-      case SourceFormEnum.maropostSource:
-        attribute = this.isEdit
-          ? new MarapostUpdateAttributes()
-          : new MarapostAttributes();
+      | DearAttributes
+      | any;
+    switch (SourceFormEnum[this.selectedSource.source_platform]) {
+      case SourceFormEnum.maropost:
+        attribute = this.verificationData;
         attribute.storeUrl = this.sourceForm.get('storeUrl').value;
         break;
-      case SourceFormEnum.SalsifySource:
+      case SourceFormEnum.salsify:
         attribute = new SalsifyAttributes();
         attribute.api_key = this.sourceForm.get('apiKey').value;
         break;
-      case SourceFormEnum.MagentoSource:
+      case SourceFormEnum.magento:
         attribute = new MagentoAttributes();
         attribute.access_token = this.sourceForm.get('accessToken').value;
         attribute.access_token_secret =
@@ -239,7 +262,7 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
         attribute.consumer_key = this.sourceForm.get('consumerKey').value;
         attribute.consumer_secret = this.sourceForm.get('consumerSecret').value;
         break;
-      case SourceFormEnum.DearSource:
+      case SourceFormEnum.dearinventory:
         attribute = new DearAttributes();
         attribute.account_id = this.sourceForm.get('accountId').value;
         attribute.application_key = this.sourceForm.get('applicationKey').value;
@@ -255,6 +278,9 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
    * On destroy
    */
   ngOnDestroy(): void {
+    this.selectedSourceInstance = null;
+    this.selectedSource = null;
+
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();

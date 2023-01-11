@@ -20,6 +20,10 @@ export interface SourceInstance {
   pass_connection_test: string;
   is_beta: string;
   source_install_name: string;
+  need_auth: boolean;
+  connection_status: boolean;
+  last_connection_time: string;
+  source_platform: string;
 }
 
 export interface Source {
@@ -29,8 +33,7 @@ export interface Source {
   description: string;
   is_beta: string;
   is_installed: string;
-  source_form: string;
-  source_from: string;
+  source_platform: string;
   source_install_name?: string;
   source_instance_id?: string;
   active_status?: string;
@@ -47,23 +50,24 @@ export class SourcePayload {
 export class ConnectionPanel {
   attributes:
     | MarapostAttributes
-    | MarapostUpdateAttributes
+    // | MarapostUpdateAttributes
     | SalsifyAttributes
     | MagentoAttributes
-    | DearAttributes;
+    | DearAttributes
+    | any;
 }
 
 export class MarapostAttributes {
   storeUrl: string;
-  username = 'wolfgroupdev';
-  apiKey = 'key58de5de5eg5w5ww5g5c5egd';
+  username?: string;
+  apiKey?: string;
+  NETOAPI_USERNAME?: string;
+  NETOAPI_KEY?: string;
 }
 
-export class MarapostUpdateAttributes {
-  storeUrl: string;
-  NETOAPI_USERNAME = 'wolfgroupdev';
-  NETOAPI_KEY = 'key58de5de5eg5w5ww5g5c5egd';
-}
+// export class MarapostUpdateAttributes {
+//   storeUrl: string;
+// }
 
 export class SalsifyAttributes {
   api_key: string;
@@ -82,8 +86,9 @@ export class DearAttributes {
 }
 
 export enum SourceFormEnum {
-  'maropostSource',
-  'SalsifySource',
-  'MagentoSource',
-  'DearSource',
+  'maropost',
+  'salsify',
+  'magento',
+  'dearinventory',
+  'shopify',
 }

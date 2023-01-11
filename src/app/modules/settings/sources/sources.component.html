@@ -57,6 +57,25 @@
             </div>
           </div>
           <div class="flex items-center space-x-4">
+            <p class="text-md px-8 pt-2 text-secondary">
+              <span
+                [ngClass]="
+                  instance.connection_status ? 'text-gray-900' : 'text-gray-500'
+                ">
+                {{ instance.connection_status ? 'Connected' : 'Not Connected' }}
+              </span>
+              <span
+                class="text-sm text-gray-500"
+                *ngIf="instance.last_connection_time">
+                <!-- {{ moment(instance.last_connection_time).fromNow() }} -->
+                since
+                {{
+                  moment(instance.last_connection_time).format('D MMMM yyyy')
+                }}
+              </span>
+            </p>
+          </div>
+          <div class="flex items-center space-x-4">
             <p class="text-sm p-8 pt-2 text-secondary">
               {{ instance.description }}
             </p>
@@ -73,7 +92,7 @@
                 (change)="getInstallListActiveInactive(instance, $event)"
                 class="ml-3"
                 [color]="'primary'"
-                [checked]="instance.active_status === 'Y'">
+                [checked]="instance.active_status">
               </mat-slide-toggle>
             </div>
           </div>
@@ -136,7 +155,7 @@
 <!-- Add Source sidebar -->
 <eco-add-source
   *ngIf="openAddSource"
-  [selectedFormType]="selectedFormType"
+  [selectedSourceInstance]="selectedSourceInstance"
   [selectedSource]="selectedSource"
   [isEdit]="isEdit"
   [isOpen]="openAddSource"

@@ -18,7 +18,7 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { CdkPortal } from '@angular/cdk/portal';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
-import { Source, SourcePayload } from '../source.types';
+import { Source, SourceInstance, SourcePayload } from '../source.types';
 const addSourcePanels = [
   {
     id: 'connection',
@@ -49,8 +49,8 @@ export class AddSourceComponent implements OnInit, OnDestroy {
   wipSource$: Observable<Source>;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-  @Input() selectedSource: SourcePayload;
-  @Input() selectedFormType: string;
+  @Input() selectedSourceInstance: SourcePayload;
+  @Input() selectedSource: SourceInstance;
   @Input() isEdit: boolean = false;
   @Input() isOpen: boolean = false;
 
@@ -95,6 +95,9 @@ export class AddSourceComponent implements OnInit, OnDestroy {
    * On destroy
    */
   ngOnDestroy(): void {
+    this.selectedSource = null;
+    this.selectedSourceInstance = null;
+
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
