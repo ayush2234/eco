@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Input,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -14,7 +15,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import {
@@ -38,7 +39,7 @@ import { SyncLog } from '../sync-logs.types';
   styles: [
     /* language=SCSS */
     `
-      .sync-logs-grid {
+      .sync-logs-orders-grid {
         grid-template-columns: repeat(3, 1fr);
 
         @screen sm {
@@ -46,13 +47,11 @@ import { SyncLog } from '../sync-logs.types';
         }
 
         @screen md {
-          grid-template-columns: repeat(5, 1fr) 72px;
+          grid-template-columns: repeat(9, 1fr) 72px;
         }
 
         @screen lg {
-          grid-template-columns:
-            150px 2.5fr repeat(2, 1fr) 3fr repeat(2, 1fr)
-            130px;
+          grid-template-columns: 141px 2.5fr repeat(1, 1fr) 2fr repeat(6, 1fr) 121px;
         }
       }
     `,
@@ -62,12 +61,13 @@ import { SyncLog } from '../sync-logs.types';
   animations: fuseAnimations,
 })
 export class SyncLogsOrdersComponent
-  implements OnInit, AfterViewInit, OnDestroy {
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @ViewChild(MatPaginator) private _paginator: MatPaginator;
   @ViewChild(MatSort) private _sort: MatSort;
-
+  orderDetails: any;
   syncLogs$: Observable<SyncLog[]>;
-
+  viewOrder: boolean = false;
   flashMessage: 'success' | 'error' | null = null;
   isLoading: boolean = false;
   pagination: Pagination;
@@ -87,12 +87,21 @@ export class SyncLogsOrdersComponent
     private _fuseConfirmationService: FuseConfirmationService,
     private _formBuilder: UntypedFormBuilder,
     private _syncLogService: SyncLogsService
-  ) { }
+  ) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
   // -----------------------------------------------------------------------------------------------------
-
+  getStatus(status) {
+    switch (status) {
+      case 'Ok':
+        return '#22bfb7';
+      case 'Warning':
+        return '#e0af0b';
+      case 'Error':
+        return '#c92d0e';
+    }
+  }
   /**
    * On init
    */
@@ -107,7 +116,7 @@ export class SyncLogsOrdersComponent
       notes: [''],
       tags: [[]],
     });
-
+    // console.log('Orders');
     // Get the pagination
     this._syncLogService.pagination$
       .pipe(takeUntil(this._unsubscribeAll))
@@ -342,6 +351,17 @@ export class SyncLogsOrdersComponent
       // Mark for check
       this._changeDetectorRef.markForCheck();
     }, 3000);
+  }
+
+  viewOrderDetails(event: any) {
+    this.viewOrder = true;
+    console.log(event);
+    this.orderDetails = event;
+    console.log(this.viewOrder);
+  }
+  cancelCreateUser(): void {
+    this.viewOrder = false;
+    this._changeDetectorRef.detectChanges();
   }
 
   /**
