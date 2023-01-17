@@ -39,13 +39,15 @@ import { SharedModule } from 'app/shared/shared.module';
 import { SyncLogsOrdersComponent } from './orders/orders.component';
 
 import { SyncLogsProductsComponent } from './products/products.component';
+import { ViewOrderDetailsComponent } from './orders/view-order-details/view-order-details.component';
 
 
 @NgModule({
   declarations: [
   
     SyncLogsOrdersComponent,
-    SyncLogsProductsComponent
+    SyncLogsProductsComponent,
+    ViewOrderDetailsComponent
 
   ],
   imports: [
