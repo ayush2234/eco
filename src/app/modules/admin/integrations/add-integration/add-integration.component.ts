@@ -76,7 +76,7 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
       is_beta: [false],
       is_custom: [false],
       force_test_connection: [false],
-      json_form_schema_file: [''],
+      channel_platform: [''],
       created_at: [''],
       notes: [''],
       updated_at: [''],
