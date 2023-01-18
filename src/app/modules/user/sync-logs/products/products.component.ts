@@ -37,7 +37,7 @@ import { SyncLog } from '../../../user/sync-logs/sync-logs.types';
   styles: [
     /* language=SCSS */
     `
-      .sync-logs-grid {
+      .sync-logs-products-grid {
         grid-template-columns: repeat(3, 1fr);
 
         @screen sm {
@@ -45,13 +45,11 @@ import { SyncLog } from '../../../user/sync-logs/sync-logs.types';
         }
 
         @screen md {
-          grid-template-columns: repeat(5, 1fr) 72px;
+          grid-template-columns: repeat(9, 1fr) 72px;
         }
 
         @screen lg {
-          grid-template-columns:
-            150px 2.5fr repeat(2, 1fr) 3fr repeat(2, 1fr)
-            130px;
+          grid-template-columns: 141px 2.5fr repeat(1, 1fr) 2fr repeat(6, 1fr) 121px;
         }
       }
     `,
@@ -61,7 +59,8 @@ import { SyncLog } from '../../../user/sync-logs/sync-logs.types';
   animations: fuseAnimations,
 })
 export class SyncLogsProductsComponent
-  implements OnInit, AfterViewInit, OnDestroy {
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @ViewChild(MatPaginator) private _paginator: MatPaginator;
   @ViewChild(MatSort) private _sort: MatSort;
 
@@ -86,12 +85,21 @@ export class SyncLogsProductsComponent
     private _fuseConfirmationService: FuseConfirmationService,
     private _formBuilder: UntypedFormBuilder,
     private _syncLogService: SyncLogsService
-  ) { }
+  ) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
   // -----------------------------------------------------------------------------------------------------
-
+  getStatus(status) {
+    switch (status) {
+      case 'Ok':
+        return '#22bfb7';
+      case 'Warning':
+        return '#e0af0b';
+      case 'Error':
+        return '#c92d0e';
+    }
+  }
   /**
    * On init
    */
