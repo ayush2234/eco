@@ -31,7 +31,7 @@ export class SyncLogsService {
   /**
    * Constructor
    */
-  constructor(private _httpClient: HttpClient) { }
+  constructor(private _httpClient: HttpClient) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
@@ -104,7 +104,6 @@ export class SyncLogsService {
       })
       .pipe(
         tap(response => {
-
           this._pagination.next(response.pagination);
           this._syncLogs.next(response.syncLogs);
         })

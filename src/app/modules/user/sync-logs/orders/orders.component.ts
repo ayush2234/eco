@@ -32,6 +32,7 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { SyncLogsService } from '../sync-logs.service';
 import { SyncLog } from '../sync-logs.types';
+import { IntegrationService } from 'app/modules/admin/integrations/integration.service';
 
 @Component({
   selector: 'eco-sync-logs-orders',
@@ -51,8 +52,23 @@ import { SyncLog } from '../sync-logs.types';
         }
 
         @screen lg {
-          grid-template-columns: 141px 2.5fr repeat(1, 1fr) 2fr repeat(6, 1fr) 121px;
+          grid-template-columns:
+            148px 12% repeat(1, 1fr) 11% repeat(2, 1fr) 4fr repeat(1, 14%)
+            110px 92px;
         }
+      }
+
+      .active {
+        background-color: #d8f4ee;
+        color: #5ad1c5;
+      }
+      .warning {
+        background-color: #ffeeda;
+        color: orange;
+      }
+      .error {
+        background-color: #f5d3d4;
+        color: #ed0c12;
       }
     `,
   ],
@@ -76,9 +92,20 @@ export class SyncLogsOrdersComponent
   selectedSyncLogForm: UntypedFormGroup;
   tags: Tag[];
   filteredTags: Tag[];
+  restrictedToIntegrationTags: Tag[];
+  filteredRestrictedToIntegrationTags: Tag[];
   tagsEditMode: boolean = false;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+  getStatus(status) {
+    switch (status) {
+      case 'Active':
+        return '#22bfb7';
+      case 'Warning':
+        return 'orange';
+      case 'Error':
+        return '#c92d0e';
+    }
+  }
   /**
    * Constructor
    */
@@ -86,22 +113,14 @@ export class SyncLogsOrdersComponent
     private _changeDetectorRef: ChangeDetectorRef,
     private _fuseConfirmationService: FuseConfirmationService,
     private _formBuilder: UntypedFormBuilder,
-    private _syncLogService: SyncLogsService
+    private _syncLogService: SyncLogsService,
+    private _integrationService: IntegrationService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
   // -----------------------------------------------------------------------------------------------------
-  getStatus(status) {
-    switch (status) {
-      case 'Ok':
-        return '#22bfb7';
-      case 'Warning':
-        return '#e0af0b';
-      case 'Error':
-        return '#c92d0e';
-    }
-  }
+
   /**
    * On init
    */
@@ -116,7 +135,30 @@ export class SyncLogsOrdersComponent
       notes: [''],
       tags: [[]],
     });
-    // console.log('Orders');
+
+    /* Integrations list */
+    this._integrationService.integrations$
+      .pipe(
+        takeUntil(this._unsubscribeAll),
+        map(integrations =>
+          integrations.map(integration => {
+            return {
+              id: integration.integration_id,
+              title: integration.name,
+            };
+          })
+        )
+      )
+      .subscribe((integrations: Tag[]) => {
+        // Update the tags
+
+        this.restrictedToIntegrationTags = integrations;
+        this.filteredRestrictedToIntegrationTags = integrations;
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+      });
+
     // Get the pagination
     this._syncLogService.pagination$
       .pipe(takeUntil(this._unsubscribeAll))
@@ -355,9 +397,7 @@ export class SyncLogsOrdersComponent
 
   viewOrderDetails(event: any) {
     this.viewOrder = true;
-    console.log(event);
     this.orderDetails = event;
-    console.log(this.viewOrder);
   }
   cancelCreateUser(): void {
     this.viewOrder = false;
@@ -372,5 +412,8 @@ export class SyncLogsOrdersComponent
    */
   trackByFn(index: number, item: any): any {
     return item.id || index;
+  }
+  selectOption(event) {
+    console.log(event.value);
   }
 }

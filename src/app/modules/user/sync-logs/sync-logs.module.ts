@@ -5,7 +5,6 @@
 // import { OrdersComponent } from './orders/orders.component';
 // import { ProductsComponent } from './products/products.component';
 
-
 // @NgModule({
 //   declarations: [
 //     OrdersComponent,
@@ -40,15 +39,14 @@ import { SyncLogsOrdersComponent } from './orders/orders.component';
 
 import { SyncLogsProductsComponent } from './products/products.component';
 import { ViewOrderDetailsComponent } from './orders/view-order-details/view-order-details.component';
-
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
-  
     SyncLogsOrdersComponent,
     SyncLogsProductsComponent,
-    ViewOrderDetailsComponent
-
+    ViewOrderDetailsComponent,
   ],
   imports: [
     SyncLogsRoutingModule,
@@ -66,6 +64,8 @@ import { ViewOrderDetailsComponent } from './orders/view-order-details/view-orde
     MatSlideToggleModule,
     MatTooltipModule,
     SharedModule,
+    MatNativeDateModule,
+    MatDatepickerModule,
   ],
 })
 export class SyncLogsModule {}
