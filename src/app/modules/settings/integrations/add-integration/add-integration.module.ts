@@ -9,21 +9,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { FuseAlertModule } from '@fuse/components/alert';
 import { SharedModule } from 'app/shared/shared.module';
-import { AddIntegarationConnectionComponent } from './connection/connection.component';
 import { AddIntegrationComponent } from './add-integration.component';
-import { AddIntegrationProductsComponent } from './products/products.component';
-import { AddIntegrationOrdersComponent } from './orders/orders.component';
-import { AddIntegrationInventoryComponent } from './inventory/inventory.component';
-import { AddIntegrationTrackingComponent } from './tracking/tracking.component';
 
 @NgModule({
   declarations: [
-    AddIntegrationComponent,
-    AddIntegarationConnectionComponent,
-    AddIntegrationInventoryComponent,
-    AddIntegrationOrdersComponent,
-    AddIntegrationProductsComponent,
-    AddIntegrationTrackingComponent,
+    AddIntegrationComponent
   ],
   imports: [
     MatButtonModule,

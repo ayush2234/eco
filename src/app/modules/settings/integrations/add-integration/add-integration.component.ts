@@ -19,7 +19,8 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { CdkPortal } from '@angular/cdk/portal';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
 import { SyncOptionService } from './common/sync-option/sync-option.service';
-import { Integration, SyncOption } from './add-integration.types';
+import { Integration, MAPPING_OPTIONS_TYPE, SyncOption, ValuesList, ValuesListOptions } from './add-integration.types';
+import { SyncOptionComponent } from './common/sync-option/sync-option.component';
 
 const badgeActiveClasses =
   'px-2 bg-green-500 text-sm text-on-primary rounded-full';
@@ -27,31 +28,31 @@ const badgeInactiveClasses =
   'px-2 bg-primary text-sm text-on-primary rounded-full';
 const addIntegrationPanels = [
   {
-    id: 'connection',
+    code: 'connection',
     icon: 'heroicons_outline:user-circle',
     title: 'Connection',
     description: '',
   },
   {
-    id: 'products',
+    code: 'products',
     icon: 'heroicons_outline:lock-closed',
     title: 'Products',
     description: '',
   },
   {
-    id: 'inventory',
+    code: 'inventory',
     icon: 'heroicons_outline:credit-card',
     title: 'Inventory',
     description: '',
   },
   {
-    id: 'orders',
+    code: 'orders',
     icon: 'heroicons_outline:bell',
     title: 'Orders',
     description: '',
   },
   {
-    id: 'tracking',
+    code: 'tracking',
     icon: 'heroicons_outline:user-group',
     title: 'Tracking',
     description: '',
@@ -64,7 +65,8 @@ const addIntegrationPanels = [
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddIntegrationComponent implements OnInit, OnDestroy {
+export class AddIntegrationComponent
+  extends SyncOptionComponent implements OnInit, OnDestroy {
   @ViewChild(CdkPortal, { static: true })
   portalContent: CdkPortal;
   @ViewChild('drawer') drawer: MatDrawer;
@@ -73,10 +75,9 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
   drawerOpened: boolean = true;
   fuseDrawerOpened: boolean = true;
   panels: any[] = [];
-  panelsConfig: any;
-  selectedPanel: string = 'connection';
+
   wipIntegration$: Observable<Integration>;
-  private _unsubscribeAll: Subject<any> = new Subject<any>();
+  protected _unsubscribeAll: Subject<any> = new Subject<any>();
   @Input() isOpen = false;
 
   /**
@@ -86,8 +87,10 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
     private _changeDetectorRef: ChangeDetectorRef,
     private _fuseMediaWatcherService: FuseMediaWatcherService,
     private _portalBridge: PortalBridgeService,
-    private _syncOptionService: SyncOptionService
-  ) {}
+    public _syncOptionService: SyncOptionService
+  ) {
+    super(_syncOptionService)
+  }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
@@ -101,7 +104,8 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
     this.wipIntegration$ = this._syncOptionService.wipIntegration$.pipe(
       tap(data => {
         // Setup available panels
-        this.setPanels(data?.syncOptions);
+        this.setPanels(data?.sync_options);
+        console.log(data);
       })
     );
 
@@ -140,11 +144,12 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
   /**
    * Navigate to the panel
    *
-   * @param panel
+   * @param code
    */
-  goToPanel(panel: string): void {
-    this.selectedPanel = panel;
-
+  goToPanel(code: string): void {
+    this.selectedPanel = this.syncOptions.find(opt => opt.code === code);
+    this.setDefaultGroup();
+  
     // Close the drawer on 'over' mode
     if (this.drawerMode === 'over') {
       this.drawer.close();
@@ -154,10 +159,10 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
   /**
    * Get the details of the panel
    *
-   * @param id
+   * @param code
    */
-  getPanelInfo(id: string): any {
-    return this.panels.find(panel => panel.id === id);
+  getPanelInfo(code: string): any {
+    return this.panels.find(panel => panel.code === code);
   }
 
   /**
@@ -184,31 +189,25 @@ export class AddIntegrationComponent implements OnInit, OnDestroy {
     this.cancel.emit();
   }
   private setPanels(data: SyncOption[]): void {
-    this.panels = addIntegrationPanels.reduce(
-      (acc, panel) => {
-        const syncOption = data?.find(({ key }) => key === panel.id);
-        const styledPanel = {
-          ...panel,
+    this.syncOptions = data.filter(opt => opt.type === MAPPING_OPTIONS_TYPE.sync_option);
+    this.panels = this.syncOptions.map(
+      panel => {
+        return {
           badge: {
-            title: syncOption?.isActive ? 'Active' : 'Inactive',
-            classes: syncOption?.isActive
+            title: panel.isActive ? 'Active' : 'Inactive',
+            classes: panel.isActive
               ? badgeActiveClasses
               : badgeInactiveClasses,
           },
-        };
-
-        return data?.some(({ key }) => key === panel.id)
-          ? [...acc, styledPanel]
-          : [...acc];
-      },
-      [
-        {
-          id: 'connection',
-          icon: 'heroicons_outline:user-circle',
-          title: 'Connection',
-          description: '',
-        },
-      ]
+          code: panel.code,
+          label: panel.label,
+          description: panel.description,
+          icon: addIntegrationPanels.find(x => x.code === panel.code)?.icon
+        }
+      }
     );
+    if(this.syncOptions.length) {
+      this.goToPanel(this.syncOptions[0].code);
+    }
   }
 }

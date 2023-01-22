@@ -1,4 +1,60 @@
 /* Variables */
 :root {
-    --fuse-drawer-width: 65vw !important;
+    --fuse-drawer-width: 85vw !important;
+}
+
+.mapping-area {
+  .fuse-mat-emphasized-affix {
+    .mat-form-field-wrapper {
+      .mat-form-field-flex {
+        border: none;
+        border-radius: 0;
+
+        &:first-child {
+          border-top-left-radius: 0.375rem;
+          border-top-right-radius: 0.375rem;
+        }
+        &:last-child {
+          border-bottom-left-radius: 0.375rem;
+          border-bottom-right-radius: 0.375rem;
+        }
+  
+        .mat-form-field-prefix {
+          width: 50%;
+        }
+  
+        .mat-form-field-infix {
+          width: 50%;
+        }
+      }
+    }
+  }
+
+  .required-map-color {
+    .mat-select {
+      .mat-select-trigger {
+          .mat-select-value {
+              .mat-select-value-text {
+                  > * {
+                    color: #DE3A3A !important;
+                  }
+              }
+          }
+      }
+    }
+  }
+
+  .optional-map-color {
+    .mat-select {
+      .mat-select-trigger {
+          .mat-select-value {
+              .mat-select-value-text {
+                  > * {
+                    color: #FFAE42 !important;
+                  }
+              }
+          }
+      }
+    }
+  }
 }
