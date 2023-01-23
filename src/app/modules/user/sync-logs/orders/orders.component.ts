@@ -33,6 +33,8 @@ import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { SyncLogsService } from '../sync-logs.service';
 import { SyncLog } from '../sync-logs.types';
 import { IntegrationService } from 'app/modules/admin/integrations/integration.service';
+import { OrdersList } from './order.type';
+import { CompaniesModule } from 'app/modules/admin/companies/companies.module';
 
 @Component({
   selector: 'eco-sync-logs-orders',
@@ -82,7 +84,7 @@ export class SyncLogsOrdersComponent
   @ViewChild(MatPaginator) private _paginator: MatPaginator;
   @ViewChild(MatSort) private _sort: MatSort;
   orderDetails: any;
-  syncLogs$: Observable<SyncLog[]>;
+  syncLogOrders$: Observable<OrdersList[]>;
   viewOrder: boolean = false;
   flashMessage: 'success' | 'error' | null = null;
   isLoading: boolean = false;
@@ -98,7 +100,7 @@ export class SyncLogsOrdersComponent
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   getStatus(status) {
     switch (status) {
-      case 'Active':
+      case 'complete':
         return '#22bfb7';
       case 'Warning':
         return 'orange';
@@ -113,8 +115,7 @@ export class SyncLogsOrdersComponent
     private _changeDetectorRef: ChangeDetectorRef,
     private _fuseConfirmationService: FuseConfirmationService,
     private _formBuilder: UntypedFormBuilder,
-    private _syncLogService: SyncLogsService,
-    private _integrationService: IntegrationService
+    private _syncLogService: SyncLogsService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -136,8 +137,8 @@ export class SyncLogsOrdersComponent
       tags: [[]],
     });
 
-    /* Integrations list */
-    this._integrationService.integrations$
+    /* Get Integrations list */
+    this._syncLogService.integrations$
       .pipe(
         takeUntil(this._unsubscribeAll),
         map(integrations =>
@@ -172,7 +173,7 @@ export class SyncLogsOrdersComponent
       });
 
     // Get the syncLogs
-    this.syncLogs$ = this._syncLogService.syncLogs$;
+    this.syncLogOrders$ = this._syncLogService.syncLogOrders$;
 
     // Get the tags
     this._syncLogService.tags$
@@ -194,7 +195,13 @@ export class SyncLogsOrdersComponent
         switchMap(query => {
           this.closeDetails();
           this.isLoading = true;
-          return this._syncLogService.getSyncLogs(0, 10, 'name', 'asc', query);
+          return this._syncLogService.getSyncLogOrders(
+            0,
+            10,
+            'name',
+            'asc',
+            query
+          );
         }),
         map(() => {
           this.isLoading = false;
@@ -235,7 +242,7 @@ export class SyncLogsOrdersComponent
           switchMap(() => {
             this.closeDetails();
             this.isLoading = true;
-            return this._syncLogService.getSyncLogs(
+            return this._syncLogService.getSyncLogOrders(
               this._paginator.pageIndex,
               this._paginator.pageSize,
               this._sort.active,
@@ -270,6 +277,7 @@ export class SyncLogsOrdersComponent
    */
   toggleDetails(syncLogId: string): void {
     // If the syncLog is already selected...
+
     if (this.selectedSyncLog && this.selectedSyncLog.syncId === syncLogId) {
       // Close the details
       this.closeDetails();
@@ -404,6 +412,35 @@ export class SyncLogsOrdersComponent
     this._changeDetectorRef.detectChanges();
   }
 
+  /* Filter by Date  */
+
+  onSelectDate(event) {
+    console.log(event);
+  }
+
+  /* Filter by Integration  */
+
+  onSelectIntegration(event) {
+    console.log(event.value);
+  }
+
+  /* Filter by Sync Status */
+
+  onSelectStatus(event) {
+    console.log(event.value);
+  }
+
+  /* Filter by Sync Lifecycle */
+
+  onSelectSyncLifecycle(event) {
+    console.log(event.value);
+  }
+  /* Filter by action Action Required */
+
+  isActionRequired(event) {
+    console.log(event.value);
+  }
+
   /**
    * Track by function for ngFor loops
    *
@@ -412,8 +449,5 @@ export class SyncLogsOrdersComponent
    */
   trackByFn(index: number, item: any): any {
     return item.id || index;
-  }
-  selectOption(event) {
-    console.log(event.value);
   }
 }

@@ -30,6 +30,7 @@
         <mat-form-field
           class="fuse-mat-dense fuse-mat-no-subscript min-w-64 mr-2">
           <input
+            (dateInput)="onSelectDate($event.value)"
             matInput
             [matDatepicker]="picker"
             [placeholder]="'Filter by Date'" />
@@ -55,11 +56,13 @@
 
         <mat-form-field
           class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
-          <mat-select [placeholder]="'Integration'">
+          <mat-select
+            [placeholder]="'Integration'"
+            (selectionChange)="onSelectIntegration($event)">
             <mat-option value="">Choose</mat-option>
             <mat-option
               *ngFor="let integration of filteredRestrictedToIntegrationTags"
-              value="integration.id"
+              [value]="integration.id"
               >{{ integration.title }}</mat-option
             >
           </mat-select>
@@ -82,7 +85,7 @@
           class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
           <mat-select
             [placeholder]="'Status'"
-            (selectionChange)="selectOption($event)">
+            (selectionChange)="onSelectStatus($event)">
             <mat-option value="">Choose</mat-option>
             <mat-option value="active">Active</mat-option>
             <mat-option value="warning">Warning</mat-option>
@@ -107,7 +110,9 @@
 
         <mat-form-field
           class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
-          <mat-select [placeholder]="'Sync Lifecycle'">
+          <mat-select
+            [placeholder]="'Sync Lifecycle'"
+            (selectionChange)="onSelectSyncLifecycle($event)">
             <mat-option value="">Choose</mat-option>
             <mat-option value="awaitingDispatch">Awaiting Dispatch</mat-option>
             <mat-option value="completed">Completed</mat-option>
@@ -143,7 +148,9 @@
         </mat-form-field> -->
         <mat-form-field
           class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
-          <mat-select [placeholder]="'Action Required'">
+          <mat-select
+            [placeholder]="'Action Required'"
+            (selectionChange)="isActionRequired($event)">
             <mat-option value="">Choose</mat-option>
             <mat-option value="yes">Yes</mat-option>
             <mat-option value="no">No</mat-option>
@@ -158,7 +165,7 @@
     <!-- syncLogs list -->
     <div
       class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
-      <ng-container *ngIf="syncLogs$ | async as syncLogs">
+      <ng-container *ngIf="syncLogOrders$ | async as syncLogs">
         <ng-container *ngIf="syncLogs.length > 0; else noSyncLogs">
           <div class="grid">
             <!-- Header -->
@@ -179,14 +186,14 @@
               <div class="hidden sm:block">Detail</div>
             </div>
             <!-- Rows -->
-            <ng-container *ngIf="syncLogs$ | async as syncLogs">
+            <ng-container *ngIf="syncLogOrders$ | async as syncLogs">
               <ng-container
                 *ngFor="let syncLog of syncLogs; trackBy: trackByFn">
                 <div
                   class="sync-logs-orders-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
                   <!-- Date Created -->
                   <div class="hidden md:block truncate">
-                    {{ syncLog.date_created }}
+                    {{ syncLog.created_at | date: 'dd-MM-YYYY hh:mm a' }}
                   </div>
 
                   <!-- Integration -->
@@ -214,9 +221,9 @@
 
                   <div>
                     <button
-                      class="px-2 py-[2px] w-22 rounded-full flex items-center gap-1"
+                      class="px-2 py-[2px] w-24 rounded-full flex items-center gap-1"
                       [ngClass]="{
-                        active: syncLog.log.status == 'Active',
+                        active: syncLog.log.status == 'complete',
                         warning: syncLog.log.status == 'Warning',
                         error: syncLog.log.status === 'Error'
                       }">
@@ -267,8 +274,9 @@
                   <div class="hidden md:block truncate">
                     <p
                       class="hidden md:block truncate"
-                      *ngFor="let item of syncLog.orderlines">
-                      {{ item.qty }} X {{ item.sku }}({{ item.name }})
+                      *ngFor="let item of syncLog.order_lines">
+                      {{ item.quantity }} X {{ item.sku }}
+                      <span *ngIf="item.name">({{ item.name }})</span>
                     </p>
                   </div>
 
@@ -276,7 +284,7 @@
                   <div class="hidden md:block truncate">
                     <p
                       class="hidden md:block truncate"
-                      *ngFor="let item of syncLog.orderlines; trackByFn">
+                      *ngFor="let item of syncLog.order_lines; trackByFn">
                       {{ item.carrier }} {{ item.carrier_tracking }}
                     </p>
                   </div>
@@ -352,7 +360,6 @@
             class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
             [ngClass]="{ 'pointer-events-none': isLoading }"
             [length]="pagination.length"
-            [pageIndex]="pagination.page"
             [pageSize]="pagination.size"
             [pageSizeOptions]="[5, 10, 25, 100]"
             [showFirstLastButtons]="true"></mat-paginator>

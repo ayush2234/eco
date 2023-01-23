@@ -4,7 +4,11 @@ import { CompanyIntegrationResolver } from 'app/modules/admin/companies/company.
 import { SyncLogsOrdersComponent } from './orders/orders.component';
 
 import { SyncLogsProductsComponent } from './products/products.component';
-import { SyncLogsResolver } from './sync-logs.resolvers';
+import {
+  OrdersIntegrationsResolver,
+  SyncLogsProductsResolver,
+  SyncLogsResolver,
+} from './sync-logs.resolvers';
 
 const routes: Routes = [
   {
@@ -17,14 +21,14 @@ const routes: Routes = [
     component: SyncLogsOrdersComponent,
     resolve: {
       syncLogs: SyncLogsResolver,
-      integrations: CompanyIntegrationResolver,
+      // integrations: OrdersIntegrationsResolver,
     },
   },
   {
     path: 'products',
     component: SyncLogsProductsComponent,
     resolve: {
-      syncLogs: SyncLogsResolver,
+      syncLogs: SyncLogsProductsResolver,
     },
   },
 ];
