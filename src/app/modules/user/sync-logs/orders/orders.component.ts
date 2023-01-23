@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -32,9 +31,10 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { SyncLogsService } from '../sync-logs.service';
 import { SyncLog } from '../sync-logs.types';
-import { IntegrationService } from 'app/modules/admin/integrations/integration.service';
+
 import { OrdersList } from './order.type';
-import { CompaniesModule } from 'app/modules/admin/companies/companies.module';
+
+import { IntegrationService } from 'app/modules/settings/integrations/integration.service';
 
 @Component({
   selector: 'eco-sync-logs-orders',
@@ -115,7 +115,8 @@ export class SyncLogsOrdersComponent
     private _changeDetectorRef: ChangeDetectorRef,
     private _fuseConfirmationService: FuseConfirmationService,
     private _formBuilder: UntypedFormBuilder,
-    private _syncLogService: SyncLogsService
+    private _syncLogService: SyncLogsService,
+    private _integrationService: IntegrationService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -136,16 +137,20 @@ export class SyncLogsOrdersComponent
       notes: [''],
       tags: [[]],
     });
+    /* Get sync log orders list*/
+
+    this.syncLogOrders$ = this._syncLogService.syncLogOrders$;
 
     /* Get Integrations list */
-    this._syncLogService.integrations$
+
+    this._integrationService.integrationInstances$
       .pipe(
         takeUntil(this._unsubscribeAll),
         map(integrations =>
           integrations.map(integration => {
             return {
-              id: integration.integration_id,
-              title: integration.name,
+              id: integration.integration.integration_id,
+              title: integration.integration.name,
             };
           })
         )
@@ -171,9 +176,6 @@ export class SyncLogsOrdersComponent
         // Mark for check
         this._changeDetectorRef.markForCheck();
       });
-
-    // Get the syncLogs
-    this.syncLogOrders$ = this._syncLogService.syncLogOrders$;
 
     // Get the tags
     this._syncLogService.tags$

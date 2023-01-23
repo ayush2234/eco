@@ -1,15 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CompanyIntegrationResolver } from 'app/modules/admin/companies/company.resolvers';
+import { IntegrationResolver } from 'app/modules/settings/integrations/integration.resolver';
 import { SyncLogsOrdersComponent } from './orders/orders.component';
-
 import { SyncLogsProductsComponent } from './products/products.component';
 import {
-  OrdersIntegrationsResolver,
   SyncLogsProductsResolver,
   SyncLogsResolver,
 } from './sync-logs.resolvers';
-
 const routes: Routes = [
   {
     path: '',
@@ -21,7 +18,7 @@ const routes: Routes = [
     component: SyncLogsOrdersComponent,
     resolve: {
       syncLogs: SyncLogsResolver,
-      // integrations: OrdersIntegrationsResolver,
+      integrations: IntegrationResolver,
     },
   },
   {
