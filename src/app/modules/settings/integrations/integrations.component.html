@@ -73,11 +73,11 @@
           <!-- Footer -->
           <div class="flex flex-col w-full mt-auto">
             <div class="flex items-center justify-between p-8 pt-0">
-              <a mat-stroked-button routerLink="#">
+              <button mat-stroked-button (click)="addIntegration(instance.integration)">
                 <span class="inline-flex items-center">
                   <span class="truncate">Configuration</span>
                 </span>
-              </a>
+              </button>
               <mat-slide-toggle
                 class="ml-3"
                 [color]="'primary'"
