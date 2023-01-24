@@ -10,7 +10,7 @@
     *ngIf="isOpen"
     #fuseDrawer
     ><div
-      *ngIf="wipIntegration$ | async as integration"
+      *ngIf="wipIntegration$ | async as instance"
       class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
       <mat-drawer-container class="flex-auto sm:h-full">
         <!-- Drawer -->
@@ -24,7 +24,7 @@
           <div class="flex items-center justify-between m-8 mr-6 sm:my-10">
             <!-- Title -->
             <div class="text-3xl font-bold tracking-tight leading-none">
-              Add Integration
+              {{ isAddIntegration ? 'Add' : 'Configure' }} Integration
             </div>
             <!-- Close button -->
             <div class="lg:hidden">
@@ -39,17 +39,14 @@
               <div
                 class="flex px-8 py-5 cursor-pointer"
                 [ngClass]="{
-                  'hover:bg-gray-100 dark:hover:bg-hover':
-                    !selectedPanel || selectedPanel.code !== panel.code,
-                  'bg-primary-50 dark:bg-hover':
-                    selectedPanel && selectedPanel.code === panel.code
+                  'hover:bg-gray-100 dark:hover:bg-hover': !panel.isActive,
+                  'bg-primary-50 dark:bg-hover': panel.isActive
                 }"
                 (click)="goToPanel(panel.code)">
                 <mat-icon
                   [ngClass]="{
-                    'text-hint': !selectedPanel || selectedPanel.code !== panel.code,
-                    'text-primary dark:text-primary-500':
-                      selectedPanel && selectedPanel.code === panel.code
+                    'text-hint': !panel.isActive,
+                    'text-primary dark:text-primary-500': panel.isActive
                   }"
                   [svgIcon]="panel.icon"></mat-icon>
                 <div class="ml-3">
@@ -74,8 +71,40 @@
 
         <!-- Drawer content -->
         <mat-drawer-content class="flex flex-col">
-          <!-- Main -->
-          <div class="flex-auto px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+
+          <!-- Main Connection -->
+          <div *ngIf="!selectedPanel" class="flex-auto px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
+            <!-- Panel header -->
+            <div class="flex flex-col">
+              <!-- Drawer toggle -->
+              <button
+                class="lg:hidden -ml-2 mb-10"
+                mat-icon-button
+                (click)="drawer.toggle()">
+                <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+              </button>
+
+              <div class="w-full">
+                <!-- Panel title -->
+                <div
+                  class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
+                  {{ instance.integration.connection.label }}
+                </div>
+                <div class="mt-0.5 text-secondary">
+                  {{ instance.integration.connection.description }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Load settings panel -->
+            <div class="mt-8">
+              <eco-add-integration-connection
+              [instance]="instance"></eco-add-integration-connection>
+            </div>
+          </div>
+
+          <!-- Main Sync Options -->
+          <div *ngIf="selectedPanel" class="flex-auto px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
             <!-- Panel header -->
             <div class="flex flex-col">
               <!-- Drawer toggle -->
@@ -99,7 +128,20 @@
                     </div>
                   </div>
                   <div>
-                    <button class="" (click)="toggleMappingToDo()" mat-stroked-button>
+                    <button
+                      *ngIf="!validate"
+                      class="" 
+                      (click)="toggleMappingToDo()"
+                      mat-stroked-button
+                    >
+                      <span class="ml-2">Mapping to do</span>
+                    </button>
+                    <button
+                      *ngIf="validate"
+                      class=""
+                      mat-flat-button
+                      (click)="toggleMappingToDo()"
+                      [color]="'primary'">
                       <span class="ml-2">Mapping to do</span>
                     </button>
                   </div>
@@ -108,18 +150,18 @@
             </div>
 
             <!-- Load settings panel -->
-            <div class="mt-8" *ngIf="selectedGroup">
+            <div class="mt-8" *ngIf="selectedTab">
               <!-- Tabs -->
-              <div class="border-b" *ngIf="isGrouped(selectedGroup)">
+              <div class="border-b">
                 <nav class="tabs flex flex-col sm:flex-row">
-                  <button *ngFor="let group of selectedPanel.mapping_options"
-                    (click)="goToGroup(group)"
+                  <button *ngFor="let tab of selectedPanel.sub_sync_options"
+                    (click)="goToTab(tab)"
                     class="tab ext-gray-600 py-4 px-6 block hover:text-primary-500 focus:outline-none"
                     [ngClass]="{
-                      'active text-primary-600 border-b-2 border-primary-600': selectedGroup && selectedGroup.code === group.code
+                      'active text-primary-600 border-b-2 border-primary-600': selectedTab && selectedTab.code === tab.code
                     }"
                   >
-                    {{group.label}}
+                    {{tab.label}}
                   </button>
                 </nav>
               </div>
@@ -148,7 +190,7 @@
 
                     <!-- Dynamic Fields -->
                     <ng-container
-                      *ngFor="let field of selectedGroup.mapping_options"
+                      *ngFor="let field of selectedTab.mapping_options"
                     >
                       <ng-container
                         *ngIf="isConditionSatisfied(field)"
@@ -173,7 +215,28 @@
                                 'text-primary-800 font-semibold': selectedField && selectedField.code === field.code
                               }"
                             >
-                              <span class="truncate block">{{field.label}} <span *ngIf="field.required" class="text-red-600">*</span></span>
+                              <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                  <mat-icon
+                                    class="text-hint mat-icon-no-color"
+                                    svgIcon="heroicons_solid:arrow-sm-right"
+                                  ></mat-icon>
+                                  <span class="truncate block ml-2">{{field.label}}
+                                    <span *ngIf="field.required" class="text-red-600">*</span>
+                                  </span>
+                                </div>
+                                <div>
+                                  <button
+                                    *ngIf="selectedField && selectedField.code === field.code"
+                                    class="min-w-0 w-8" mat-stroked-button
+                                    (click)="addChildren()"
+                                  >
+                                    <mat-icon
+                                      class="icon-size-5"
+                                      [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                                  </button>
+                                </div>
+                              </div>
                             </div>
                             <mat-icon
                               class="icon-size-5 -mr-2.5"
@@ -189,6 +252,58 @@
                         </div>
 
                         <!-- Child Fields -->
+                        <ng-container
+                          *ngFor="let children of field.children"
+                        >
+                          <div
+                            class="sm:col-span-4 last:border-none border-b cursor-pointer"
+                            (click)="goToField(children)"
+                            [ngClass]="{
+                              'bg-primary-200': selectedField && selectedField.code === children.code,
+                              'required-map-color': children.required && validate && children.selected_value.code === '',
+                              'optional-map-color': !children.required && validate && children.selected_value.code === ''
+                            }"
+                          >
+                            <mat-form-field
+                              class="fuse-mat-no-subscript fuse-mat-emphasized-affix my-0 w-full"
+                              [ngClass]="{
+                                'text-primary-800': selectedField && selectedField.code === children.code
+                              }"
+                            >
+                              <div class="text-secondary w-full sm:w-full mr-0" matPrefix
+                                [ngClass]="{
+                                  'text-primary-800 font-semibold': selectedField && selectedField.code === children.code
+                                }"
+                              >
+                                <div class="flex items-center ml-14">
+                                  <span *ngIf="children.code.length" class="truncate block">{{children.label}}
+                                    <span *ngIf="children.required" class="text-red-600">*</span>
+                                  </span>
+                                  <span *ngIf="!children.code.length">
+                                    <mat-form-field class="fuse-mat-no-subscript w-full">
+                                      <input 
+                                        matInput 
+                                        [(ngModel)]="children.label"
+                                        (keyup.enter)="setChildrenLabel(children)"
+                                      />
+                                    </mat-form-field>
+                                  </span>
+                                </div>
+                              </div>
+                              <mat-icon
+                                class="icon-size-5 -mr-2.5"
+                                [svgIcon]="'heroicons_solid:arrow-right'"
+                                matPrefix></mat-icon>
+                              <mat-select
+                                [value]="children.selected_value.code" 
+                                class="{{ children.selected_value.code === '' ? 'italic text-red-600' : '' }}"
+                                disabled>
+                                <mat-option [value]="children.selected_value.code"> <i> {{ children.selected_value.label }} </i></mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+                        </ng-container>
+
                       </ng-container>
                     </ng-container>
                   </div>
@@ -201,12 +316,10 @@
                       <span class="truncate block text-black font-bold text-lg opacity-75">Options</span>
                     </div>
                     
-                    <div *ngIf="selectedField && availableOptions">
-                      <ng-container *ngFor="let optionType of selectedField.value_options">
-                        <div *ngFor="let valueOption of availableOptions">
-                          <div class="py-3 px-2" *ngIf="
-                            optionType.values_list === valueOption.code
-                          ">
+                    <div *ngIf="selectedField && availableOptionsTypes">
+                      <ng-container *ngFor="let valueOption of availableOptionsTypes">
+                        <div *ngIf="valueOption.valueList">
+                          <div class="py-3 px-2">
                             <ng-container>
                               <div class="flex items-center cursor-pointer">
                                 <mat-icon
@@ -217,11 +330,11 @@
                                   class="text-hint mat-icon-no-color"
                                   svgIcon="heroicons_solid:arrow-sm-right"
                                 ></mat-icon>
-                                <span class="ml-2 text-sm text-gray-400 font-normal">{{valueOption.label}}</span>
+                                <span class="ml-2 text-sm text-gray-400 font-normal">{{valueOption.valueList.label}}</span>
                               </div>
                               <div
                                 class="ml-20 mt-2 text-sm text-gray-400 font-normal cursor-pointer" 
-                                *ngFor="let option of valueOption.values"
+                                *ngFor="let option of valueOption.valueList.values"
                                 (click)="selectOption(option)">
                                 {{option.label}}
                               </div>
@@ -231,7 +344,7 @@
                       </ng-container>
                     </div>
 
-                    <ng-container *ngIf="
+                    <!-- <ng-container *ngIf="
                       selectedField && selectedField.type === 'attribute' ||
                       selectedField && selectedField.type === 'mapped_attribute'
                     ">
@@ -255,7 +368,7 @@
                           <span class="ml-2 truncate text-sm text-gray-400 font-normal">Advance: Custom Source attribute</span>
                         </div>
                       </div>
-                    </ng-container>
+                    </ng-container> -->
                   </ng-container>
                   
 
@@ -309,6 +422,31 @@
                   Save
                 </button>
               </div>
+
+              <ng-container *ngIf="selectedPanel && !selectedPanel.is_activated">
+                <!-- Divider -->
+                <div class="mt-11 mb-10 border-t"></div>
+          
+                <!-- Section -->
+                <div class="flex w-full justify-center">
+                  <fuse-alert [appearance]="'outline'" [type]="'info'">
+                    <span fuseAlertTitle>Activate Orders Sync</span>
+                    <div class="flex">
+                      <span class="mr-4"
+                        >If mapping has been completed, you can activate this sync.</span
+                      >
+                      <button
+                        class="ml-auto mr-0"
+                        mat-flat-button
+                        type="button"
+                        [color]="'primary'"
+                        (click)="activatePanel()">
+                        Activate
+                      </button>
+                    </div>
+                  </fuse-alert>
+                </div>
+              </ng-container>
             </div>
           </div>
         </mat-drawer-content>

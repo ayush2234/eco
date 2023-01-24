@@ -34,29 +34,96 @@ export interface Integration {
   created_by: string;
   updated_at: string;
   updated_by: string;
+  endpoints?: any[];
+  connection: Connection;
+  sync_options: SyncOption[];
 }
 
-export interface SyncOption {
-  key: string;
-  name: string;
-  isActive: boolean;
-  form: string;
-  attributes: Attribute[];
+export interface Connection {
+  label: string;
+  code: string;
+  description: string;
+  fields: ConnectionField[];
+  connection_instructions: string;
 }
 
-export interface Attribute {
-  setting: string;
-  fieldType: string;
-  erpValuesList: string;
-  installationValuesList: string;
-  additionalOptions: any;
-  dependency?: string;
-  source?: string;
-  destination?: string;
+export interface ConnectionField extends Options {
+  type: string;
+  value: string;
+  placeHolder?: string;
 }
 
 export interface SelectOption {
   option: string;
   label: string;
   isDefault: boolean;
+}
+
+export interface Options {
+  code: string;
+  label: string;
+}
+
+export interface SyncOption extends Options {
+  is_visible: boolean;
+  is_activated: boolean;
+  description: string;
+  sub_sync_options: Tab[];
+}
+
+export interface Tab extends Options {
+  mapping_options: MappingOption[] | any[];
+}
+
+export interface MappingOption extends Options {
+  type: VALUE_TYPE | any;
+  required?: boolean;
+  display_conditions?: string;
+  default_value?: string;
+  value_options?: MappingValueOptions[] | any[];
+  child_attribute_values?: any[];
+  mapping_options?: MappingOption[] | any[];
+  selected_value?: any;
+  children?: MappingOption[]
+}
+
+export interface MappingValueOptions {
+  value_option_type: VALUE_OPTION_TYPE;
+  values_list_origin: VALUE_LIST_ORIGIN;
+  value_type: VALUE_TYPE;
+  values_list?: string;
+}
+
+export interface MappedAttributeHeirarchy {
+  values_list_origin: VALUE_LIST_ORIGIN;
+  values_list: string;
+  value_type?: VALUE_TYPE
+}
+
+export interface ValuesList extends Options {
+  dynamic: boolean;
+  values: ValuesListOptions[];
+}
+
+export interface ValuesListOptions extends Options { }
+
+
+export enum VALUE_OPTION_TYPE {
+  values_list = 'values_list',
+  text_input = 'text_input',
+  decimal_input = 'decimal_input',
+  categories = 'categories',
+  attribute = 'attribute',
+}
+
+export enum VALUE_LIST_ORIGIN {
+  source = 'source',
+  channel = 'channel',
+  global = 'global',
+}
+
+export enum VALUE_TYPE {
+  static = 'static',
+  option = 'option',
+  attribute = 'attribute',
 }
