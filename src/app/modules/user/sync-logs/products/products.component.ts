@@ -150,7 +150,13 @@ export class SyncLogsProductsComponent
         switchMap(query => {
           this.closeDetails();
           this.isLoading = true;
-          return this._syncLogService.getSyncLogs(0, 10, 'name', 'asc', query);
+          return this._syncLogService.getSyncLogProducts(
+            0,
+            10,
+            'name',
+            'asc',
+            query
+          );
         }),
         map(() => {
           this.isLoading = false;
@@ -191,7 +197,7 @@ export class SyncLogsProductsComponent
           switchMap(() => {
             this.closeDetails();
             this.isLoading = true;
-            return this._syncLogService.getSyncLogs(
+            return this._syncLogService.getSyncLogProducts(
               this._paginator.pageIndex,
               this._paginator.pageSize,
               this._sort.active,

@@ -10,39 +10,46 @@
     #fuseDrawer>
     <div
       class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-[#ffffff]">
+      <!-- Crad 1 -->
       <div
         class="relative flex flex-col sm:flex-row flex-0 sm:items-center gap-[25%] py-8 px-6 md:px-8 mt-1 mx-3 mb-2 rounded-md shadow-lg bg-white border">
+        <!-- Source Order ID -->
         <div>
           <div class="mb-[5px]">Source Order ID</div>
           <div>{{ orderDetails.source?.order_id }}</div>
         </div>
+        <!-- Channel Order ID -->
         <div class="border-l-[1px] pl-4">
           <div class="mb-[5px]">Channel Order ID</div>
           <div>{{ orderDetails.channel?.order_id }}</div>
         </div>
+        <!-- Sync Lifecycle -->
         <div class="border-l-[1px] pl-4">
           <div class="mb-[5px]">Sync Lifecycle</div>
           <div
-            class="bg-[#c4e8c4] text-[green] border-[1px] border-green-500/100 rounded-md px-2 py-[3px] text-sm">
+            class="bg-[#c4e8c4] text-[green] border-[1px] border-green-500/100 rounded-md px-2 py-[3px] text-sm text-center">
             {{ orderDetails.log.lifecycle }}
           </div>
         </div>
       </div>
+      <!-- Order History Table -->
       <div
         class="flex flex-col flex-auto overflow-hidden m-3 rounded sm:overflow-y-auto border">
+        <!-- Table Headers -->
+
         <div
           class="order-details-grid z-100 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow bg-white text-md font-semibold dark:bg-black dark:bg-opacity-5">
           <div class="hidden sm:block">Date</div>
           <div class="hidden sm:block">Result</div>
           <div class="hidden sm:block">Modification</div>
         </div>
-
+        <!-- Table Data -->
         <ng-container
           *ngFor="let history of orderDetails.log.history; trackBy: trackByFn">
           <div
             class="order-details-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b break-all">
             <div>
-              {{ history.date }}
+              {{ history.created_at | date: 'dd-MM-YYYY hh:mm a' }}
             </div>
             <div>
               {{ history.result }}

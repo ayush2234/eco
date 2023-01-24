@@ -11,12 +11,14 @@ export type Themes = { id: string; name: string }[];
 const devApiConfig: ApiConfig = {
   baseUrl: 'https://api.pre-prod.ecommify.io/v1',
   serviceUrl: 'https://service.pre-prod.ecommify.io',
+  serviceUrlv1: 'https://service.pre-prod.ecommify.io/api/v1',
   //   baseUrl: 'v1',
 };
 
 const prodApiConfig: ApiConfig = {
   baseUrl: 'https://api.ecommify.io/v1',
   serviceUrl: 'https://service.pre-prod.ecommify.io',
+  serviceUrlv1: 'https://service.pre-prod.ecommify.io/api/v1',
 };
 
 const getApiConfig = (): ApiConfig =>
@@ -38,6 +40,7 @@ export interface AppConfig {
 export interface ApiConfig {
   baseUrl: string;
   serviceUrl: string;
+  serviceUrlv1: string;
 }
 /**
  * Default configuration for the entire application. This object is used by

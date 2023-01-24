@@ -13,25 +13,38 @@ import {
 } from 'rxjs';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { SyncLog } from './sync-logs.types';
+import { appConfig } from 'app/core/config/app.config';
+import { GridUtils } from 'app/layout/common/grid/grid.utils';
+import { OrderListResponse, OrdersList } from './orders/order.type';
+import { EcommifyApiResponse } from 'app/core/api/api.types';
+import {
+  Integration,
+  IntegrationListResponse,
+} from 'app/modules/admin/integrations/integration.types';
+import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SyncLogsService {
   // Private
+  private _config = appConfig;
   private _syncLog: BehaviorSubject<SyncLog | null> = new BehaviorSubject(null);
   private _syncLogs: BehaviorSubject<SyncLog[] | null> = new BehaviorSubject(
     null
   );
+  private _ordersList: BehaviorSubject<OrdersList[] | null> =
+    new BehaviorSubject(null);
   private _pagination: BehaviorSubject<Pagination | null> = new BehaviorSubject(
     null
   );
   private _tags: BehaviorSubject<Tag[] | null> = new BehaviorSubject(null);
-
+  private _integrations: BehaviorSubject<Integration[] | null> =
+    new BehaviorSubject(null);
   /**
    * Constructor
    */
-  constructor(private _httpClient: HttpClient) { }
+  constructor(private _httpClient: HttpClient) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
@@ -50,6 +63,12 @@ export class SyncLogsService {
   get syncLogs$(): Observable<SyncLog[]> {
     return this._syncLogs.asObservable();
   }
+  /**
+   * Getter for syncLogs orders
+   */
+  get syncLogOrders$(): Observable<OrdersList[]> {
+    return this._ordersList.asObservable();
+  }
 
   /**
    * Getter for pagination
@@ -57,7 +76,9 @@ export class SyncLogsService {
   get pagination$(): Observable<Pagination> {
     return this._pagination.asObservable();
   }
-
+  get integrations$(): Observable<Integration[]> {
+    return this._integrations.asObservable();
+  }
   /**
    * Getter for tags
    */
@@ -70,6 +91,88 @@ export class SyncLogsService {
   // -----------------------------------------------------------------------------------------------------
 
   /**
+   * Get syncLog Orders
+   *
+   *
+   * @param page
+   * @param size
+   * @param sort
+   * @param order
+   * @param search
+   */
+  getSyncLogOrders(
+    page: number = 0,
+    size: number = 10,
+    sort: string = 'name',
+    order: 'asc' | 'desc' | '' = 'asc',
+    search: string = ''
+  ): Observable<EcommifyApiResponse<OrderListResponse>> {
+    const api = this._config?.apiConfig?.serviceUrlv1;
+    const companyID = LocalStorageUtils.companyId;
+
+    return this._httpClient
+      .get<EcommifyApiResponse<OrderListResponse>>(
+        `${api}/${companyID}/orders`,
+        {
+          params: {
+            page: '' + page,
+            size: '' + size,
+            sort,
+            order,
+            search,
+          },
+        }
+      )
+      .pipe(
+        tap(response => {
+          const { result } = response;
+          const pagination = GridUtils.getPagination(result);
+          this._pagination.next(pagination);
+          this._ordersList.next(result.orders);
+        })
+      );
+  }
+
+  /**
+   * Get integrations
+   *
+   *
+   * @param page
+   * @param size
+   * @param sort
+   * @param order
+   * @param search
+   */
+  getIntegrations(
+    page: number = 0,
+    size: number = 1000,
+    sort: string = 'name',
+    order: 'asc' | 'desc' | '' = 'asc',
+    search: string = ''
+  ): Observable<EcommifyApiResponse<IntegrationListResponse>> {
+    const api = this._config?.apiConfig?.baseUrl;
+    const companyID = LocalStorageUtils.companyId;
+    return this._httpClient
+      .get<EcommifyApiResponse<IntegrationListResponse>>(
+        `${api}/${companyID}/integrations`,
+        {
+          params: {
+            page: '' + page,
+            size: '' + size,
+            sort,
+            order,
+            search,
+          },
+        }
+      )
+      .pipe(
+        tap(response => {
+          const { result } = response;
+          this._integrations.next(result?.integrations);
+        })
+      );
+  }
+  /**
    * Get syncLogs
    *
    *
@@ -79,7 +182,7 @@ export class SyncLogsService {
    * @param order
    * @param search
    */
-  getSyncLogs(
+  getSyncLogProducts(
     page: number = 0,
     size: number = 10,
     sort: string = 'name',
@@ -104,7 +207,6 @@ export class SyncLogsService {
       })
       .pipe(
         tap(response => {
-
           this._pagination.next(response.pagination);
           this._syncLogs.next(response.syncLogs);
         })
