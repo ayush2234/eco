@@ -1,20 +1,21 @@
 <div
-  class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+  class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent border border-gray-300 m-9 rounded-md">
   <!-- Header -->
   <div
-    class="relative flex flex-col items-center sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+    class="relative flex flex-col items-center sm:flex-row flex-0 sm:items-center sm:justify-between p-5 md:p-5 border-b">
     <!-- Loader -->
     <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
       <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
     </div>
     <!-- Title -->
-    <div class="flex gap-18 lg:gap-8">
-      <div class="text-4xl font-extrabold tracking-tight self-end">Orders</div>
+
+    <div class="flex basis-full justify-between">
+      <div class="text-4xl font-extrabold tracking-tight">Orders</div>
       <!-- Actions -->
-      <div class="flex flex-shrink-0 items-center mt-6">
+      <div class="flex items-center">
         <!-- Search -->
         <mat-form-field
-          class="fuse-mat-dense fuse-mat-no-subscript min-w-50 mr-2">
+          class="fuse-mat-dense fuse-mat-no-subscript min-w-64 mr-2">
           <mat-icon
             class="icon-size-5"
             matPrefix
@@ -25,8 +26,21 @@
             [autocomplete]="'off'"
             [placeholder]="'Search source or channel ID'" />
         </mat-form-field>
+        <!-- Filter by Date filter -->
         <mat-form-field
-          class="fuse-mat-dense fuse-mat-no-subscript min-w-50 mr-2">
+          class="fuse-mat-dense fuse-mat-no-subscript min-w-64 mr-2">
+          <input
+            (dateInput)="onSelectDate($event.value)"
+            matInput
+            [matDatepicker]="picker"
+            [placeholder]="'Filter by Date'" />
+
+          <mat-datepicker-toggle matIconSuffix [for]="picker">
+          </mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <!-- <mat-form-field
+          class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
           <mat-icon
             class="icon-size-5"
             matSuffix
@@ -36,9 +50,25 @@
             [formControl]="searchInputControl"
             [autocomplete]="'off'"
             [placeholder]="'Filter by Date'" />
-        </mat-form-field>
+        </mat-form-field> -->
+
+        <!-- Integration Serch filter -->
+
         <mat-form-field
-          class="fuse-mat-dense fuse-mat-no-subscript min-w-50 mr-2">
+          class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
+          <mat-select
+            [placeholder]="'Integration'"
+            (selectionChange)="onSelectIntegration($event)">
+            <mat-option value="">Choose</mat-option>
+            <mat-option
+              *ngFor="let integration of filteredRestrictedToIntegrationTags"
+              [value]="integration.id"
+              >{{ integration.title }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+        <!-- <mat-form-field
+          class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
           <mat-icon
             class="icon-size-5"
             matSuffix
@@ -48,9 +78,23 @@
             [formControl]="searchInputControl"
             [autocomplete]="'off'"
             [placeholder]="'Integration'" />
-        </mat-form-field>
+        </mat-form-field> -->
+
+        <!-- Status Search Filter -->
         <mat-form-field
-          class="fuse-mat-dense fuse-mat-no-subscript min-w-50 mr-2">
+          class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
+          <mat-select
+            [placeholder]="'Status'"
+            (selectionChange)="onSelectStatus($event)">
+            <mat-option value="">Choose</mat-option>
+            <mat-option value="active">Active</mat-option>
+            <mat-option value="warning">Warning</mat-option>
+            <mat-option value="error">Error</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- <mat-form-field
+          class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
           <mat-icon
             class="icon-size-5"
             matSuffix
@@ -60,9 +104,23 @@
             [formControl]="searchInputControl"
             [autocomplete]="'off'"
             [placeholder]="'Status'" />
-        </mat-form-field>
+        </mat-form-field> -->
+
+        <!-- Sync Lifecycle Search filter -->
+
         <mat-form-field
-          class="fuse-mat-dense fuse-mat-no-subscript min-w-50 mr-2">
+          class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
+          <mat-select
+            [placeholder]="'Sync Lifecycle'"
+            (selectionChange)="onSelectSyncLifecycle($event)">
+            <mat-option value="">Choose</mat-option>
+            <mat-option value="awaitingDispatch">Awaiting Dispatch</mat-option>
+            <mat-option value="completed">Completed</mat-option>
+            <mat-option value="syncingtoSource">Syncing to Source</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- <mat-form-field
+          class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
           <mat-icon
             class="icon-size-5"
             matSuffix
@@ -72,6 +130,31 @@
             [formControl]="searchInputControl"
             [autocomplete]="'off'"
             [placeholder]="'Sync Lifecycle'" />
+        </mat-form-field> -->
+
+        <!-- Action Required search filter -->
+
+        <!-- <mat-form-field
+          class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
+          <mat-icon
+            class="icon-size-5"
+            matSuffix
+            [svgIcon]="'heroicons_solid:chevron-down'"></mat-icon>
+          <input
+            matInput
+            [formControl]="searchInputControl"
+            [autocomplete]="'off'"
+            [placeholder]="'Action Required'" />
+        </mat-form-field> -->
+        <mat-form-field
+          class="fuse-mat-dense fuse-mat-no-subscript min-w-44 mr-2">
+          <mat-select
+            [placeholder]="'Action Required'"
+            (selectionChange)="isActionRequired($event)">
+            <mat-option value="">Choose</mat-option>
+            <mat-option value="yes">Yes</mat-option>
+            <mat-option value="no">No</mat-option>
+          </mat-select>
         </mat-form-field>
       </div>
     </div>
@@ -82,7 +165,7 @@
     <!-- syncLogs list -->
     <div
       class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
-      <ng-container *ngIf="syncLogs$ | async as syncLogs">
+      <ng-container *ngIf="syncLogOrders$ | async as syncLogs">
         <ng-container *ngIf="syncLogs.length > 0; else noSyncLogs">
           <div class="grid">
             <!-- Header -->
@@ -90,7 +173,7 @@
               class="sync-logs-orders-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
               matSort
               matSortDisableClear>
-              <div [mat-sort-header]="'id'">Date Created</div>
+              <div [mat-sort-header]="'id'">Date</div>
               <div class="hidden md:block">Integration</div>
               <div class="hidden sm:block">Sync Status</div>
               <div class="hidden truncate lg:block">Sync Lifecycle</div>
@@ -98,26 +181,26 @@
               <div class="hidden sm:block">Channel Order ID</div>
               <div class="hidden sm:block">Items</div>
               <div class="hidden sm:block">Shipment</div>
-              <div class="hidden sm:block">Shipment Status</div>
+              <!-- <div class="hidden sm:block">Shipment Status</div> -->
               <div class="hidden truncate sm:block">Action Required</div>
-              <div class="hidden sm:block">Details</div>
+              <div class="hidden sm:block">Detail</div>
             </div>
             <!-- Rows -->
-            <ng-container *ngIf="syncLogs$ | async as syncLogs">
+            <ng-container *ngIf="syncLogOrders$ | async as syncLogs">
               <ng-container
                 *ngFor="let syncLog of syncLogs; trackBy: trackByFn">
                 <div
                   class="sync-logs-orders-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
                   <!-- Date Created -->
                   <div class="hidden md:block truncate">
-                    {{ syncLog.date_created }}
+                    {{ syncLog.created_at | date: 'dd-MM-YYYY hh:mm a' }}
                   </div>
 
                   <!-- Integration -->
                   <div class="flex items-center pb-0 space-x-4">
                     <div class="flex-shrink-0">
                       <img
-                        class="w-10 h-10 rounded-full"
+                        class="w-10 h-10 rounded-full border border-gray-200"
                         [src]="syncLog.integration.logo"
                         alt="Source Icon" />
                     </div>
@@ -136,30 +219,32 @@
 
                   <!--  sync status -->
 
-                  <div class="flex items-center g-[4px]">
-                    <div
-                      class="flex-0 w-2 h-2 rounded-full"
-                      [ngStyle]="{
-                        backgroundColor: getStatus(syncLog.log.status)
-                      }"></div>
+                  <div>
                     <button
-                      class="text-white p-1 w-20 rounded-md ml-1"
-                      [ngStyle]="{
-                        backgroundColor: getStatus(syncLog.log.status)
+                      class="px-2 py-[2px] w-24 rounded-full flex items-center gap-1"
+                      [ngClass]="{
+                        active: syncLog.log.status == 'complete',
+                        warning: syncLog.log.status == 'Warning',
+                        error: syncLog.log.status === 'Error'
                       }">
-                      {{ syncLog.log.status }}
+                      <div
+                        [ngStyle]="{
+                          backgroundColor: getStatus(syncLog.log.status)
+                        }"
+                        class="w-2 h-2 rounded-full"></div>
+                      <span> {{ syncLog.log.status }}</span>
                     </button>
                   </div>
                   <!--Sync  lifecycle -->
 
                   <div class="hidden sm:block truncate">
                     <button
-                      class="text-white p-1 w-36 rounded-md ml-1"
+                      class="text-white rounded-full w-36 px-2 py-[2px]"
                       [ngStyle]="{
                         backgroundColor:
                           syncLog.log.lifecycle === 'Completed'
-                            ? '#7cd99b'
-                            : '#7b81ed'
+                            ? '#5ad1c5'
+                            : '#4f46e5'
                       }">
                       {{ syncLog.log.lifecycle }}
                     </button>
@@ -189,8 +274,9 @@
                   <div class="hidden md:block truncate">
                     <p
                       class="hidden md:block truncate"
-                      *ngFor="let item of syncLog.orderlines">
-                      {{ item.qty }} X {{ item.sku }}({{ item.name }})
+                      *ngFor="let item of syncLog.order_lines">
+                      {{ item.quantity }} X {{ item.sku }}
+                      <span *ngIf="item.name">({{ item.name }})</span>
                     </p>
                   </div>
 
@@ -198,18 +284,18 @@
                   <div class="hidden md:block truncate">
                     <p
                       class="hidden md:block truncate"
-                      *ngFor="let item of syncLog.orderlines; trackByFn">
+                      *ngFor="let item of syncLog.order_lines; trackByFn">
                       {{ item.carrier }} {{ item.carrier_tracking }}
                     </p>
                   </div>
                   <!-- shipment Status -->
-                  <div class="hidden md:block truncate">
-                    <p
-                      class="hidden md:block truncate"
-                      *ngFor="let item of syncLog.orderlines">
-                      {{ item.carrier_tracking_status }}
-                    </p>
-                  </div>
+                  <!-- <div class="hidden md:block truncate">
+                      <p
+                        class="hidden md:block truncate"
+                        *ngFor="let item of syncLog.orderlines">
+                        {{ item.carrier_tracking_status }}
+                      </p>
+                    </div> -->
 
                   <!-- Action Required -->
                   <div class="hidden lg:block">
@@ -226,28 +312,33 @@
                   </div>
 
                   <!-- Details button -->
-                  <div class="flex flex-row justify-between">
+                  <div class="flex flex-row">
                     <div>
                       <button
-                        class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-[6px]"
+                        class="min-w-10 min-h-7 h-9 px-[3px] leading-6 mr-3"
                         mat-stroked-button
+                        title="View"
                         (click)="viewOrderDetails(syncLog)">
-                        View
+                        <mat-icon class="icon-size-5 text-slate-700">
+                          visibility</mat-icon
+                        >
                       </button>
                     </div>
-                    <div *ngIf="syncLog.log.status !== 'Error'">
+                    <!-- <div *ngIf="syncLog.log.status !== 'Error'">
                       <button
                         class="min-w-18 min-h-7 h-7 px-2 leading-6"
                         mat-stroked-button>
                         Resync
                       </button>
-                    </div>
+                    </div> -->
                     <div *ngIf="syncLog.log.status === 'Error'">
                       <button
-                        class="min-w-18 min-h-7 h-7 px-2 leading-6"
+                        class="min-w-10 min-h-7 h-9 px-[3px] leading-6"
                         mat-flat-button
                         color="primary">
-                        Sync
+                        <mat-icon class="icon-size-5 text-black"
+                          >cached</mat-icon
+                        >
                       </button>
                     </div>
                   </div>
@@ -269,7 +360,6 @@
             class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
             [ngClass]="{ 'pointer-events-none': isLoading }"
             [length]="pagination.length"
-            [pageIndex]="pagination.page"
             [pageSize]="pagination.size"
             [pageSizeOptions]="[5, 10, 25, 100]"
             [showFirstLastButtons]="true"></mat-paginator>
@@ -477,7 +567,7 @@
       <ng-template #noSyncLogs>
         <div
           class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
-          There are no syncLogs!
+          There are no Orders!
         </div>
       </ng-template>
     </div>
@@ -486,5 +576,5 @@
 <ng-container *ngIf="viewOrder">
   <eco-view-order-details
     (cancel)="cancelCreateUser()"
-    [details]="orderDetails"></eco-view-order-details
+    [orders]="orderDetails"></eco-view-order-details
 ></ng-container>

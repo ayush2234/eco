@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -33,6 +32,10 @@ import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
 import { SyncLogsService } from '../sync-logs.service';
 import { SyncLog } from '../sync-logs.types';
 
+import { OrdersList } from './order.type';
+
+import { IntegrationService } from 'app/modules/settings/integrations/integration.service';
+
 @Component({
   selector: 'eco-sync-logs-orders',
   templateUrl: './orders.component.html',
@@ -51,8 +54,23 @@ import { SyncLog } from '../sync-logs.types';
         }
 
         @screen lg {
-          grid-template-columns: 141px 2.5fr repeat(1, 1fr) 2fr repeat(6, 1fr) 121px;
+          grid-template-columns:
+            148px 12% repeat(1, 1fr) 11% repeat(2, 1fr) 4fr repeat(1, 14%)
+            110px 92px;
         }
+      }
+
+      .active {
+        background-color: #d8f4ee;
+        color: #5ad1c5;
+      }
+      .warning {
+        background-color: #ffeeda;
+        color: orange;
+      }
+      .error {
+        background-color: #f5d3d4;
+        color: #ed0c12;
       }
     `,
   ],
@@ -66,7 +84,7 @@ export class SyncLogsOrdersComponent
   @ViewChild(MatPaginator) private _paginator: MatPaginator;
   @ViewChild(MatSort) private _sort: MatSort;
   orderDetails: any;
-  syncLogs$: Observable<SyncLog[]>;
+  syncLogOrders$: Observable<OrdersList[]>;
   viewOrder: boolean = false;
   flashMessage: 'success' | 'error' | null = null;
   isLoading: boolean = false;
@@ -76,9 +94,20 @@ export class SyncLogsOrdersComponent
   selectedSyncLogForm: UntypedFormGroup;
   tags: Tag[];
   filteredTags: Tag[];
+  restrictedToIntegrationTags: Tag[];
+  filteredRestrictedToIntegrationTags: Tag[];
   tagsEditMode: boolean = false;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+  getStatus(status) {
+    switch (status) {
+      case 'complete':
+        return '#22bfb7';
+      case 'Warning':
+        return 'orange';
+      case 'Error':
+        return '#c92d0e';
+    }
+  }
   /**
    * Constructor
    */
@@ -86,22 +115,14 @@ export class SyncLogsOrdersComponent
     private _changeDetectorRef: ChangeDetectorRef,
     private _fuseConfirmationService: FuseConfirmationService,
     private _formBuilder: UntypedFormBuilder,
-    private _syncLogService: SyncLogsService
+    private _syncLogService: SyncLogsService,
+    private _integrationService: IntegrationService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks
   // -----------------------------------------------------------------------------------------------------
-  getStatus(status) {
-    switch (status) {
-      case 'Ok':
-        return '#22bfb7';
-      case 'Warning':
-        return '#e0af0b';
-      case 'Error':
-        return '#c92d0e';
-    }
-  }
+
   /**
    * On init
    */
@@ -116,7 +137,34 @@ export class SyncLogsOrdersComponent
       notes: [''],
       tags: [[]],
     });
-    // console.log('Orders');
+    /* Get sync log orders list*/
+
+    this.syncLogOrders$ = this._syncLogService.syncLogOrders$;
+
+    /* Get Integrations list */
+
+    this._integrationService.integrationInstances$
+      .pipe(
+        takeUntil(this._unsubscribeAll),
+        map(integrations =>
+          integrations.map(integration => {
+            return {
+              id: integration.integration.integration_id,
+              title: integration.integration.name,
+            };
+          })
+        )
+      )
+      .subscribe((integrations: Tag[]) => {
+        // Update the tags
+
+        this.restrictedToIntegrationTags = integrations;
+        this.filteredRestrictedToIntegrationTags = integrations;
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+      });
+
     // Get the pagination
     this._syncLogService.pagination$
       .pipe(takeUntil(this._unsubscribeAll))
@@ -128,9 +176,6 @@ export class SyncLogsOrdersComponent
         // Mark for check
         this._changeDetectorRef.markForCheck();
       });
-
-    // Get the syncLogs
-    this.syncLogs$ = this._syncLogService.syncLogs$;
 
     // Get the tags
     this._syncLogService.tags$
@@ -152,7 +197,13 @@ export class SyncLogsOrdersComponent
         switchMap(query => {
           this.closeDetails();
           this.isLoading = true;
-          return this._syncLogService.getSyncLogs(0, 10, 'name', 'asc', query);
+          return this._syncLogService.getSyncLogOrders(
+            0,
+            10,
+            'name',
+            'asc',
+            query
+          );
         }),
         map(() => {
           this.isLoading = false;
@@ -193,7 +244,7 @@ export class SyncLogsOrdersComponent
           switchMap(() => {
             this.closeDetails();
             this.isLoading = true;
-            return this._syncLogService.getSyncLogs(
+            return this._syncLogService.getSyncLogOrders(
               this._paginator.pageIndex,
               this._paginator.pageSize,
               this._sort.active,
@@ -228,6 +279,7 @@ export class SyncLogsOrdersComponent
    */
   toggleDetails(syncLogId: string): void {
     // If the syncLog is already selected...
+
     if (this.selectedSyncLog && this.selectedSyncLog.syncId === syncLogId) {
       // Close the details
       this.closeDetails();
@@ -355,13 +407,40 @@ export class SyncLogsOrdersComponent
 
   viewOrderDetails(event: any) {
     this.viewOrder = true;
-    console.log(event);
     this.orderDetails = event;
-    console.log(this.viewOrder);
   }
   cancelCreateUser(): void {
     this.viewOrder = false;
     this._changeDetectorRef.detectChanges();
+  }
+
+  /* Filter by Date  */
+
+  onSelectDate(event) {
+    console.log(event);
+  }
+
+  /* Filter by Integration  */
+
+  onSelectIntegration(event) {
+    console.log(event.value);
+  }
+
+  /* Filter by Sync Status */
+
+  onSelectStatus(event) {
+    console.log(event.value);
+  }
+
+  /* Filter by Sync Lifecycle */
+
+  onSelectSyncLifecycle(event) {
+    console.log(event.value);
+  }
+  /* Filter by action Action Required */
+
+  isActionRequired(event) {
+    console.log(event.value);
   }
 
   /**

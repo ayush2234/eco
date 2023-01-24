@@ -8,10 +8,8 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { Company } from 'app/core/user/user.types';
+
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
-import { Tag } from 'app/layout/common/grid/grid.types';
 
 @Component({
   selector: 'eco-view-order-details',
@@ -40,17 +38,9 @@ import { Tag } from 'app/layout/common/grid/grid.types';
 export class ViewOrderDetailsComponent implements OnInit {
   @ViewChild(CdkPortal, { static: true })
   portalContent: CdkPortal;
-  errorMsg: string;
   @Output() cancel = new EventEmitter();
-  @Input() details!: any;
+  @Input() orders!: any;
   fuseDrawerOpened: boolean = true;
-  flashMessage: 'success' | 'error' | null = null;
-  selectedCompany: Company | null = null;
-  selectedCompanyForm: UntypedFormGroup;
-  restrictedToIntegrationTags: Tag[];
-  filteredRestrictedToIntegrationTags: Tag[];
-  restrictedToSourceTags: Tag[];
-  filteredRestrictedToSourceTags: Tag[];
   orderDetails: any;
   /**
    * Constructor
@@ -66,20 +56,22 @@ export class ViewOrderDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this._portalBridge.setPortal(this.portalContent);
-    console.log(this.details);
-    this.orderDetails = this.details;
+    this.orderDetails = this.orders;
+    this._changeDetectorRef.detectChanges();
   }
 
   ngOnDestroy(): void {
     this.fuseDrawerOpened = false;
+    this._changeDetectorRef.detectChanges();
   }
 
   openedChanged(fuseDrawer): any {
     !fuseDrawer?.opened && this.cancel.emit();
+    this._changeDetectorRef.detectChanges();
   }
 
   /**
-   * Cancel create company
+   * Cancel view product details
    *
    */
   onCancel(): any {
