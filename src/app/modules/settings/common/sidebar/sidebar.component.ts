@@ -21,7 +21,7 @@ import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types
         [opened]="true"></fuse-vertical-navigation>
 
       <!-- Storage -->
-      <div class="mx-6 mt-2">
+      <!-- <div class="mx-6 mt-2">
         <div class="flex items-center">
           <mat-icon
             class="mr-2 icon-size-5"
@@ -35,10 +35,10 @@ import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types
             [color]="'primary'"
             [value]="19.9"></mat-progress-bar>
         </div>
-      </div>
+      </div> -->
 
       <!-- Users -->
-      <div class="mx-6 mt-10">
+      <!-- <div class="mx-6 mt-10">
         <div class="flex items-center">
           <mat-icon
             class="mr-2 icon-size-5"
@@ -54,7 +54,7 @@ import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types
             [color]="'accent'"
             [value]="40"></mat-progress-bar>
         </div>
-      </div>
+      </div> -->
     </div>
   `,
   styles: [
@@ -76,7 +76,7 @@ export class SettingsSidebarComponent {
     this.menuData = [
       {
         title: 'General Settings',
-        subtitle: 'Task, project & team',
+        // subtitle: 'Task, project & team',
         type: 'group',
         children: [
           {
