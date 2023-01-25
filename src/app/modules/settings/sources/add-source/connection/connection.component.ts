@@ -75,7 +75,6 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
           return;
         }
         if (event && event.data) {
-          debugger;
           this.verificationData = event.data;
         }
       },
@@ -178,7 +177,6 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
           this.sourceForm.get('storeUrl').value
         )
         .subscribe(res => {
-          debugger;
           const newWindow = this.openWindow('', 'message');
           newWindow.location.href = res.auth_url;
         });
@@ -211,7 +209,6 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
     this._sourceService
       .createSourceInstance(LocalStorageUtils.companyId, payload)
       .subscribe(res => {
-        debugger;
         this.fuseDrawer.close();
       });
   }
@@ -241,7 +238,6 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
         this.selectedSourceInstance?.source_instance_id
       )
       .subscribe(res => {
-        debugger;
         this.fuseDrawer.close();
       });
   }
