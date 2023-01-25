@@ -122,7 +122,6 @@ export class AddSourceComponent implements OnInit, OnDestroy {
   createSource(): void {
     // Get the source object
     const source = this.selectedSourceForm.getRawValue();
-    debugger;
 
     // Remove the currentImageIndex field
     delete source.currentImageIndex;
