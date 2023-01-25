@@ -9,8 +9,8 @@
     </div>
     <!-- Title -->
 
-    <div class="flex basis-full justify-between">
-      <div class="text-4xl font-extrabold tracking-tight">Orders</div>
+    <div class="flex basis-full lg:justify-between">
+      <div class="text-4xl font-bold tracking-tight">Orders</div>
       <!-- Actions -->
       <div class="flex items-center">
         <!-- Search -->
@@ -173,16 +173,22 @@
               class="sync-logs-orders-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
               matSort
               matSortDisableClear>
-              <div [mat-sort-header]="'id'">Date</div>
-              <div class="hidden md:block">Integration</div>
+              <div [mat-sort-header]="'id'" class="hidden md:block sm:block">
+                Date
+              </div>
+              <div class="hidden md:block sm:block">Integration</div>
               <div class="hidden sm:block">Sync Status</div>
-              <div class="hidden truncate lg:block">Sync Lifecycle</div>
+              <div class="hidden truncate lg:block md:block sm:block">
+                Sync Lifecycle
+              </div>
               <div class="hidden sm:block">Source Order ID</div>
               <div class="hidden sm:block">Channel Order ID</div>
-              <div class="hidden sm:block">Items</div>
-              <div class="hidden sm:block">Shipment</div>
+              <div class="hidden sm:hidden md:hidden lg:block">Items</div>
+              <div class="hidden sm:hidden md:hidden lg:block">Shipment</div>
               <!-- <div class="hidden sm:block">Shipment Status</div> -->
-              <div class="hidden truncate sm:block">Action Required</div>
+              <div class="hidden truncate sm:hidden md:hidden lg:block">
+                Action Required
+              </div>
               <div class="hidden sm:block">Detail</div>
             </div>
             <!-- Rows -->
@@ -192,7 +198,7 @@
                 <div
                   class="sync-logs-orders-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
                   <!-- Date Created -->
-                  <div class="hidden md:block truncate">
+                  <div class="hidden md:block truncate sm:block">
                     {{ syncLog.created_at | date: 'dd-MM-YYYY hh:mm a' }}
                   </div>
 
@@ -202,7 +208,7 @@
                       <img
                         class="w-10 h-10 rounded-full border border-gray-200"
                         [src]="syncLog.integration.logo"
-                        alt="Source Icon" />
+                        alt="Integration Icon" />
                     </div>
                     <div class="flex-1 min-w-0">
                       <!-- Integration name -->
@@ -221,17 +227,12 @@
 
                   <div>
                     <button
-                      class="px-2 py-[2px] w-24 rounded-full flex items-center gap-1"
+                      class="px-2 py-[2px] w-24 min-w-20 rounded-[4px] text-center capitalize"
                       [ngClass]="{
                         active: syncLog.log.status == 'complete',
                         warning: syncLog.log.status == 'Warning',
                         error: syncLog.log.status === 'Error'
                       }">
-                      <div
-                        [ngStyle]="{
-                          backgroundColor: getStatus(syncLog.log.status)
-                        }"
-                        class="w-2 h-2 rounded-full"></div>
                       <span> {{ syncLog.log.status }}</span>
                     </button>
                   </div>
@@ -239,7 +240,7 @@
 
                   <div class="hidden sm:block truncate">
                     <button
-                      class="text-white rounded-full w-36 px-2 py-[2px]"
+                      class="text-white rounded-[4px] w-36 px-2 py-[2px] text-center"
                       [ngStyle]="{
                         backgroundColor:
                           syncLog.log.lifecycle === 'Completed'
@@ -251,7 +252,7 @@
                   </div>
 
                   <!-- Source ID -->
-                  <div class="hidden md:block truncate">
+                  <div class="hidden md:block truncate sm:block">
                     <p>{{ syncLog.source.order_id }}</p>
                     <p
                       class="text-sm text-gray-500 truncate dark:text-gray-400">
@@ -260,18 +261,18 @@
                   </div>
 
                   <!-- Channel Order ID -->
-                  <div class="hidden md:block truncate">
-                    <p class="hidden md:block truncate">
+                  <div class="hidden md:block truncate sm:block">
+                    <p class="hidden md:block truncate sm:block">
                       {{ syncLog.channel.order_id }}
                     </p>
                     <p
-                      class="text-sm text-gray-500 truncate dark:text-gray-400">
+                      class="text-sm text-gray-500 truncate dark:text-gray-400 sm:block">
                       {{ syncLog.channel.status }}
                     </p>
                   </div>
                   <!-- Items -->
 
-                  <div class="hidden md:block truncate">
+                  <div class="hidden lg:block truncate md:hidden">
                     <p
                       class="hidden md:block truncate"
                       *ngFor="let item of syncLog.order_lines">
@@ -281,7 +282,7 @@
                   </div>
 
                   <!-- Shipment -->
-                  <div class="hidden md:block truncate">
+                  <div class="hidden truncate lg:block md:hidden">
                     <p
                       class="hidden md:block truncate"
                       *ngFor="let item of syncLog.order_lines; trackByFn">
@@ -298,7 +299,7 @@
                     </div> -->
 
                   <!-- Action Required -->
-                  <div class="hidden lg:block">
+                  <div class="hidden lg:block md:hidden">
                     <ng-container *ngIf="syncLog.log.action_required">
                       <mat-icon
                         class="text-[#de3a3a] icon-size-5"
