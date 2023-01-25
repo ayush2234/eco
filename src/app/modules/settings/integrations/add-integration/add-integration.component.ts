@@ -114,7 +114,6 @@ export class AddIntegrationComponent
     this._syncOptionService.valuesList$.pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe(response => {
-      console.log(response);
       if(response) {
         this.valuesList = [...response];
       }

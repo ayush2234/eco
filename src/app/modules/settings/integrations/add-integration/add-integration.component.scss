@@ -57,4 +57,16 @@
       }
     }
   }
+
+  .mapping-head {
+    .hover-btn {
+      visibility: hidden;
+    }
+
+    &:hover {
+      .hover-btn {
+        visibility: visible;
+      }
+    }
+  }
 }

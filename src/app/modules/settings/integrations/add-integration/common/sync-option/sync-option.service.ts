@@ -227,6 +227,16 @@ export class SyncOptionService {
                             values_list: 'ATTRIBUTES',
                             value_type: 'attribute',
                           },
+                          {
+                            value_option_type: 'decimal_input',
+                            values_list_origin: 'source',
+                            value_type: 'static',
+                          },
+                          {
+                            value_option_type: 'text_input',
+                            values_list_origin: 'channel',
+                            value_type: 'attribute',
+                          }
                         ],
                       },
                       {
@@ -1609,6 +1619,11 @@ export class SyncOptionService {
     this.getValueList(integration);
   }
 
+  /**
+   * Get the values list of all possible origins.
+   *
+   * @param instance Represents the integration instance for which the values list to be fetched.
+   */
   getValueList(instance: IntegrationInstance): void {
     const api = this._config.apiConfig.serviceUrl + '/api/v1/' +
     LocalStorageUtils.companyId + '/integrationInstance/' + instance.instance_id +

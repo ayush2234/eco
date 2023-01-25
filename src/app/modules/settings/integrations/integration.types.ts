@@ -112,8 +112,7 @@ export enum VALUE_OPTION_TYPE {
   values_list = 'values_list',
   text_input = 'text_input',
   decimal_input = 'decimal_input',
-  categories = 'categories',
-  attribute = 'attribute',
+  categories = 'categories'
 }
 
 export enum VALUE_LIST_ORIGIN {

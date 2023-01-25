@@ -177,8 +177,19 @@
                     <div class="sm:col-span-4 border-b">
                       <mat-form-field
                         class="fuse-mat-no-subscript fuse-mat-emphasized-affix my-0 w-full">
-                        <div class="text-black w-full sm:w-full" matPrefix>
-                          <span class="truncate block text-black font-bold text-lg">Mapping</span>
+                        <div class="text-black w-full sm:w-full mapping-head" matPrefix>
+                          <div class="flex items-center justify-between">
+                            <div class="truncate block text-black font-bold text-lg">Mapping</div>
+                            <div>
+                              <button
+                                class="min-w-0 w-8 hover-btn" mat-stroked-button
+                              >
+                                <mat-icon
+                                  class="icon-size-5"
+                                  [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                              </button>
+                            </div>
+                          </div>
                         </div>
                         <mat-icon
                           class="icon-size-5 -mr-2.5"
@@ -316,10 +327,14 @@
                       <span class="truncate block text-black font-bold text-lg opacity-75">Options</span>
                     </div>
                     
-                    <div *ngIf="selectedField && availableOptionsTypes">
+                    <div class="py-3 px-2" *ngIf="selectedField && availableOptionsTypes">
                       <ng-container *ngFor="let valueOption of availableOptionsTypes">
-                        <div *ngIf="valueOption.valueList">
-                          <div class="py-3 px-2">
+                        <!-- Values list options -->
+                        <ng-container *ngIf="
+                          valueOption.value_option.value_option_type === 'values_list' &&
+                          valueOption.valueList
+                        ">
+                          <div>
                             <ng-container>
                               <div class="flex items-center cursor-pointer">
                                 <mat-icon
@@ -340,40 +355,42 @@
                               </div>
                             </ng-container>
                           </div>
-                        </div>
+                        </ng-container>
+                        <!-- Input options -->
+                        <ng-container *ngIf="
+                          valueOption.value_option.value_option_type === 'text_input' ||
+                          valueOption.value_option.value_option_type === 'decimal_input'
+                        ">
+                          <div>
+                            <div 
+                              *ngIf="valueOption.value_option.value_type === 'static'"
+                              (click)="toggleInputOption(valueOption.value_option, 'Static Text')"
+                              class="flex items-center mt-4 cursor-pointer">
+                              <mat-icon
+                                class="text-hint mat-icon-no-color"
+                                svgIcon="heroicons_solid:arrow-sm-right"
+                              ></mat-icon>
+                              <span class="ml-2 text-sm text-gray-400 font-normal">Static Text</span>
+                            </div>
+                            <div 
+                              *ngIf="valueOption.value_option.value_type === 'attribute'"
+                              (click)="toggleInputOption(valueOption.value_option, 'Advance: Custom Source Attribute')"
+                              class="flex items-center mt-4 cursor-pointer">
+                              <mat-icon
+                                class="text-hint mat-icon-no-color"
+                                svgIcon="heroicons_solid:arrow-sm-right"
+                              ></mat-icon>
+                              <span class="ml-2 truncate text-sm text-gray-400 font-normal">Advance: Custom Source attribute</span>
+                            </div>
+                          </div>
+                        </ng-container>
                       </ng-container>
                     </div>
-
-                    <!-- <ng-container *ngIf="
-                      selectedField && selectedField.type === 'attribute' ||
-                      selectedField && selectedField.type === 'mapped_attribute'
-                    ">
-                      <div class="py-3 px-2">
-                        <div 
-                          (click)="toggleInputOption('Static Text')"
-                          class="flex items-center mt-4 cursor-pointer">
-                          <mat-icon
-                            class="text-hint mat-icon-no-color"
-                            svgIcon="heroicons_solid:arrow-sm-right"
-                          ></mat-icon>
-                          <span class="ml-2 text-sm text-gray-400 font-normal">Static Text</span>
-                        </div>
-                        <div 
-                          (click)="toggleInputOption('Advance Attribute')"
-                          class="flex items-center mt-4 cursor-pointer">
-                          <mat-icon
-                            class="text-hint mat-icon-no-color"
-                            svgIcon="heroicons_solid:arrow-sm-right"
-                          ></mat-icon>
-                          <span class="ml-2 truncate text-sm text-gray-400 font-normal">Advance: Custom Source attribute</span>
-                        </div>
-                      </div>
-                    </ng-container> -->
                   </ng-container>
                   
 
                   <!-- Input Section -->
-                  <ng-container *ngIf="inputOptions.isActive">
+                  <ng-container *ngIf="inputOptions.isActive && inputOptions.valueOption">
                     <div class="text-black w-full sm:w-full border-b p-3 flex items-center">
                       <div (click)="toggleInputOption()" class="h-6">
                         <mat-icon
@@ -391,6 +408,10 @@
                             matInput
                             [autocomplete]="'off'"
                             [placeholder]="'Please enter your value'"
+                            [type]="
+                              inputOptions.valueOption.value_option_type === 'decimal_input' ?
+                              'number' : 'text'
+                            "
                             [(ngModel)]="inputOptions.value" />
                         </mat-form-field>
                       </div>

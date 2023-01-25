@@ -100,7 +100,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
     };
   }
 
-  toggleSyncOptions(syncOption: SyncOption, ref?: any): void {
+  toggleSyncOptions(syncOption: SyncOption): void {
     const syncOptionIndex = this.instance.integration.sync_options
       .findIndex(opt => opt.code === syncOption.code);
     this.instance.integration.sync_options[syncOptionIndex].is_visible = !syncOption.is_visible;

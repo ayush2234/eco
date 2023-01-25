@@ -1,7 +1,6 @@
 import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
-import { combineLatest, Observable, Subject, takeUntil } from 'rxjs';
-import { Integration, IntegrationInstance, MappingOption, SyncOption, Tab, ValuesList, ValuesListOptions, VALUE_OPTION_TYPE } from '../../../integration.types';
+import { Subject } from 'rxjs';
+import { IntegrationInstance, MappingOption, MappingValueOptions, SyncOption, Tab, ValuesList, ValuesListOptions, VALUE_OPTION_TYPE } from '../../../integration.types';
 import { SyncOptionService } from './sync-option.service';
 
 interface InputOption {
@@ -10,6 +9,7 @@ interface InputOption {
   title: string;
   label: string;
   value: string;
+  valueOption: MappingValueOptions
 }
 
 @Component({
@@ -23,13 +23,13 @@ export abstract class SyncOptionComponent implements OnDestroy {
   selectedPanel: SyncOption;
   selectedTab: Tab;
   selectedField: MappingOption;
-  availableOptions: ValuesList[];
   inputOptions: InputOption = {
     option: undefined,
     isActive: false,
     title: null,
     label: null,
-    value: ''
+    value: '',
+    valueOption: undefined
   }
   validate = false;
   availableOptionsTypes = [];
@@ -112,7 +112,7 @@ export abstract class SyncOptionComponent implements OnDestroy {
    */
   resetFieldSelection(): void {
     this.selectedField = undefined;
-    this.availableOptions = undefined;
+    this.availableOptionsTypes = [];
     if(this.validate) {
       this.toggleMappingToDo();
     }
@@ -173,14 +173,10 @@ export abstract class SyncOptionComponent implements OnDestroy {
    * Load select options
    */
   loadSelectOptions(): void {
-    // Handling values_list option only at the moment.
-    // let loadOptionObservables: Observable<ValuesList>[] = [];
-    // const integrationEndpoint = '/' + LocalStorageUtils.companyId + '/integrationInstance/' + this.integrationInstance.instance_id;
-
     this.availableOptionsTypes = [];
     this.selectedField.value_options.forEach((option) => {
       switch(option.value_option_type) {
-        case VALUE_OPTION_TYPE.values_list || VALUE_OPTION_TYPE.attribute:
+        case VALUE_OPTION_TYPE.values_list:
           // const valuesListEndpoint = '/values_list?origin=' + option.values_list_origin;
           const valueList = this.valuesList.find(vl => vl.code === option.values_list)
           this.availableOptionsTypes.push({
@@ -188,11 +184,15 @@ export abstract class SyncOptionComponent implements OnDestroy {
             valueList
           })
           break;
-        case VALUE_OPTION_TYPE.text_input:
-          
-          break;
+        case VALUE_OPTION_TYPE.text_input: 
         case VALUE_OPTION_TYPE.decimal_input:
-          
+          this.availableOptionsTypes.push({
+            value_option: option,
+            valueList: []
+          })
+          break;
+        case VALUE_OPTION_TYPE.categories:
+          // TODO: Handle categories here.
           break;
         default:
           break;
@@ -235,17 +235,22 @@ export abstract class SyncOptionComponent implements OnDestroy {
   /**
    * Toggle the input option view.
    *
+   * @param valueOption Represents the value option.
    * @param title Represents the title of view.
    */
-  toggleInputOption(title?: string): void {
+  toggleInputOption(valueOption?: MappingValueOptions, title?: string): void {
     this.inputOptions = {
       ...this.inputOptions,
       isActive: !this.inputOptions.isActive,
       title,
-      value: ''
+      value: '',
+      valueOption
     }
   }
 
+  /**
+   * Set the input value of options to the associated field.
+   */
   setInputValue(): void {
     if(this.inputOptions.value.length) {
       this.selectOption({ label: this.inputOptions.value, code: this.inputOptions.value })
@@ -254,10 +259,16 @@ export abstract class SyncOptionComponent implements OnDestroy {
     this.toggleInputOption();
   }
 
+  /**
+   * Toggles the validation of fields.
+   */
   toggleMappingToDo(): void {
     this.validate = !this.validate;
   }
 
+  /**
+   * Add children to fields.
+   */
   addChildren(): void {
     const child: MappingOption = {
       label: '',
@@ -265,11 +276,18 @@ export abstract class SyncOptionComponent implements OnDestroy {
       type: this.selectedField.type,
       required: false,
       selected_value: { code: '', label: 'Not Mapped' },
-      value_options: this.selectedField.value_options
+      value_options: this.selectedField.child_attribute_values ?
+        this.selectedField.value_options.concat(this.selectedField.child_attribute_values) :
+        this.selectedField.value_options
     }
-    this.selectedField.children.push(child)
+    this.selectedField.children.push(child);
   }
 
+  /**
+   * Set the label and code of children with the value user types in.
+   *
+   * @param child Represents the newly added child.
+   */
   setChildrenLabel(child: MappingOption): void {
     child.code = child.label;
   }
