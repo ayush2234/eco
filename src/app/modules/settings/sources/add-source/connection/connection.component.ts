@@ -75,6 +75,7 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
           return;
         }
         if (event && event.data) {
+          debugger;
           this.verificationData = event.data;
         }
       },
@@ -177,6 +178,7 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
           this.sourceForm.get('storeUrl').value
         )
         .subscribe(res => {
+          debugger;
           const newWindow = this.openWindow('', 'message');
           newWindow.location.href = res.auth_url;
         });
@@ -200,10 +202,16 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
     payload.source_id = this.selectedSource.source_id;
     payload.name = this.selectedSource.name;
     payload.active_status = 'Y';
+    payload.last_connection_time = new Date().toString();
+    payload.connection_status =
+      this.verificationData && this.verificationData.access_token
+        ? true
+        : false;
     payload.connectionPanel.attributes = this.getAttributes();
     this._sourceService
       .createSourceInstance(LocalStorageUtils.companyId, payload)
       .subscribe(res => {
+        debugger;
         this.fuseDrawer.close();
       });
   }
@@ -217,7 +225,15 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
           ? 'Y'
           : 'N'
         : this.selectedSourceInstance.active_status;
-    payload.connectionPanel.attributes = this.getAttributes();
+    payload.connection_status = this.selectedSourceInstance.connection_status
+      ? this.selectedSourceInstance.connection_status
+      : this.verificationData && this.verificationData.access_token
+      ? true
+      : false;
+    payload.last_connection_time = new Date().toString();
+    payload.connectionPanel.attributes = this.verificationData
+      ? this.getAttributes()
+      : this.selectedSourceInstance.connectionPanel.attributes;
     this._sourceService
       .updateSourceInstance(
         LocalStorageUtils.companyId,
@@ -225,6 +241,7 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
         this.selectedSourceInstance?.source_instance_id
       )
       .subscribe(res => {
+        debugger;
         this.fuseDrawer.close();
       });
   }
@@ -247,7 +264,10 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
       | any;
     switch (SourceFormEnum[this.selectedSource.source_platform]) {
       case SourceFormEnum.maropost:
-        attribute = this.verificationData;
+        attribute =
+          this.verificationData && this.verificationData.error
+            ? null
+            : this.verificationData;
         attribute.storeUrl = this.sourceForm.get('storeUrl').value;
         break;
       case SourceFormEnum.salsify:

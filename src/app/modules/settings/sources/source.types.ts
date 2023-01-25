@@ -37,6 +37,7 @@ export interface Source {
   source_install_name?: string;
   source_instance_id?: string;
   active_status?: string;
+  need_auth?: boolean;
 }
 
 export class SourcePayload {
@@ -45,6 +46,8 @@ export class SourcePayload {
   name: string;
   connectionPanel = new ConnectionPanel();
   active_status: 'Y' | 'N' | boolean;
+  connection_status: 'Y' | 'N' | boolean;
+  last_connection_time: string;
 }
 
 export class ConnectionPanel {

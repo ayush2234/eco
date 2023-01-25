@@ -69,6 +69,7 @@ export class AddSourceComponent implements OnInit, OnDestroy {
       is_beta: [false],
       is_custom: [false],
       force_connection_test: [false],
+      need_auth: [false],
       source_platform: ['', Validators.required],
       dateCreated: [''],
       dateUpdated: [''],
