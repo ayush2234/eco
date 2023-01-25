@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import {
@@ -12,8 +12,23 @@ import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/core/user/user.service';
 import { AuthService } from 'app/core/auth/auth.service';
 import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
+import { SyncLogsService } from 'app/modules/user/sync-logs/sync-logs.service';
+import { FormControl } from '@angular/forms';
 @Component({
   selector: 'modern-layout',
+  styles: [
+    `
+      .companyList
+        .mat-select-trigger
+        .mat-select-value
+        .mat-select-value-text {
+        color: white;
+      }
+      .mat-select-panel-wrap {
+        margin-top: 15%;
+      }
+    `,
+  ],
   templateUrl: './modern.component.html',
   encapsulation: ViewEncapsulation.None,
 })
@@ -23,19 +38,21 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
   user: User;
   role: string;
   companyName: string;
+  companies = [];
+  filteredCompanyTags = [];
   private _unsubscribeAll: Subject<any> = new Subject<any>();
+  companyId = new FormControl(LocalStorageUtils.companyId);
 
   /**
    * Constructor
    */
   constructor(
-    private _activatedRoute: ActivatedRoute,
-    private _router: Router,
     private _navigationService: NavigationService,
     private _fuseMediaWatcherService: FuseMediaWatcherService,
     private _fuseNavigationService: FuseNavigationService,
     private _userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private _syncLogService: SyncLogsService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -56,10 +73,14 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
   /**
    * On init
    */
+
   ngOnInit(): void {
+    console.log(this.companyId.value);
     //get role of current logged in user
     this.role = this.authService.role;
-
+    //get companies list of an user
+    this.filteredCompanyTags = this._userService.companyList;
+    this.companies = this._userService.companyList;
     // Subscribe to navigation data
     this._navigationService.navigation$
       .pipe(takeUntil(this._unsubscribeAll))
@@ -100,6 +121,20 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
       return false;
     }
   }
+  showCompany() {
+    if (this.role === 'admin' || this.role === 'superAdmin') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  showSwitchCompany() {
+    if (this.role === 'user' || this.role === 'masterUser') {
+      return true;
+    } else {
+      return false;
+    }
+  }
   /**
    * On destroy
    */
@@ -128,6 +163,37 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
     if (navigation) {
       // Toggle the opened status
       navigation.toggle();
+    }
+  }
+  selectedCompany(event) {
+    LocalStorageUtils.companyId = event.value;
+    this._syncLogService.getSyncLogOrders().subscribe(res => {
+      // console.log(res);
+    });
+  }
+  filterCompanyTags(event): void {
+    // Get the value
+    const value = event.target.value.toLowerCase();
+    // Filter the companies
+    this.filteredCompanyTags = this.companies.filter(tag =>
+      tag.company_name.toLowerCase().includes(value)
+    );
+
+    console.log(this.filteredCompanyTags);
+  }
+  filterCompanyTagsInputKeyDown(event): void {
+    // Return if the pressed key is not 'Enter'
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    // If there is no tag available...
+    if (this.filteredCompanyTags.length === 0) {
+      // Clear the input
+      event.target.value = '';
+
+      // Return
+      return;
     }
   }
 }

@@ -87,8 +87,38 @@
               {{ user?.name }}
             </div>
             <div
+              *ngIf="showCompany()"
               class="w-full whitespace-nowrap text-xs text-ellipsis overflow-hidden leading-normal text-current opacity-50">
               {{ companyName }}
+            </div>
+            <div
+              *ngIf="showSwitchCompany()"
+              class="w-full whitespace-nowrap flex text-sm text-ellipsis overflow-hidden leading-normal text-current opacity-50">
+              <mat-select
+                [formControl]="companyId"
+                class="companyList"
+                (selectionChange)="selectedCompany($event)">
+                <div class="flex items-center -my-px py-2 px-3">
+                  <div class="flex items-center flex-auto min-w-0">
+                    <mat-icon
+                      class="icon-size-5"
+                      [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                    <input
+                      class="min-w-0 ml-2 py-1 border-0"
+                      type="text"
+                      placeholder="Search company"
+                      (input)="filterCompanyTags($event)"
+                      [maxLength]="50"
+                      #newTagInput />
+                  </div>
+                </div>
+
+                <mat-option
+                  *ngFor="let company of filteredCompanyTags"
+                  [value]="company.company_id"
+                  >{{ company.company_name }}</mat-option
+                >
+              </mat-select>
             </div>
             <!-- <div
               class="w-full mt-0.5 whitespace-nowrap text-sm text-ellipsis overflow-hidden leading-normal text-current opacity-50">

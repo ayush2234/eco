@@ -39,7 +39,7 @@ export class UserService {
   private _companyTags: BehaviorSubject<Tag[] | null> = new BehaviorSubject(
     null
   );
-
+  companyList = [];
   /**
    * Constructor
    */
@@ -150,7 +150,7 @@ export class UserService {
       .pipe(
         tap(response => {
           const user = response.result;
-
+          this.companyList = user.companies;
           // Store the token expiration date in the local storage
           LocalStorageUtils.tokenExpirationDate = user?.expire_at;
           if (user.role === 'masterUser' || user.role === 'user') {
