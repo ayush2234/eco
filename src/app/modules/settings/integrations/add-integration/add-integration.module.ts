@@ -10,10 +10,12 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { FuseAlertModule } from '@fuse/components/alert';
 import { SharedModule } from 'app/shared/shared.module';
 import { AddIntegrationComponent } from './add-integration.component';
+import { AddIntegarationConnectionComponent } from './connection/connection.component';
 
 @NgModule({
   declarations: [
-    AddIntegrationComponent
+    AddIntegrationComponent,
+    AddIntegarationConnectionComponent
   ],
   imports: [
     MatButtonModule,

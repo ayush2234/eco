@@ -1,6 +1,6 @@
-import { Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { combineLatest, Observable, Subject, takeUntil } from 'rxjs';
-import { Integration, MAPPING_OPTIONS_TYPE, SyncOption, ValuesList, ValuesListOptions, VALUE_OPTION_TYPE } from '../../add-integration.types';
+import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Subject } from 'rxjs';
+import { IntegrationInstance, MappingOption, MappingValueOptions, SyncOption, Tab, ValuesList, ValuesListOptions, VALUE_OPTION_TYPE } from '../../../integration.types';
 import { SyncOptionService } from './sync-option.service';
 
 interface InputOption {
@@ -9,6 +9,7 @@ interface InputOption {
   title: string;
   label: string;
   value: string;
+  valueOption: MappingValueOptions
 }
 
 @Component({
@@ -17,23 +18,22 @@ interface InputOption {
   encapsulation: ViewEncapsulation.None,
 })
 export abstract class SyncOptionComponent implements OnDestroy {
-  @Input() integration: Integration;
-  @Input() syncOption: SyncOption;
-  @Input() valuesList: ValuesList[];
-
+  integrationInstance: IntegrationInstance;
   syncOptions: SyncOption[];
   selectedPanel: SyncOption;
-  selectedGroup: SyncOption;
-  selectedField: SyncOption;
-  availableOptions: ValuesList[];
+  selectedTab: Tab;
+  selectedField: MappingOption;
   inputOptions: InputOption = {
     option: undefined,
     isActive: false,
     title: null,
     label: null,
-    value: ''
+    value: '',
+    valueOption: undefined
   }
   validate = false;
+  availableOptionsTypes = [];
+  valuesList: ValuesList[];
 
   protected _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -64,28 +64,29 @@ export abstract class SyncOptionComponent implements OnDestroy {
     return item.id || index;
   }
 
+  private setWipIntegration(): void {
+    this._syncOptionService.wipIntegration = {
+      ...this.integrationInstance
+    };
+  }
+
   /**
    * Activate panel
    */
   activatePanel(): void {
-    // const activatedSyncOption = { ...this.syncOption, isActive: true };
-    // this._syncOptionService.wipIntegration = {
-    //   ...this.integration,
-    //   syncOptions: this.integration?.syncOptions?.map(syncOption =>
-    //     syncOption.key === this.syncOption.key
-    //       ? activatedSyncOption
-    //       : syncOption
-    //   ),
-    // };
+    this.selectedPanel.is_activated = true;
+    const panelIndex = this.integrationInstance.integration.sync_options.findIndex(x => x.code === this.selectedPanel.code);
+    this.integrationInstance.integration.sync_options[panelIndex] = {...this.selectedPanel};
+    this.setWipIntegration();
   }
 
   /**
-   * Set the active option group.
+   * Set the active option tab.
    *
-   * @param group Represents the group to be activated.
+   * @param tab Represents the tab to be activated.
    */
-  goToGroup(group: SyncOption): void {
-    this.selectedGroup = group;
+  goToTab(tab: Tab): void {
+    this.selectedTab = tab;
     this.resetFieldSelection();
   }
 
@@ -94,10 +95,16 @@ export abstract class SyncOptionComponent implements OnDestroy {
    *
    * @param field Represents the field to be activated.
    */
-  goToField(field: SyncOption): void {
-    this.selectedField = field;
-    console.log(this.selectedField)
-    this.loadSelectOptions();
+  goToField(field: MappingOption): void {
+    if(field.code.length) {
+
+      if(!field.children) {
+        field.children = [];
+      }
+      this.selectedField = field;
+      console.log(this.selectedField)
+      this.loadSelectOptions();
+    }
   }
 
   /**
@@ -105,7 +112,7 @@ export abstract class SyncOptionComponent implements OnDestroy {
    */
   resetFieldSelection(): void {
     this.selectedField = undefined;
-    this.availableOptions = undefined;
+    this.availableOptionsTypes = [];
     if(this.validate) {
       this.toggleMappingToDo();
     }
@@ -117,91 +124,82 @@ export abstract class SyncOptionComponent implements OnDestroy {
    * @param option Represents the sync option.
    * @returns True if option is independent or meets the condition and false otherwise.
    */
-  isConditionSatisfied(option: SyncOption): boolean {
+  isConditionSatisfied(option: MappingOption): boolean {
+    const mappingRequiredCondition = this.validate === false ? true :
+      option.selected_value.code === '' ? true : false;
     if(option.display_conditions) {
       const splitedCondition = option.display_conditions.split('==').map(x => x.trim());
       if(splitedCondition.length === 2) {
         const code = splitedCondition[0];
         const value = splitedCondition[1];
-        const dependencyField = this.checkConditionRecursively(this.selectedPanel, code);
+        const dependencyField = this.checkCondition(code);
         if(dependencyField !== null) {
-          return dependencyField.selected_value.code === value;
+          return dependencyField.selected_value.code === value && mappingRequiredCondition;
         }
       }
 
       return false;
     } else {
-      return true;
+      return true && mappingRequiredCondition;
     }
   }
 
   /**
    * Returns the dependecy field.
-   * 
-   * @param syncOption Represents the dependent field.
+   *
    * @param code Represents the code of dependency field.
    * @returns The dependecy field
    */
-  checkConditionRecursively(syncOption: SyncOption, code: string): SyncOption | null {
-    if(syncOption.code === code) {
-      return syncOption;
-    }
-    if(syncOption.mapping_options && syncOption.mapping_options.length) {
-      let option: SyncOption | null = null;
-      syncOption.mapping_options.forEach(mapping => {
-        if(option === null) {
-          option = this.checkConditionRecursively(mapping, code);
+  checkCondition(code: string): MappingOption | null {
+    let option: MappingOption | null = null;
+    this.selectedPanel.sub_sync_options.forEach(tab => {
+      tab.mapping_options.forEach(mapping => {
+        if(option === null && mapping.code === code) {
+          option = {...mapping};
         }
-      })
-      return option;
-    }
-    return null;
+      });
+    })
+    return option;
   }
 
   /**
-   * Set default tab/group.
+   * Set default tab.
    */
-  setDefaultGroup(): void {
-    const group = 
-      !this.selectedPanel.mapping_options.length ? undefined :
-      (this.isGrouped(this.selectedPanel.mapping_options[0]) ? this.selectedPanel.mapping_options[0] : this.selectedPanel);
-    this.goToGroup(group);
-  }
-
-  /**
-   * Returns true if it is a tab/group and false otherwise.
-   * 
-   * @param option Represents the sync option.
-   * @returns True if it is a tab/group and false otherwise.
-   */
-  isGrouped(option: SyncOption): boolean {
-    return option?.type === MAPPING_OPTIONS_TYPE.group;
+  setDefaultTab(): void {
+    this.goToTab(this.selectedPanel.sub_sync_options[0]);
   }
 
   /**
    * Load select options
    */
   loadSelectOptions(): void {
-    // Handling values_list option only at the moment.
-    let loadOptionObservables: Observable<ValuesList>[] = [];
+    this.availableOptionsTypes = [];
     this.selectedField.value_options.forEach((option) => {
       switch(option.value_option_type) {
         case VALUE_OPTION_TYPE.values_list:
-          loadOptionObservables.push(
-            this._syncOptionService.getValueListOptions(option)
-          )
+          // const valuesListEndpoint = '/values_list?origin=' + option.values_list_origin;
+          const valueList = this.valuesList.find(vl => vl.code === option.values_list)
+          this.availableOptionsTypes.push({
+            value_option: option,
+            valueList
+          })
+          break;
+        case VALUE_OPTION_TYPE.text_input: 
+        case VALUE_OPTION_TYPE.decimal_input:
+          this.availableOptionsTypes.push({
+            value_option: option,
+            valueList: []
+          })
+          break;
+        case VALUE_OPTION_TYPE.categories:
+          // TODO: Handle categories here.
           break;
         default:
           break;
       }
     });
 
-    combineLatest(loadOptionObservables).pipe(
-      takeUntil(this._unsubscribeAll)
-    ).subscribe(res => {
-      this.availableOptions = [...res.filter(result => result !== undefined)];
-      console.log(this.availableOptions);
-    })
+    console.log(this.availableOptionsTypes);
   }
 
   /**
@@ -215,35 +213,44 @@ export abstract class SyncOptionComponent implements OnDestroy {
       selected_value: {...selection}
     }
 
-    if(this.selectedField.code === this.selectedGroup.code) {
-      this.selectedGroup = {...this.selectedField}
-    } else {
-      const index = this.selectedGroup.mapping_options.findIndex(x => x.code === this.selectedField.code);
-      if(index !== -1) {
-        this.selectedGroup.mapping_options[index] = {...this.selectedField};
+    this.selectedTab.mapping_options.forEach((field, fieldIndex, fieldArr) => {
+      if(field.code === this.selectedField.code) {
+        fieldArr[fieldIndex] = {...this.selectedField};
       }
-    }
+      if(field.children) {
+        field.children.forEach((child, childIndex, childArr) => {
+          if(child.code === this.selectedField.code) {
+            childArr[childIndex] = {...this.selectedField};
+          }
+        });
+      }
+    })
 
-    const groupIndex = this.selectedPanel.mapping_options.findIndex(x => x.code === this.selectedGroup.code);
-    if(groupIndex !== -1) {
-      this.selectedPanel.mapping_options[groupIndex] = {...this.selectedGroup};
+    const tabIndex = this.selectedPanel.sub_sync_options.findIndex(x => x.code === this.selectedTab.code);
+    if(tabIndex !== -1) {
+      this.selectedPanel.sub_sync_options[tabIndex] = {...this.selectedTab};
     }
   }
 
   /**
    * Toggle the input option view.
    *
+   * @param valueOption Represents the value option.
    * @param title Represents the title of view.
    */
-  toggleInputOption(title?: string): void {
+  toggleInputOption(valueOption?: MappingValueOptions, title?: string): void {
     this.inputOptions = {
       ...this.inputOptions,
       isActive: !this.inputOptions.isActive,
       title,
-      value: ''
+      value: '',
+      valueOption
     }
   }
 
+  /**
+   * Set the input value of options to the associated field.
+   */
   setInputValue(): void {
     if(this.inputOptions.value.length) {
       this.selectOption({ label: this.inputOptions.value, code: this.inputOptions.value })
@@ -252,7 +259,36 @@ export abstract class SyncOptionComponent implements OnDestroy {
     this.toggleInputOption();
   }
 
+  /**
+   * Toggles the validation of fields.
+   */
   toggleMappingToDo(): void {
     this.validate = !this.validate;
+  }
+
+  /**
+   * Add children to fields.
+   */
+  addChildren(): void {
+    const child: MappingOption = {
+      label: '',
+      code: '',
+      type: this.selectedField.type,
+      required: false,
+      selected_value: { code: '', label: 'Not Mapped' },
+      value_options: this.selectedField.child_attribute_values ?
+        this.selectedField.value_options.concat(this.selectedField.child_attribute_values) :
+        this.selectedField.value_options
+    }
+    this.selectedField.children.push(child);
+  }
+
+  /**
+   * Set the label and code of children with the value user types in.
+   *
+   * @param child Represents the newly added child.
+   */
+  setChildrenLabel(child: MappingOption): void {
+    child.code = child.label;
   }
 }

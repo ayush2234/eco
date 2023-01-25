@@ -19,8 +19,8 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { CdkPortal } from '@angular/cdk/portal';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
 import { SyncOptionService } from './common/sync-option/sync-option.service';
-import { Integration, MAPPING_OPTIONS_TYPE, SyncOption, ValuesList, ValuesListOptions } from './add-integration.types';
 import { SyncOptionComponent } from './common/sync-option/sync-option.component';
+import { IntegrationInstance, SyncOption } from '../integration.types';
 
 const badgeActiveClasses =
   'px-2 bg-green-500 text-sm text-on-primary rounded-full';
@@ -31,31 +31,31 @@ const addIntegrationPanels = [
     code: 'connection',
     icon: 'heroicons_outline:user-circle',
     title: 'Connection',
-    description: '',
+    isActive: true
   },
   {
     code: 'products',
     icon: 'heroicons_outline:lock-closed',
     title: 'Products',
-    description: '',
+    isActive: false
   },
   {
     code: 'inventory',
     icon: 'heroicons_outline:credit-card',
     title: 'Inventory',
-    description: '',
+    isActive: false
   },
   {
     code: 'orders',
     icon: 'heroicons_outline:bell',
     title: 'Orders',
-    description: '',
+    isActive: false
   },
   {
     code: 'tracking',
     icon: 'heroicons_outline:user-group',
     title: 'Tracking',
-    description: '',
+    isActive: false
   },
 ];
 @Component({
@@ -75,10 +75,11 @@ export class AddIntegrationComponent
   drawerOpened: boolean = true;
   fuseDrawerOpened: boolean = true;
   panels: any[] = [];
-
-  wipIntegration$: Observable<Integration>;
+  isConnectionActivated = false;
+  wipIntegration$: Observable<IntegrationInstance>;
   protected _unsubscribeAll: Subject<any> = new Subject<any>();
   @Input() isOpen = false;
+  @Input() isAddIntegration = false;
 
   /**
    * Constructor
@@ -104,10 +105,19 @@ export class AddIntegrationComponent
     this.wipIntegration$ = this._syncOptionService.wipIntegration$.pipe(
       tap(data => {
         // Setup available panels
-        this.setPanels(data?.sync_options);
+        this.integrationInstance= {...data};
+        this.setPanels(this.integrationInstance.integration.sync_options);
         console.log(data);
       })
     );
+
+    this._syncOptionService.valuesList$.pipe(
+      takeUntil(this._unsubscribeAll)
+    ).subscribe(response => {
+      if(response) {
+        this.valuesList = [...response];
+      }
+    });
 
     // Subscribe to media changes
     this._fuseMediaWatcherService.onMediaChange$
@@ -147,8 +157,19 @@ export class AddIntegrationComponent
    * @param code
    */
   goToPanel(code: string): void {
-    this.selectedPanel = this.syncOptions.find(opt => opt.code === code);
-    this.setDefaultGroup();
+    this.panels.forEach(panel => {
+      if(panel.code === code) {
+        panel.isActive = true;
+      } else {
+        panel.isActive = false;
+      }
+    })
+    if(code === 'connection') {
+      this.selectedPanel = undefined;
+    } else {
+      this.selectedPanel = this.syncOptions.find(opt => opt.code === code);
+      this.setDefaultTab();
+    }
   
     // Close the drawer on 'over' mode
     if (this.drawerMode === 'over') {
@@ -189,25 +210,40 @@ export class AddIntegrationComponent
     this.cancel.emit();
   }
   private setPanels(data: SyncOption[]): void {
-    this.syncOptions = data.filter(opt => opt.type === MAPPING_OPTIONS_TYPE.sync_option);
-    this.panels = this.syncOptions.map(
+    const connection = this.integrationInstance.integration.connection;
+    this.syncOptions = [...data];
+    this.panels = this.syncOptions
+      .filter(panel => panel.is_visible).map(
       panel => {
         return {
           badge: {
-            title: panel.isActive ? 'Active' : 'Inactive',
-            classes: panel.isActive
+            title: panel.is_activated ? 'Active' : 'Inactive',
+            classes: panel.is_activated
               ? badgeActiveClasses
               : badgeInactiveClasses,
           },
           code: panel.code,
           label: panel.label,
           description: panel.description,
+          isActive: addIntegrationPanels.find(x => x.code === connection.code)?.isActive,
           icon: addIntegrationPanels.find(x => x.code === panel.code)?.icon
         }
       }
     );
-    if(this.syncOptions.length) {
-      this.goToPanel(this.syncOptions[0].code);
+    if(connection) {
+      this.panels.unshift({
+        badge: {
+          title: null,
+          classes: null,
+        },
+        code: connection.code,
+        label: connection.label,
+        description: connection.description,
+        isActive: addIntegrationPanels.find(x => x.code === connection.code)?.isActive,
+        icon: addIntegrationPanels.find(x => x.code === connection.code)?.icon
+      })
     }
+    const activePanel = this.panels.find(x => x.isActive);
+    this.goToPanel(activePanel ? activePanel.code : this.syncOptions[0].code);
   }
 }

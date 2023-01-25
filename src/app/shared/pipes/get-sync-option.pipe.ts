@@ -6,6 +6,6 @@ import { SyncOption } from 'app/modules/settings/integrations/integration.types'
 })
 export class GetSyncOptionPipe implements PipeTransform {
   transform(syncOptions: SyncOption[], key: string): SyncOption {
-    return syncOptions.find(option => option.key === key);
+    return syncOptions.find(option => option.code === key);
   }
 }
