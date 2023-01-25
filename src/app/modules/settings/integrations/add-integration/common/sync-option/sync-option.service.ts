@@ -1,22 +1,21 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, tap, switchMap, map } from 'rxjs';
-import {
-  Integration,
-  MappingValueOptions,
-  SelectOption,
-  ValuesList,
-} from '../../add-integration.types';
+import { BehaviorSubject, Observable, of, tap, switchMap, map, forkJoin, catchError } from 'rxjs';
+
+import { IntegrationInstance, SelectOption, ValuesList } from '../../../integration.types';
+import { appConfig } from 'app/core/config/app.config';
+import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SyncOptionService {
   // Private
-  private _selectedIntegration: BehaviorSubject<string | null> =
+  private _config = appConfig;
+  private _selectedIntegration: BehaviorSubject<IntegrationInstance | null> =
     new BehaviorSubject(null);
-  private _wipIntegration: BehaviorSubject<Integration | null> =
+  private _wipIntegration: BehaviorSubject<IntegrationInstance | null> =
     new BehaviorSubject(null);
   private _customerOptionsSelectOptions: BehaviorSubject<
     SelectOption[] | null
@@ -34,17 +33,19 @@ export class SyncOptionService {
   /**
    * Constructor
    */
-  constructor(private _httpClient: HttpClient) {}
+  constructor(
+    private _httpClient: HttpClient
+  ) {}
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
   // -----------------------------------------------------------------------------------------------------
 
-  set wipIntegration(value: Integration) {
+  set wipIntegration(value: IntegrationInstance) {
     this._wipIntegration.next(value);
   }
 
-  get wipIntegration$(): Observable<Integration> {
+  get wipIntegration$(): Observable<IntegrationInstance> {
     return this._wipIntegration.asObservable();
   }
 
@@ -52,1043 +53,1062 @@ export class SyncOptionService {
     return this._valuesList.asObservable();
   }
 
-  get selectedIntegration$(): Observable<Integration> {
+  get selectedIntegration$(): Observable<IntegrationInstance> {
     return this._selectedIntegration.asObservable().pipe(
-      switchMap(id =>
+      switchMap(instance =>
         of({
-          integrationId: id,
-          endpoints: [
-            {
-              origin: 'source',
-              type: 'values_list',
-              path: '/type=values_list&origin=source&values_list=order_statues',
-            },
-          ],
-          sync_options: [
-            {
-              isActive: false,
-              code: 'products',
-              label: 'Products',
+          ...instance,
+          integration: {
+            ...instance.integration,
+            endpoints: [
+              {
+                origin: 'source',
+                type: 'values_list',
+              },
+              {
+                origin: 'channel',
+                type: 'values_list',
+              },
+            ],
+            connection: {
+              code: 'connection',
+              label: 'Connection',
               description:
-                'Configure mapping when syncing products from Maropost to Bunnings',
-              type: 'sync_option',
-              mapping_options: [
+                'Sync products, inventory, orders and tracking to Maropost',
+              connection_instructions: 'For more information on API credentials for Mirakl, please see the following URL:',
+              fields: [
                 {
-                  code: 'feed',
-                  label: 'Feed',
-                  type: 'group',
-                  mapping_options: [
-                    {
-                      code: 'in_usergroup',
-                      label: 'UserGroup Visiblity',
-                      type: 'option',
-                      required: false,
-                      description: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'PRICE_GROUPS',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'custom_field',
-                      label: 'Custom Field = True',
-                      type: 'option',
-                      required: false,
-                      description: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'CUSTOM_FIELDS',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'is_active',
-                      label: 'Is Active = True',
-                      type: 'option',
-                      required: false,
-                      description: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'global',
-                          values_list: 'TRUEFALSE',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'is_approved',
-                      label: 'Is Approved = True',
-                      type: 'option',
-                      required: false,
-                      description: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'global',
-                          values_list: 'TRUEFALSE',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'pim_ListToBunnings',
-                      label: 'List to Bunnings = True',
-                      type: 'option',
-                      required: false,
-                      description: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'global',
-                          values_list: 'TRUEFALSE',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                  ],
-                },
-
-                {
-                  code: 'attribute',
-                  label: 'Attributes',
-                  type: 'group',
-                  mapping_options: [
-                    {
-                      code: 'CATEGORY',
-                      label: 'CATEGORY',
-                      type: 'mapped_attribute',
-                      required: true,
-                      description: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'categories',
-                          values_list_origin: 'channel',
-                          values_list: 'CATEGORIES',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'DISPLAY_NAME',
-                      label: 'DISPLAY_NAME',
-                      type: 'attribute',
-                      required: true,
-                      description: '',
-                      default_value: 'brand + name',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'BRAND',
-                      label: 'BRAND',
-                      type: 'attribute',
-                      required: true,
-                      description: '',
-                      default_value: 'Brand',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'GTIN',
-                      label: 'GTIN',
-                      type: 'attribute',
-                      required: true,
-                      description: '',
-                      default_value: 'UPC',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'PRODUCT_DESCRIPTION',
-                      label: 'PRODUCT_DESCRIPTION',
-                      type: 'attribute',
-                      required: true,
-                      description: '',
-                      default_value: 'Description',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'PRIMARY_UOM',
-                      label: 'PRIMARY_UOM',
-                      type: 'attribute',
-                      required: true,
-                      description: '',
-                      default_value: 'EA',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'VARIANT_GROUP_CODE',
-                      label: 'VARIANT_GROUP_CODE',
-                      type: 'attribute',
-                      required: true,
-                      description: '',
-                      default_value: 'ParentSKU',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'KEY_SELLING_POINT_1',
-                      label: 'KEY_SELLING_POINT_1',
-                      type: 'attribute',
-                      required: true,
-                      description: '',
-                      default_value: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'KEY_SELLING_POINT_2',
-                      label: 'KEY_SELLING_POINT_2',
-                      type: 'attribute',
-                      required: true,
-                      description: '',
-                      default_value: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'KEY_SELLING_POINT_3',
-                      label: 'KEY_SELLING_POINT_3',
-                      type: 'attribute',
-                      required: true,
-                      description: '',
-                      default_value: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'KEY_SELLING_POINT_4',
-                      label: 'KEY_SELLING_POINT_4',
-                      type: 'attribute',
-                      required: false,
-                      description: '',
-                      default_value: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'WARRANTY_INFORMATION',
-                      label: 'WARRANTY_INFORMATION',
-                      type: 'attribute',
-                      required: false,
-                      description: '',
-                      default_value: 'Warranty',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'PRODUCT_WIDTH',
-                      label: 'PRODUCT_WIDTH',
-                      type: 'attribute',
-                      required: false,
-                      description: '',
-                      default_value: 'ItemWidth',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'PRODUCT_HEIGHT',
-                      label: 'PRODUCT_HEIGHT',
-                      type: 'attribute',
-                      required: false,
-                      description: '',
-                      default_value: 'ItemHeight',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'PRODUCT_LENGTH',
-                      label: 'PRODUCT_LENGTH',
-                      type: 'attribute',
-                      required: false,
-                      description: '',
-                      default_value: 'ItemLength',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'MATERIAL',
-                      label: 'MATERIAL',
-                      type: 'attribute',
-                      required: false,
-                      description: '',
-                      default_value: 'ItemLength',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'PRODUCT_WEIGHT',
-                      label: 'PRODUCT_WEIGHT',
-                      type: 'attribute',
-                      required: false,
-                      description: '',
-                      default_value: 'ItemWeight',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'PRODUCT_WEIGHT',
-                      label: 'PRODUCT_WEIGHT',
-                      type: 'attribute',
-                      required: false,
-                      description: '',
-                      default_value: 'ItemWeight',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'product-id',
-                      label: 'product-id',
-                      type: 'attribute',
-                      required: false,
-                      description: '',
-                      default_value: 'UPC',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'channel',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'product-id-type',
-                      label: 'product-id-type',
-                      type: 'attribute',
-                      required: false,
-                      description: '',
-                      default_value: 'UPC/EAN',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'channel',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'state',
-                      label: 'state',
-                      type: 'attribute',
-                      required: false,
-                      description: '',
-                      default_value: '11',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'channel',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'logistic-class',
-                      label: 'logistic-class',
-                      type: 'attribute',
-                      required: true,
-                      description: '',
-                      default_value: 'free-shipping',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'channel',
-                          values_list: 'ATTRIBUTES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                  ],
+                  code: 'integration_name',
+                  label: 'Integration Name',
+                  type: 'text',
+                  value: '',
                 },
                 {
-                  code: 'pricing',
-                  label: 'Pricing',
-                  type: 'group',
-                  mapping_options: [
-                    {
-                      code: 'pricegroup',
-                      label: 'PriceGroup',
-                      type: 'option',
-                      required: true,
-                      description: '',
-                      default_value_: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'PRICE_GROUPS',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'price_adjustment_type',
-                      label: 'Price Adustment Type',
-                      type: 'option',
-                      required: true,
-                      description: '',
-                      default_value: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'global',
-                          values_list: 'PRICEADJUSTMENTTYPE',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'price_adjustment_value',
-                      label: 'Price Adjustment Value',
-                      type: 'option',
-                      required: true,
-                      description: '',
-                      default_value: '',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'decimal_input',
-                          value_option_label: 'Enter Price Adjustment Amount',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'sync_promo_pricing',
-                      label: 'Sync Promo Pricing',
-                      type: 'option',
-                      required: true,
-                      description: '',
-                      default_value: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'global',
-                          values_list: 'TRUEFALSE',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'ignore_promo_dates',
-                      label: 'Ignore Promo Dates',
-                      type: 'option',
-                      required: true,
-                      description: '',
-                      default_value: false,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'global',
-                          values_list: 'TRUEFALSE',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                  ],
+                  code: 'store_url',
+                  label: 'StoreURL',
+                  type: 'url',
+                  value: 'brianh',
                 },
                 {
-                  code: 'category',
-                  label: 'Category',
-                  type: 'group',
-                  mapping_options: [
-                    {
-                      code: 'category_option_code',
-                      label: 'Category',
-                      type: 'option',
-                      required: false,
-                      description: '',
-                      default_value: false,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'category',
-                          values_list_origin: 'source',
-                          value_type: 'attribute',
-                        },
-                        {
-                          value_option_type: 'category',
-                          values_list_origin: 'channel',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                  ],
+                  code: 'username',
+                  label: 'Username',
+                  type: 'text',
+                  value: '',
                 },
-
                 {
-                  code: 'image',
-                  label: 'Images',
-                  type: 'group',
-                  mapping_options: [
-                    {
-                      code: 'MainImage',
-                      label: 'MainImage',
-                      type: 'attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'IMAGES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'Image1',
-                      label: 'Image1',
-                      type: 'attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'IMAGES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'Image2',
-                      label: 'Image2',
-                      type: 'attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'IMAGES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'Image3',
-                      label: 'Image3',
-                      type: 'attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'IMAGES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'Image4',
-                      label: 'Image4',
-                      type: 'attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'IMAGES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'Image5',
-                      label: 'Image5',
-                      type: 'attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'IMAGES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'Image6',
-                      label: 'Image6',
-                      type: 'attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'IMAGES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'Image7',
-                      label: 'Image7',
-                      type: 'attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'IMAGES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'Image8',
-                      label: 'Image8',
-                      type: 'attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'IMAGES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'Image9',
-                      label: 'Image9',
-                      type: 'attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'IMAGES',
-                          value_type: 'attribute',
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
+                  code: 'api_key',
+                  label: 'API Key',
+                  type: 'text',
+                  value: 'dskjfhdshufiruhfd435rdsvcds',
+                }
+              ]
             },
+            sync_options: [
+              {
+                is_visible: true,
+                is_activated: false,
+                code: 'products',
+                label: 'Products',
+                description:
+                  'Configure mapping when syncing products from Maropost to Bunnings',
+                sub_sync_options: [
+                  {
+                    code: 'feed',
+                    label: 'Feed',
+                    mapping_options: [
+                      {
+                        code: 'in_usergroup',
+                        label: 'UserGroup Visiblity',
+                        type: 'option',
+                        required: false,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'PRICE_GROUPS',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'custom_field',
+                        label: 'Custom Field = True',
+                        type: 'option',
+                        required: false,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'CUSTOM_FIELDS',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'is_active',
+                        label: 'Is Active = True',
+                        type: 'option',
+                        required: false,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'global',
+                            values_list: 'TRUEFALSE',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'is_approved',
+                        label: 'Is Approved = True',
+                        type: 'option',
+                        required: false,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'global',
+                            values_list: 'TRUEFALSE',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'pim_ListToBunnings',
+                        label: 'List to Bunnings = True',
+                        type: 'option',
+                        required: false,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'global',
+                            values_list: 'TRUEFALSE',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                    ],
+                  },
 
-            {
-              isActive: true,
-              code: 'orders',
-              label: 'Orders',
-              description:
-                'Configure mapping when syncing orders from Bunnings to Maropost',
-              type: 'sync_option',
-              mapping_options: [
-                {
-                  type: 'group',
-                  code: 'customer',
-                  label: 'Customer',
-                  mapping_options: [
-                    {
-                      code: 'customer_option',
-                      label: 'Customer Option',
-                      description: '',
-                      type: 'option',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'CUSTOMER_OPTIONS',
-                          value_type: 'option',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'Usergroup',
-                      label: 'Customer group for new customers',
-                      description: '',
-                      type: 'attribute',
-                      required: true,
-                      display_conditions:
-                        'customer_option == create_unique_customer',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'PRICE_GROUPS',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  type: 'group',
-                  code: 'order',
-                  label: 'Orders',
-                  mapping_options: [
-                    {
-                      code: 'Username',
-                      label: 'Existing Customer Username',
-                      description: '',
-                      type: 'attribute',
-                      required: true,
-                      display_conditions: 'customer_option == link_to_existing_customer',
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'text_input',
-                          value_option_label: 'Enter Existing Username',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'OrderStatus',
-                      label: 'Order Status',
-                      type: 'attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'ORDER_STATUSES',
-                          value_type: 'static',
-                        },
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'CUSTOM_ORDER_STATUSES',
-                          value_type: 'static',
-                        },
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'NEW_ORDER_STATUSES',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                    {
-                      code: 'ShippingMethod',
-                      label: 'Shipping Method',
-                      type: 'mapped_attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      mapped_attribute_heirarchy: [
-                        {
-                          values_list_origin: 'channel',
-                          values_list: 'SHIPPING_METHODS',
-                          value_type: 'static',
-                        },
-                      ],
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'SHIPPING_METHODS',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  type: 'group',
-                  code: 'payment',
-                  label: 'Payment',
-                  mapping_options: [
-                    {
-                      code: 'PaymentMethod',
-                      label: 'Payment Method',
-                      type: 'mapped_attribute',
-                      required: true,
-                      selected_value: { label: 'Not Mapped', code: '' },
-                      mapped_attribute_heirarchy: [
-                        {
-                          value_list_type: 'channel',
-                          values_list: 'PAYMENT_METHODS',
-                        },
-                      ],
-                      value_options: [
-                        {
-                          value_option_type: 'values_list',
-                          values_list_origin: 'source',
-                          values_list: 'PAYMENT_METHODS',
-                          value_type: 'static',
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              isActive: true,
-              type: 'sync_option',
-              code: 'tracking',
-              label: 'Tracking',
-              description:
-                'Map Maropost Shipping Services to accepted carriers in Bunnings',
-              mapping_options: [
-                {
-                  code: 'carrier',
-                  label: 'Carrier',
-                  type: 'mapped_attribute',
-                  required: true,
-                  selected_value: { label: 'Not Mapped', code: '' },
-                  mapped_attribute_heirarchy: [
-                    {
-                      values_list_origin: 'channel',
-                      values_list: 'CARRIERS',
-                    },
-                  ],
-                  value_options: [
-                    {
-                      value_option_type: 'values_list',
-                      values_list_origin: 'source',
-                      values_list: 'SHIPPING_SERVICES',
-                      value_type: 'static',
-                    },
-                  ],
-                },
-              ],
-            },
+                  {
+                    code: 'attribute',
+                    label: 'Attributes',
+                    mapping_options: [
+                      {
+                        code: 'CATEGORY',
+                        label: 'CATEGORY',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'categories',
+                            values_list_origin: 'channel',
+                            values_list: 'CATEGORIES',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'DISPLAY_NAME',
+                        label: 'DISPLAY_NAME',
+                        type: 'attribute',
+                        required: true,
+                        default_value: 'brand + name',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                          {
+                            value_option_type: 'decimal_input',
+                            values_list_origin: 'source',
+                            value_type: 'static',
+                          },
+                          {
+                            value_option_type: 'text_input',
+                            values_list_origin: 'channel',
+                            value_type: 'attribute',
+                          }
+                        ],
+                      },
+                      {
+                        code: 'BRAND',
+                        label: 'BRAND',
+                        type: 'attribute',
+                        required: true,
+                        default_value: 'Brand',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'GTIN',
+                        label: 'GTIN',
+                        type: 'attribute',
+                        required: true,
+                        default_value: 'UPC',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'PRODUCT_DESCRIPTION',
+                        label: 'PRODUCT_DESCRIPTION',
+                        type: 'attribute',
+                        required: true,
+                        default_value: 'Description',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'PRIMARY_UOM',
+                        label: 'PRIMARY_UOM',
+                        type: 'attribute',
+                        required: true,
+                        default_value: 'EA',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'VARIANT_GROUP_CODE',
+                        label: 'VARIANT_GROUP_CODE',
+                        type: 'attribute',
+                        required: true,
+                        default_value: 'ParentSKU',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'KEY_SELLING_POINT_1',
+                        label: 'KEY_SELLING_POINT_1',
+                        type: 'attribute',
+                        required: true,
+                        default_value: '',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'KEY_SELLING_POINT_2',
+                        label: 'KEY_SELLING_POINT_2',
+                        type: 'attribute',
+                        required: true,
+                        default_value: '',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'KEY_SELLING_POINT_3',
+                        label: 'KEY_SELLING_POINT_3',
+                        type: 'attribute',
+                        required: true,
+                        default_value: '',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'KEY_SELLING_POINT_4',
+                        label: 'KEY_SELLING_POINT_4',
+                        type: 'attribute',
+                        required: false,
+                        default_value: '',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'WARRANTY_INFORMATION',
+                        label: 'WARRANTY_INFORMATION',
+                        type: 'attribute',
+                        required: false,
+                        default_value: 'Warranty',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'PRODUCT_WIDTH',
+                        label: 'PRODUCT_WIDTH',
+                        type: 'attribute',
+                        required: false,
+                        default_value: 'ItemWidth',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'PRODUCT_HEIGHT',
+                        label: 'PRODUCT_HEIGHT',
+                        type: 'attribute',
+                        required: false,
+                        default_value: 'ItemHeight',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'PRODUCT_LENGTH',
+                        label: 'PRODUCT_LENGTH',
+                        type: 'attribute',
+                        required: false,
+                        default_value: 'ItemLength',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'MATERIAL',
+                        label: 'MATERIAL',
+                        type: 'attribute',
+                        required: false,
+                        default_value: 'ItemLength',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'PRODUCT_WEIGHT',
+                        label: 'PRODUCT_WEIGHT',
+                        type: 'attribute',
+                        required: false,
+                        default_value: 'ItemWeight',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'PRODUCT_WEIGHT',
+                        label: 'PRODUCT_WEIGHT',
+                        type: 'attribute',
+                        required: false,
+                        default_value: 'ItemWeight',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'product-id',
+                        label: 'product-id',
+                        type: 'attribute',
+                        required: false,
+                        default_value: 'UPC',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'channel',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'product-id-type',
+                        label: 'product-id-type',
+                        type: 'attribute',
+                        required: false,
+                        default_value: 'UPC/EAN',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'channel',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'state',
+                        label: 'state',
+                        type: 'attribute',
+                        required: false,
+                        default_value: '11',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'channel',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'logistic-class',
+                        label: 'logistic-class',
+                        type: 'attribute',
+                        required: true,
+                        default_value: 'free-shipping',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'channel',
+                            values_list: 'ATTRIBUTES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    code: 'pricing',
+                    label: 'Pricing',
+                    mapping_options: [
+                      {
+                        code: 'pricegroup',
+                        label: 'PriceGroup',
+                        type: 'option',
+                        required: true,
+                        default_value_: '',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'PRICE_GROUPS',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'price_adjustment_type',
+                        label: 'Price Adustment Type',
+                        type: 'option',
+                        required: true,
+                        default_value: '',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'global',
+                            values_list: 'PRICEADJUSTMENTTYPE',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'price_adjustment_value',
+                        label: 'Price Adjustment Value',
+                        type: 'option',
+                        required: true,
+                        default_value: '',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'decimal_input',
+                            value_option_label: 'Enter Price Adjustment Amount',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'sync_promo_pricing',
+                        label: 'Sync Promo Pricing',
+                        type: 'option',
+                        required: true,
+                        default_value: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'global',
+                            values_list: 'TRUEFALSE',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'ignore_promo_dates',
+                        label: 'Ignore Promo Dates',
+                        type: 'option',
+                        required: true,
+                        default_value: false,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'global',
+                            values_list: 'TRUEFALSE',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    code: 'category',
+                    label: 'Category',
+                    mapping_options: [
+                      {
+                        code: 'category_option_code',
+                        label: 'Category',
+                        type: 'option',
+                        required: false,
+                        default_value: false,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'category',
+                            values_list_origin: 'source',
+                            value_type: 'attribute',
+                          },
+                          {
+                            value_option_type: 'category',
+                            values_list_origin: 'channel',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                    ],
+                  },
 
-            {
-              isActive: false,
-              type: 'sync_option',
-              code: 'inventory',
-              label: 'Inventory',
-              mapping_options: [
-                {
-                  code: 'take_stock_from',
-                  label: 'Take Stock From',
-                  type: 'option',
-                  required: true,
-                  default_value: 'AvailableSellQauntity',
-                  selected_value: { label: 'Not Mapped', code: '' },
-                  value_options: [
-                    {
-                      value_option_type: 'values_list',
-                      value_origin: 'source',
-                      values_list: 'QTY_COMMON_CHOICES',
-                      value_type: 'option',
-                    },
-                    {
-                      value_option_type: 'values_list',
-                      values_list_origin: 'source',
-                      values_list: 'WAREHOUSES',
-                      value_type: 'attribute',
-                    },
-                  ],
-                },
-                {
-                  code: 'stock_buffer',
-                  label: 'Stock Buffer',
-                  type: 'option',
-                  required: false,
-                  selected_value: { label: 'Not Mapped', code: '' },
-                  value_options: [
-                    {
-                      value_option_type: 'decimal_input',
-                      value_option_label: 'Enter Stock Buffer Amount',
-                      value_type: 'static',
-                    },
-                    {
-                      value_option_type: 'decimal_input',
-                      value_option_label: 'Advanced: Custom Source Attribute',
-                      value_type: 'attribute',
-                    },
-                  ],
-                },
-                {
-                  code: 'virtual_stock_quantity',
-                  label: 'Virtual Stock Quantity',
-                  type: 'option',
-                  default_value: '500',
-                  required: false,
-                  selected_value: { label: 'Not Mapped', code: '' },
-                  value_options: [
-                    {
-                      value_option_type: 'decimal_input',
-                      value_option_label: 'Enter Virtual Stock Quantity',
-                      value_type: 'static',
-                    },
-                  ],
-                },
-                {
-                  code: 'holiday_mode',
-                  label: 'Holiday Mode',
-                  type: 'option',
-                  default_value: false,
-                  required: false,
-                  selected_value: { label: 'Not Mapped', code: '' },
-                  value_options: [
-                    {
-                      value_option_type: 'values_list',
-                      values_list_origin: 'global',
-                      values_list: 'TRUEFALSE',
-                      value_type: 'static',
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
+                  {
+                    code: 'image',
+                    label: 'Images',
+                    mapping_options: [
+                      {
+                        code: 'MainImage',
+                        label: 'MainImage',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'IMAGES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'Image1',
+                        label: 'Image1',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'IMAGES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'Image2',
+                        label: 'Image2',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'IMAGES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'Image3',
+                        label: 'Image3',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'IMAGES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'Image4',
+                        label: 'Image4',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'IMAGES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'Image5',
+                        label: 'Image5',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'IMAGES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'Image6',
+                        label: 'Image6',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'IMAGES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'Image7',
+                        label: 'Image7',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'IMAGES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'Image8',
+                        label: 'Image8',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'IMAGES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'Image9',
+                        label: 'Image9',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'IMAGES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+
+              {
+                is_visible: true,
+                is_activated: true,
+                code: 'orders',
+                label: 'Orders',
+                description:
+                  'Configure mapping when syncing orders from Bunnings to Maropost',
+                sub_sync_options: [
+                  {
+                    code: 'customer',
+                    label: 'Customer',
+                    mapping_options: [
+                      {
+                        code: 'customer_option',
+                        label: 'Customer Option',
+                        type: 'option',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'CUSTOMER_OPTIONS',
+                            value_type: 'option',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'Usergroup',
+                        label: 'Customer group for new customers',
+                        type: 'attribute',
+                        required: true,
+                        display_conditions:
+                          'customer_option == create_unique_customer',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'PRICE_GROUPS',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    code: 'order',
+                    label: 'Orders',
+                    mapping_options: [
+                      {
+                        code: 'Username',
+                        label: 'Existing Customer Username',
+                        type: 'attribute',
+                        required: true,
+                        display_conditions: 'customer_option == link_to_existing_customer',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'text_input',
+                            value_option_label: 'Enter Existing Username',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'OrderStatus',
+                        label: 'Order Status',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'ORDER_STATUSES',
+                            value_type: 'static',
+                          },
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'CUSTOM_ORDER_STATUSES',
+                            value_type: 'static',
+                          },
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'NEW_ORDER_STATUSES',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'ShippingMethod',
+                        label: 'Shipping Method',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        child_attribute_values: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'channel',
+                            values_list: 'SHIPPING_METHODS',
+                            value_type: 'static'
+                          }
+                        ],
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'SHIPPING_METHODS',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    code: 'payment',
+                    label: 'Payment',
+                    mapping_options: [
+                      {
+                        code: 'PaymentMethod',
+                        label: 'Payment Method',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        child_attribute_values: [
+                          {
+                            value_list_type: 'channel',
+                            values_list: 'PAYMENT_METHODS',
+                          },
+                        ],
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'PAYMENT_METHODS',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                is_visible: true,
+                is_activated: true,
+                code: 'tracking',
+                label: 'Tracking',
+                description:
+                  'Map Maropost Shipping Services to accepted carriers in Bunnings',
+                sub_sync_options: [
+                  {
+                    code: 'carrier_tab',
+                    label: 'Carrier Tab',
+                    mapping_options: [
+                      {
+                        code: 'carrier',
+                        label: 'Carrier',
+                        type: 'attribute',
+                        required: true,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        child_attribute_values: [
+                          {
+                            values_list_origin: 'channel',
+                            values_list: 'CARRIERS',
+                          },
+                        ],
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'SHIPPING_SERVICES',
+                            value_type: 'static',
+                          },
+                        ],
+                      }
+                    ]
+                  },
+                ],
+              },
+
+              {
+                is_visible: true,
+                is_activated: false,
+                code: 'inventory',
+                label: 'Inventory',
+                description: '',
+                sub_sync_options: [
+                  {
+                    code: 'inventory_tab',
+                    label: 'Inventory Tab',
+                    mapping_options: [
+                      {
+                        code: 'take_stock_from',
+                        label: 'Take Stock From',
+                        type: 'option',
+                        required: true,
+                        default_value: 'AvailableSellQauntity',
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            value_origin: 'source',
+                            values_list: 'QTY_COMMON_CHOICES',
+                            value_type: 'option',
+                          },
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'source',
+                            values_list: 'WAREHOUSES',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'stock_buffer',
+                        label: 'Stock Buffer',
+                        type: 'option',
+                        required: false,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'decimal_input',
+                            value_option_label: 'Enter Stock Buffer Amount',
+                            value_type: 'static',
+                          },
+                          {
+                            value_option_type: 'decimal_input',
+                            value_option_label: 'Advanced: Custom Source Attribute',
+                            value_type: 'attribute',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'virtual_stock_quantity',
+                        label: 'Virtual Stock Quantity',
+                        type: 'option',
+                        default_value: '500',
+                        required: false,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'decimal_input',
+                            value_option_label: 'Enter Virtual Stock Quantity',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                      {
+                        code: 'holiday_mode',
+                        label: 'Holiday Mode',
+                        type: 'option',
+                        default_value: false,
+                        required: false,
+                        selected_value: { label: 'Not Mapped', code: '' },
+                        value_options: [
+                          {
+                            value_option_type: 'values_list',
+                            values_list_origin: 'global',
+                            values_list: 'TRUEFALSE',
+                            value_type: 'static',
+                          },
+                        ],
+                      },
+                    ]
+                  },
+                ],
+              },
+            ],
+          }
         })
       ),
-      tap(integration => {
-        this._wipIntegration.next(integration);
+      tap(instance => {
+        this._wipIntegration.next(instance);
       })
     );
   }
@@ -1594,20 +1614,38 @@ export class SyncOptionService {
   /**
    * Set selected integration
    */
-  setSelectedIntegration(value: string): void {
-    this._selectedIntegration.next(value);
+  setSelectedIntegration(integration: IntegrationInstance): void {
+    this._selectedIntegration.next(integration);
+    this.getValueList(integration);
   }
 
   /**
-   * Get select options
+   * Get the values list of all possible origins.
+   *
+   * @param instance Represents the integration instance for which the values list to be fetched.
    */
-  getValueListOptions(option: MappingValueOptions): Observable<ValuesList | undefined> {
-    // A Mock or temporary way of getting option until API is not ready.
-    return this.fetchValuesList$.pipe(
-      map((res) => {
-        return res.find(valueOption => valueOption.code === option.values_list);
+  getValueList(instance: IntegrationInstance): void {
+    const api = this._config.apiConfig.serviceUrl + '/api/v1/' +
+    LocalStorageUtils.companyId + '/integrationInstance/' + instance.instance_id +
+    '/values_list?origin=';
+
+    const sourceApi = api + 'source';
+    const channelApi = api + 'channel';
+
+    forkJoin([
+      this._httpClient.get(sourceApi),
+      this._httpClient.get(channelApi)
+    ]).pipe(
+      catchError(err => {
+        this.fetchValuesList$.subscribe();
+        return of();
       })
-    )
+    ).subscribe(response => {
+      console.log(response);
+      this.fetchValuesList$.subscribe();
+      // const list = (response[0] as any).data.values_lists.concat((response[1] as any).data.values_lists);
+      // this._valuesList.next(list);
+    })
   }
 
   /**

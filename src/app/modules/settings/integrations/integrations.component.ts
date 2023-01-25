@@ -17,8 +17,8 @@ import { Integration, IntegrationInstance } from './integration.types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IntegrationsComponent implements OnInit, OnDestroy {
-  openAddIntegration: boolean = false;
-
+  openIntegrationView: boolean = false;
+  isAddIntegration = false;
   integrationInstances$: Observable<IntegrationInstance[]>;
   availableIntegrations$: Observable<Integration[]>;
   selectedIntegration$ = this._syncOptionService.selectedIntegration$;
@@ -50,7 +50,7 @@ export class IntegrationsComponent implements OnInit, OnDestroy {
    * On destroy
    */
   ngOnDestroy(): void {
-    this.openAddIntegration = false;
+    this.openIntegrationView = false;
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
@@ -76,8 +76,15 @@ export class IntegrationsComponent implements OnInit, OnDestroy {
    * @param index
    * @param item
    */
-  addIntegration(integration: Integration): any {
-    this.openAddIntegration = true;
-    this._syncOptionService.setSelectedIntegration(integration.source_id);
+  addIntegration(instance: IntegrationInstance): any {
+    this.openIntegrationView = true;
+    this.isAddIntegration = true;
+    this._syncOptionService.setSelectedIntegration(instance);
+  }
+
+  configureIntegration(instance: IntegrationInstance): any {
+    this.openIntegrationView = true;
+    this.isAddIntegration = false;
+    this._syncOptionService.setSelectedIntegration(instance);
   }
 }

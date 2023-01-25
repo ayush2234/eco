@@ -1,0 +1,72 @@
+<div class="w-full max-w-3xl" *ngIf="instance">
+  <div>
+    <!-- Section -->
+    <div 
+      class="grid sm:grid-cols-4 gap-6 w-full mt-8"
+    >
+      <!-- Grouped Parent -->
+      <div 
+        class="sm:col-span-4"
+        *ngFor="let field of instance.integration.connection.fields"
+      >
+        <mat-form-field 
+          class="fuse-mat-no-subscript w-full"
+          [ngClass]="{
+            'fuse-mat-emphasized-affix': field.type === 'url'
+          }"
+        >
+          <mat-label>{{field.label}}</mat-label>
+          <div 
+            *ngIf="
+              field.type === 'url'
+            "
+            class="text-secondary" matPrefix>https://</div>
+          <input matInput [(ngModel)]="field.value" />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="text-secondary mt-8">
+      For more information on API credentials for Mirakl, please see the
+      following URL:
+    </div>
+
+    <!-- Divider -->
+    <div class="my-10 border-t"></div>
+
+    <!-- Section -->
+    <div class="w-full text-xl">Sync Options</div>
+    <div class="grid grid-cols-1 gap-4 w-full mt-4">
+      <!-- Comments -->
+      <div
+        *ngFor="let sync_option of instance.integration.sync_options"
+        class="flex items-center justify-between"
+        (click)="toggleSyncOptions(sync_option)"
+      >
+        <div
+          class="flex-auto leading-6 cursor-pointer"
+        >
+          {{sync_option.label}}
+        </div>
+        <mat-slide-toggle
+          (click)="$event.preventDefault()"
+          [checked]="sync_option.is_visible"
+          class="ml-2"
+          [color]="'primary'"
+          #toggleRef>
+        </mat-slide-toggle>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="mt-11 mb-10 border-t"></div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end">
+      <button mat-stroked-button type="button">Cancel</button>
+      <button class="ml-4" mat-flat-button type="button" [color]="'primary'">
+        Save
+      </button>
+    </div>
+  </div>
+</div>

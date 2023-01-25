@@ -73,7 +73,7 @@
           <!-- Footer -->
           <div class="flex flex-col w-full mt-auto">
             <div class="flex items-center justify-between p-8 pt-0">
-              <button mat-stroked-button (click)="addIntegration(instance.integration)">
+              <button mat-stroked-button (click)="configureIntegration(instance)">
                 <span class="inline-flex items-center">
                   <span class="truncate">Configuration</span>
                 </span>
@@ -142,6 +142,7 @@
   </div>
 </div>
 <eco-add-integration
-  *ngIf="openAddIntegration && selectedIntegration$ | async"
-  [isOpen]="openAddIntegration && selectedIntegration$ | async"
-  (cancel)="openAddIntegration = false"></eco-add-integration>
+  *ngIf="openIntegrationView && selectedIntegration$ | async"
+  [isOpen]="openIntegrationView && selectedIntegration$ | async"
+  [isAddIntegration]="isAddIntegration"
+  (cancel)="openIntegrationView = false"></eco-add-integration>
