@@ -46,17 +46,17 @@ import { IntegrationService } from 'app/modules/settings/integrations/integratio
         grid-template-columns: repeat(3, 1fr);
 
         @screen sm {
-          grid-template-columns: repeat(3, 1fr) 72px;
+          grid-template-columns: 13% 23% 10% 18% repeat(2, 1fr) 42px;
         }
 
         @screen md {
-          grid-template-columns: repeat(9, 1fr) 72px;
+          grid-template-columns: 13% 23% 10% repeat(3, 1fr) 72px;
         }
 
         @screen lg {
           grid-template-columns:
-            148px 12% repeat(1, 1fr) 11% repeat(2, 1fr) 4fr repeat(1, 14%)
-            110px 92px;
+            10% 21% repeat(1, 7%) 11.5% repeat(2, 8%) 10% repeat(1, 5%)
+            6% 3%;
         }
       }
 
@@ -417,30 +417,30 @@ export class SyncLogsOrdersComponent
   /* Filter by Date  */
 
   onSelectDate(event) {
-    console.log(event);
+    // console.log(event);
   }
 
   /* Filter by Integration  */
 
   onSelectIntegration(event) {
-    console.log(event.value);
+    // console.log(event.value);
   }
 
   /* Filter by Sync Status */
 
   onSelectStatus(event) {
-    console.log(event.value);
+    // console.log(event.value);
   }
 
   /* Filter by Sync Lifecycle */
 
   onSelectSyncLifecycle(event) {
-    console.log(event.value);
+    // console.log(event.value);
   }
   /* Filter by action Action Required */
 
   isActionRequired(event) {
-    console.log(event.value);
+    // console.log(event.value);
   }
 
   /**
