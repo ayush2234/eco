@@ -80,6 +80,18 @@
                     }}
                   </mat-slide-toggle>
                 </div>
+                <div class="flex flex-col">
+                  <span class="font-semibold mb-2">Need Auth</span>
+                  <mat-slide-toggle
+                    [formControlName]="'need_auth'"
+                    [color]="'primary'">
+                    {{
+                      selectedSourceForm.get('need_auth').value === true
+                        ? 'Active'
+                        : 'Disabled'
+                    }}
+                  </mat-slide-toggle>
+                </div>
               </div>
 
               <div class="flex flex-auto flex-wrap">
