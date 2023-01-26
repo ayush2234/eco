@@ -83,7 +83,10 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
   }
 
   createForm(): void {
-    switch (SourceFormEnum[this.selectedSource.source_platform]) {
+    switch (SourceFormEnum[
+      this.isEdit ? this.selectedSource.source.source_platform :
+      this.selectedSource.source_platform
+    ]) {
       case SourceFormEnum.maropost:
         // Create the form maropostSource
         this.sourceForm = this._formBuilder.group({
@@ -168,7 +171,10 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
       return;
     }
     if (
-      SourceFormEnum[this.selectedSource.source_platform] ==
+      SourceFormEnum[
+        this.isEdit ? this.selectedSource.source.source_platform :
+        this.selectedSource.source_platform
+      ] ==
       SourceFormEnum.maropost
     ) {
       this._sourceService
@@ -258,7 +264,10 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
       | MagentoAttributes
       | DearAttributes
       | any;
-    switch (SourceFormEnum[this.selectedSource.source_platform]) {
+    switch (SourceFormEnum[
+      this.isEdit ? this.selectedSource.source.source_platform :
+      this.selectedSource.source_platform
+    ]) {
       case SourceFormEnum.maropost:
         attribute =
           this.verificationData && this.verificationData.error
