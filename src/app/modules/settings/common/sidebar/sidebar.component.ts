@@ -4,14 +4,18 @@ import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types
 @Component({
   selector: 'eco-settings-sidebar',
   template: `
-    <div class="py-10">
+    <div class="py-8">
       <!-- Add any extra content that might be supplied with the component -->
       <div class="extra-content">
         <ng-content></ng-content>
       </div>
 
       <!-- Fixed demo sidebar -->
-      <div class="mx-6 text-3xl font-bold tracking-tighter">Settings</div>
+      <div class="
+        mx-6 text-3xl font-bold tracking-tighter h-14
+        flex items-center
+      "
+      >Settings</div>
       <fuse-vertical-navigation
         [appearance]="'default'"
         [navigation]="menuData"
@@ -21,7 +25,7 @@ import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types
         [opened]="true"></fuse-vertical-navigation>
 
       <!-- Storage -->
-      <div class="mx-6 mt-2">
+      <!-- <div class="mx-6 mt-2">
         <div class="flex items-center">
           <mat-icon
             class="mr-2 icon-size-5"
@@ -35,10 +39,10 @@ import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types
             [color]="'primary'"
             [value]="19.9"></mat-progress-bar>
         </div>
-      </div>
+      </div> -->
 
       <!-- Users -->
-      <div class="mx-6 mt-10">
+      <!-- <div class="mx-6 mt-10">
         <div class="flex items-center">
           <mat-icon
             class="mr-2 icon-size-5"
@@ -54,7 +58,7 @@ import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types
             [color]="'accent'"
             [value]="40"></mat-progress-bar>
         </div>
-      </div>
+      </div> -->
     </div>
   `,
   styles: [
@@ -76,7 +80,7 @@ export class SettingsSidebarComponent {
     this.menuData = [
       {
         title: 'General Settings',
-        subtitle: 'Task, project & team',
+        // subtitle: 'Task, project & team',
         type: 'group',
         children: [
           {
@@ -94,7 +98,7 @@ export class SettingsSidebarComponent {
         ],
       },
       {
-        title: 'Integrations',
+        title: 'Connections',
         type: 'group',
         children: [
           {
@@ -117,69 +121,69 @@ export class SettingsSidebarComponent {
           },
         ],
       },
-      {
-        title: 'PIM Settings',
-        type: 'group',
-        children: [
-          {
-            title: 'Categories',
-            type: 'collapsable',
-            icon: 'heroicons_outline:cog',
-            children: [
-              {
-                title: 'Tasks',
-                type: 'basic',
-              },
-              {
-                title: 'Users',
-                type: 'basic',
-              },
-              {
-                title: 'Teams',
-                type: 'basic',
-              },
-            ],
-          },
-          {
-            title: 'Custom fields',
-            type: 'collapsable',
-            icon: 'heroicons_outline:user-circle',
-            children: [
-              {
-                title: 'Personal',
-                type: 'basic',
-              },
-              {
-                title: 'Payment',
-                type: 'basic',
-              },
-              {
-                title: 'Security',
-                type: 'basic',
-              },
-            ],
-          },
-          {
-            title: 'Source mapping',
-            type: 'collapsable',
-            icon: 'heroicons_outline:user-circle',
-            children: [
-              {
-                title: 'Personal',
-                type: 'basic',
-              },
-              {
-                title: 'Payment',
-                type: 'basic',
-              },
-              {
-                title: 'Security',
-                type: 'basic',
-              },
-            ],
-          },
-        ],
-      },
+      // {
+      //   title: 'PIM Settings',
+      //   type: 'group',
+      //   children: [
+      //     {
+      //       title: 'Categories',
+      //       type: 'collapsable',
+      //       icon: 'heroicons_outline:cog',
+      //       children: [
+      //         {
+      //           title: 'Tasks',
+      //           type: 'basic',
+      //         },
+      //         {
+      //           title: 'Users',
+      //           type: 'basic',
+      //         },
+      //         {
+      //           title: 'Teams',
+      //           type: 'basic',
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       title: 'Custom fields',
+      //       type: 'collapsable',
+      //       icon: 'heroicons_outline:user-circle',
+      //       children: [
+      //         {
+      //           title: 'Personal',
+      //           type: 'basic',
+      //         },
+      //         {
+      //           title: 'Payment',
+      //           type: 'basic',
+      //         },
+      //         {
+      //           title: 'Security',
+      //           type: 'basic',
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       title: 'Source mapping',
+      //       type: 'collapsable',
+      //       icon: 'heroicons_outline:user-circle',
+      //       children: [
+      //         {
+      //           title: 'Personal',
+      //           type: 'basic',
+      //         },
+      //         {
+      //           title: 'Payment',
+      //           type: 'basic',
+      //         },
+      //         {
+      //           title: 'Security',
+      //           type: 'basic',
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
       {
         type: 'divider',
       },

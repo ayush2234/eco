@@ -1,8 +1,8 @@
 <div class="flex flex-col flex-auto w-full">
-  <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
+  <div class="flex flex-wrap w-full max-w-screen-xl mx-auto">
     <!-- Title and action buttons -->
     <div class="flex items-center justify-between w-full">
-      <div>
+      <div class="h-14 flex flex-col justify-center">
         <div class="text-3xl font-semibold tracking-tight leading-8">
           Source
         </div>
@@ -11,12 +11,12 @@
         </div>
       </div>
       <div class="flex items-center ml-6">
-        <button class="hidden sm:inline-flex" mat-stroked-button>
+        <!-- <button class="hidden sm:inline-flex" mat-stroked-button>
           <mat-icon
             class="icon-size-5"
             [svgIcon]="'heroicons_solid:cog'"></mat-icon>
           <span class="ml-2">Settings</span>
-        </button>
+        </button> -->
 
         <!-- Actions menu (visible on xs) -->
         <div class="sm:hidden">
@@ -25,7 +25,7 @@
           </button>
           <mat-menu #actionsMenu="matMenu">
             <button mat-menu-item>Export</button>
-            <button mat-menu-item>Settings</button>
+            <!-- <button mat-menu-item>Settings</button> -->
           </mat-menu>
         </div>
       </div>

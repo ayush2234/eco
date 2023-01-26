@@ -96,7 +96,8 @@ const config = {
                 'spin-slow': 'spin 3s linear infinite'
             },
             colors                  : {
-                gray: colors.slate
+                gray: colors.slate,
+                'custom-blue' : '#2219b7'
             },
             flex                    : {
                 '0': '0 0 auto'
