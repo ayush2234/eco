@@ -23,7 +23,8 @@ export interface SourceInstance {
   need_auth: boolean;
   connection_status: boolean;
   last_connection_time: string;
-  source_platform: string;
+  source_platform?: string;
+  source?: Source;
 }
 
 export interface Source {
@@ -32,6 +33,8 @@ export interface Source {
   icon?: string;
   description: string;
   is_beta: string;
+  is_custom?: string;
+  force_connection_test?: string;
   is_installed: string;
   source_platform: string;
   source_install_name?: string;

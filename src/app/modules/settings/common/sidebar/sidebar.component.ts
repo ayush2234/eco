@@ -102,19 +102,19 @@ export class SettingsSidebarComponent {
         type: 'group',
         children: [
           {
-            title: 'All Integrations',
-            type: 'basic',
-            icon: 'heroicons_outline:clipboard-list',
-            link: 'integrations',
-          },
-          {
-            title: 'Source channel',
+            title: 'Sources',
             type: 'basic',
             icon: 'heroicons_outline:clipboard-copy',
             link: 'source-channel',
           },
           {
-            title: 'Custom integration request',
+            title: 'Integrations',
+            type: 'basic',
+            icon: 'heroicons_outline:clipboard-list',
+            link: 'integrations',
+          },
+          {
+            title: 'Custom request',
             type: 'basic',
             icon: 'heroicons_outline:clipboard-check',
             link: 'custom-integration-request',

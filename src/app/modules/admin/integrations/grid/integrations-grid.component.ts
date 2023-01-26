@@ -115,6 +115,7 @@ export class IntegrationsGridComponent
       is_beta: [''],
       is_custom: [''],
       force_test_connection: [''],
+      need_auth: [''],
       channel_platform: [''],
       created_at: [''],
       notes: [''],
