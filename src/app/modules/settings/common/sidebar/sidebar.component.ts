@@ -4,14 +4,18 @@ import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types
 @Component({
   selector: 'eco-settings-sidebar',
   template: `
-    <div class="py-10">
+    <div class="py-8">
       <!-- Add any extra content that might be supplied with the component -->
       <div class="extra-content">
         <ng-content></ng-content>
       </div>
 
       <!-- Fixed demo sidebar -->
-      <div class="mx-6 text-3xl font-bold tracking-tighter">Settings</div>
+      <div class="
+        mx-6 text-3xl font-bold tracking-tighter h-14
+        flex items-center
+      "
+      >Settings</div>
       <fuse-vertical-navigation
         [appearance]="'default'"
         [navigation]="menuData"
@@ -94,7 +98,7 @@ export class SettingsSidebarComponent {
         ],
       },
       {
-        title: 'Integrations',
+        title: 'Connections',
         type: 'group',
         children: [
           {
@@ -117,69 +121,69 @@ export class SettingsSidebarComponent {
           },
         ],
       },
-      {
-        title: 'PIM Settings',
-        type: 'group',
-        children: [
-          {
-            title: 'Categories',
-            type: 'collapsable',
-            icon: 'heroicons_outline:cog',
-            children: [
-              {
-                title: 'Tasks',
-                type: 'basic',
-              },
-              {
-                title: 'Users',
-                type: 'basic',
-              },
-              {
-                title: 'Teams',
-                type: 'basic',
-              },
-            ],
-          },
-          {
-            title: 'Custom fields',
-            type: 'collapsable',
-            icon: 'heroicons_outline:user-circle',
-            children: [
-              {
-                title: 'Personal',
-                type: 'basic',
-              },
-              {
-                title: 'Payment',
-                type: 'basic',
-              },
-              {
-                title: 'Security',
-                type: 'basic',
-              },
-            ],
-          },
-          {
-            title: 'Source mapping',
-            type: 'collapsable',
-            icon: 'heroicons_outline:user-circle',
-            children: [
-              {
-                title: 'Personal',
-                type: 'basic',
-              },
-              {
-                title: 'Payment',
-                type: 'basic',
-              },
-              {
-                title: 'Security',
-                type: 'basic',
-              },
-            ],
-          },
-        ],
-      },
+      // {
+      //   title: 'PIM Settings',
+      //   type: 'group',
+      //   children: [
+      //     {
+      //       title: 'Categories',
+      //       type: 'collapsable',
+      //       icon: 'heroicons_outline:cog',
+      //       children: [
+      //         {
+      //           title: 'Tasks',
+      //           type: 'basic',
+      //         },
+      //         {
+      //           title: 'Users',
+      //           type: 'basic',
+      //         },
+      //         {
+      //           title: 'Teams',
+      //           type: 'basic',
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       title: 'Custom fields',
+      //       type: 'collapsable',
+      //       icon: 'heroicons_outline:user-circle',
+      //       children: [
+      //         {
+      //           title: 'Personal',
+      //           type: 'basic',
+      //         },
+      //         {
+      //           title: 'Payment',
+      //           type: 'basic',
+      //         },
+      //         {
+      //           title: 'Security',
+      //           type: 'basic',
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       title: 'Source mapping',
+      //       type: 'collapsable',
+      //       icon: 'heroicons_outline:user-circle',
+      //       children: [
+      //         {
+      //           title: 'Personal',
+      //           type: 'basic',
+      //         },
+      //         {
+      //           title: 'Payment',
+      //           type: 'basic',
+      //         },
+      //         {
+      //           title: 'Security',
+      //           type: 'basic',
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
       {
         type: 'divider',
       },
