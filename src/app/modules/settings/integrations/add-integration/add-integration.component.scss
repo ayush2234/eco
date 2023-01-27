@@ -9,15 +9,6 @@
       .mat-form-field-flex {
         border: none;
         border-radius: 0;
-
-        &:first-child {
-          border-top-left-radius: 0.375rem;
-          border-top-right-radius: 0.375rem;
-        }
-        &:last-child {
-          border-bottom-left-radius: 0.375rem;
-          border-bottom-right-radius: 0.375rem;
-        }
   
         .mat-form-field-prefix {
           width: 50%;
@@ -25,9 +16,115 @@
   
         .mat-form-field-infix {
           width: 50%;
+          padding-left: 10px;
         }
       }
     }
+  }
+  // .mapping-table .mat-form-field-appearance-fill.mat-form-field-disabled .mat-form-field-flex, body .light .mat-form-field-appearance-fill.mat-form-field-disabled .mat-form-field-flex {
+  //   &:last-child {
+  //     border-bottom-left-radius: 0.375rem;
+  //     border-bottom-right-radius: 0.375rem;
+  //   }
+  // }
+  // .mapping-table {
+  //   .fuse-mat-emphasized-affix {
+  //     .mat-form-field-wrapper {
+  //       .mat-form-field-flex {
+  //         &:last-child {
+  //           border-bottom-left-radius: 0.375rem;
+  //           border-bottom-right-radius: 0.375rem;
+  //         }
+    
+  //       }
+  //     }
+  //   }
+  // }
+
+  .fuse-mat-emphasized-affix {
+    .mat-form-field-wrapper {
+      .mat-form-field-flex {
+        border-radius: 0;
+
+        .mat-form-field-prefix {
+          border-radius: 0 !important;
+        }
+      }
+
+      .mat-form-field-flex:last-child {
+        border-bottom-left-radius: 0.375rem !important;
+        border-bottom-right-radius: 0.375rem !important;
+      }
+
+      .mat-form-field-flex:last-child .mat-form-field-prefix {
+        border-bottom-left-radius: 0.375rem !important;
+        border-top-left-radius: 0 !important;
+      }
+    }
+  }
+
+  .mapping-table:last-child {
+    .fuse-mat-emphasized-affix {
+      .mat-form-field-wrapper {
+        .mat-form-field-flex {
+          border-bottom-left-radius: 0.375rem !important;
+          border-bottom-right-radius: 0.375rem !important;
+  
+          .mat-form-field-prefix {
+            border-bottom-left-radius: 0.375rem !important;
+          border-top-left-radius: 0 !important;
+          }
+        }
+      }
+    }
+  }
+
+  .mapping-head {
+    .fuse-mat-emphasized-affix {
+      .mat-form-field-wrapper {
+        .mat-form-field-flex {
+          border-top-left-radius: 0.375rem;
+          border-top-right-radius: 0.375rem;
+
+          .mat-form-field-prefix {
+            border-top-left-radius: 0.375rem !important;
+            border-bottom-left-radius: 0 !important;
+          }
+        }
+      }
+    }
+  }
+
+  .fuse-mat-emphasized-affix .mat-form-field-wrapper .mat-form-field-flex {
+    background-color: #F1F5F9 !important;
+  }
+
+  .mat-form-field.mat-form-field-appearance-fill.fuse-mat-emphasized-affix .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-prefix, .mat-form-field.mat-form-field-appearance-fill.fuse-mat-emphasized-affix .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-suffix {
+    background-color: white !important;
+  }
+
+  .mat-form-field.mat-form-field-appearance-fill.fuse-mat-emphasized-affix:hover .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-prefix, .mat-form-field.mat-form-field-appearance-fill.fuse-mat-emphasized-affix:hover .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-suffix {
+    background-color: #E0E7FF !important;
+  }
+
+  .mat-form-field:hover {
+    .mat-form-field-flex {
+      background-color: #E0E7FF !important;
+    }
+  }
+
+  .selected-field.mat-form-field.mat-form-field-appearance-fill.fuse-mat-emphasized-affix .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-prefix, .selected-field.mat-form-field.mat-form-field-appearance-fill.fuse-mat-emphasized-affix .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-suffix {
+    background-color: #E0E7FF !important;
+  }
+
+  .selected-field.mat-form-field {
+    .mat-form-field-flex {
+      background-color: #E0E7FF !important;
+    }
+  }
+
+  .mat-form-field.mat-form-field-appearance-fill.mat-form-field-disabled {
+    opacity: 1 !important;
   }
 
   .required-map-color {
@@ -58,11 +155,11 @@
     }
   }
 
-  .mapping-head {
-    .hover-btn {
-      visibility: hidden;
-    }
 
+  .hover-btn {
+    visibility: hidden;
+  }
+  .active-hover {
     &:hover {
       .hover-btn {
         visibility: visible;
