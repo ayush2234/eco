@@ -155,8 +155,12 @@ export class UserService {
           LocalStorageUtils.tokenExpirationDate = user?.expire_at;
           if (user.role === 'masterUser' || user.role === 'user') {
             if (user.companies && user.companies.length > 0) {
-              LocalStorageUtils.companyId = user.companies[0].company_id;
-              LocalStorageUtils.companyName = user.companies[0].company_name;
+              if (!LocalStorageUtils.companyId) {
+                LocalStorageUtils.companyId = user.companies[0].company_id;
+              }
+              if (!LocalStorageUtils.companyName) {
+                LocalStorageUtils.companyName = user.companies[0].company_name;
+              }
             } else {
               this._router.navigate(['not-authorized']);
             }

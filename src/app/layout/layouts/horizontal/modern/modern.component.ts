@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import {
@@ -12,8 +11,9 @@ import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/core/user/user.service';
 import { AuthService } from 'app/core/auth/auth.service';
 import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
-import { SyncLogsService } from 'app/modules/user/sync-logs/sync-logs.service';
-import { FormControl } from '@angular/forms';
+
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'modern-layout',
   styles: [
@@ -22,10 +22,13 @@ import { FormControl } from '@angular/forms';
         .mat-select-trigger
         .mat-select-value
         .mat-select-value-text {
-        color: white;
+        color: white !important;
       }
       .mat-select-panel-wrap {
         margin-top: 15%;
+      }
+      .companyList .mat-select-placeholder {
+        color: white !important;
       }
     `,
   ],
@@ -38,11 +41,11 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
   user: User;
   role: string;
   companyName: string;
+  selectedCompanyName: string;
   companies = [];
   filteredCompanyTags = [];
+  showFilter: boolean = false;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
-  companyId = new FormControl(LocalStorageUtils.companyId);
-
   /**
    * Constructor
    */
@@ -52,7 +55,7 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
     private _fuseNavigationService: FuseNavigationService,
     private _userService: UserService,
     private authService: AuthService,
-    private _syncLogService: SyncLogsService
+    private _router: Router
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -75,7 +78,6 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
    */
 
   ngOnInit(): void {
-    console.log(this.companyId.value);
     //get role of current logged in user
     this.role = this.authService.role;
     //get companies list of an user
@@ -87,7 +89,8 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
       .subscribe((navigation: Navigation) => {
         this.navigation = navigation;
       });
-
+    //selected Company Name
+    this.selectedCompanyName = LocalStorageUtils.companyName;
     // Subscribe to media changes
     this._fuseMediaWatcherService.onMediaChange$
       .pipe(takeUntil(this._unsubscribeAll))
@@ -108,6 +111,11 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
               : 'Wolfgroup';
         }
       });
+    if (this.companies.length >= 10) {
+      this.showFilter = true;
+    } else {
+      this.showFilter = false;
+    }
   }
   showSettings() {
     if (this.role === 'masterUser') {
@@ -135,6 +143,7 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
       return false;
     }
   }
+
   /**
    * On destroy
    */
@@ -165,12 +174,8 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
       navigation.toggle();
     }
   }
-  selectedCompany(event) {
-    LocalStorageUtils.companyId = event.value;
-    this._syncLogService.getSyncLogOrders().subscribe(res => {
-      // console.log(res);
-    });
-  }
+
+  //Filters companies
   filterCompanyTags(event): void {
     // Get the value
     const value = event.target.value.toLowerCase();
@@ -178,22 +183,15 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
     this.filteredCompanyTags = this.companies.filter(tag =>
       tag.company_name.toLowerCase().includes(value)
     );
-
-    console.log(this.filteredCompanyTags);
   }
-  filterCompanyTagsInputKeyDown(event): void {
-    // Return if the pressed key is not 'Enter'
-    if (event.key !== 'Enter') {
-      return;
-    }
 
-    // If there is no tag available...
-    if (this.filteredCompanyTags.length === 0) {
-      // Clear the input
-      event.target.value = '';
-
-      // Return
-      return;
-    }
+  //selected Company
+  selectedCompany(event) {
+    LocalStorageUtils.companyId = event.value.company_id;
+    LocalStorageUtils.companyName = event.value.company_name;
+    this._router.navigate(['/user/dashboard/integration-status']);
+  }
+  trackByFn(index: number, item: any): any {
+    return item?.id || index;
   }
 }
