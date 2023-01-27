@@ -25,9 +25,14 @@
   
         .mat-form-field-infix {
           width: 50%;
+          padding-left: 10px;
         }
       }
     }
+  }
+
+  .mat-form-field.mat-form-field-appearance-fill.mat-form-field-disabled {
+    opacity: 1 !important;
   }
 
   .required-map-color {
