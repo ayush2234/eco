@@ -83,47 +83,48 @@
           class="flex items-center w-full px-0 py-8 border-t hidden sm:block">
           <div class="flex flex-col w-full ml-1 overflow-hidden">
             <div
+              *ngIf="showCompany()"
               class="w-full whitespace-nowrap text-ellipsis overflow-hidden leading-normal text-current text-sm">
               {{ companyName }}
             </div>
             <div
-              *ngIf="showCompany()"
+              *ngIf="showSwitchCompany()"
+              class="w-full whitespace-nowrap text-ellipsis overflow-hidden leading-normal text-current text-sm">
+              <mat-select
+                [formControl]="companyControl"
+                class="companyList"
+                (selectionChange)="selectedCompany($event)">
+                <mat-option disabled *ngIf="showFilter">
+                  <mat-icon
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                  <input
+                    class="min-w-0 ml-2 py-1 border-0"
+                    type="text"
+                    matInput
+                    [formControl]="filterText"
+                    placeholder="Search Company" />
+                </mat-option>
+                <mat-divider></mat-divider>
+
+                <ng-container *ngIf="filteredOptions | async as company">
+                  <mat-option disabled *ngIf="company.length == 0"
+                    >No Companies Found</mat-option
+                  >
+                  <mat-option
+                    *ngFor="let opt of companies; trackBy: trackByFn"
+                    [value]="opt.company_id"
+                    [ngStyle]="getOptionStyle(opt, company)"
+                    >{{ opt.company_name }}</mat-option
+                  >
+                </ng-container>
+              </mat-select>
+            </div>
+            <div
               class="w-full whitespace-nowrap text-xs text-ellipsis overflow-hidden leading-normal text-current opacity-50">
               {{ user?.name }}
             </div>
-            <div
-              *ngIf="showSwitchCompany()"
-              class="w-full whitespace-nowrap flex text-sm text-ellipsis overflow-hidden leading-normal text-current opacity-50">
-              <mat-select
-                placeholder="{{ selectedCompanyName }}"
-                class="companyList"
-                (selectionChange)="selectedCompany($event)">
-                <div
-                  class="flex items-center -my-px py-2 px-3"
-                  *ngIf="showFilter">
-                  <div class="flex items-center flex-auto min-w-0">
-                    <mat-icon
-                      class="icon-size-5"
-                      [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                    <input
-                      class="min-w-0 ml-2 py-1 border-0"
-                      type="text"
-                      placeholder="Search company"
-                      (input)="filterCompanyTags($event)"
-                      [maxLength]="50"
-                      #newTagInput />
-                  </div>
-                </div>
-                <mat-option
-                  *ngFor="
-                    let company of filteredCompanyTags;
-                    trackBy: trackByFn
-                  "
-                  [value]="company"
-                  >{{ company?.company_name }}</mat-option
-                >
-              </mat-select>
-            </div>
+
             <!-- <div
               class="w-full mt-0.5 whitespace-nowrap text-sm text-ellipsis overflow-hidden leading-normal text-current opacity-50">
               {{ user.email }}
