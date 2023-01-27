@@ -1,8 +1,8 @@
 <div class="flex flex-col flex-auto w-full">
-  <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
+  <div class="flex flex-wrap w-full max-w-screen-xl mx-auto">
     <!-- Title and action buttons -->
     <div class="flex items-center justify-between w-full">
-      <div>
+      <div class="h-14 flex flex-col justify-center">
         <div class="text-3xl font-semibold tracking-tight leading-8">
           Source
         </div>
@@ -11,12 +11,12 @@
         </div>
       </div>
       <div class="flex items-center ml-6">
-        <button class="hidden sm:inline-flex" mat-stroked-button>
+        <!-- <button class="hidden sm:inline-flex" mat-stroked-button>
           <mat-icon
             class="icon-size-5"
             [svgIcon]="'heroicons_solid:cog'"></mat-icon>
           <span class="ml-2">Settings</span>
-        </button>
+        </button> -->
 
         <!-- Actions menu (visible on xs) -->
         <div class="sm:hidden">
@@ -25,7 +25,7 @@
           </button>
           <mat-menu #actionsMenu="matMenu">
             <button mat-menu-item>Export</button>
-            <button mat-menu-item>Settings</button>
+            <!-- <button mat-menu-item>Settings</button> -->
           </mat-menu>
         </div>
       </div>
@@ -48,11 +48,11 @@
             </div>
             <div class="flex-1 min-w-0">
               <p
-                class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                {{ instance.name }}
+                class="text-[13px] font-medium text-gray-900 truncate dark:text-white">
+                {{ instance.source.name }}
               </p>
-              <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                {{ instance.source_install_name }}
+              <p class="text-[13px] text-gray-500 truncate dark:text-gray-400">
+                {{ instance.name }}
               </p>
             </div>
           </div>
@@ -65,7 +65,7 @@
                 {{ instance.connection_status ? 'Connected' : 'Not Connected' }}
               </span>
               <span
-                class="text-sm text-gray-500"
+                class="text-[13px] text-gray-500"
                 *ngIf="instance.last_connection_time">
                 <!-- {{ moment(instance.last_connection_time).fromNow() }} -->
                 since
@@ -76,7 +76,7 @@
             </p>
           </div>
           <div class="flex items-center space-x-4">
-            <p class="text-sm p-8 pt-2 text-secondary">
+            <p class="text-[13px] p-8 pt-2 text-secondary">
               {{ instance.description }}
             </p>
           </div>
@@ -120,16 +120,16 @@
             </div>
             <div class="flex-1 min-w-0">
               <p
-                class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                class="text-[13px] font-medium text-gray-900 truncate dark:text-white">
                 {{ source.name }}
               </p>
-              <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+              <p class="text-[13px] text-gray-500 truncate dark:text-gray-400">
                 {{ '' }}
               </p>
             </div>
           </div>
           <div class="flex items-center space-x-4">
-            <p class="text-sm p-8 pt-2 text-secondary">
+            <p class="text-[13px] p-8 pt-2 text-secondary">
               {{ source.description }}
             </p>
           </div>

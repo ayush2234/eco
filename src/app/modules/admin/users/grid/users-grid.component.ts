@@ -330,7 +330,7 @@ export class UsersGridComponent implements OnInit, AfterViewInit, OnDestroy {
   removeCompanyTagFromUser(tag: Tag): void {
     // Remove the tag
     this.selectedUser.companies.splice(
-      this.selectedUser.companies.findIndex(item => item.company_id === tag.id),
+      this.selectedUser.companies.findIndex((item: any) => item === tag.id),
       1
     );
 

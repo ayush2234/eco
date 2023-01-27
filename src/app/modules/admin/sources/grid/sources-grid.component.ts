@@ -106,6 +106,7 @@ export class SourcesGridComponent implements OnInit, AfterViewInit, OnDestroy {
       is_beta: [''],
       is_custom: [''],
       force_connection_test: [''],
+      need_auth: [''],
       source_platform: ['', Validators.required],
       dateCreated: [''],
       dateUpdated: [''],

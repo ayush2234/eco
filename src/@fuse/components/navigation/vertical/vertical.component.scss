@@ -2,3 +2,9 @@
 @use 'styles/appearances/compact';
 @use 'styles/appearances/dense';
 @use 'styles/appearances/thin';
+
+.fuse-vertical-navigation-item-wrapper {
+  mat-icon {
+    margin-left: -2px;
+  }
+}

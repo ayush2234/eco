@@ -83,7 +83,10 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
   }
 
   createForm(): void {
-    switch (SourceFormEnum[this.selectedSource.source_platform]) {
+    switch (SourceFormEnum[
+      this.isEdit ? this.selectedSource.source.source_platform :
+      this.selectedSource.source_platform
+    ]) {
       case SourceFormEnum.maropost:
         // Create the form maropostSource
         this.sourceForm = this._formBuilder.group({
@@ -168,7 +171,10 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
       return;
     }
     if (
-      SourceFormEnum[this.selectedSource.source_platform] ==
+      SourceFormEnum[
+        this.isEdit ? this.selectedSource.source.source_platform :
+        this.selectedSource.source_platform
+      ] ==
       SourceFormEnum.maropost
     ) {
       this._sourceService
@@ -200,6 +206,11 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
     payload.source_id = this.selectedSource.source_id;
     payload.name = this.selectedSource.name;
     payload.active_status = 'Y';
+    // payload.last_connection_time = new Date().toString();
+    // payload.connection_status =
+    //   this.verificationData && this.verificationData.access_token
+    //     ? true
+    //     : false;
     payload.connectionPanel.attributes = this.getAttributes();
     this._sourceService
       .createSourceInstance(LocalStorageUtils.companyId, payload)
@@ -217,7 +228,15 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
           ? 'Y'
           : 'N'
         : this.selectedSourceInstance.active_status;
-    payload.connectionPanel.attributes = this.getAttributes();
+    // payload.connection_status = this.selectedSourceInstance.connection_status
+    //   ? this.selectedSourceInstance.connection_status
+    //   : this.verificationData && this.verificationData.access_token
+    //   ? true
+    //   : false;
+    // payload.last_connection_time = new Date().toString();
+    payload.connectionPanel.attributes = this.verificationData
+      ? this.getAttributes()
+      : this.selectedSourceInstance.connectionPanel.attributes;
     this._sourceService
       .updateSourceInstance(
         LocalStorageUtils.companyId,
@@ -245,10 +264,23 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
       | MagentoAttributes
       | DearAttributes
       | any;
-    switch (SourceFormEnum[this.selectedSource.source_platform]) {
+    switch (SourceFormEnum[
+      this.isEdit ? this.selectedSource.source.source_platform :
+      this.selectedSource.source_platform
+    ]) {
       case SourceFormEnum.maropost:
-        attribute = this.verificationData;
+        attribute =
+          this.verificationData && this.verificationData.error
+            ? null
+            : this.verificationData;
         attribute.storeUrl = this.sourceForm.get('storeUrl').value;
+        attribute['connection_status'] = this.selectedSourceInstance
+          .connection_status
+          ? this.selectedSourceInstance.connection_status
+          : this.verificationData && this.verificationData.access_token
+          ? true
+          : false;
+        attribute['last_connection_time'] = new Date().toString();
         break;
       case SourceFormEnum.salsify:
         attribute = new SalsifyAttributes();
