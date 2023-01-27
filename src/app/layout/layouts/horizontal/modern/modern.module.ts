@@ -17,6 +17,8 @@ import { ShortcutsModule } from 'app/layout/common/shortcuts/shortcuts.module';
 import { UserModule } from 'app/layout/common/user/user.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { ModernLayoutComponent } from 'app/layout/layouts/horizontal/modern/modern.component';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [ModernLayoutComponent],
@@ -38,6 +40,8 @@ import { ModernLayoutComponent } from 'app/layout/layouts/horizontal/modern/mode
     ShortcutsModule,
     UserModule,
     SharedModule,
+    MatSelectModule,
+    FormsModule,
   ],
   exports: [ModernLayoutComponent],
 })
