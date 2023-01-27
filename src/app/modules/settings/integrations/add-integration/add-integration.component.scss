@@ -58,11 +58,11 @@
     }
   }
 
-  .mapping-head {
-    .hover-btn {
-      visibility: hidden;
-    }
 
+  .hover-btn {
+    visibility: hidden;
+  }
+  .active-hover {
     &:hover {
       .hover-btn {
         visibility: visible;

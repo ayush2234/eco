@@ -181,14 +181,16 @@ export abstract class SyncOptionComponent implements OnDestroy {
           const valueList = this.valuesList.find(vl => vl.code === option.values_list)
           this.availableOptionsTypes.push({
             value_option: option,
-            valueList
+            valueList,
+            isExpanded: this.availableOptionsTypes.length ? false : true
           })
           break;
         case VALUE_OPTION_TYPE.text_input: 
         case VALUE_OPTION_TYPE.decimal_input:
           this.availableOptionsTypes.push({
             value_option: option,
-            valueList: []
+            valueList: [],
+            isExpanded: false
           })
           break;
         case VALUE_OPTION_TYPE.categories:
@@ -199,6 +201,20 @@ export abstract class SyncOptionComponent implements OnDestroy {
       }
     });
 
+    console.log(this.availableOptionsTypes);
+  }
+
+  /**
+   * Toggles expansion of options.
+   *
+   * @param index Represents the index of available options
+   */
+  toggleOptionsExpansion(index: number): void {
+    this.availableOptionsTypes.forEach((option, i, options) => {
+      if(index === i) {
+        options[i].isExpanded = !options[i].isExpanded;
+      }
+    })
     console.log(this.availableOptionsTypes);
   }
 

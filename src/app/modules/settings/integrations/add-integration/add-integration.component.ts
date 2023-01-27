@@ -23,9 +23,9 @@ import { SyncOptionComponent } from './common/sync-option/sync-option.component'
 import { IntegrationInstance, SyncOption } from '../integration.types';
 
 const badgeActiveClasses =
-  'px-2 bg-green-500 text-sm text-on-primary rounded-full';
+  'px-2 bg-[#4FD1C5] text-sm text-on-primary rounded-full';
 const badgeInactiveClasses =
-  'px-2 bg-primary text-sm text-on-primary rounded-full';
+  'px-2 bg-[#DE3A3A] text-sm text-on-primary rounded-full';
 const addIntegrationPanels = [
   {
     code: 'connection',
