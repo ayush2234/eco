@@ -28,7 +28,7 @@
                 {{ isAddIntegration ? 'Add' : 'Configure' }} Integration
               </div>
               <div class="font-bold text-disabled mt-2">
-                {{ isAddIntegration ? instance?.integration.name : instance.name }}
+                {{ instance.name }}
               </div>
             </div>
             
@@ -45,7 +45,7 @@
               <div
                 class="flex px-8 py-5 cursor-pointer"
                 [ngClass]="{
-                  'hover:bg-gray-100 dark:hover:bg-hover': !panel.isActive,
+                  'hover:bg-primary-50 dark:hover:bg-hover': !panel.isActive,
                   'bg-primary-50 dark:bg-hover': panel.isActive
                 }"
                 (click)="goToPanel(panel.code)">
@@ -135,7 +135,7 @@
                       (click)="toggleMappingToDo()"
                       mat-stroked-button
                     >
-                      <span class="ml-2">Mapping to do</span>
+                      <span>Mapping to do</span>
                     </button>
                     <button
                       *ngIf="validate"
@@ -143,7 +143,7 @@
                       mat-flat-button
                       (click)="toggleMappingToDo()"
                       [color]="'primary'">
-                      <span class="ml-2">Mapping to do</span>
+                      <span>Mapping to do</span>
                     </button>
                   </div>
                 </div>
@@ -212,10 +212,9 @@
                         *ngIf="isConditionSatisfied(field)"
                       >
                         <div
-                          class="sm:col-span-4 last:border-none border-b cursor-pointer"
+                          class="sm:col-span-4 last:border-none border-b cursor-pointer mapping-table"
                           (click)="goToField(field)"
                           [ngClass]="{
-                            'bg-primary-200': selectedField && selectedField.code === field.code,
                             'required-map-color': field.required && field.selected_value.code === '',
                             'optional-map-color': !field.required && field.selected_value.code === ''
                           }"
@@ -223,7 +222,8 @@
                           <mat-form-field
                             class="fuse-mat-no-subscript fuse-mat-emphasized-affix my-0 w-full"
                             [ngClass]="{
-                              'text-[#4F46E5]': selectedField && selectedField.code === field.code
+                              'bg-primary-200': selectedField && selectedField.code === field.code,
+                              'selected-field': selectedField && selectedField.code === field.code
                             }"
                           >
                             <div class="text-secondary w-full sm:w-full mr-0" matPrefix
@@ -290,7 +290,8 @@
                             <mat-form-field
                               class="fuse-mat-no-subscript fuse-mat-emphasized-affix my-0 w-full"
                               [ngClass]="{
-                                'text-primary-800': selectedField && selectedField.code === children.code
+                                'text-primary-200': selectedField && selectedField.code === children.code,
+                                'selected-field': selectedField && selectedField.code === children.code
                               }"
                             >
                               <div class="text-secondary w-full sm:w-full mr-0" matPrefix
