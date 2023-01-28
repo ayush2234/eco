@@ -15,7 +15,7 @@
       <mat-drawer-container class="flex-auto sm:h-full">
         <!-- Drawer -->
         <mat-drawer
-          class="sm:w-80 dark:bg-gray-900"
+          class="sm:w-90 dark:bg-gray-900"
           [autoFocus]="false"
           [mode]="drawerMode"
           [opened]="drawerOpened"
@@ -27,7 +27,7 @@
               <div class="text-3xl font-bold tracking-tight leading-none">
                 {{ isAddIntegration ? 'Add' : 'Configure' }} Integration
               </div>
-              <div class="font-bold text-disabled mt-2">
+              <div class="text-disabled mt-2">
                 {{ instance.name }}
               </div>
             </div>
@@ -177,7 +177,7 @@
                     <!-- Static Field -->
                     <div class="sm:col-span-4 border-b mapping-head">
                       <mat-form-field
-                        class="fuse-mat-no-subscript fuse-mat-emphasized-affix my-0 w-full">
+                        class="fuse-mat-no-subscript fuse-mat-emphasized-affix static-header my-0 w-full">
                         <div class="text-[#1E293B] w-full sm:w-full" matPrefix>
                           <div class="flex items-center justify-between">
                             <div class="flex items-center ">
@@ -220,13 +220,13 @@
                           }"
                         >
                           <mat-form-field
-                            class="fuse-mat-no-subscript fuse-mat-emphasized-affix my-0 w-full"
+                            class="fuse-mat-no-subscript fuse-mat-emphasized-affix dynamic-rows my-0 w-full"
                             [ngClass]="{
                               'bg-primary-200': selectedField && selectedField.code === field.code,
                               'selected-field': selectedField && selectedField.code === field.code
                             }"
                           >
-                            <div class="text-secondary w-full sm:w-full mr-0" matPrefix
+                            <div class="text-secondary w-full sm:w-full" matPrefix
                               [ngClass]="{
                                 'text-[#4F46E5] font-semibold': selectedField && selectedField.code === field.code,
                                 'active-hover': selectedField && selectedField.code === field.code
@@ -288,7 +288,7 @@
                             }"
                           >
                             <mat-form-field
-                              class="fuse-mat-no-subscript fuse-mat-emphasized-affix my-0 w-full"
+                              class="fuse-mat-no-subscript fuse-mat-emphasized-affix dynamic-rows my-0 w-full child-input-parent"
                               [ngClass]="{
                                 'text-primary-200': selectedField && selectedField.code === children.code,
                                 'selected-field': selectedField && selectedField.code === children.code
@@ -304,9 +304,10 @@
                                     <span *ngIf="children.required" class="text-red-600">*</span>
                                   </span>
                                   <span *ngIf="!children.code.length">
-                                    <mat-form-field class="fuse-mat-no-subscript w-full">
+                                    <mat-form-field class="fuse-mat-no-subscript w-full child-form-field  child-input" #inputRef>
                                       <input 
                                         matInput 
+                                        placeholder="Enter code..."
                                         [(ngModel)]="children.label"
                                         (keyup.enter)="setChildrenLabel(children)"
                                       />
@@ -347,7 +348,7 @@
                       </div>
                     </div>
                     
-                    <div class="py-3 px-2" *ngIf="selectedField && availableOptionsTypes">
+                    <div class="py-1 px-2" *ngIf="selectedField && availableOptionsTypes">
                       <ng-container *ngFor="let valueOption of availableOptionsTypes; let i=index">
                         <!-- Values list options -->
                         <ng-container *ngIf="
@@ -356,7 +357,7 @@
                         ">
                           <div>
                             <ng-container>
-                              <div class="flex items-center cursor-pointer">
+                              <div class="flex py-2 items-center cursor-pointer">
                                 <div
                                   (click)="toggleOptionsExpansion(i)"
                                 >
@@ -373,7 +374,7 @@
                               </div>
                               <ng-container *ngIf="valueOption.isExpanded">
                                 <div
-                                  class="ml-16 mt-2 text-[#64748B] font-normal cursor-pointer" 
+                                  class="pl-16 py-2 text-[#64748B] option-tab-value font-normal cursor-pointer" 
                                   *ngFor="let option of valueOption.valueList.values"
                                   (click)="selectOption(option)">
                                   {{option.label}}
