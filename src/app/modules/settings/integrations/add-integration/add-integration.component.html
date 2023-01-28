@@ -300,7 +300,7 @@
                                 }"
                               >
                                 <div class="flex items-center ml-14">
-                                  <span *ngIf="children.code.length" class="truncate block">{{children.label}}
+                                  <span *ngIf="children.code.length" class="truncate block" (click)="children.code = ''">{{children.label}}
                                     <span *ngIf="children.required" class="text-red-600">*</span>
                                   </span>
                                   <span *ngIf="!children.code.length">
