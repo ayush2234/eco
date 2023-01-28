@@ -33,7 +33,7 @@ export class UserGuard implements CanActivate {
     if (
       (url.match('/user/settings/integrations') ||
         url.match('/user/settings/source-channel') ||
-        url.match('/user/settings/custom-integration-request') ||
+        url.match('/user/settings/custom-request') ||
         url.match('/user/settings/users')) &&
       (role === 'masterUser' ||
         (role === 'superAdmin' && impersonate) ||
