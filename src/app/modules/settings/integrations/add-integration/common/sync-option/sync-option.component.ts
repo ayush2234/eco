@@ -231,7 +231,11 @@ export abstract class SyncOptionComponent implements OnDestroy {
     
     if (this.searchKeyword) {
       this.filteredAvailableOptionsTypes = this.availableOptionsTypes.filter(option => {
-        return option.valueList.label.match(regexToMatch) || option.valueList.values.filter(value => value.label.match(regexToMatch)).length;
+        try {
+          return option.valueList.label.match(regexToMatch) || option.valueList.values.filter(value => value.label.match(regexToMatch)).length;
+        } catch (error) {
+          return true;
+        }
       });
     } else {
       this.filteredAvailableOptionsTypes = [ ...this.availableOptionsTypes ];
