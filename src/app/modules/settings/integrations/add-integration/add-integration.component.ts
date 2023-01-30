@@ -172,7 +172,7 @@ export class AddIntegrationComponent
     }
   
     // Close the drawer on 'over' mode
-    if (this.drawerMode === 'over') {
+    if (this.drawerMode === 'over' && this.drawer) {
       this.drawer.close();
     }
   }

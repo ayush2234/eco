@@ -237,10 +237,9 @@
                                 class="flex items-center justify-between"
                               >
                                 <div class="flex items-center">
-                                  <img *ngIf="!selectedField || selectedField.code !== field.code" class="w-5 parent-field-icon" src="assets/icons/attribute.svg" />
-                                  <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null" class="w-5 parent-field-icon" src="assets/icons/active-attribute.svg" />
-                                  <span class="truncate block ml-2" *ngIf="field.code.length" (click)="field.code = ''">{{field.label}}
-                                    <span *ngIf="field.required" class="text-red-600">*</span>
+                                  <img *ngIf="!selectedField || selectedField.code !== field.code" class="w-4 parent-field-icon" src="assets/icons/attribute.svg" />
+                                  <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null" class="w-4 parent-field-icon" src="assets/icons/active-attribute.svg" />
+                                  <span class="truncate block ml-2" *ngIf="field.code.length">{{field.label}}
                                   </span>
                                   <span *ngIf="!field.code.length">
                                     <mat-form-field class="fuse-mat-no-subscript w-full parent-form-field  child-input" >
@@ -250,13 +249,46 @@
                                         [(ngModel)]="field.label"
                                         (keyup.enter)="setFieldLabel(field)"
                                         (focusout)="setFieldLabel(field)"
+                                        id="parent_{{parentIndex}}"
                                       />
                                     </mat-form-field>
                                   </span>
                                 </div>
+                                <div class="ml-auto mr-1 required-badge" *ngIf="field.required">
+                                  Required
+                                </div>
                                 <div>
+                                  <ng-container *ngIf="isParentEditable(parentIndex)">
+                                    <button
+                                      class="min-w-0 mr-1 min-h-0 w-6 h-6 p-0" mat-stroked-button
+                                      (click)="setFieldLabel(field)"
+                                      *ngIf="!field.code.length"
+                                    >
+                                      <mat-icon
+                                        class="icon-size-4 text-primary"
+                                        [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                                    </button>
+                                    <button
+                                      class="min-w-0 min-h-0 w-6 h-6 p-0" mat-stroked-button
+                                      (click)="editParent(field)"
+                                      *ngIf="field.code.length"
+                                    >
+                                      <mat-icon
+                                        class="icon-size-4 text-primary"
+                                        [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                                    </button>
+                                    <button
+                                      class="min-w-0 min-h-0 w-6 h-6 p-0 ml-1" mat-stroked-button
+                                      (click)="removeParent(parentIndex)"
+                                      *ngIf="field.code.length"
+                                    >
+                                      <mat-icon
+                                        class="icon-size-4 text-red-600"
+                                        [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                    </button>
+                                  </ng-container>
                                   <button
-                                    class="min-w-0 min-h-0 w-6 h-6 p-0 hover-btn" mat-stroked-button
+                                    class="min-w-0 min-h-0 w-6 h-6 p-0 hover-btn ml-1" mat-stroked-button
                                     (click)="addChildren()"
                                   >
                                     <mat-icon
@@ -312,7 +344,7 @@
                                 }"
                               >
                                 <div class="flex items-center ml-14">
-                                  <span *ngIf="children.code.length" class="truncate block" (click)="children.code = ''">{{children.label}}
+                                  <span *ngIf="children.code.length" class="truncate block">{{children.label}}
                                     <span *ngIf="children.required" class="text-red-600">*</span>
                                   </span>
                                   <span *ngIf="!children.code.length">
@@ -321,11 +353,40 @@
                                         matInput 
                                         placeholder="Enter code..."
                                         [(ngModel)]="children.label"
-                                        (keyup.enter)="setChildrenLabel(children, field)"
-                                        (focusout)="setChildrenLabel(children, field)"
+                                        id="child{{parentIndex}}_{{childIndex}}"
+                                        (click)="editChild(parentIndex, childIndex, children)"
                                       />
                                     </mat-form-field>
                                   </span>
+                                  <div class="crud-btns">
+                                    <button
+                                      class="min-w-0 min-h-0 w-6 h-6 p-0" mat-stroked-button
+                                      (click)="setChildrenLabel(children, field)"
+                                      *ngIf="!children.code.length"
+                                    >
+                                      <mat-icon
+                                        class="icon-size-4 text-primary"
+                                        [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                                    </button>
+                                    <button
+                                      class="min-w-0 min-h-0 w-6 h-6 p-0" mat-stroked-button
+                                      (click)="editChild(children)"
+                                      *ngIf="children.code.length"
+                                    >
+                                      <mat-icon
+                                        class="icon-size-4 text-primary"
+                                        [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                                    </button>
+                                    <button
+                                      class="min-w-0 min-h-0 w-6 h-6 p-0 ml-1" mat-stroked-button
+                                      (click)="removeChild(parentIndex, childIndex, field)"
+                                      *ngIf="children.code.length"
+                                    >
+                                      <mat-icon
+                                        class="icon-size-4 text-red-600"
+                                        [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                               <mat-icon
@@ -384,13 +445,13 @@
                         ">
                           <div>
                             <ng-container>
-                              <div class="flex py-2 items-center cursor-pointer">
+                              <div class="flex items-center option-header cursor-pointer">
                                 <div
                                   (click)="toggleOptionsExpansion(i)"
                                 >
                                   <img class="w-3 cursor-pointer" [src]="'assets/icons/' + (valueOption.isExpanded ? 'minimize' : 'maximize') + '.svg'" />
                                 </div>
-                                <img class="w-5 ml-2 cursor-pointer" [src]="'assets/icons/' + (valueOption.isExpanded ? 'active-attribute' : 'attribute') + '.svg'" />
+                                <img class="w-4 ml-2 cursor-pointer" [src]="'assets/icons/' + (valueOption.isExpanded ? 'active-attribute' : 'attribute') + '.svg'" />
                                 <span 
                                   class="ml-2 cursor-pointer  font-normal"
                                   [ngClass]="{
@@ -401,7 +462,7 @@
                               </div>
                               <ng-container *ngIf="valueOption.isExpanded">
                                 <div
-                                  class="pl-16 py-2 text-[#64748B] option-tab-value font-normal cursor-pointer" 
+                                  class="pl-16 text-[#64748B] option-tab-value font-normal cursor-pointer" 
                                   *ngFor="let option of valueOption.valueList.values"
                                   (click)="selectOption(option)">
                                   {{option.label}}
@@ -482,7 +543,7 @@
               </div>
 
               <!-- Divider -->
-              <div class="mt-11 mb-10 border-t"></div>
+              <div class="mt-4 mb-6 border-t"></div>
 
 
               <div class="md:flex items-center justify-between">

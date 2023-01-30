@@ -39,6 +39,7 @@ export abstract class SyncOptionComponent implements OnDestroy {
   valuesList: ValuesList[];
   selectedFieldParentIndex: Number | null | any;
   selectedFieldChildIndex: Number | null | any;
+  newInsertedFieldChildren = {};
 
   protected _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -316,6 +317,38 @@ export abstract class SyncOptionComponent implements OnDestroy {
   }
 
   /**
+   *  For setting an object for edit and delete action display in FE.
+   */
+
+  setNewInsertedParent(parentIndex) {
+    if (this.newInsertedFieldChildren[this.selectedPanel.code]) {
+      if (this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code]) {
+        if (this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex]) {
+          return;
+        } else {
+          this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex] = {
+            editable: false,
+            children: []
+          }
+        }
+      } else {
+        this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code] = {};
+        this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex] = {
+          editable: false,
+          children: []
+        }
+      }
+    } else {
+      this.newInsertedFieldChildren[this.selectedPanel.code] = {};
+      this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code] = {};
+      this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex] = {
+        editable: false,
+        children: []
+      }
+    }
+  }
+
+  /**
    * Add new mapping option.
    */
   addField(): void {
@@ -333,6 +366,52 @@ export abstract class SyncOptionComponent implements OnDestroy {
       children: []
     }
     this.selectedTab.mapping_options.push(field);
+    this.goToField(field, this.selectedTab.mapping_options.length - 1)
+    if (this.newInsertedFieldChildren[this.selectedPanel.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][this.selectedTab.mapping_options.length - 1]) {
+      this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][this.selectedTab.mapping_options.length - 1] = {
+        editable: true,
+        children: []
+      }
+    } else {
+      this.setNewInsertedParent(this.selectedTab.mapping_options.length - 1);
+      this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][this.selectedTab.mapping_options.length - 1] = {
+        editable: true,
+        children: []
+      }
+    }
+    
+    setTimeout(() => {
+      document.getElementById(`parent_${this.selectedTab.mapping_options.length-1}`).focus();
+    }, 0);
+  }
+
+  /**
+   * 
+   * @param parentIndex Getter for is field should be editable or not
+   * @returns 
+   */
+
+  isParentEditable(parentIndex) {
+    return this.newInsertedFieldChildren[this.selectedPanel.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex]?.editable;
+  }
+
+  /**
+   * 
+   * @param field Represents editing field
+   */
+
+  editParent(field) {
+      field.code = '';
+  }
+
+  /**
+   * 
+   * @param parentIndex Id of deleting field
+   */
+
+  removeParent(parentIndex) {
+    delete this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex];
+    this.selectedTab.mapping_options.splice(parentIndex, 1);
   }
 
   /**
@@ -359,6 +438,58 @@ export abstract class SyncOptionComponent implements OnDestroy {
         this.selectedField.value_options
     }
     this.selectedField.children.push(child);
+    if (this.newInsertedFieldChildren[this.selectedPanel.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][this.selectedFieldParentIndex]) {
+      this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][this.selectedFieldParentIndex].children.push(this.selectedField.children.length - 1);
+    } else {
+      this.setNewInsertedParent(this.selectedFieldParentIndex);
+      this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][this.selectedFieldParentIndex] = {
+        editable: false,
+        children: [this.selectedField.children.length - 1]
+      }
+    }
+    setTimeout(() => {
+      document.getElementById(`child${this.selectedFieldParentIndex}_${this.selectedField.children.length - 1}`).focus();
+    }, 0);
+  }
+
+  /**
+   * 
+   * @param field Editing child
+   */
+
+  editChild(field) {
+      field.code = '';
+  }
+
+  /**
+   * 
+   * @param parentIndex Parent index of editing child
+   * @param childIndex editing child index
+   * @returns 
+   */
+
+  isChildEditable(parentIndex, childIndex) {
+    return this.newInsertedFieldChildren[this.selectedPanel.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex].children.includes(childIndex);
+  }
+
+  /**
+   * 
+   * @param parentIndex Parent index of deleting child
+   * @param childIndex Index of deleting child
+   * @param field Deleting field reference
+   */
+
+  removeChild(parentIndex, childIndex, field) {
+    const temp = this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex].children;
+    this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex].children = [];
+    temp.forEach((value, index) => {
+      if (value > childIndex) {
+        this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex].children.push(value - 1);
+      } else if (value < childIndex) {
+        this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex].children.push(value);
+      }
+    });
+    field.children.splice(childIndex, 1);
   }
 
   /**
