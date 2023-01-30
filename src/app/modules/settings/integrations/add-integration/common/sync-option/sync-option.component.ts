@@ -249,7 +249,7 @@ export abstract class SyncOptionComponent implements OnDestroy {
    * @param index Represents the index of available options
    */
   toggleOptionsExpansion(index: number): void {
-    this.availableOptionsTypes.forEach((option, i, options) => {
+    this.filteredAvailableOptionsTypes.forEach((option, i, options) => {
       if(index === i) {
         options[i].isExpanded = !options[i].isExpanded;
       }
