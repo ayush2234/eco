@@ -222,7 +222,15 @@
 .options-wrapper {
   max-height: calc(100vh - 300px);
 }
-
+.fuse-mat-dense {
+  .mat-form-field-wrapper {
+    .mat-form-field-flex {
+      border-radius: 0 !important;
+      border: none;
+      border-bottom: 1px solid red;
+    }
+  }
+}
 @media only screen and (min-width: 1280px) {
   .mapping-area, .options-wrapper {
     max-height: calc(100vh -  258px);

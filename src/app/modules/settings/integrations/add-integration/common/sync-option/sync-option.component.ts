@@ -33,8 +33,12 @@ export abstract class SyncOptionComponent implements OnDestroy {
     valueOption: undefined
   }
   validate = false;
+  searchKeyword !: string;
   availableOptionsTypes = [];
+  filteredAvailableOptionsTypes = [];
   valuesList: ValuesList[];
+  selectedFieldParentIndex: Number | null | any;
+  selectedFieldChildIndex: Number | null | any;
 
   protected _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -96,14 +100,17 @@ export abstract class SyncOptionComponent implements OnDestroy {
    *
    * @param field Represents the field to be activated.
    */
-  goToField(field: MappingOption): void {
+  goToField(field: MappingOption, parentIndex: Number, childIndex: Number | null = null): void {
     // if(field.code.length) {
 
       if(!field.children) {
         field.children = [];
       }
       this.selectedField = field;
+      this.selectedFieldParentIndex = parentIndex;
+      this.selectedFieldChildIndex = childIndex;
       console.log(this.selectedField)
+      this.searchKeyword = '';
       this.loadSelectOptions();
     // }
   }
@@ -214,7 +221,21 @@ export abstract class SyncOptionComponent implements OnDestroy {
       }
     });
 
+    this.filteredAvailableOptionsTypes = [ ...this.availableOptionsTypes ];
+
     console.log(this.availableOptionsTypes);
+  }
+
+  searchOptionValues() {
+    const regexToMatch = new RegExp(`${ this.searchKeyword }`, "gi");
+    
+    if (this.searchKeyword) {
+      this.filteredAvailableOptionsTypes = this.availableOptionsTypes.filter(option => {
+        return option.valueList.label.match(regexToMatch) || option.valueList.values.filter(value => value.label.match(regexToMatch)).length;
+      });
+    } else {
+      this.filteredAvailableOptionsTypes = [ ...this.availableOptionsTypes ];
+    }
   }
 
   /**
@@ -242,18 +263,11 @@ export abstract class SyncOptionComponent implements OnDestroy {
       selected_value: {...selection}
     }
 
-    this.selectedTab.mapping_options.forEach((field, fieldIndex, fieldArr) => {
-      if(field.code === this.selectedField.code) {
-        fieldArr[fieldIndex] = {...this.selectedField};
-      }
-      if(field.children) {
-        field.children.forEach((child, childIndex, childArr) => {
-          if(child.code === this.selectedField.code) {
-            childArr[childIndex] = {...this.selectedField};
-          }
-        });
-      }
-    })
+    if (this.selectedFieldChildIndex != null) {
+      this.selectedTab.mapping_options[this.selectedFieldParentIndex].children[this.selectedFieldChildIndex] = {...this.selectedField};
+    } else {
+      this.selectedTab.mapping_options[this.selectedFieldParentIndex] =  {...this.selectedField};
+    }
 
     const tabIndex = this.selectedPanel.sub_sync_options.findIndex(x => x.code === this.selectedTab.code);
     if(tabIndex !== -1) {
@@ -346,9 +360,10 @@ export abstract class SyncOptionComponent implements OnDestroy {
    *
    * @param child Represents the newly added child.
    */
-  setChildrenLabel(child: MappingOption): void {
-    for (let fieldChild of this.selectedField.children) {
+  setChildrenLabel(child: MappingOption, field: MappingOption): void {
+    for (let fieldChild of field.children) {
       if (child.label == fieldChild.code) {
+        child.label = "";
         return;
       }
     }

@@ -207,14 +207,14 @@
 
                     <!-- Dynamic Fields -->
                     <ng-container
-                      *ngFor="let field of selectedTab.mapping_options"
+                      *ngFor="let field of selectedTab.mapping_options; let parentIndex = index;"
                     >
                       <ng-container
                         *ngIf="isConditionSatisfied(field)"
                       >
                         <div
                           class="sm:col-span-4 last:border-none border-b cursor-pointer mapping-table"
-                          (click)="goToField(field)"
+                          (click)="goToField(field, parentIndex)"
                           [ngClass]="{
                             'required-map-color': field.required && field.selected_value.code === '',
                             'optional-map-color': !field.required && field.selected_value.code === ''
@@ -223,14 +223,14 @@
                           <mat-form-field
                             class="fuse-mat-no-subscript fuse-mat-emphasized-affix dynamic-rows my-0 w-full"
                             [ngClass]="{
-                              'bg-primary-200': selectedField && selectedField.code === field.code,
-                              'selected-field': selectedField && selectedField.code === field.code
+                              'bg-primary-200': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null,
+                              'selected-field': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null
                             }"
                           >
                             <div class="text-secondary w-full sm:w-full" matPrefix
                               [ngClass]="{
-                                'text-[#4F46E5] font-semibold': selectedField && selectedField.code === field.code,
-                                'active-hover': selectedField && selectedField.code === field.code
+                                'text-[#4F46E5] font-semibold': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null,
+                                'active-hover': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null
                               }"
                             >
                               <div 
@@ -238,7 +238,7 @@
                               >
                                 <div class="flex items-center">
                                   <img *ngIf="!selectedField || selectedField.code !== field.code" class="w-5 parent-field-icon" src="assets/icons/attribute.svg" />
-                                  <img *ngIf="selectedField && selectedField.code === field.code" class="w-5 parent-field-icon" src="assets/icons/active-attribute.svg" />
+                                  <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null" class="w-5 parent-field-icon" src="assets/icons/active-attribute.svg" />
                                   <span class="truncate block ml-2" *ngIf="field.code.length" (click)="field.code = ''">{{field.label}}
                                     <span *ngIf="field.required" class="text-red-600">*</span>
                                   </span>
@@ -288,13 +288,13 @@
 
                         <!-- Child Fields -->
                         <ng-container
-                          *ngFor="let children of field.children"
+                          *ngFor="let children of field.children; let childIndex = index;"
                         >
                           <div
                             class="sm:col-span-4 last:border-none border-b cursor-pointer"
-                            (click)="goToChild(children)"
+                            (click)="goToField(children, parentIndex, childIndex)"
                             [ngClass]="{
-                              'bg-primary-200': selectedField && selectedField.code === children.code,
+                              'bg-primary-200': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex,
                               'required-map-color': children.required && children.selected_value.code === '',
                               'optional-map-color': !children.required && children.selected_value.code === ''
                             }"
@@ -302,13 +302,13 @@
                             <mat-form-field
                               class="fuse-mat-no-subscript fuse-mat-emphasized-affix dynamic-rows my-0 w-full child-input-parent"
                               [ngClass]="{
-                                'text-primary-200': selectedField && selectedField.code === children.code,
-                                'selected-field': selectedField && selectedField.code === children.code
+                                'text-primary-200': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex,
+                                'selected-field': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex
                               }"
                             >
                               <div class="text-secondary w-full sm:w-full mr-0" matPrefix
                                 [ngClass]="{
-                                  'text-primary-800 font-semibold': selectedField && selectedField.code === children.code
+                                  'text-primary-800 font-semibold': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex
                                 }"
                               >
                                 <div class="flex items-center ml-14">
@@ -321,8 +321,8 @@
                                         matInput 
                                         placeholder="Enter code..."
                                         [(ngModel)]="children.label"
-                                        (keyup.enter)="setChildrenLabel(children)"
-                                        (focusout)="setChildrenLabel(children)"
+                                        (keyup.enter)="setChildrenLabel(children, field)"
+                                        (focusout)="setChildrenLabel(children, field)"
                                       />
                                     </mat-form-field>
                                   </span>
@@ -360,9 +360,23 @@
                         <div class="font-medium text-[#1E293B] text-[18px] ml-1.5">values</div>
                       </div>
                     </div>
+                    <div class="search-wrapper sticky inset-0 z-10 bg-white">
+                      <mat-form-field
+                        class="fuse-mat-dense min-w-50 w-full">
+                        <mat-icon
+                          class="icon-size-5"
+                          matPrefix
+                          [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                        <input
+                          matInput
+                          [(ngModel)]="searchKeyword"
+                          (keyup)="searchOptionValues()"
+                          [placeholder]="'Search for option...'" />
+                      </mat-form-field>
+                    </div>
                     
-                    <div class="py-1 px-2" *ngIf="selectedField && availableOptionsTypes">
-                      <ng-container *ngFor="let valueOption of availableOptionsTypes; let i=index">
+                    <div class="py-1 px-2" *ngIf="selectedField && filteredAvailableOptionsTypes">
+                      <ng-container *ngFor="let valueOption of filteredAvailableOptionsTypes; let i=index">
                         <!-- Values list options -->
                         <ng-container *ngIf="
                           valueOption.value_option.value_option_type === 'values_list' &&
