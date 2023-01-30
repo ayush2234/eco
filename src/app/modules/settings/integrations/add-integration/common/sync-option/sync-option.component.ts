@@ -23,6 +23,7 @@ export abstract class SyncOptionComponent implements OnDestroy {
   selectedPanel: SyncOption;
   selectedTab: Tab;
   selectedField: MappingOption;
+  selectedChild: MappingOption;
   inputOptions: InputOption = {
     option: undefined,
     isActive: false,
@@ -96,7 +97,7 @@ export abstract class SyncOptionComponent implements OnDestroy {
    * @param field Represents the field to be activated.
    */
   goToField(field: MappingOption): void {
-    if(field.code.length) {
+    // if(field.code.length) {
 
       if(!field.children) {
         field.children = [];
@@ -104,7 +105,19 @@ export abstract class SyncOptionComponent implements OnDestroy {
       this.selectedField = field;
       console.log(this.selectedField)
       this.loadSelectOptions();
-    }
+    // }
+  }
+
+  /**
+   * Set the active children.
+   *
+   * @param child Represents the child to be activated.
+   */
+  goToChild(child: MappingOption): void {
+    // if(field.code.length) {
+      this.selectedChild = child;
+      this.loadSelectOptions();
+    // }
   }
 
   /**
@@ -283,6 +296,35 @@ export abstract class SyncOptionComponent implements OnDestroy {
   }
 
   /**
+   * Add new mapping option.
+   */
+  addField(): void {
+    const field: MappingOption = {
+      code: "",
+      label: "",
+      type: "option",
+      required: false,
+      default_value: "",
+      selected_value: {
+          label: "Not Mapped",
+          code: ""
+      },
+      value_options: [],
+      children: []
+    }
+    this.selectedTab.mapping_options.push(field);
+  }
+
+  /**
+   * Set the label and code of fields with the value user types in.
+   *
+   * @param field Represents the newly added field.
+   */
+  setFieldLabel(field: MappingOption): void {
+    field.code = field.label;
+  }
+
+  /**
    * Add children to fields.
    */
   addChildren(): void {
@@ -305,6 +347,11 @@ export abstract class SyncOptionComponent implements OnDestroy {
    * @param child Represents the newly added child.
    */
   setChildrenLabel(child: MappingOption): void {
+    for (let fieldChild of this.selectedField.children) {
+      if (child.label == fieldChild.code) {
+        return;
+      }
+    }
     child.code = child.label;
   }
 }

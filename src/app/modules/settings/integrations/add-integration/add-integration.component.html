@@ -172,10 +172,10 @@
 
                 <!-- Mapping Section -->
                 <div class="w-full col-span-4">
-                  <div class="grid sm:grid-cols-4 w-full mapping-area rounded-md border border-gray-300">
+                  <div class="grid sm:grid-cols-4 w-full mapping-area overflow-y-auto rounded-md border border-gray-300">
                     
                     <!-- Static Field -->
-                    <div class="sm:col-span-4 border-b mapping-head">
+                    <div class="sm:col-span-4 border-b mapping-head sticky inset-0 z-10">
                       <mat-form-field
                         class="fuse-mat-no-subscript fuse-mat-emphasized-affix static-header my-0 w-full">
                         <div class="text-[#1E293B] w-full sm:w-full" matPrefix>
@@ -187,6 +187,7 @@
                             <div>
                               <button
                                 class="min-w-0 min-h-0 w-6 h-6 p-0" mat-stroked-button
+                                (click)="addField()"
                               >
                                 <mat-icon
                                   class="icon-size-4 text-black"
@@ -236,10 +237,21 @@
                                 class="flex items-center justify-between"
                               >
                                 <div class="flex items-center">
-                                  <img *ngIf="!selectedField || selectedField.code !== field.code" class="w-5" src="assets/icons/attribute.svg" />
-                                  <img *ngIf="selectedField && selectedField.code === field.code" class="w-5" src="assets/icons/active-attribute.svg" />
-                                  <span class="truncate block ml-2">{{field.label}}
+                                  <img *ngIf="!selectedField || selectedField.code !== field.code" class="w-5 parent-field-icon" src="assets/icons/attribute.svg" />
+                                  <img *ngIf="selectedField && selectedField.code === field.code" class="w-5 parent-field-icon" src="assets/icons/active-attribute.svg" />
+                                  <span class="truncate block ml-2" *ngIf="field.code.length" (click)="field.code = ''">{{field.label}}
                                     <span *ngIf="field.required" class="text-red-600">*</span>
+                                  </span>
+                                  <span *ngIf="!field.code.length">
+                                    <mat-form-field class="fuse-mat-no-subscript w-full parent-form-field  child-input" >
+                                      <input 
+                                        matInput 
+                                        placeholder="Enter code..."
+                                        [(ngModel)]="field.label"
+                                        (keyup.enter)="setFieldLabel(field)"
+                                        (focusout)="setFieldLabel(field)"
+                                      />
+                                    </mat-form-field>
                                   </span>
                                 </div>
                                 <div>
@@ -280,7 +292,7 @@
                         >
                           <div
                             class="sm:col-span-4 last:border-none border-b cursor-pointer"
-                            (click)="goToField(children)"
+                            (click)="goToChild(children)"
                             [ngClass]="{
                               'bg-primary-200': selectedField && selectedField.code === children.code,
                               'required-map-color': children.required && children.selected_value.code === '',
@@ -310,6 +322,7 @@
                                         placeholder="Enter code..."
                                         [(ngModel)]="children.label"
                                         (keyup.enter)="setChildrenLabel(children)"
+                                        (focusout)="setChildrenLabel(children)"
                                       />
                                     </mat-form-field>
                                   </span>
@@ -339,9 +352,9 @@
                 </div>
 
                 <!-- Options Section -->
-                <div class="w-full col-span-2 rounded-md border border-gray-300 bg-white">
+                <div class="w-full col-span-2 options-wrapper overflow-y-auto rounded-md border border-gray-300 bg-white">
                   <ng-container *ngIf="!inputOptions.isActive">
-                    <div class="text-black w-full sm:w-full border-b p-3">
+                    <div class="text-black w-full sm:w-full border-b p-3 sticky inset-0 z-10 bg-white">
                       <div class="flex items-center">
                         <div class="truncate w-fit text-[#1E293B] block font-bold text-[18px]">Option</div>
                         <div class="font-medium text-[#1E293B] text-[18px] ml-1.5">values</div>
