@@ -230,11 +230,12 @@ export abstract class SyncOptionComponent implements OnDestroy {
     const regexToMatch = new RegExp(`${ this.searchKeyword }`, "gi");
     
     if (this.searchKeyword) {
-      this.filteredAvailableOptionsTypes = this.availableOptionsTypes.filter(option => {
+      this.filteredAvailableOptionsTypes = JSON.parse(JSON.stringify(this.availableOptionsTypes)).map(option => {
         try {
-          return option.valueList.label.match(regexToMatch) || option.valueList.values.filter(value => value.label.match(regexToMatch)).length;
+          option.valueList.values = option.valueList.values.filter(value => value.label.match(regexToMatch));
+          return option;
         } catch (error) {
-          return true;
+          return option;
         }
       });
     } else {
