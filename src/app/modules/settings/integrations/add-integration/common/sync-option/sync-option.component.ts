@@ -133,6 +133,7 @@ export abstract class SyncOptionComponent implements OnDestroy {
   resetFieldSelection(): void {
     this.selectedField = undefined;
     this.availableOptionsTypes = [];
+    this.filteredAvailableOptionsTypes = [];
     if(this.validate) {
       this.toggleMappingToDo();
     }
