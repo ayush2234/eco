@@ -7,22 +7,27 @@ export type Screens = { [key: string]: string };
 export type Theme = 'theme-default' | string;
 export type Themes = { id: string; name: string }[];
 
-// ApiConfig
-const devApiConfig: ApiConfig = {
-  baseUrl: 'https://api.pre-prod.ecommify.io/v1',
-  serviceUrl: 'https://service.pre-prod.ecommify.io',
-  serviceUrlv1: 'https://service.pre-prod.ecommify.io/api/v1',
-  //   baseUrl: 'v1',
+// // ApiConfig
+// const devApiConfig: ApiConfig = {
+//   baseUrl: 'https://api.pre-prod.ecommify.io/v1',
+//   serviceUrl: 'https://service.pre-prod.ecommify.io',
+//   serviceUrlv1: 'https://service.pre-prod.ecommify.io/api/v1',
+//   //   baseUrl: 'v1',
+// };
+
+// const prodApiConfig: ApiConfig = {
+//   baseUrl: 'https://api.ecommify.io/v1',
+//   serviceUrl: 'https://service.pre-prod.ecommify.io',
+//   serviceUrlv1: 'https://service.pre-prod.ecommify.io/api/v1',
+// };
+const envConfig: ApiConfig = {
+  baseUrl: environment.API_ENDPOINT,
+  serviceUrl: environment.API_SERVICE_ENDPOINT,
+  serviceUrlv1: environment.API_SERVICE_ENDPOINT,
 };
 
-const prodApiConfig: ApiConfig = {
-  baseUrl: 'https://api.ecommify.io/v1',
-  serviceUrl: 'https://service.pre-prod.ecommify.io',
-  serviceUrlv1: 'https://service.pre-prod.ecommify.io/api/v1',
-};
-
-const getApiConfig = (): ApiConfig =>
-  environment.production ? prodApiConfig : devApiConfig;
+const getApiConfig = (): ApiConfig => envConfig;
+//  environment.production ? prodApiConfig : devApiConfig;
 
 /**
  * AppConfig interface. Update this interface to strictly type your config
