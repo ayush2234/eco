@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, tap, switchMap, map, forkJoin, catchError } from 'rxjs';
 
 import { IntegrationInstance, IntegrationValue, SelectOption, ValuesList } from '../../../integration.types';
@@ -611,8 +611,8 @@ export class SyncOptionService {
   }
 
   createIntegration(integrationValue: IntegrationValue){
-    const api = this._config.apiConfig.serviceUrl + '/api/v1/' +
-    LocalStorageUtils.companyId + '/integration/instance';
+    const apiUrl= this._config.apiConfig.baseUrl;
+    const api =  `${apiUrl}/v1/${LocalStorageUtils.companyId}/integration/instance`;
     this._httpClient.post(api, integrationValue).pipe(
       catchError(err => {
         return of();
@@ -620,7 +620,17 @@ export class SyncOptionService {
         console.log("res",response);
       });
   }
-
+  updateInstalledIntegration(integrationValue: IntegrationValue){
+    const apiUrl= this._config.apiConfig.baseUrl;
+    const integration_instance_id = "1ed1f116-8527-6bfa-93c1-0605e1fd6890";
+    const api =  `${apiUrl}/v1/${LocalStorageUtils.companyId}/integration/instance/${integration_instance_id}`;
+    this._httpClient.put(api, integrationValue).pipe(
+      catchError(err => {
+        return of();
+      })).subscribe(response => {
+        console.log("res",response);
+      });
+  }
   /**
    * Get mapping
    */

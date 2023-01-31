@@ -492,7 +492,10 @@
                 <!-- Actions -->
                 <div class="flex items-center justify-end">
                   <button mat-stroked-button type="button">Cancel</button>
-                  <button class="ml-4" mat-flat-button type="button" [color]="'primary'" (click)="saveIntegration()">
+                  <button *ngIf="isAddIntegration" class="ml-4" mat-flat-button type="button" [color]="'primary'" (click)="updateIntegration()">
+                    Save
+                  </button>
+                  <button *ngIf="!isAddIntegration" class="ml-4" mat-flat-button type="button" [color]="'primary'" (click)="saveIntegration()">
                     Save
                   </button>
                 </div>

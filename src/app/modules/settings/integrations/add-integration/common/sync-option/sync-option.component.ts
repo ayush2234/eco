@@ -332,7 +332,12 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   setChildrenLabel(child: MappingOption): void {
     child.code = child.label;
   }
-  saveIntegration(){
+  updateIntegration(){
+    console.log("Save Integration");
     this._syncOptionService.createIntegration(this.integrationValue);
+  }
+  saveIntegration(){
+    console.log("AddIntegration");
+    this._syncOptionService.updateInstalledIntegration(this.integrationValue);
   }
 }
