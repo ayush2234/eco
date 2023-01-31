@@ -239,7 +239,7 @@
                                 <div class="flex items-center">
                                   <img *ngIf="!selectedField || selectedField.code !== field.code" class="w-4 parent-field-icon" src="assets/icons/attribute.svg" />
                                   <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null" class="w-4 parent-field-icon" src="assets/icons/active-attribute.svg" />
-                                  <span class="truncate block ml-2" *ngIf="field.code.length">{{field.label}}
+                                  <span class="truncate block ml-2 font-normal" *ngIf="field.code.length">{{field.label}}
                                   </span>
                                   <span *ngIf="!field.code.length">
                                     <mat-form-field class="fuse-mat-no-subscript w-full parent-form-field  child-input" >
@@ -248,19 +248,18 @@
                                         placeholder="Enter code..."
                                         [(ngModel)]="field.label"
                                         (keyup.enter)="setFieldLabel(field)"
-                                        (focusout)="setFieldLabel(field)"
                                         id="parent_{{parentIndex}}"
                                       />
                                     </mat-form-field>
                                   </span>
                                 </div>
-                                <div class="ml-auto mr-1 required-badge" *ngIf="field.required">
-                                  Required
+                                <div class="ml-auto required-badge" *ngIf="field.required">
+                                  REQ
                                 </div>
                                 <div>
                                   <ng-container *ngIf="isParentEditable(parentIndex)">
                                     <button
-                                      class="min-w-0 mr-1 min-h-0 w-6 h-6 p-0" mat-stroked-button
+                                      class="min-w-0 min-h-0 w-6 h-6 p-0" mat-stroked-button
                                       (click)="setFieldLabel(field)"
                                       *ngIf="!field.code.length"
                                     >
@@ -290,6 +289,7 @@
                                   <button
                                     class="min-w-0 min-h-0 w-6 h-6 p-0 hover-btn ml-1" mat-stroked-button
                                     (click)="addChildren()"
+                                    *ngIf="field.code.length"
                                   >
                                     <mat-icon
                                       class="icon-size-4 text-black"
@@ -308,6 +308,7 @@
                             <mat-select
                               [value]="field.selected_value.code" 
                               class="{{ field.selected_value.code === '' ? 'italic text-red-600' : '' }}"
+                              [ngClass]="{'selected-code': field.selected_value.code != '' || [true, false].includes(field.selected_value.code)}"
                               disabled>
                               <mat-option [value]="field.selected_value.code"> 
                                 {{ field.selected_value.code === '' ? '<' : '' }}
@@ -436,7 +437,7 @@
                       </mat-form-field>
                     </div>
                     
-                    <div class="py-1 px-2" *ngIf="selectedField && filteredAvailableOptionsTypes">
+                    <div class="available-option-container" *ngIf="selectedField && filteredAvailableOptionsTypes">
                       <ng-container *ngFor="let valueOption of filteredAvailableOptionsTypes; let i=index">
                         <!-- Values list options -->
                         <ng-container *ngIf="
@@ -445,7 +446,7 @@
                         ">
                           <div>
                             <ng-container>
-                              <div class="flex items-center option-header cursor-pointer">
+                              <div class="flex items-center px-2 option-header cursor-pointer">
                                 <div
                                   (click)="toggleOptionsExpansion(i)"
                                 >
@@ -462,7 +463,7 @@
                               </div>
                               <ng-container *ngIf="valueOption.isExpanded">
                                 <div
-                                  class="pl-16 text-[#64748B] option-tab-value font-normal cursor-pointer" 
+                                  class="pl-18 pr-2 text-[#64748B] option-tab-value font-normal cursor-pointer" 
                                   *ngFor="let option of valueOption.valueList.values"
                                   (click)="selectOption(option)">
                                   {{option.label}}
@@ -543,7 +544,7 @@
               </div>
 
               <!-- Divider -->
-              <div class="mt-4 mb-6 border-t"></div>
+              <div class="my-4 border-t"></div>
 
 
               <div class="md:flex items-center justify-between">
@@ -551,7 +552,7 @@
                   <ng-container *ngIf="selectedPanel && !selectedPanel.is_activated">        
                     <!-- Section -->
                     <div class="flex w-full justify-center">
-                      <fuse-alert [appearance]="'outline'" class="p-5" [type]="'info'">
+                      <fuse-alert [appearance]="'outline'" [type]="'info'">
                         <div class="flex items-center">
                           <div>
                             <span class="text-[#64748B] font-bold" fuseAlertTitle>Activate {{selectedPanel.label}} Sync</span>

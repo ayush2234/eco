@@ -91,7 +91,7 @@
     }
   }
   .parent-field-icon{
-    margin-top: -0.5px;
+    margin-top: -1.5px;
   }
   .mapping-table:last-child {
     .fuse-mat-emphasized-affix {
@@ -189,7 +189,6 @@
           .mat-select-value {
               .mat-select-value-text {
                   > * {
-                    color: #1E293B !important;
                     &:hover {
                       color: #4F46E5 !important;
                     }
@@ -206,7 +205,6 @@
           .mat-select-value {
               .mat-select-value-text {
                   > * {
-                    color: #1E293B !important;
                     &:hover {
                       color: #4F46E5 !important;
                     }
@@ -216,7 +214,11 @@
       }
     }
   }
-
+  .selected-code{
+    .mat-select-min-line{
+      color: #1E293B !important;
+    }
+  }
 
   .hover-btn {
     display: none !important;
@@ -229,6 +231,9 @@
       }
     }
   }
+}
+.available-option-container{
+  padding-top: 2px !important;
 }
 .option-header{
   padding: 9.5px 0px;
