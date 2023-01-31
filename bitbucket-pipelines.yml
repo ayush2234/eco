@@ -7,7 +7,7 @@ pipelines:
     deployment-to-prods:
       - step:
           name: Deploy to EC2 Dev
-          deployment: Staging
+          deployment: Dev
           clone:
             enabled: false
           script:
