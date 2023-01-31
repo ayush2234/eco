@@ -6,7 +6,7 @@ pipelines:
   custom:
     deployment-to-prods:
       - step:
-          name: Deploy to EC2 Pre Prod
+          name: Deploy to EC2 Dev
           deployment: Staging
           clone:
             enabled: false
@@ -15,4 +15,4 @@ pipelines:
               variables:
                 SSH_USER: 'bitbucket'
                 SERVER: 'pre-prod.ecommify.io'
-                COMMAND: 'rm -Rf ecommify; git clone git@bitbucket.org:ecommify/ecommify.git; cd ecommify; npm install; export NG_CLI_ANALYTICS=ci; npm run build; cp -Rf dist/ecommify/** /var/www/ecommify/pre-prod/'
+                COMMAND: 'cd dev/; rm -Rf ecommify; git clone git@bitbucket.org:ecommify/ecommify.git; cd ecommify; npm install; export NG_CLI_ANALYTICS=ci; npm run build; cp -Rf dist/ecommify/** /var/www/ecommify/pre-prod/'
