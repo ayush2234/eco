@@ -1,56 +1,9 @@
-image: node:10
-
+image: node:14.16.0
 pipelines:
   branches:
     develop:
       - step:
-          name: Installation
-          caches:
-            - node
-          script:
-            - npm install
-          artifacts:
-            - node_modules/** # Save modules for next steps
-      - step:
-          name: Lint
-          script:
-            - npm run lint
-      - step:
-          name: Build
-          script:
-            - npm run build:production
-          artifacts:
-            - dist/** # Save build for next steps
-      - step:
-          name: Deploy
-          script:
-            - echo "$(ls -la)"
-            - echo "$(ls -la dist)"
-            - ssh root@3.27.77.218 rm -rf /var/www/dev/dev.app.ecommify.io
-            - scp -r dist/** root@3.27.77.218:/var/www/dev/dev.app.ecommify.io
-    staging:
-      - step:
-          name: Installation
-          caches:
-            - node
-          script:
-            - npm install
-          artifacts:
-            - node_modules/** # Save modules for next steps
-      - step:
-          name: Lint
-          script:
-            - npm run lint
-      - step:
-          name: Build
-          script:
-            - npm run build:production
-          artifacts:
-            - dist/** # Save build for next steps
-      - step:
-          name: Deploy
-          script:
-            - echo "$(ls -la)"
-            - echo "$(ls -la dist)"
-            - ssh root@3.27.77.218 rm -rf /var/www/stag/pre-prod.app.ecommify.io
-            - scp -r dist/** root@3.27.77.218:/var/www/stag/pre-prod.app.ecommify.io
+         name: Deploy to EC2
+         script:
+          - ng build 
+          - scp -r dist/** root@3.27.77.218:/var/www/dev/dev.app.ecommify.io
