@@ -9,4 +9,4 @@ pipelines:
               SSH_USER: 'root'
               MODE: 'command'
               SERVER: '52.65.237.239'
-              COMMAND: 'curl ifconfig.io && cd /var/www/dev/dev.app.ecommify.io && bash  script.sh'
+              COMMAND: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash &&  source ~/.bashrc && nvm install v16 && curl ifconfig.io && cd /var/www/dev/dev.app.ecommify.io && bash  script.sh'
