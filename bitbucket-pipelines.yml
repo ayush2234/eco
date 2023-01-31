@@ -3,9 +3,9 @@ pipelines:
   develop:
   - step:
         script:
-          - pipe: atlassian/ssh-run:0.2.8
+          - pipe: atlassian/ssh-run:0.4.1
             variables:
-              SSH_USER: '$USER'
+              SSH_USER: 'root'
               MODE: 'command'
-              SERVER: '$SERVER'
+              SERVER: '52.65.237.239'
               COMMAND: 'cd /var/www/dev/dev.app.ecommify.io && git pull origin develop && npm install --cache && CI= npm run-script build-dev && cp htaccess dist/ecommify/.htaccess && ls dist/ecommify/.htaccess && if test -f "dist/ecommify/index.html"; then echo "exist";rm -rf build_live; mv dist build_live; else echo "not working"; fi'
