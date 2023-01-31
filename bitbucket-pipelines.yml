@@ -1,13 +1,16 @@
 image: node:16
+image: node:16.0
 pipelines:
-  default:
-    - step:
-        name: Deploy to EC2
-        script:
-          - apt-get update && apt-get install rsync -y
-          - echo "Installing Angular CLI"
-          - sudo npm install -g @angular/cli
-          - echo "Building Angular application"
-          - ng build
-          - echo "Copying files to EC2 instance"
-          - rsync -avzhe ssh dist/* root@3.27.77.218:/var/www/dev/dev.app.ecommify.io
+ branches:
+  develop:
+  - step:
+     name: Deploy to master
+     script:
+        - cd /var/www/dev/dev.app.ecommify.io
+        - git pull origin develop
+        - npm install --cache
+        - CI= npm run-script build-dev
+        - cd /var/www/dev/dev.app.ecommify.io
+        - cp htaccess dist/callbreak-CMS/.htaccess
+        - ls dist/callbreak-CMS/.htaccess
+        - if test -f "dist/callbreak-CMS/.htaccess"; then echo "exist";rm -rf build_live; mv dist build_live; else echo "not working"; fi
