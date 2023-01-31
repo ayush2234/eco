@@ -1,6 +1,7 @@
 image: node:16
 pipelines:
-  default:
+  branches:
+   develop:
     - step:
         name: Build and test
         caches:
@@ -18,4 +19,23 @@ pipelines:
               USER: 'root'
               SERVER: '52.65.237.239'
               REMOTE_PATH: '/var/www/dev/dev.app.ecommify.io/build_live'
+              LOCAL_PATH: 'dist/*'
+   staging:
+    - step:
+        name: Build and test
+        caches:
+          - node
+        script:
+          - npm install 
+          - npm run build-dev
+        artifacts:
+          - dist/**
+    - step:
+        name: Deploy artifacts using SCP to dev
+        script:
+          - pipe: atlassian/scp-deploy:0.3.3
+            variables:
+              USER: 'root'
+              SERVER: '52.65.237.239'
+              REMOTE_PATH: '/var/www/stage/pre-prod.app.ecommify.io/build_live'
               LOCAL_PATH: 'dist/*'
