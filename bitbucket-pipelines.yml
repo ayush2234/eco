@@ -3,10 +3,11 @@ pipelines:
  branches:
   develop:
   - step:
-        script:
-          - pipe: atlassian/ssh-run:0.4.1
-            variables:
-              SSH_USER: 'root'
-              MODE: 'command'
-              SERVER: '52.65.237.239'
-              COMMAND: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash &&  source ~/.bashrc && nvm install v16 && curl ifconfig.io && cd /var/www/dev/dev.app.ecommify.io && bash  script.sh'
+      script:
+        - pipe: atlassian/ssh-run:0.4.1
+          variables:
+            SSH_USER: 'ec2-user'
+            SERVER: '52.65.237.239'
+            SSH_KEY: $MY_SSH_KEY
+            MODE: 'command'
+            COMMAND: 'cd /var/www/dev/dev.app.ecommify.io && ./script.sh' 
