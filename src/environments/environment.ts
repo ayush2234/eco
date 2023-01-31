@@ -4,6 +4,8 @@
 
 export const environment = {
   production: false,
+  API_ENDPOINT: 'https://dev.api.ecommify.io/v1',
+  API_SERVICE_ENDPOINT: 'https://dev.api.ecommify.io/v2',
 };
 
 /*
