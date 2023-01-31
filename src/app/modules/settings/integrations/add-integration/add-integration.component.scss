@@ -4,7 +4,7 @@
 }
 
 .mapping-area {
-  max-height: calc(100vh - 290px);
+  max-height: calc(100vh - 430px);
   .fuse-mat-emphasized-affix {
     .mat-form-field-wrapper {
       .mat-form-field-flex {
@@ -264,7 +264,7 @@
   color: #de3a3a; 
 }
 .options-wrapper {
-  max-height: calc(100vh - 290px);
+  max-height: calc(100vh - 430px);
 }
 .fuse-mat-dense {
   .mat-form-field-wrapper {
@@ -281,6 +281,6 @@
 }
 @media only screen and (min-width: 1280px) {
   .mapping-area, .options-wrapper {
-    max-height: calc(100vh -  220px);
+    max-height: calc(100vh -  362px);
   }
 }

@@ -105,7 +105,7 @@
           </div>
 
           <!-- Main Sync Options -->
-          <div *ngIf="selectedPanel" class="flex-auto px-6 pt-8 pb-12 md:p-8 md:pb-12 lg:py-10 lg:px-12">
+          <div *ngIf="selectedPanel" class="flex-auto px-6 pt-8 pb-8 md:p-8 md:pb-8 lg:py-10 lg:px-12">
             <!-- Panel header -->
             <div class="flex flex-col">
               <!-- Drawer toggle -->
@@ -253,9 +253,7 @@
                                     </mat-form-field>
                                   </span>
                                 </div>
-                                <div class="ml-auto required-badge" *ngIf="field.required">
-                                  REQ
-                                </div>
+                                <span *ngIf="field.required" class="ml-auto bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Req.</span>
                                 <div>
                                   <ng-container *ngIf="isParentEditable(parentIndex)">
                                     <button
@@ -555,9 +553,9 @@
                       <fuse-alert [appearance]="'outline'" [type]="'info'">
                         <div class="flex items-center">
                           <div>
-                            <span class="text-[#64748B] font-bold" fuseAlertTitle>Activate {{selectedPanel.label}} Sync</span>
+                            <span class="text-[#1E428A]" fuseAlertTitle>Activate {{selectedPanel.label}} Sync</span>
                             <div class="flex mt-2">
-                              <span class="mr-4"
+                              <span class="mr-4 font-light"
                                 >If mapping has been completed, you can activate this sync.</span
                               >
                             </div>
