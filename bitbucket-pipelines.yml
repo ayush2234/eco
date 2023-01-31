@@ -1,16 +1,11 @@
-image: node:16.0
 pipelines:
  branches:
   develop:
   - step:
-     name: Deploy to master
-     script:
-        - ssh-keyscan -t rsa bitbucket.org
-        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'cd /var/www/dev/dev.app.ecommify.io'
-        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'git pull origin develop'
-        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'npm install --cache'
-        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'CI= npm run-script build-dev'
-        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'cd /var/www/dev/dev.app.ecommify.io'
-        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'cp htaccess dist/callbreak-CMS/.htaccess'
-        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'ls dist/callbreak-CMS/.htaccess'
-        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'if test -f "dist/callbreak-CMS/.htaccess"; then echo "exist";rm -rf build_live; mv dist build_live; else echo "not working"; fi'
+        script:
+          - pipe: atlassian/ssh-run:0.2.8
+            variables:
+              SSH_USER: '$USER'
+              MODE: 'command'
+              SERVER: '$SERVER'
+              COMMAND: 'cd /var/www/dev/dev.app.ecommify.io && git pull origin develop && npm install --cache && CI= npm run-script build-dev && cp htaccess dist/ecommify/.htaccess && ls dist/ecommify/.htaccess && if test -f "dist/ecommify/index.html"; then echo "exist";rm -rf build_live; mv dist build_live; else echo "not working"; fi'
