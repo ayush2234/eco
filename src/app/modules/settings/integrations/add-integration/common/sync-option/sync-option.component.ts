@@ -151,7 +151,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
    */
   isConditionSatisfied(option: MappingOption): boolean {
     const mappingRequiredCondition = this.validate === false ? true :
-      option.selected_value.code === '' ? true : false;
+      option.selected_value?.code === '' ? true : false;
     if(option.display_conditions) {
       const splitedCondition = option.display_conditions.split('==').map(x => x.trim());
       if(splitedCondition.length === 2) {
@@ -159,7 +159,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
         const value = splitedCondition[1];
         const dependencyField = this.checkCondition(code);
         if(dependencyField !== null) {
-          return dependencyField.selected_value.code === value && mappingRequiredCondition;
+          return dependencyField.selected_value?.code === value && mappingRequiredCondition;
         }
       }
 

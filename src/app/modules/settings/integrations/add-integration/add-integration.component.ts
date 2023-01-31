@@ -107,8 +107,10 @@ export class AddIntegrationComponent
       tap(data => {
         // Setup available panels
         this.integrationInstance= {...data};
-        this.setPanels(this.integrationInstance.integration.sync_options);
-        console.log(data);
+        if (data) { 
+          this.setPanels(this.integrationInstance.integration.sync_options);
+          console.log(data);
+        }
       })
     );
 
