@@ -1,4 +1,3 @@
-image: node:16
 image: node:16.0
 pipelines:
  branches:
@@ -6,11 +5,11 @@ pipelines:
   - step:
      name: Deploy to master
      script:
-        - cd /var/www/dev/dev.app.ecommify.io
-        - git pull origin develop
-        - npm install --cache
-        - CI= npm run-script build-dev
-        - cd /var/www/dev/dev.app.ecommify.io
-        - cp htaccess dist/callbreak-CMS/.htaccess
-        - ls dist/callbreak-CMS/.htaccess
-        - if test -f "dist/callbreak-CMS/.htaccess"; then echo "exist";rm -rf build_live; mv dist build_live; else echo "not working"; fi
+        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'cd /var/www/dev/dev.app.ecommify.io'
+        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'git pull origin develop'
+        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'npm install --cache'
+        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'CI= npm run-script build-dev'
+        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'cd /var/www/dev/dev.app.ecommify.io'
+        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'cp htaccess dist/callbreak-CMS/.htaccess'
+        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'ls dist/callbreak-CMS/.htaccess'
+        - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'if test -f "dist/callbreak-CMS/.htaccess"; then echo "exist";rm -rf build_live; mv dist build_live; else echo "not working"; fi'
