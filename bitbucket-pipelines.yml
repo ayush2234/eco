@@ -5,6 +5,7 @@ pipelines:
   - step:
      name: Deploy to master
      script:
+        - ssh-keyscan -t rsa bitbucket.org
         - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'cd /var/www/dev/dev.app.ecommify.io'
         - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'git pull origin develop'
         - ssh -i ~/.ssh/id_rsa root@52.65.237.239 'npm install --cache'
