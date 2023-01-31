@@ -1,7 +1,8 @@
-import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subject } from 'rxjs';
-import { IntegrationInstance, MappingOption, MappingValueOptions, SyncOption, Tab, ValuesList, ValuesListOptions, VALUE_OPTION_TYPE } from '../../../integration.types';
+import { appConfig } from 'app/core/config/app.config';
 import { SyncOptionService } from './sync-option.service';
+import { IntegrationInstance, integrationInstanceConnection, IntegrationValue, MappingOption, MappingValueOptions, SyncOption, Tab, ValuesList, ValuesListOptions, VALUE_OPTION_TYPE } from '../../../integration.types';
 
 interface InputOption {
   option: SyncOption;
@@ -17,12 +18,16 @@ interface InputOption {
   templateUrl: './sync-option.component.html',
   encapsulation: ViewEncapsulation.None,
 })
-export abstract class SyncOptionComponent implements OnDestroy {
+export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   integrationInstance: IntegrationInstance;
+  private _config = appConfig;
+  api = this._config?.apiConfig?.baseUrl;
   syncOptions: SyncOption[];
   selectedPanel: SyncOption;
   selectedTab: Tab;
   selectedField: MappingOption;
+  integrationValue: IntegrationValue; 
+  integrationInstanceConnection: integrationInstanceConnection;
   inputOptions: InputOption = {
     option: undefined,
     isActive: false,
@@ -52,6 +57,26 @@ export abstract class SyncOptionComponent implements OnDestroy {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
+  }
+
+  ngOnInit(){
+    this.integrationInstanceConnection = {
+      store_url: "https://onesixeightlondon.com.au",
+      consumer_key: "ck-5262842efed5eede****",
+      consumer_secret: "cs-58de5de5eg5w5ww5g5c****"
+    }
+    this.integrationValue = {
+      source_instance_id: "1ed9a335-4cde-6932-ae80-0605e1fd6890",
+      integration_id: "1ed1f116-8527-6bfa-93c1-0605e1fd6890",
+      name: "NewMappingCreateTest123",
+      active_status: "Y",
+      is_custom: "N",
+      connection_status: "Y",
+      last_connection_time:"",
+      connection: this.integrationInstanceConnection,
+      sync_options: this.syncOptions
+    }
+
   }
 
   /**
@@ -306,5 +331,8 @@ export abstract class SyncOptionComponent implements OnDestroy {
    */
   setChildrenLabel(child: MappingOption): void {
     child.code = child.label;
+  }
+  saveIntegration(){
+    this._syncOptionService.createIntegration(this.integrationValue);
   }
 }

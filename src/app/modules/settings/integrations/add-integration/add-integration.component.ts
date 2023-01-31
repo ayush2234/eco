@@ -22,6 +22,7 @@ import { SyncOptionService } from './common/sync-option/sync-option.service';
 import { SyncOptionComponent } from './common/sync-option/sync-option.component';
 import { IntegrationInstance, SyncOption } from '../integration.types';
 
+
 const badgeActiveClasses =
   'px-2 bg-[#4FD1C5] text-sm text-on-primary rounded-full';
 const badgeInactiveClasses =

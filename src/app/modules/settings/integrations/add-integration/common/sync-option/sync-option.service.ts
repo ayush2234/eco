@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, tap, switchMap, map, forkJoin, catchError } from 'rxjs';
 
-import { IntegrationInstance, SelectOption, ValuesList } from '../../../integration.types';
+import { IntegrationInstance, IntegrationValue, SelectOption, ValuesList } from '../../../integration.types';
 import { appConfig } from 'app/core/config/app.config';
 import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 
@@ -1646,6 +1646,17 @@ export class SyncOptionService {
       // const list = (response[0] as any).data.values_lists.concat((response[1] as any).data.values_lists);
       // this._valuesList.next(list);
     })
+  }
+
+  createIntegration(integrationValue: IntegrationValue){
+    const api = this._config.apiConfig.serviceUrl + '/api/v1/' +
+    LocalStorageUtils.companyId + '/integration/instance';
+    this._httpClient.post(api, integrationValue).pipe(
+      catchError(err => {
+        return of();
+      })).subscribe(response => {
+        console.log("res",response);
+      });
   }
 
   /**

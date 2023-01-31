@@ -106,7 +106,23 @@ export interface ValuesList extends Options {
 }
 
 export interface ValuesListOptions extends Options { }
+export interface IntegrationValue {
+  source_instance_id: string;
+  integration_id: string;
+  name: string;
+  active_status: string,
+  is_custom: string,
+  connection_status: string,
+  last_connection_time: "",
+  connection: integrationInstanceConnection;
+  sync_options: SyncOption[];
+}
 
+export interface integrationInstanceConnection{
+  store_url: string;
+  consumer_key: string;
+  consumer_secret: string;
+}
 
 export enum VALUE_OPTION_TYPE {
   values_list = 'values_list',
