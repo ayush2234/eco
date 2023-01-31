@@ -9,7 +9,7 @@ pipelines:
           - npm install 
           - npm run build-dev
         artifacts:
-          - build/**
+          - dist/**
     - step:
         name: Deploy artifacts using SCP to dev
         script:
@@ -18,4 +18,4 @@ pipelines:
               USER: 'root'
               SERVER: '52.65.237.239'
               REMOTE_PATH: '/var/www/dev/dev.app.ecommify.io'
-              LOCAL_PATH: 'build/*'
+              LOCAL_PATH: 'dist/*'
