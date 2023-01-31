@@ -1,18 +1,56 @@
-image: atlassian/default-image:3
-
-# Workflow Configuration
+image: node:10
 
 pipelines:
-  custom:
-    deployment-to-dev:
+  branches:
+    develop:
       - step:
-          name: Deploy to EC2 Dev
-          deployment: Dev
-          clone:
-            enabled: false
+          name: Installation
+          caches:
+            - node
           script:
-            - pipe: atlassian/ssh-run:0.4.1
-              variables:
-                SSH_USER: 'bitbucket'
-                SERVER: 'pre-prod.ecommify.io'
-                COMMAND: 'cd dev/; rm -Rf ecommify; git clone git@bitbucket.org:ecommify/ecommify.git; cd ecommify; npm install; export NG_CLI_ANALYTICS=ci; npm run build; cp -Rf dist/ecommify/** /var/www/ecommify/pre-prod/'
+            - npm install
+          artifacts:
+            - node_modules/** # Save modules for next steps
+      - step:
+          name: Lint
+          script:
+            - npm run lint
+      - step:
+          name: Build
+          script:
+            - npm run build:production
+          artifacts:
+            - dist/** # Save build for next steps
+      - step:
+          name: Deploy
+          script:
+            - echo "$(ls -la)"
+            - echo "$(ls -la dist)"
+            - ssh root@3.27.77.218 rm -rf /var/www/dev/dev.app.ecommify.io
+            - scp -r dist/** root@3.27.77.218:/var/www/dev/dev.app.ecommify.io
+    staging:
+      - step:
+          name: Installation
+          caches:
+            - node
+          script:
+            - npm install
+          artifacts:
+            - node_modules/** # Save modules for next steps
+      - step:
+          name: Lint
+          script:
+            - npm run lint
+      - step:
+          name: Build
+          script:
+            - npm run build:production
+          artifacts:
+            - dist/** # Save build for next steps
+      - step:
+          name: Deploy
+          script:
+            - echo "$(ls -la)"
+            - echo "$(ls -la dist)"
+            - ssh root@3.27.77.218 rm -rf /var/www/stag/pre-prod.app.ecommify.io
+            - scp -r dist/** root@3.27.77.218:/var/www/stag/pre-prod.app.ecommify.io
