@@ -6,8 +6,6 @@ pipelines:
       script:
         - pipe: atlassian/ssh-run:0.4.1
           variables:
-            SSH_USER: 'ec2-user'
+            SSH_USER: 'root'
             SERVER: '52.65.237.239'
-            SSH_KEY: $MY_SSH_KEY
-            MODE: 'command'
             COMMAND: 'cd /var/www/dev/dev.app.ecommify.io && ./script.sh' 
