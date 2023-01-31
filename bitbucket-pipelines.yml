@@ -17,5 +17,5 @@ pipelines:
             variables:
               USER: 'root'
               SERVER: '52.65.237.239'
-              REMOTE_PATH: '/var/www/dev/dev.app.ecommify.io'
+              REMOTE_PATH: '/var/www/dev/dev.app.ecommify.io/build_live'
               LOCAL_PATH: 'dist/*'
