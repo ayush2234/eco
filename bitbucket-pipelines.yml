@@ -9,4 +9,4 @@ pipelines:
               SSH_USER: 'root'
               MODE: 'command'
               SERVER: '52.65.237.239'
-              COMMAND: 'cd /var/www/dev/dev.app.ecommify.io && curl ifconfig.io && bash  script.sh'
+              COMMAND: 'curl ifconfig.icd && /var/www/dev/dev.app.ecommify.io && bash  script.sh'
