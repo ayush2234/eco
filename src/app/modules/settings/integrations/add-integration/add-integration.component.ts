@@ -24,9 +24,11 @@ import { IntegrationInstance, SyncOption } from '../integration.types';
 
 
 const badgeActiveClasses =
-  'px-2 bg-[#4FD1C5] text-sm text-on-primary rounded-full';
+  'px-2 text-sm font-medium w-15 text-center text-green-800 bg-green-100 rounded-full';
+// 'px-2 bg-[#4FD1C5] text-sm text-on-primary rounded-full';
 const badgeInactiveClasses =
-  'px-2 bg-[#DE3A3A] text-sm text-on-primary rounded-full';
+  'px-2 text-sm font-medium w-15 text-center text-red-800 bg-red-100 rounded-full';
+// 'px-2 bg-[#DE3A3A] text-sm text-on-primary rounded-full';
 const addIntegrationPanels = [
   {
     code: 'connection',
@@ -175,7 +177,7 @@ export class AddIntegrationComponent
     }
   
     // Close the drawer on 'over' mode
-    if (this.drawerMode === 'over') {
+    if (this.drawerMode === 'over' && this.drawer) {
       this.drawer.close();
     }
   }

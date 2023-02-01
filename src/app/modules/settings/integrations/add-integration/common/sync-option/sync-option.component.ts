@@ -28,6 +28,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   selectedField: MappingOption;
   integrationValue: IntegrationValue; 
   integrationInstanceConnection: integrationInstanceConnection;
+  selectedChild: MappingOption;
   inputOptions: InputOption = {
     option: undefined,
     isActive: false,
@@ -37,8 +38,13 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
     valueOption: undefined
   }
   validate = false;
+  searchKeyword !: string;
   availableOptionsTypes = [];
+  filteredAvailableOptionsTypes = [];
   valuesList: ValuesList[];
+  selectedFieldParentIndex: Number | null | any;
+  selectedFieldChildIndex: Number | null | any;
+  newInsertedFieldChildren = {};
 
   protected _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -112,16 +118,31 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
    *
    * @param field Represents the field to be activated.
    */
-  goToField(field: MappingOption): void {
-    if(field.code.length) {
+  goToField(field: MappingOption, parentIndex: Number, childIndex: Number | null = null): void {
+    // if(field.code.length) {
 
       if(!field.children) {
         field.children = [];
       }
       this.selectedField = field;
+      this.selectedFieldParentIndex = parentIndex;
+      this.selectedFieldChildIndex = childIndex;
       console.log(this.selectedField)
+      this.searchKeyword = '';
       this.loadSelectOptions();
-    }
+    // }
+  }
+
+  /**
+   * Set the active children.
+   *
+   * @param child Represents the child to be activated.
+   */
+  goToChild(child: MappingOption): void {
+    // if(field.code.length) {
+      this.selectedChild = child;
+      this.loadSelectOptions();
+    // }
   }
 
   /**
@@ -130,6 +151,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   resetFieldSelection(): void {
     this.selectedField = undefined;
     this.availableOptionsTypes = [];
+    this.filteredAvailableOptionsTypes = [];
     if(this.validate) {
       this.toggleMappingToDo();
     }
@@ -218,7 +240,26 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
       }
     });
 
+    this.filteredAvailableOptionsTypes = [ ...this.availableOptionsTypes ];
+
     console.log(this.availableOptionsTypes);
+  }
+
+  searchOptionValues() {
+    const regexToMatch = new RegExp(`${ this.searchKeyword }`, "gi");
+    
+    if (this.searchKeyword) {
+      this.filteredAvailableOptionsTypes = JSON.parse(JSON.stringify(this.availableOptionsTypes)).map(option => {
+        try {
+          option.valueList.values = option.valueList.values.filter(value => value.label.match(regexToMatch));
+          return option;
+        } catch (error) {
+          return option;
+        }
+      });
+    } else {
+      this.filteredAvailableOptionsTypes = [ ...this.availableOptionsTypes ];
+    }
   }
 
   /**
@@ -227,7 +268,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
    * @param index Represents the index of available options
    */
   toggleOptionsExpansion(index: number): void {
-    this.availableOptionsTypes.forEach((option, i, options) => {
+    this.filteredAvailableOptionsTypes.forEach((option, i, options) => {
       if(index === i) {
         options[i].isExpanded = !options[i].isExpanded;
       }
@@ -246,18 +287,11 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
       selected_value: {...selection}
     }
 
-    this.selectedTab.mapping_options.forEach((field, fieldIndex, fieldArr) => {
-      if(field.code === this.selectedField.code) {
-        fieldArr[fieldIndex] = {...this.selectedField};
-      }
-      if(field.children) {
-        field.children.forEach((child, childIndex, childArr) => {
-          if(child.code === this.selectedField.code) {
-            childArr[childIndex] = {...this.selectedField};
-          }
-        });
-      }
-    })
+    if (this.selectedFieldChildIndex != null) {
+      this.selectedTab.mapping_options[this.selectedFieldParentIndex].children[this.selectedFieldChildIndex] = {...this.selectedField};
+    } else {
+      this.selectedTab.mapping_options[this.selectedFieldParentIndex] =  {...this.selectedField};
+    }
 
     const tabIndex = this.selectedPanel.sub_sync_options.findIndex(x => x.code === this.selectedTab.code);
     if(tabIndex !== -1) {
@@ -300,6 +334,113 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   }
 
   /**
+   *  For setting an object for edit and delete action display in FE.
+   */
+
+  setNewInsertedParent(parentIndex) {
+    if (this.newInsertedFieldChildren[this.selectedPanel.code]) {
+      if (this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code]) {
+        if (this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex]) {
+          return;
+        } else {
+          this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex] = {
+            editable: false,
+            children: []
+          }
+        }
+      } else {
+        this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code] = {};
+        this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex] = {
+          editable: false,
+          children: []
+        }
+      }
+    } else {
+      this.newInsertedFieldChildren[this.selectedPanel.code] = {};
+      this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code] = {};
+      this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex] = {
+        editable: false,
+        children: []
+      }
+    }
+  }
+
+  /**
+   * Add new mapping option.
+   */
+  addField(): void {
+    const field: MappingOption = {
+      code: "",
+      label: "",
+      type: "option",
+      required: false,
+      default_value: "",
+      selected_value: {
+          label: "Not Mapped",
+          code: ""
+      },
+      value_options: [],
+      children: []
+    }
+    this.selectedTab.mapping_options.push(field);
+    this.goToField(field, this.selectedTab.mapping_options.length - 1)
+    if (this.newInsertedFieldChildren[this.selectedPanel.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][this.selectedTab.mapping_options.length - 1]) {
+      this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][this.selectedTab.mapping_options.length - 1] = {
+        editable: true,
+        children: []
+      }
+    } else {
+      this.setNewInsertedParent(this.selectedTab.mapping_options.length - 1);
+      this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][this.selectedTab.mapping_options.length - 1] = {
+        editable: true,
+        children: []
+      }
+    }
+    
+    setTimeout(() => {
+      document.getElementById(`parent_${this.selectedTab.mapping_options.length-1}`).focus();
+    }, 0);
+  }
+
+  /**
+   * 
+   * @param parentIndex Getter for is field should be editable or not
+   * @returns 
+   */
+
+  isParentEditable(parentIndex) {
+    return this.newInsertedFieldChildren[this.selectedPanel.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex]?.editable;
+  }
+
+  /**
+   * 
+   * @param field Represents editing field
+   */
+
+  editParent(field) {
+      field.code = '';
+  }
+
+  /**
+   * 
+   * @param parentIndex Id of deleting field
+   */
+
+  removeParent(parentIndex) {
+    delete this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex];
+    this.selectedTab.mapping_options.splice(parentIndex, 1);
+  }
+
+  /**
+   * Set the label and code of fields with the value user types in.
+   *
+   * @param field Represents the newly added field.
+   */
+  setFieldLabel(field: MappingOption): void {
+    field.code = field.label;
+  }
+
+  /**
    * Add children to fields.
    */
   addChildren(): void {
@@ -314,6 +455,58 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
         this.selectedField.value_options
     }
     this.selectedField.children.push(child);
+    if (this.newInsertedFieldChildren[this.selectedPanel.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][this.selectedFieldParentIndex]) {
+      this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][this.selectedFieldParentIndex].children.push(this.selectedField.children.length - 1);
+    } else {
+      this.setNewInsertedParent(this.selectedFieldParentIndex);
+      this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][this.selectedFieldParentIndex] = {
+        editable: false,
+        children: [this.selectedField.children.length - 1]
+      }
+    }
+    setTimeout(() => {
+      document.getElementById(`child${this.selectedFieldParentIndex}_${this.selectedField.children.length - 1}`).focus();
+    }, 0);
+  }
+
+  /**
+   * 
+   * @param field Editing child
+   */
+
+  editChild(field) {
+      field.code = '';
+  }
+
+  /**
+   * 
+   * @param parentIndex Parent index of editing child
+   * @param childIndex editing child index
+   * @returns 
+   */
+
+  isChildEditable(parentIndex, childIndex) {
+    return this.newInsertedFieldChildren[this.selectedPanel.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex] && this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex].children.includes(childIndex);
+  }
+
+  /**
+   * 
+   * @param parentIndex Parent index of deleting child
+   * @param childIndex Index of deleting child
+   * @param field Deleting field reference
+   */
+
+  removeChild(parentIndex, childIndex, field) {
+    const temp = this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex].children;
+    this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex].children = [];
+    temp.forEach((value, index) => {
+      if (value > childIndex) {
+        this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex].children.push(value - 1);
+      } else if (value < childIndex) {
+        this.newInsertedFieldChildren[this.selectedPanel.code][this.selectedTab.code][parentIndex].children.push(value);
+      }
+    });
+    field.children.splice(childIndex, 1);
   }
 
   /**
@@ -321,7 +514,13 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
    *
    * @param child Represents the newly added child.
    */
-  setChildrenLabel(child: MappingOption): void {
+  setChildrenLabel(child: MappingOption, field: MappingOption): void {
+    for (let fieldChild of field.children) {
+      if (child.label == fieldChild.code) {
+        child.label = "";
+        return;
+      }
+    }
     child.code = child.label;
   }
 
