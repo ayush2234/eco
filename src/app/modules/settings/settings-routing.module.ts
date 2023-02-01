@@ -31,7 +31,7 @@ const routes: Route[] = [
           ),
       },
       {
-        path: 'custom-integration-request',
+        path: 'custom-request',
        component:CustomIntegrationRequestComponent
       },
       {

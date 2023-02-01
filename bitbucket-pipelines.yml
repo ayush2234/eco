@@ -1,18 +1,41 @@
-image: atlassian/default-image:3
-
-# Workflow Configuration
-
+image: node:16
 pipelines:
-  custom:
-    deployment-to-prods:
-      - step:
-          name: Deploy to EC2 Pre Prod
-          deployment: Staging
-          clone:
-            enabled: false
-          script:
-            - pipe: atlassian/ssh-run:0.4.1
-              variables:
-                SSH_USER: 'bitbucket'
-                SERVER: 'pre-prod.ecommify.io'
-                COMMAND: 'rm -Rf ecommify; git clone git@bitbucket.org:ecommify/ecommify.git; cd ecommify; npm install; export NG_CLI_ANALYTICS=ci; npm run build; cp -Rf dist/ecommify/** /var/www/ecommify/pre-prod/'
+  branches:
+   develop:
+    - step:
+        name: Build and test
+        caches:
+          - node
+        script:
+          - npm install 
+          - npm run build-dev
+        artifacts:
+          - dist/**
+    - step:
+        name: Deploy artifacts using SCP to Dev
+        script:
+          - pipe: atlassian/scp-deploy:0.3.3
+            variables:
+              USER: 'root'
+              SERVER: '52.65.237.239'
+              REMOTE_PATH: '/var/www/dev/dev.app.ecommify.io/build_live'
+              LOCAL_PATH: 'dist/*'
+   staging:
+    - step:
+        name: Build and test
+        caches:
+          - node
+        script:
+          - npm install 
+          - npm run build-stag
+        artifacts:
+          - dist/**
+    - step:
+        name: Deploy artifacts using SCP to Stag
+        script:
+          - pipe: atlassian/scp-deploy:0.3.3
+            variables:
+              USER: 'root'
+              SERVER: '52.65.237.239'
+              REMOTE_PATH: '/var/www/stage/pre-prod.app.ecommify.io/build_live'
+              LOCAL_PATH: 'dist/*'
