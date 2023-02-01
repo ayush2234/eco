@@ -12,7 +12,7 @@ pipelines:
         artifacts:
           - dist/**
     - step:
-        name: Deploy artifacts using SCP to dev
+        name: Deploy artifacts using SCP to Dev
         script:
           - pipe: atlassian/scp-deploy:0.3.3
             variables:
@@ -27,11 +27,11 @@ pipelines:
           - node
         script:
           - npm install 
-          - npm run build-dev
+          - npm run build-stag
         artifacts:
           - dist/**
     - step:
-        name: Deploy artifacts using SCP to dev
+        name: Deploy artifacts using SCP to Stag
         script:
           - pipe: atlassian/scp-deploy:0.3.3
             variables:
