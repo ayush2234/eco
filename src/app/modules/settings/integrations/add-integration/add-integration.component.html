@@ -100,7 +100,8 @@
             <!-- Load settings panel -->
             <div class="mt-8">
               <eco-add-integration-connection
-              [instance]="instance"></eco-add-integration-connection>
+              [instance]="instance"
+              [isAddIntegration]="isAddIntegration"></eco-add-integration-connection>
             </div>
           </div>
 
@@ -216,8 +217,8 @@
                           class="sm:col-span-4 last:border-none border-b cursor-pointer mapping-table"
                           (click)="goToField(field, parentIndex)"
                           [ngClass]="{
-                            'required-map-color': field.required && field.selected_value.code === '',
-                            'optional-map-color': !field.required && field.selected_value.code === ''
+                            'required-map-color': field.required && field.selected_value?.code === '',
+                            'optional-map-color': !field.required && field.selected_value?.code === ''
                           }"
                         >
                           <mat-form-field
@@ -308,10 +309,10 @@
                               class="{{ field.selected_value.code === '' ? 'italic text-red-600' : '' }}"
                               [ngClass]="{'selected-code': field.selected_value.code != '' || [true, false].includes(field.selected_value.code)}"
                               disabled>
-                              <mat-option [value]="field.selected_value.code"> 
-                                {{ field.selected_value.code === '' ? '<' : '' }}
-                                <i> {{ field.selected_value.label }} </i>
-                                {{ field.selected_value.code === '' ? '>' : '' }}
+                              <mat-option [value]="field.selected_value?.code"> 
+                                {{ field.selected_value?.code === '' ? '<' : '' }}
+                                <i> {{ field.selected_value?.label }} </i>
+                                {{ field.selected_value?.code === '' ? '>' : '' }}
                               </mat-option>
                             </mat-select>
                           </mat-form-field>
@@ -393,13 +394,13 @@
                                 [svgIcon]="'heroicons_solid:arrow-right'"
                                 matPrefix></mat-icon>
                               <mat-select
-                                [value]="children.selected_value.code" 
-                                class="{{ children.selected_value.code === '' ? 'italic text-red-600' : '' }}"
+                                [value]="children.selected_value?.code" 
+                                class="{{ children.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
                                 disabled>
-                                <mat-option [value]="children.selected_value.code"> 
-                                  {{ children.selected_value.code === '' ? '<' : '' }}
-                                  <i> {{ children.selected_value.label }} </i>
-                                  {{ children.selected_value.code === '' ? '>' : '' }}
+                                <mat-option [value]="children.selected_value?.code"> 
+                                  {{ children.selected_value?.code === '' ? '<' : '' }}
+                                  <i> {{ children.selected_value?.label }} </i>
+                                  {{ children.selected_value?.code === '' ? '>' : '' }}
                                 </mat-option>
                               </mat-select>
                             </mat-form-field>
@@ -579,7 +580,10 @@
                 <!-- Actions -->
                 <div class="flex items-center justify-end">
                   <button mat-stroked-button type="button">Cancel</button>
-                  <button class="ml-4" mat-flat-button type="button" [color]="'primary'">
+                  <button *ngIf="isAddIntegration" class="ml-4" mat-flat-button type="button" [color]="'primary'" (click)="updateIntegration()">
+                    Save
+                  </button>
+                  <button *ngIf="!isAddIntegration" class="ml-4" mat-flat-button type="button" [color]="'primary'" (click)="saveIntegration()">
                     Save
                   </button>
                 </div>

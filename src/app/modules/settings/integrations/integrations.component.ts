@@ -79,6 +79,7 @@ export class IntegrationsComponent implements OnInit, OnDestroy {
   addIntegration(instance: IntegrationInstance): any {
     this.openIntegrationView = true;
     this.isAddIntegration = true;
+    console.log("instance", instance);
     this._syncOptionService.setSelectedIntegration(instance);
   }
 
