@@ -337,9 +337,9 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
     return this.integrationInstance.integration.sync_options.map(option => {
       return {
         code: option.code,
-        is_active: option.is_active,
-        is_activated: option.is_activated,
-        sub_sync_options: []
+        is_active: option.is_active ? option.is_active : false,
+        is_activated: option.is_activated ? option.is_activated : false,
+        sub_sync_options: option.sub_sync_options
       }  
     })
   }

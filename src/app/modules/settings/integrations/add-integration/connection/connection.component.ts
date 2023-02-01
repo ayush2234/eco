@@ -132,7 +132,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
         code: option.code,
         is_active: option.is_active,
         is_activated: option.is_activated,
-        sub_sync_options: []
+        sub_sync_options: option.sub_sync_options
       }  
     })
   }
