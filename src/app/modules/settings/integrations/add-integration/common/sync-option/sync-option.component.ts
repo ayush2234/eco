@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { appConfig } from 'app/core/config/app.config';
 import { SyncOptionService } from './sync-option.service';
 import { IntegrationInstance, integrationInstanceConnection, IntegrationValue, MappingOption, MappingValueOptions, SyncOption, Tab, ValuesList, ValuesListOptions, VALUE_OPTION_TYPE } from '../../../integration.types';
@@ -66,7 +66,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
       consumer_secret: "cs-58de5de5eg5w5ww5g5c****"
     }
     this.integrationValue = {
-      source_instance_id: "1ed9a335-4cde-6932-ae80-0605e1fd6890",
+      source_instance_id: "f8d13159-70dd-4071-8c72-621ff27a9999",
       integration_id: "1ed1f116-8527-6bfa-93c1-0605e1fd6890",
       name: "NewMappingCreateTest123",
       active_status: "Y",
@@ -89,7 +89,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
     return item.id || index;
   }
 
-  private setWipIntegration(): void {
+  setWipIntegration(): void {
     this._syncOptionService.wipIntegration = {
       ...this.integrationInstance
     };
@@ -332,12 +332,63 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   setChildrenLabel(child: MappingOption): void {
     child.code = child.label;
   }
+
+  getApiSyncOptions() {
+    return this.integrationInstance.integration.sync_options.map(option => {
+      return {
+        code: option.code,
+        is_active: option.is_active,
+        is_activated: option.is_activated,
+        sub_sync_options: []
+      }  
+    })
+  }
+
   updateIntegration(){
-    console.log("Save Integration");
-    this._syncOptionService.createIntegration(this.integrationValue);
+    console.log("AddIntegration");
+    const integrationVal = {
+      ...this.integrationValue,
+      integration_id: this.integrationInstance.integration_id,
+      name: 'Integration No' + (Math.random() * 10000),
+      sync_options: (this.getApiSyncOptions() as any)
+    }
+    this._syncOptionService.createIntegration(integrationVal).pipe(
+      takeUntil(this._unsubscribeAll)
+    ).subscribe(integration => {
+      if(integration) {
+        const newIntegration = this._syncOptionService.mergeIntegrationData(integration, this.integrationInstance.integration);
+        this._syncOptionService.wipIntegration = {
+          ...this.integrationInstance,
+          integration: {
+            ...this.integrationInstance.integration,
+            ...newIntegration
+          }
+        }
+      }
+    });
   }
   saveIntegration(){
-    console.log("AddIntegration");
-    this._syncOptionService.updateInstalledIntegration(this.integrationValue);
+    console.log("Save Integration");
+    const integrationVal = {
+      ...this.integrationValue,
+      integration_id: this.integrationInstance.integration.integration_id,
+      name: this.integrationInstance.integration.name,
+      integration_instance_id: this.integrationInstance.integration.integration_instance_id,
+      sync_options: (this.getApiSyncOptions() as any)
+    }
+    this._syncOptionService.updateInstalledIntegration(integrationVal).pipe(
+      takeUntil(this._unsubscribeAll)
+    ).subscribe(integration => {
+      if(integration) {
+        const newIntegration = this._syncOptionService.mergeIntegrationData(integration, this.integrationInstance.integration);
+        this._syncOptionService.wipIntegration = {
+          ...this.integrationInstance,
+          integration: {
+            ...this.integrationInstance.integration,
+            ...newIntegration
+          }
+        }
+      }
+    });
   }
 }

@@ -108,7 +108,7 @@ export class AddIntegrationComponent
         // Setup available panels
         this.integrationInstance= {...data};
         if (data) { 
-          this.setPanels(this.integrationInstance.integration.sync_options);
+          this.setPanels();
           console.log(data);
         }
       })
@@ -212,11 +212,11 @@ export class AddIntegrationComponent
     this.isOpen = false;
     this.cancel.emit();
   }
-  private setPanels(data: SyncOption[]): void {
+  private setPanels(): void {
     const connection = this.integrationInstance.integration.connection;
-    this.syncOptions = [...data];
+    this.syncOptions = [...this.integrationInstance.integration.sync_options];
     this.panels = this.syncOptions
-      .filter(panel => panel.is_visible).map(
+      .filter(panel => panel.is_active).map(
       panel => {
         return {
           badge: {

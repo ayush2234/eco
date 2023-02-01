@@ -145,6 +145,6 @@
 </div>
 <eco-add-integration
   *ngIf="openIntegrationView && selectedIntegration$ | async"
-  [isOpen]="openIntegrationView && selectedIntegration$ | async"
+  [isOpen]="openIntegrationView && selectedIntegration$"
   [isAddIntegration]="isAddIntegration"
   (cancel)="openIntegrationView = false"></eco-add-integration>

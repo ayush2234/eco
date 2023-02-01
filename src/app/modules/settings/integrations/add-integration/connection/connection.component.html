@@ -50,7 +50,7 @@
         </div>
         <mat-slide-toggle
           (click)="$event.preventDefault()"
-          [checked]="sync_option.is_visible"
+          [checked]="sync_option.is_active"
           class="ml-2"
           [color]="'primary'"
           #toggleRef>
@@ -64,7 +64,10 @@
     <!-- Actions -->
     <div class="flex items-center justify-end">
       <button mat-stroked-button type="button">Cancel</button>
-      <button class="ml-4" mat-flat-button type="button" [color]="'primary'">
+      <button *ngIf="isAddIntegration" class="ml-4" mat-flat-button type="button" [color]="'primary'" (click)="updateIntegration()">
+        Save
+      </button>
+      <button *ngIf="!isAddIntegration" class="ml-4" mat-flat-button type="button" [color]="'primary'" (click)="saveIntegration()">
         Save
       </button>
     </div>
