@@ -4,6 +4,16 @@
     <div 
       class="grid sm:grid-cols-4 gap-6 w-full mt-8"
     >
+      <div
+        class="sm:col-span-4"
+      >
+        <mat-form-field 
+          class="fuse-mat-no-subscript w-full"
+        >
+          <mat-label>Integration Instance Name</mat-label>
+          <input matInput [(ngModel)]="integrationValue.name" />
+        </mat-form-field>
+      </div>
       <!-- Grouped Parent -->
       <div 
         class="sm:col-span-4"
@@ -21,7 +31,7 @@
               field.type === 'url'
             "
             class="text-secondary" matPrefix>https://</div>
-          <input matInput [(ngModel)]="field.value" />
+          <input matInput [(ngModel)]="integrationValue.connection[field.code]" />
         </mat-form-field>
       </div>
     </div>

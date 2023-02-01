@@ -64,15 +64,18 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
     this.integrationValue = {
       source_instance_id: "f8d13159-70dd-4071-8c72-621ff27a9999",
       integration_id: "1ed1f116-8527-6bfa-93c1-0605e1fd6890",
-      name: "NewMappingCreateTest123",
+      name: this.instance.integration.name,
       active_status: "Y",
       is_custom: "N",
       connection_status: "Y",
       last_connection_time:"",
-      connection: this.integrationInstanceConnection,
+      connection: {},
       sync_options: this.instance.integration.sync_options
     }
 
+    this.instance.integration.connection.fields.forEach(field => {
+      this.integrationValue.connection[field.code] = this.instance.integration.connection[field.code];
+    })
   }
 
   /**
@@ -130,21 +133,33 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
     return this.instance.integration.sync_options.map(option => {
       return {
         code: option.code,
-        is_active: option.is_active,
-        is_activated: option.is_activated,
+        is_active: option.is_active !== undefined ? option.is_active : false,
+        is_activated: option.is_activated !== undefined ? option.is_activated : false,
         sub_sync_options: option.sub_sync_options
       }  
     })
   }
 
+  eliminateUnchanged(objectIntegrationValue: IntegrationValue) {
+    this.instance.integration.connection.fields.forEach(field => {
+      if(objectIntegrationValue.connection[field.code] === this.instance.integration.connection[field.code]) {
+        delete objectIntegrationValue.connection[field.code];
+      }
+    })
+    if(objectIntegrationValue.name === this.instance.integration.name) {
+      delete objectIntegrationValue.name
+    }
+  }
+
   updateIntegration(){
     console.log("AddIntegration");
     const integrationVal = {
-      ...this.integrationValue,
+      ...{...this.integrationValue},
+      connection: {...this.integrationValue.connection},
       integration_id: this.instance.integration_id,
-      name: 'Integration No' + (Math.random() * 10000),
       sync_options: (this.getApiSyncOptions() as any)
     }
+    this.eliminateUnchanged(integrationVal);
     this._syncOptionService.createIntegration(integrationVal).pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe(integration => {
@@ -163,12 +178,13 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
   saveIntegration(){
     console.log("Save Integration");
     const integrationVal = {
-      ...this.integrationValue,
+      ...{...this.integrationValue},
+      connection: {...this.integrationValue.connection},
       integration_id: this.instance.integration.integration_id,
-      name: this.instance.integration.name,
       integration_instance_id: this.instance.integration.integration_instance_id,
       sync_options: (this.getApiSyncOptions() as any)
     }
+    this.eliminateUnchanged(integrationVal);
     this._syncOptionService.updateInstalledIntegration(integrationVal).pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe(integration => {

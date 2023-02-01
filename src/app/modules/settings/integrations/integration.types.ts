@@ -114,12 +114,12 @@ export interface ValuesListOptions extends Options { }
 export interface IntegrationValue {
   source_instance_id: string;
   integration_id: string;
-  name: string;
+  name?: string;
   active_status: string,
   is_custom: string,
   connection_status: string,
   last_connection_time: "",
-  connection: integrationInstanceConnection;
+  connection?: any;
   sync_options: SyncOption[];
   integration_instance_id?: string;
 }

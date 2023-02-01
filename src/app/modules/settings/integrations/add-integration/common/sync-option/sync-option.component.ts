@@ -60,23 +60,15 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(){
-    this.integrationInstanceConnection = {
-      store_url: "https://onesixeightlondon.com.au",
-      consumer_key: "ck-5262842efed5eede****",
-      consumer_secret: "cs-58de5de5eg5w5ww5g5c****"
-    }
     this.integrationValue = {
       source_instance_id: "f8d13159-70dd-4071-8c72-621ff27a9999",
       integration_id: "1ed1f116-8527-6bfa-93c1-0605e1fd6890",
-      name: "NewMappingCreateTest123",
       active_status: "Y",
       is_custom: "N",
       connection_status: "Y",
       last_connection_time:"",
-      connection: this.integrationInstanceConnection,
       sync_options: this.syncOptions
     }
-
   }
 
   /**
@@ -337,8 +329,8 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
     return this.integrationInstance.integration.sync_options.map(option => {
       return {
         code: option.code,
-        is_active: option.is_active ? option.is_active : false,
-        is_activated: option.is_activated ? option.is_activated : false,
+        is_active: option.is_active !== undefined ? option.is_active : false,
+        is_activated: option.is_activated !== undefined ? option.is_activated : false,
         sub_sync_options: option.sub_sync_options
       }  
     })
@@ -349,7 +341,6 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
     const integrationVal = {
       ...this.integrationValue,
       integration_id: this.integrationInstance.integration_id,
-      name: 'Integration No' + (Math.random() * 10000),
       sync_options: (this.getApiSyncOptions() as any)
     }
     this._syncOptionService.createIntegration(integrationVal).pipe(
@@ -372,7 +363,6 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
     const integrationVal = {
       ...this.integrationValue,
       integration_id: this.integrationInstance.integration.integration_id,
-      name: this.integrationInstance.integration.name,
       integration_instance_id: this.integrationInstance.integration.integration_instance_id,
       sync_options: (this.getApiSyncOptions() as any)
     }
