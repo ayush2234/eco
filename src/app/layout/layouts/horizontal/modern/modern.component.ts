@@ -1,5 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import {
+  debounceTime,
+  map,
+  Observable,
+  startWith,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import {
   FuseNavigationService,
@@ -13,6 +21,7 @@ import { AuthService } from 'app/core/auth/auth.service';
 import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 
 import { Router } from '@angular/router';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'modern-layout',
@@ -25,10 +34,7 @@ import { Router } from '@angular/router';
         color: white !important;
       }
       .mat-select-panel-wrap {
-        margin-top: 15%;
-      }
-      .companyList .mat-select-placeholder {
-        color: white !important;
+        margin-top: 12%;
       }
     `,
   ],
@@ -41,11 +47,12 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
   user: User;
   role: string;
   companyName: string;
-  selectedCompanyName: string;
   companies = [];
-  filteredCompanyTags = [];
   showFilter: boolean = false;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
+  companyControl: FormControl = new FormControl();
+  filteredOptions: Observable<Array<any>>;
+  filterText: FormControl = new FormControl('');
   /**
    * Constructor
    */
@@ -78,10 +85,10 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
    */
 
   ngOnInit(): void {
+    this.companyControl.setValue(LocalStorageUtils.companyId);
     //get role of current logged in user
     this.role = this.authService.role;
     //get companies list of an user
-    this.filteredCompanyTags = this._userService.companyList;
     this.companies = this._userService.companyList;
     // Subscribe to navigation data
     this._navigationService.navigation$
@@ -89,8 +96,6 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
       .subscribe((navigation: Navigation) => {
         this.navigation = navigation;
       });
-    //selected Company Name
-    this.selectedCompanyName = LocalStorageUtils.companyName;
     // Subscribe to media changes
     this._fuseMediaWatcherService.onMediaChange$
       .pipe(takeUntil(this._unsubscribeAll))
@@ -111,11 +116,26 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
               : 'Wolfgroup';
         }
       });
-    if (this.companies.length >= 10) {
+    if (this.companies && this.companies?.length >= 10) {
       this.showFilter = true;
     } else {
       this.showFilter = false;
     }
+    this.filteredOptions = this.filterText.valueChanges.pipe(
+      debounceTime(50),
+      startWith(''),
+      map(target => target.toLowerCase()),
+      map(target =>
+        this.companies.filter(opt =>
+          opt.company_name.toLowerCase().includes(target)
+        )
+      )
+    );
+  }
+  getOptionStyle(opt: any, filted: Array<any>): { [key: string]: any } {
+    const style: { [key: string]: any } = {};
+    style.display = filted.indexOf(opt) < 0 ? 'none' : '';
+    return style;
   }
   showSettings() {
     if (this.role === 'masterUser') {
@@ -132,12 +152,20 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
   showCompany() {
     if (this.role === 'admin' || this.role === 'superAdmin') {
       return true;
+    } else if (
+      (this.role === 'user' || this.role === 'masterUser') &&
+      this.user.companies?.length === 1
+    ) {
+      return true;
     } else {
       return false;
     }
   }
   showSwitchCompany() {
-    if (this.role === 'user' || this.role === 'masterUser') {
+    if (
+      (this.role === 'user' || this.role === 'masterUser') &&
+      this.user.companies?.length > 1
+    ) {
       return true;
     } else {
       return false;
@@ -175,20 +203,9 @@ export class ModernLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  //Filters companies
-  filterCompanyTags(event): void {
-    // Get the value
-    const value = event.target.value.toLowerCase();
-    // Filter the companies
-    this.filteredCompanyTags = this.companies.filter(tag =>
-      tag.company_name.toLowerCase().includes(value)
-    );
-  }
-
-  //selected Company
+  //Selection change of a Company
   selectedCompany(event) {
-    LocalStorageUtils.companyId = event.value.company_id;
-    LocalStorageUtils.companyName = event.value.company_name;
+    LocalStorageUtils.companyId = event.value;
     this._router.navigate(['/user/dashboard/integration-status']);
   }
   trackByFn(index: number, item: any): any {
