@@ -305,9 +305,9 @@
                               [svgIcon]="'heroicons_solid:arrow-right'"
                               matPrefix></mat-icon>
                             <mat-select
-                              [value]="field.selected_value.code" 
-                              class="{{ field.selected_value.code === '' ? 'italic text-red-600' : '' }}"
-                              [ngClass]="{'selected-code': field.selected_value.code != '' || [true, false].includes(field.selected_value.code)}"
+                              [value]="field.selected_value?.code" 
+                              class="{{ field.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
+                              [ngClass]="{'selected-code': field.selected_value?.code != '' || [true, false].includes(field.selected_value?.code)}"
                               disabled>
                               <mat-option [value]="field.selected_value?.code"> 
                                 {{ field.selected_value?.code === '' ? '<' : '' }}
@@ -327,8 +327,8 @@
                             (click)="goToField(children, parentIndex, childIndex)"
                             [ngClass]="{
                               'bg-primary-200': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex,
-                              'required-map-color': children.required && children.selected_value.code === '',
-                              'optional-map-color': !children.required && children.selected_value.code === ''
+                              'required-map-color': children.required && children.selected_value?.code === '',
+                              'optional-map-color': !children.required && children.selected_value?.code === ''
                             }"
                           >
                             <mat-form-field
