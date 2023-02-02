@@ -22,6 +22,7 @@ import { SyncOptionService } from './common/sync-option/sync-option.service';
 import { SyncOptionComponent } from './common/sync-option/sync-option.component';
 import { IntegrationInstance, SyncOption } from '../integration.types';
 
+
 const badgeActiveClasses =
   'px-2 text-sm font-medium w-15 text-center text-green-800 bg-green-100 rounded-full';
 // 'px-2 bg-[#4FD1C5] text-sm text-on-primary rounded-full';
@@ -108,8 +109,10 @@ export class AddIntegrationComponent
       tap(data => {
         // Setup available panels
         this.integrationInstance= {...data};
-        this.setPanels(this.integrationInstance.integration.sync_options);
-        console.log(data);
+        if (data) { 
+          this.setPanels();
+          console.log(data);
+        }
       })
     );
 
@@ -211,11 +214,11 @@ export class AddIntegrationComponent
     this.isOpen = false;
     this.cancel.emit();
   }
-  private setPanels(data: SyncOption[]): void {
+  private setPanels(): void {
     const connection = this.integrationInstance.integration.connection;
-    this.syncOptions = [...data];
+    this.syncOptions = [...this.integrationInstance.integration.sync_options];
     this.panels = this.syncOptions
-      .filter(panel => panel.is_visible).map(
+      .filter(panel => panel.is_active).map(
       panel => {
         return {
           badge: {

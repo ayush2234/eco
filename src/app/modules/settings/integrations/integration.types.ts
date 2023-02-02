@@ -16,6 +16,10 @@ export interface IntegrationInstance {
   pass_connection_test: string;
   created_at: string;
   updated_at: any;
+  is_beta: string;
+  integration_id?: string;
+  force_test_connection: string;
+  source_id: string;
 }
 
 export interface Integration {
@@ -37,6 +41,7 @@ export interface Integration {
   endpoints?: any[];
   connection: Connection;
   sync_options: SyncOption[];
+  integration_instance_id?: string;
 }
 
 export interface Connection {
@@ -65,7 +70,7 @@ export interface Options {
 }
 
 export interface SyncOption extends Options {
-  is_visible: boolean;
+  is_active: boolean;
   is_activated: boolean;
   description: string;
   sub_sync_options: Tab[];
@@ -106,7 +111,24 @@ export interface ValuesList extends Options {
 }
 
 export interface ValuesListOptions extends Options { }
+export interface IntegrationValue {
+  source_instance_id: string;
+  integration_id: string;
+  name?: string;
+  active_status: string,
+  is_custom: string,
+  connection_status: string,
+  last_connection_time: "",
+  connection?: any;
+  sync_options: SyncOption[];
+  integration_instance_id?: string;
+}
 
+export interface integrationInstanceConnection{
+  store_url: string;
+  consumer_key: string;
+  consumer_secret: string;
+}
 
 export enum VALUE_OPTION_TYPE {
   values_list = 'values_list',
