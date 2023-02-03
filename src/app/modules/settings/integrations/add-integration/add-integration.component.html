@@ -1,597 +1,520 @@
-<ng-container *cdkPortal
-  ><fuse-drawer
-    class="w-screen min-w-screen sm:w-65vw sm:min-w-100 z-999"
-    fixed
-    [mode]="'over'"
-    [name]="'addIntegrationDrawer'"
-    [position]="'right'"
-    [opened]="fuseDrawerOpened"
-    (openedChanged)="openedChanged(fuseDrawer)"
-    *ngIf="isOpen"
-    #fuseDrawer
-    ><div
-      *ngIf="wipIntegration$ | async as instance"
-      class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
-      <mat-drawer-container class="flex-auto sm:h-full">
-        <!-- Drawer -->
-        <mat-drawer
-          class="sm:w-90 dark:bg-gray-900"
-          [autoFocus]="false"
-          [mode]="drawerMode"
-          [opened]="drawerOpened"
-          #drawer>
-          <!-- Header -->
-          <div class="flex items-center justify-between m-8 mr-6 sm:my-10">
-            <!-- Title -->
-            <div class="h-16 flex flex-col justify-center">
-              <div class="text-3xl font-bold tracking-tight leading-none">
-                {{ isAddIntegration ? 'Add' : 'Configure' }} Integration
-              </div>
-              <div class="text-disabled mt-2">
-                {{ instance.name }}
-              </div>
-            </div>
-            
-            <!-- Close button -->
-            <div class="lg:hidden">
-              <button mat-icon-button (click)="drawer.close()">
-                <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
-              </button>
-            </div>
-          </div>
-          <!-- Panel links -->
-          <div class="flex flex-col divide-y border-t border-b">
-            <ng-container *ngFor="let panel of panels; trackBy: trackByFn">
-              <div
-                class="flex px-8 py-5 cursor-pointer"
-                [ngClass]="{
+<ng-container *cdkPortal><fuse-drawer class="w-screen min-w-screen sm:w-65vw sm:min-w-100 z-999" fixed [mode]="'over'"
+        [name]="'addIntegrationDrawer'" [position]="'right'" [opened]="fuseDrawerOpened"
+        (openedChanged)="openedChanged(fuseDrawer)" *ngIf="isOpen" #fuseDrawer>
+        <div *ngIf="wipIntegration$ | async as instance" class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+            <mat-drawer-container class="flex-auto sm:h-full">
+                <!-- Drawer -->
+                <mat-drawer class="sm:w-90 dark:bg-gray-900" [autoFocus]="false" [mode]="drawerMode"
+                    [opened]="drawerOpened" #drawer>
+                    <!-- Header -->
+                    <div class="flex items-center justify-between m-8 mr-6 sm:my-10">
+                        <!-- Title -->
+                        <div class="h-16 flex flex-col justify-center">
+                            <div class="text-3xl font-bold tracking-tight leading-none">
+                                {{ isAddIntegration ? 'Add' : 'Configure' }} Integration
+                            </div>
+                            <div class="text-disabled mt-2">
+                                {{ instance.name }}
+                            </div>
+                        </div>
+
+                        <!-- Close button -->
+                        <div class="lg:hidden">
+                            <button mat-icon-button (click)="drawer.close()">
+                                <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Panel links -->
+                    <div class="flex flex-col divide-y border-t border-b">
+                        <ng-container *ngFor="let panel of panels; trackBy: trackByFn">
+                            <div class="flex px-8 py-5 cursor-pointer" [ngClass]="{
                   'hover:bg-primary-50 dark:hover:bg-hover': !panel.isActive,
                   'bg-primary-50 dark:bg-hover': panel.isActive
-                }"
-                (click)="goToPanel(panel.code)">
-                <div>
-                  <div
-                    class="font-medium leading-6"
-                    [ngClass]="{
+                }" (click)="!isAddIntegration && goToPanel(panel.code)">
+                                <div>
+                                    <div class="font-medium leading-6" [ngClass]="{
                       'text-primary dark:text-primary-500': panel.isActive
                     }">
-                    {{ panel.label }}
-                  </div>
-                </div>
-                <div *ngIf="panel.badge" class="ml-auto mr-0">
-                  <div [ngClass]="panel.badge.classes">
-                    {{ panel.badge.title }}
-                  </div>
-                </div>
-              </div>
-            </ng-container>
-          </div>
-        </mat-drawer>
-
-        <!-- Drawer content -->
-        <mat-drawer-content class="flex flex-col">
-
-          <!-- Main Connection -->
-          <div *ngIf="!selectedPanel" class="flex-auto px-6 pt-8 pb-12 md:p-8 md:pb-12 lg:py-10 lg:px-12">
-            <!-- Panel header -->
-            <div class="flex flex-col">
-              <!-- Drawer toggle -->
-              <button
-                class="lg:hidden -ml-2 mb-10"
-                mat-icon-button
-                (click)="drawer.toggle()">
-                <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
-              </button>
-
-              <div class="w-full">
-                <!-- Panel title -->
-                <div class="h-16 flex flex-col justify-center">
-                  <div
-                    class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
-                    {{ instance.integration.connection.label }}
-                  </div>
-                  <div class="text-disabled mt-2">
-                    {{ instance.integration.connection.description }}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Load settings panel -->
-            <div class="mt-8">
-              <eco-add-integration-connection
-              [instance]="instance"
-              [isAddIntegration]="isAddIntegration"></eco-add-integration-connection>
-            </div>
-          </div>
-
-          <!-- Main Sync Options -->
-          <div *ngIf="selectedPanel" class="flex-auto px-6 pt-8 pb-8 md:p-8 md:pb-8 lg:py-10 lg:px-12">
-            <!-- Panel header -->
-            <div class="flex flex-col">
-              <!-- Drawer toggle -->
-              <button
-                class="lg:hidden -ml-2 mb-10"
-                mat-icon-button
-                (click)="drawer.toggle()">
-                <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
-              </button>
-
-              <div class="grid grid-cols-6 gap-2 w-full">
-                <!-- Panel title -->
-                <div class="col-span-4 h-16 flex justify-between items-center">
-                  <div class="h-16 flex flex-col justify-center">
-                    <div
-                      class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
-                      {{ selectedPanel.label }}
-                    </div>
-                    <div class="mt-2 text-secondary">
-                      {{ selectedPanel.description }}
-                    </div>
-                  </div>
-                  <div>
-                    <button
-                      *ngIf="!validate"
-                      class="" 
-                      (click)="toggleMappingToDo()"
-                      mat-stroked-button
-                    >
-                      <span>Mapping to do</span>
-                    </button>
-                    <button
-                      *ngIf="validate"
-                      class=""
-                      mat-flat-button
-                      (click)="toggleMappingToDo()"
-                      [color]="'primary'">
-                      <span>Mapping to do</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Load settings panel -->
-            <div class="mt-8" *ngIf="selectedTab">
-              <!-- Tabs -->
-              <div class="border-b">
-                <nav class="tabs flex flex-col sm:flex-row">
-                  <button *ngFor="let tab of selectedPanel.sub_sync_options"
-                    (click)="goToTab(tab)"
-                    class="tab ext-gray-600 py-4 px-6 block hover:text-primary-500 focus:outline-none"
-                    [ngClass]="{
-                      'active text-primary-600 border-b-2 border-primary-600': selectedTab && selectedTab.code === tab.code
-                    }"
-                  >
-                    {{tab.label}}
-                  </button>
-                </nav>
-              </div>
-
-              <!-- Section -->
-              <div class="grid grid-cols-6 gap-2 w-full mt-4">
-
-                <!-- Mapping Section -->
-                <div class="w-full col-span-4">
-                  <div class="grid sm:grid-cols-4 w-full mapping-area overflow-y-auto rounded-md border border-gray-300">
-                    
-                    <!-- Static Field -->
-                    <div class="sm:col-span-4 border-b mapping-head sticky inset-0 z-10">
-                      <mat-form-field
-                        class="fuse-mat-no-subscript fuse-mat-emphasized-affix static-header my-0 w-full">
-                        <div class="text-[#1E293B] w-full sm:w-full" matPrefix>
-                          <div class="flex items-center justify-between">
-                            <div class="flex items-center ">
-                              <div class="truncate w-20 text-[#1E293B] text-[18px] opacity-100 block font-bold">Mapping</div>
-                              <div class="font-medium text-[#1E293B] text-[18px] opacity-100 ml-1">option</div>
+                                        {{ panel.label }}
+                                    </div>
+                                </div>
+                                <div *ngIf="panel.badge" class="ml-auto mr-0">
+                                    <div [ngClass]="panel.badge.classes">
+                                        {{ panel.badge.title }}
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                              <button
-                                class="min-w-0 min-h-0 w-6 h-6 p-0" mat-stroked-button
-                                (click)="addField()"
-                              >
-                                <mat-icon
-                                  class="icon-size-4 text-black"
-                                  [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                              </button>
+                        </ng-container>
+                    </div>
+                </mat-drawer>
+
+                <!-- Drawer content -->
+                <mat-drawer-content class="flex flex-col">
+
+                    <!-- Main Connection -->
+                    <div *ngIf="!selectedPanel" class="flex-auto px-6 pt-8 pb-12 md:p-8 md:pb-12 lg:py-10 lg:px-12">
+                        <!-- Panel header -->
+                        <div class="flex flex-col">
+                            <!-- Drawer toggle -->
+                            <button class="lg:hidden -ml-2 mb-10" mat-icon-button (click)="drawer.toggle()">
+                                <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+                            </button>
+
+                            <div class="w-full">
+                                <!-- Panel title -->
+                                <div class="h-16 flex flex-col justify-center">
+                                    <div class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
+                                        {{ instance.integration.connection.label }}
+                                    </div>
+                                    <div class="text-disabled mt-2">
+                                        {{ instance.integration.connection.description }}
+                                    </div>
+                                </div>
                             </div>
-                          </div>
                         </div>
-                        <mat-icon
-                          class="icon-size-5 -mr-2.5"
-                          [svgIcon]="'heroicons_solid:arrow-right'"
-                          matPrefix></mat-icon>
-                        <input class="text-[18px] w-20 text-[#1E293B] opacity-100 font-bold" disabled value="Mapped" matInput />
-                        <span class="font-medium text-[18px] text-[#1E293B] opacity-100">option</span>
-                      </mat-form-field>
+
+                        <!-- Load settings panel -->
+                        <div class="mt-8">
+                            <eco-add-integration-connection [instance]="instance" [isAddIntegration]="isAddIntegration"
+                                (onAddNewIntegration)="configureIntegrationAfterCreate($event)"></eco-add-integration-connection>
+                        </div>
                     </div>
 
-                    <!-- Dynamic Fields -->
-                    <ng-container
-                      *ngFor="let field of selectedTab.mapping_options; let parentIndex = index;"
-                    >
-                      <ng-container
-                        *ngIf="isConditionSatisfied(field)"
-                      >
-                        <div
-                          class="sm:col-span-4 last:border-none border-b cursor-pointer mapping-table"
-                          (click)="goToField(field, parentIndex)"
-                          [ngClass]="{
+                    <!-- Main Sync Options -->
+                    <div *ngIf="selectedPanel" class="flex-auto px-6 pt-8 pb-8 md:p-8 md:pb-8 lg:py-10 lg:px-12">
+                        <!-- Panel header -->
+                        <div class="flex flex-col">
+                            <!-- Drawer toggle -->
+                            <button class="lg:hidden -ml-2 mb-10" mat-icon-button (click)="drawer.toggle()">
+                                <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+                            </button>
+
+                            <div class="grid grid-cols-6 gap-2 w-full">
+                                <!-- Panel title -->
+                                <div class="col-span-4 h-16 flex justify-between items-center">
+                                    <div class="h-16 flex flex-col justify-center">
+                                        <div class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
+                                            {{ selectedPanel.label }}
+                                        </div>
+                                        <div class="mt-2 text-secondary">
+                                            {{ selectedPanel.description }}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button *ngIf="!validate" class="" (click)="toggleMappingToDo()"
+                                            mat-stroked-button>
+                                            <span>Mapping to do</span>
+                                        </button>
+                                        <button *ngIf="validate" class="" mat-flat-button (click)="toggleMappingToDo()"
+                                            [color]="'primary'">
+                                            <span>Mapping to do</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Load settings panel -->
+                        <div class="mt-8" *ngIf="selectedTab">
+                            <!-- Tabs -->
+                            <div class="border-b">
+                                <nav class="tabs flex flex-col sm:flex-row">
+                                    <button *ngFor="let tab of selectedPanel.sub_sync_options" (click)="goToTab(tab)"
+                                        class="tab ext-gray-600 py-4 px-6 block hover:text-primary-500 focus:outline-none"
+                                        [ngClass]="{
+                      'active text-primary-600 border-b-2 border-primary-600': selectedTab && selectedTab.code === tab.code
+                    }">
+                                        {{tab.label}}
+                                    </button>
+                                </nav>
+                            </div>
+
+                            <!-- Section -->
+                            <div class="grid grid-cols-6 gap-2 w-full mt-4">
+
+                                <!-- Mapping Section -->
+                                <div class="w-full col-span-4">
+                                    <div
+                                        class="grid sm:grid-cols-4 w-full mapping-area overflow-y-auto rounded-md border border-gray-300">
+
+                                        <!-- Static Field -->
+                                        <div class="sm:col-span-4 border-b mapping-head sticky inset-0 z-10">
+                                            <mat-form-field
+                                                class="fuse-mat-no-subscript fuse-mat-emphasized-affix static-header my-0 w-full">
+                                                <div class="text-[#1E293B] w-full sm:w-full" matPrefix>
+                                                    <div class="flex items-center justify-between">
+                                                        <div class="flex items-center ">
+                                                            <div
+                                                                class="truncate w-20 text-[#1E293B] text-[18px] opacity-100 block font-bold">
+                                                                Mapping</div>
+                                                            <div
+                                                                class="font-medium text-[#1E293B] text-[18px] opacity-100 ml-1">
+                                                                option</div>
+                                                        </div>
+                                                        <div>
+                                                            <button class="min-w-0 min-h-0 w-6 h-6 p-0"
+                                                                mat-stroked-button (click)="addField()">
+                                                                <mat-icon class="icon-size-4 text-black"
+                                                                    [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <mat-icon class="icon-size-5 -mr-2.5"
+                                                    [svgIcon]="'heroicons_solid:arrow-right'" matPrefix></mat-icon>
+                                                <input class="text-[18px] w-20 text-[#1E293B] opacity-100 font-bold"
+                                                    disabled value="Mapped" matInput />
+                                                <span
+                                                    class="font-medium text-[18px] text-[#1E293B] opacity-100">option</span>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <!-- Dynamic Fields -->
+                                        <ng-container
+                                            *ngFor="let field of selectedTab.mapping_options; let parentIndex = index;">
+                                            <ng-container *ngIf="isConditionSatisfied(field)">
+                                                <div class="sm:col-span-4 last:border-none border-b cursor-pointer mapping-table"
+                                                    (click)="goToField(field, parentIndex)" [ngClass]="{
                             'required-map-color': field.required && field.selected_value?.code === '',
                             'optional-map-color': !field.required && field.selected_value?.code === ''
-                          }"
-                        >
-                          <mat-form-field
-                            class="fuse-mat-no-subscript fuse-mat-emphasized-affix dynamic-rows my-0 w-full"
-                            [ngClass]="{
+                          }">
+                                                    <mat-form-field
+                                                        class="fuse-mat-no-subscript fuse-mat-emphasized-affix dynamic-rows my-0 w-full"
+                                                        [ngClass]="{
                               'bg-primary-200': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null,
                               'selected-field': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null
-                            }"
-                          >
-                            <div class="text-secondary w-full sm:w-full" matPrefix
-                              [ngClass]="{
+                            }">
+                                                        <div class="text-secondary w-full sm:w-full" matPrefix
+                                                            [ngClass]="{
                                 'text-[#4F46E5] font-semibold': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null,
                                 'active-hover': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null
-                              }"
-                            >
-                              <div 
-                                class="flex items-center justify-between"
-                              >
-                                <div class="flex items-center">
-                                  <img *ngIf="!selectedField || selectedField.code !== field.code" class="w-4 parent-field-icon" src="assets/icons/attribute.svg" />
-                                  <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null" class="w-4 parent-field-icon" src="assets/icons/active-attribute.svg" />
-                                  <span class="truncate block ml-2 font-normal" *ngIf="field.code.length">{{field.label}}
-                                  </span>
-                                  <span *ngIf="!field.code.length">
-                                    <mat-form-field class="fuse-mat-no-subscript w-full parent-form-field  child-input" >
-                                      <input 
-                                        matInput 
-                                        placeholder="Enter code..."
-                                        [(ngModel)]="field.label"
-                                        (keyup.enter)="setFieldLabel(field)"
-                                        id="parent_{{parentIndex}}"
-                                      />
-                                    </mat-form-field>
-                                  </span>
-                                </div>
-                                <span *ngIf="field.required" class="ml-auto bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full font-normal">Req.</span>
-                                <div>
-                                  <ng-container *ngIf="isParentEditable(parentIndex)">
-                                    <button
-                                      class="min-w-0 min-h-0 w-6 h-6 p-0" mat-stroked-button
-                                      (click)="setFieldLabel(field)"
-                                      *ngIf="!field.code.length"
-                                    >
-                                      <mat-icon
-                                        class="icon-size-4 text-primary"
-                                        [svgIcon]="'heroicons_outline:check'"></mat-icon>
-                                    </button>
-                                    <button
-                                      class="min-w-0 min-h-0 w-6 h-6 p-0" mat-stroked-button
-                                      (click)="editParent(field)"
-                                      *ngIf="field.code.length"
-                                    >
-                                      <mat-icon
-                                        class="icon-size-4 text-primary"
-                                        [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
-                                    </button>
-                                    <button
-                                      class="min-w-0 min-h-0 w-6 h-6 p-0 ml-1" mat-stroked-button
-                                      (click)="removeParent(parentIndex)"
-                                      *ngIf="field.code.length"
-                                    >
-                                      <mat-icon
-                                        class="icon-size-4 text-red-600"
-                                        [svgIcon]="'heroicons_outline:trash'"></mat-icon>
-                                    </button>
-                                  </ng-container>
-                                  <button
-                                    class="min-w-0 min-h-0 w-6 h-6 p-0 hover-btn ml-1" mat-stroked-button
-                                    (click)="addChildren()"
-                                    *ngIf="field.code.length"
-                                  >
-                                    <mat-icon
-                                      class="icon-size-4 text-black"
-                                      [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                            <mat-icon
-                              class="icon-size-5 -mr-2.5"
-                              [ngClass]="{
+                              }">
+                                                            <div class="flex items-center justify-between">
+                                                                <div class="flex items-center">
+                                                                    <img *ngIf="!selectedField || selectedField.code !== field.code"
+                                                                        class="w-4 parent-field-icon"
+                                                                        src="assets/icons/attribute.svg" />
+                                                                    <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null"
+                                                                        class="w-4 parent-field-icon"
+                                                                        src="assets/icons/active-attribute.svg" />
+                                                                    <span class="truncate block ml-2 font-normal"
+                                                                        *ngIf="field.code.length">{{field.label}}
+                                                                    </span>
+                                                                    <span *ngIf="!field.code.length">
+                                                                        <mat-form-field
+                                                                            class="fuse-mat-no-subscript w-full parent-form-field  child-input">
+                                                                            <input matInput placeholder="Enter code..."
+                                                                                [(ngModel)]="field.label"
+                                                                                (keyup.enter)="setFieldLabel(field)"
+                                                                                id="parent_{{parentIndex}}" />
+                                                                        </mat-form-field>
+                                                                    </span>
+                                                                </div>
+                                                                <span *ngIf="field.required"
+                                                                    class="ml-auto bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full font-normal">Req.</span>
+                                                                <div>
+                                                                    <ng-container *ngIf="isParentEditable(parentIndex)">
+                                                                        <button class="min-w-0 min-h-0 w-6 h-6 p-0"
+                                                                            mat-stroked-button
+                                                                            (click)="setFieldLabel(field)"
+                                                                            *ngIf="!field.code.length">
+                                                                            <mat-icon class="icon-size-4 text-primary"
+                                                                                [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                                                                        </button>
+                                                                        <button class="min-w-0 min-h-0 w-6 h-6 p-0"
+                                                                            mat-stroked-button
+                                                                            (click)="editParent(field)"
+                                                                            *ngIf="field.code.length">
+                                                                            <mat-icon class="icon-size-4 text-primary"
+                                                                                [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                                                                        </button>
+                                                                        <button class="min-w-0 min-h-0 w-6 h-6 p-0 ml-1"
+                                                                            mat-stroked-button
+                                                                            (click)="removeParent(parentIndex)"
+                                                                            *ngIf="field.code.length">
+                                                                            <mat-icon class="icon-size-4 text-red-600"
+                                                                                [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                                                        </button>
+                                                                    </ng-container>
+                                                                    <button
+                                                                        class="min-w-0 min-h-0 w-6 h-6 p-0 hover-btn ml-1"
+                                                                        mat-stroked-button (click)="addChildren()"
+                                                                        *ngIf="field.code.length">
+                                                                        <mat-icon class="icon-size-4 text-black"
+                                                                            [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <mat-icon class="icon-size-5 -mr-2.5" [ngClass]="{
                                 'text-primary': selectedField && selectedField.code === field.code
-                              }"
-                              [svgIcon]="'heroicons_solid:arrow-right'"
-                              matPrefix></mat-icon>
-                            <mat-select
-                              [value]="field.selected_value?.code" 
-                              class="{{ field.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
-                              [ngClass]="{'selected-code': field.selected_value?.code != '' || [true, false].includes(field.selected_value?.code)}"
-                              disabled>
-                              <mat-option [value]="field.selected_value?.code"> 
-                                {{ field.selected_value?.code === '' ? '<' : '' }}
-                                <i> {{ field.selected_value?.label }} </i>
-                                {{ field.selected_value?.code === '' ? '>' : '' }}
-                              </mat-option>
-                            </mat-select>
-                          </mat-form-field>
-                        </div>
+                              }" [svgIcon]="'heroicons_solid:arrow-right'" matPrefix></mat-icon>
+                                                        <mat-select [value]="field.selected_value?.code"
+                                                            class="{{ field.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
+                                                            [ngClass]="{'selected-code': field.selected_value?.code != '' || [true, false].includes(field.selected_value?.code)}"
+                                                            disabled>
+                                                            <mat-option [value]="field.selected_value?.code">
+                                                                {{ field.selected_value?.code === '' ? '<' : '' }} <i>
+                                                                    {{ field.selected_value?.label }} </i>
+                                                                    {{ field.selected_value?.code === '' ? '>' : '' }}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </div>
 
-                        <!-- Child Fields -->
-                        <ng-container
-                          *ngFor="let children of field.children; let childIndex = index;"
-                        >
-                          <div
-                            class="sm:col-span-4 last:border-none border-b cursor-pointer"
-                            (click)="goToField(children, parentIndex, childIndex)"
-                            [ngClass]="{
+                                                <!-- Child Fields -->
+                                                <ng-container
+                                                    *ngFor="let children of field.children; let childIndex = index;">
+                                                    <div class="sm:col-span-4 last:border-none border-b cursor-pointer"
+                                                        (click)="goToField(children, parentIndex, childIndex)"
+                                                        [ngClass]="{
                               'bg-primary-200': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex,
                               'required-map-color': children.required && children.selected_value?.code === '',
                               'optional-map-color': !children.required && children.selected_value?.code === ''
-                            }"
-                          >
-                            <mat-form-field
-                              class="fuse-mat-no-subscript fuse-mat-emphasized-affix dynamic-rows my-0 w-full child-input-parent"
-                              [ngClass]="{
+                            }">
+                                                        <mat-form-field
+                                                            class="fuse-mat-no-subscript fuse-mat-emphasized-affix dynamic-rows my-0 w-full child-input-parent"
+                                                            [ngClass]="{
                                 'text-primary-200': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex,
                                 'selected-field': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex
-                              }"
-                            >
-                              <div class="text-secondary w-full sm:w-full mr-0" matPrefix
-                                [ngClass]="{
+                              }">
+                                                            <div class="text-secondary w-full sm:w-full mr-0" matPrefix
+                                                                [ngClass]="{
                                   'text-primary-800 font-semibold': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex
-                                }"
-                              >
-                                <div class="flex items-center ml-14">
-                                  <span *ngIf="children.code.length" class="truncate block">{{children.label}}
-                                    <span *ngIf="children.required" class="text-red-600">*</span>
-                                  </span>
-                                  <span *ngIf="!children.code.length">
-                                    <mat-form-field class="fuse-mat-no-subscript w-full child-form-field  child-input" #inputRef>
-                                      <input 
-                                        matInput 
-                                        placeholder="Enter code..."
-                                        [(ngModel)]="children.label"
-                                        id="child{{parentIndex}}_{{childIndex}}"
-                                        (click)="editChild(parentIndex, childIndex, children)"
-                                      />
-                                    </mat-form-field>
-                                  </span>
-                                  <div class="crud-btns">
-                                    <button
-                                      class="min-w-0 min-h-0 w-6 h-6 p-0" mat-stroked-button
-                                      (click)="setChildrenLabel(children, field)"
-                                      *ngIf="!children.code.length"
-                                    >
-                                      <mat-icon
-                                        class="icon-size-4 text-primary"
-                                        [svgIcon]="'heroicons_outline:check'"></mat-icon>
-                                    </button>
-                                    <button
-                                      class="min-w-0 min-h-0 w-6 h-6 p-0" mat-stroked-button
-                                      (click)="editChild(children)"
-                                      *ngIf="children.code.length"
-                                    >
-                                      <mat-icon
-                                        class="icon-size-4 text-primary"
-                                        [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
-                                    </button>
-                                    <button
-                                      class="min-w-0 min-h-0 w-6 h-6 p-0 ml-1" mat-stroked-button
-                                      (click)="removeChild(parentIndex, childIndex, field)"
-                                      *ngIf="children.code.length"
-                                    >
-                                      <mat-icon
-                                        class="icon-size-4 text-red-600"
-                                        [svgIcon]="'heroicons_outline:trash'"></mat-icon>
-                                    </button>
-                                  </div>
+                                }">
+                                                                <div class="flex items-center ml-14">
+                                                                    <span *ngIf="children.code.length"
+                                                                        class="truncate block">{{children.label}}
+                                                                        <span *ngIf="children.required"
+                                                                            class="text-red-600">*</span>
+                                                                    </span>
+                                                                    <span *ngIf="!children.code.length">
+                                                                        <mat-form-field
+                                                                            class="fuse-mat-no-subscript w-full child-form-field  child-input"
+                                                                            #inputRef>
+                                                                            <input matInput placeholder="Enter code..."
+                                                                                [(ngModel)]="children.label"
+                                                                                id="child{{parentIndex}}_{{childIndex}}"
+                                                                                (click)="editChild(parentIndex, childIndex, children)" />
+                                                                        </mat-form-field>
+                                                                    </span>
+                                                                    <div class="crud-btns">
+                                                                        <button class="min-w-0 min-h-0 w-6 h-6 p-0"
+                                                                            mat-stroked-button
+                                                                            (click)="setChildrenLabel(children, field)"
+                                                                            *ngIf="!children.code.length">
+                                                                            <mat-icon class="icon-size-4 text-primary"
+                                                                                [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                                                                        </button>
+                                                                        <button class="min-w-0 min-h-0 w-6 h-6 p-0"
+                                                                            mat-stroked-button
+                                                                            (click)="editChild(children)"
+                                                                            *ngIf="children.code.length">
+                                                                            <mat-icon class="icon-size-4 text-primary"
+                                                                                [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                                                                        </button>
+                                                                        <button class="min-w-0 min-h-0 w-6 h-6 p-0 ml-1"
+                                                                            mat-stroked-button
+                                                                            (click)="removeChild(parentIndex, childIndex, field)"
+                                                                            *ngIf="children.code.length">
+                                                                            <mat-icon class="icon-size-4 text-red-600"
+                                                                                [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <mat-icon class="icon-size-5 -mr-2.5"
+                                                                [svgIcon]="'heroicons_solid:arrow-right'"
+                                                                matPrefix></mat-icon>
+                                                            <mat-select [value]="children.selected_value?.code"
+                                                                class="{{ children.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
+                                                                disabled>
+                                                                <mat-option [value]="children.selected_value?.code">
+                                                                    {{ children.selected_value?.code === '' ? '<' : ''
+                                                                        }} <i> {{ children.selected_value?.label }} </i>
+                                                                        {{ children.selected_value?.code === '' ? '>' :
+                                                                        '' }}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </ng-container>
+
+                                            </ng-container>
+                                        </ng-container>
+                                    </div>
                                 </div>
-                              </div>
-                              <mat-icon
-                                class="icon-size-5 -mr-2.5"
-                                [svgIcon]="'heroicons_solid:arrow-right'"
-                                matPrefix></mat-icon>
-                              <mat-select
-                                [value]="children.selected_value?.code" 
-                                class="{{ children.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
-                                disabled>
-                                <mat-option [value]="children.selected_value?.code"> 
-                                  {{ children.selected_value?.code === '' ? '<' : '' }}
-                                  <i> {{ children.selected_value?.label }} </i>
-                                  {{ children.selected_value?.code === '' ? '>' : '' }}
-                                </mat-option>
-                              </mat-select>
-                            </mat-form-field>
-                          </div>
-                        </ng-container>
 
-                      </ng-container>
-                    </ng-container>
-                  </div>
-                </div>
+                                <!-- Options Section -->
+                                <div
+                                    class="w-full col-span-2 options-wrapper overflow-y-auto rounded-md border border-gray-300 bg-white">
+                                    <ng-container *ngIf="!inputOptions.isActive">
+                                        <div
+                                            class="text-black w-full sm:w-full border-b p-3 sticky inset-0 z-10 bg-white">
+                                            <div class="flex items-center">
+                                                <div class="truncate w-fit text-[#1E293B] block font-bold text-[18px]">
+                                                    Option</div>
+                                                <div class="font-medium text-[#1E293B] text-[18px] ml-1.5">values</div>
+                                            </div>
+                                        </div>
+                                        <div class="search-wrapper sticky inset-0 z-10 bg-white">
+                                            <mat-form-field class="fuse-mat-dense min-w-50 w-full">
+                                                <mat-icon class="icon-size-5" matPrefix
+                                                    [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                                                <input matInput [(ngModel)]="searchKeyword"
+                                                    (keyup)="searchOptionValues()"
+                                                    [placeholder]="'Search for option...'" />
+                                            </mat-form-field>
+                                        </div>
 
-                <!-- Options Section -->
-                <div class="w-full col-span-2 options-wrapper overflow-y-auto rounded-md border border-gray-300 bg-white">
-                  <ng-container *ngIf="!inputOptions.isActive">
-                    <div class="text-black w-full sm:w-full border-b p-3 sticky inset-0 z-10 bg-white">
-                      <div class="flex items-center">
-                        <div class="truncate w-fit text-[#1E293B] block font-bold text-[18px]">Option</div>
-                        <div class="font-medium text-[#1E293B] text-[18px] ml-1.5">values</div>
-                      </div>
-                    </div>
-                    <div class="search-wrapper sticky inset-0 z-10 bg-white">
-                      <mat-form-field
-                        class="fuse-mat-dense min-w-50 w-full">
-                        <mat-icon
-                          class="icon-size-5"
-                          matPrefix
-                          [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                        <input
-                          matInput
-                          [(ngModel)]="searchKeyword"
-                          (keyup)="searchOptionValues()"
-                          [placeholder]="'Search for option...'" />
-                      </mat-form-field>
-                    </div>
-                    
-                    <div class="available-option-container" *ngIf="selectedField && filteredAvailableOptionsTypes">
-                      <ng-container *ngFor="let valueOption of filteredAvailableOptionsTypes; let i=index">
-                        <!-- Values list options -->
-                        <ng-container *ngIf="
+                                        <div class="available-option-container"
+                                            *ngIf="selectedField && filteredAvailableOptionsTypes">
+                                            <ng-container
+                                                *ngFor="let valueOption of filteredAvailableOptionsTypes; let i=index">
+                                                <!-- Values list options -->
+                                                <ng-container *ngIf="
                           valueOption.value_option.value_option_type === 'values_list' &&
                           valueOption.valueList
                         ">
-                          <div>
-                            <ng-container>
-                              <div class="flex items-center px-2 option-header cursor-pointer">
-                                <div
-                                  (click)="toggleOptionsExpansion(i)"
-                                >
-                                  <img class="w-3 cursor-pointer" [src]="'assets/icons/' + (valueOption.isExpanded ? 'minimize' : 'maximize') + '.svg'" />
-                                </div>
-                                <img class="w-4 ml-2 cursor-pointer" [src]="'assets/icons/' + (valueOption.isExpanded ? 'active-attribute' : 'attribute') + '.svg'" />
-                                <span 
-                                  class="ml-2 cursor-pointer  font-normal"
-                                  [ngClass]="{
+                                                    <div>
+                                                        <ng-container>
+                                                            <div
+                                                                class="flex items-center px-2 option-header cursor-pointer">
+                                                                <div (click)="toggleOptionsExpansion(i)">
+                                                                    <img class="w-3 cursor-pointer"
+                                                                        [src]="'assets/icons/' + (valueOption.isExpanded ? 'minimize' : 'maximize') + '.svg'" />
+                                                                </div>
+                                                                <img class="w-4 ml-2 cursor-pointer"
+                                                                    [src]="'assets/icons/' + (valueOption.isExpanded ? 'active-attribute' : 'attribute') + '.svg'" />
+                                                                <span class="ml-2 cursor-pointer  font-normal"
+                                                                    [ngClass]="{
                                     'text-primary-500': valueOption.isExpanded,
                                     'text-[#64748B]': !valueOption.isExpanded
-                                  }"
-                                >{{valueOption.valueList.label}}</span>
-                              </div>
-                              <ng-container *ngIf="valueOption.isExpanded">
-                                <div
-                                  class="pl-18 pr-2 text-[#64748B] option-tab-value font-normal cursor-pointer" 
-                                  *ngFor="let option of valueOption.valueList.values"
-                                  (click)="selectOption(option)">
-                                  {{option.label}}
-                                </div>
-                              </ng-container>
-                            </ng-container>
-                          </div>
-                        </ng-container>
-                        <!-- Input options -->
-                        <ng-container *ngIf="
+                                  }">{{valueOption.valueList.label}}</span>
+                                                            </div>
+                                                            <ng-container *ngIf="valueOption.isExpanded">
+                                                                <div class="pl-18 pr-2 text-[#64748B] option-tab-value font-normal cursor-pointer"
+                                                                    *ngFor="let option of valueOption.valueList.values"
+                                                                    (click)="selectOption(option)">
+                                                                    {{option.label}}
+                                                                </div>
+                                                            </ng-container>
+                                                        </ng-container>
+                                                    </div>
+                                                </ng-container>
+                                                <!-- Input options -->
+                                                <ng-container *ngIf="
                           valueOption.value_option.value_option_type === 'text_input' ||
                           valueOption.value_option.value_option_type === 'decimal_input'
                         ">
-                          <div class="ml-5">
-                            <div 
-                              *ngIf="valueOption.value_option.value_type === 'static'"
-                              (click)="toggleInputOption(valueOption.value_option, 'Static Text')"
-                              class="flex items-center mt-4 cursor-pointer">
-                              <img class="w-3" src="assets/icons/static-text.svg" />
-                              <span class="ml-2 text-[#64748B] font-normal">Static Text</span>
-                            </div>
-                            <div 
-                              *ngIf="valueOption.value_option.value_type === 'attribute'"
-                              (click)="toggleInputOption(valueOption.value_option, 'Advance: Custom Source Attribute')"
-                              class="flex items-center mt-4 cursor-pointer">
-                              <img class="w-5" src="assets/icons/attribute.svg" />
-                              <span class="ml-2 truncate text-[#64748B] font-normal">Advance: Custom Source attribute</span>
-                            </div>
-                          </div>
-                        </ng-container>
-                      </ng-container>
-                    </div>
-                  </ng-container>
-                  
+                                                    <div class="ml-5">
+                                                        <div *ngIf="valueOption.value_option.value_type === 'static'"
+                                                            (click)="toggleInputOption(valueOption.value_option, 'Static Text')"
+                                                            class="flex items-center mt-4 cursor-pointer">
+                                                            <img class="w-3" src="assets/icons/static-text.svg" />
+                                                            <span class="ml-2 text-[#64748B] font-normal">Static
+                                                                Text</span>
+                                                        </div>
+                                                        <div *ngIf="valueOption.value_option.value_type === 'attribute'"
+                                                            (click)="toggleInputOption(valueOption.value_option, 'Advance: Custom Source Attribute')"
+                                                            class="flex items-center mt-4 cursor-pointer">
+                                                            <img class="w-5" src="assets/icons/attribute.svg" />
+                                                            <span
+                                                                class="ml-2 truncate text-[#64748B] font-normal">Advance:
+                                                                Custom Source attribute</span>
+                                                        </div>
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
 
-                  <!-- Input Section -->
-                  <ng-container *ngIf="inputOptions.isActive && inputOptions.valueOption">
-                    <div class="text-black w-full sm:w-full border-b p-3 flex items-center">
-                      <div (click)="toggleInputOption()" class="h-6">
-                        <mat-icon
-                          class="text-hint mat-icon-no-color cursor-pointer"
-                          svgIcon="heroicons_solid:arrow-sm-left"
-                        ></mat-icon>
-                      </div>
-                      <span class="ml-4 truncate block text-black font-bold text-lg opacity-75">{{inputOptions.title}}</span>
-                    </div>
 
-                    <div class="w-11/12 mx-auto my-10">
-                      <div>
-                        <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript min-w-64 w-full">
-                          <input
-                            matInput
-                            [autocomplete]="'off'"
-                            [placeholder]="'Please enter your value'"
-                            [type]="
+                                    <!-- Input Section -->
+                                    <ng-container *ngIf="inputOptions.isActive && inputOptions.valueOption">
+                                        <div class="text-black w-full sm:w-full border-b p-3 flex items-center">
+                                            <div (click)="toggleInputOption()" class="h-6">
+                                                <mat-icon class="text-hint mat-icon-no-color cursor-pointer"
+                                                    svgIcon="heroicons_solid:arrow-sm-left"></mat-icon>
+                                            </div>
+                                            <span
+                                                class="ml-4 truncate block text-black font-bold text-lg opacity-75">{{inputOptions.title}}</span>
+                                        </div>
+
+                                        <div class="w-11/12 mx-auto my-10">
+                                            <div>
+                                                <mat-form-field
+                                                    class="fuse-mat-dense fuse-mat-no-subscript min-w-64 w-full">
+                                                    <input matInput [autocomplete]="'off'"
+                                                        [placeholder]="'Please enter your value'" [type]="
                               inputOptions.valueOption.value_option_type === 'decimal_input' ?
                               'number' : 'text'
-                            "
-                            [(ngModel)]="inputOptions.value" />
-                        </mat-form-field>
-                      </div>
-                      <div class="flex items-center justify-end w-full mt-3">
-                        <button (click)="toggleInputOption()" mat-stroked-button type="button" class="w-1/4">Cancel</button>
-                        <button 
-                          #staticInput
-                          (click)="setInputValue()"
-                          [disbaled]="inputOptions.value.length === 0" 
-                          class="ml-4 w-3/4" 
-                          mat-flat-button
-                          type="button" 
-                          [color]="'primary'">
-                          Map
-                        </button>
-                      </div>
-                    </div>
-                  </ng-container>
-                </div>
-              </div>
-
-              <!-- Divider -->
-              <div class="my-4 border-t"></div>
-
-
-              <div class="md:flex items-center justify-between">
-                <div class="sm:mb-4 md:m-0">
-                  <ng-container *ngIf="selectedPanel && !selectedPanel.is_activated">        
-                    <!-- Section -->
-                    <div class="flex w-full justify-center">
-                      <fuse-alert [appearance]="'outline'" [type]="'info'">
-                        <div class="flex items-center">
-                          <div>
-                            <span class="text-[#1E428A]" fuseAlertTitle>Activate {{selectedPanel.label}} Sync</span>
-                            <div class="flex mt-2">
-                              <span class="mr-4 font-light"
-                                >If mapping has been completed, you can activate this sync.</span
-                              >
+                            " [(ngModel)]="inputOptions.value" />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="flex items-center justify-end w-full mt-3">
+                                                <button (click)="toggleInputOption()" mat-stroked-button type="button"
+                                                    class="w-1/4">Cancel</button>
+                                                <button #staticInput (click)="setInputValue()"
+                                                    [disbaled]="inputOptions.value.length === 0" class="ml-4 w-3/4"
+                                                    mat-flat-button type="button" [color]="'primary'">
+                                                    Map
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </div>
                             </div>
-                          </div>
-                          <div>
-                            <button
-                              class="ml-auto mr-0"
-                              mat-flat-button
-                              type="button"
-                              [color]="'primary'"
-                              (click)="activatePanel()">
-                              Activate
-                            </button>
-                          </div>
+
+                            <!-- Divider -->
+                            <div class="my-4 border-t"></div>
+
+
+                            <div class="md:flex items-center justify-between">
+                                <div class="sm:mb-4 md:m-0">
+                                    <ng-container *ngIf="selectedPanel && !selectedPanel.is_activated">
+                                        <!-- Section -->
+                                        <div class="flex w-full justify-center">
+                                            <fuse-alert [appearance]="'outline'" [type]="'info'">
+                                                <div class="flex items-center">
+                                                    <div>
+                                                        <span class="text-[#1E428A]" fuseAlertTitle>Activate
+                                                            {{selectedPanel.label}} Sync</span>
+                                                        <div class="flex mt-2">
+                                                            <span class="mr-4 font-light">If mapping has been completed,
+                                                                you can activate this sync.</span>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <button class="ml-auto mr-0" mat-flat-button type="button"
+                                                            [color]="'primary'" (click)="activatePanel()">
+                                                            Activate
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </fuse-alert>
+                                        </div>
+                                    </ng-container>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="flex items-center justify-end">
+                                    <button mat-stroked-button type="button">Cancel</button>
+                                    <button *ngIf="isAddIntegration" class="ml-4" mat-flat-button type="button"
+                                        [color]="'primary'" (click)="updateIntegration()">
+                                        Save
+                                    </button>
+                                    <button *ngIf="!isAddIntegration" class="ml-4" mat-flat-button type="button"
+                                        [color]="'primary'" (click)="saveIntegration()">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                      </fuse-alert>
                     </div>
-                  </ng-container>
-                </div>
-                
-                <!-- Actions -->
-                <div class="flex items-center justify-end">
-                  <button mat-stroked-button type="button">Cancel</button>
-                  <button *ngIf="isAddIntegration" class="ml-4" mat-flat-button type="button" [color]="'primary'" (click)="updateIntegration()">
-                    Save
-                  </button>
-                  <button *ngIf="!isAddIntegration" class="ml-4" mat-flat-button type="button" [color]="'primary'" (click)="saveIntegration()">
-                    Save
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </mat-drawer-content>
-      </mat-drawer-container>
-    </div>
-  </fuse-drawer>
+                </mat-drawer-content>
+            </mat-drawer-container>
+        </div>
+    </fuse-drawer>
 </ng-container>
