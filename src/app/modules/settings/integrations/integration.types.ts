@@ -69,6 +69,54 @@ export interface Options {
   label: string;
 }
 
+export interface MappedIntegration {
+  integration_id?: string;
+  source_id?: string;
+  name?: string;
+  icon?: string;
+  description?: string;
+  is_custom?: string;
+  is_beta?: string;
+  active_status?: string;
+  force_test_connection?: string;
+  json_form_schema_file?: string;
+  installed_instances?: number;
+  created_at?: string;
+  created_by?: string;
+  updated_at?: string;
+  updated_by?: string;
+  endpoints?: any[];
+  connection?: Connection;
+  sync_options?: MappedSyncOption[];
+  integration_instance_id?: string;
+  source_instance_id: string;
+  connection_status?: boolean;
+  last_connection_time: any
+}
+
+export interface MappedSyncOption {
+  code: string;
+  is_active: boolean;
+  is_activated: boolean;
+  is_custom?: boolean;
+  sub_sync_options: MappedTab[];
+}
+
+export interface MappedTab {
+  code: string;
+  mapped_options: MappedOptions[];
+}
+
+
+export interface MappedOptions {
+  mapped_code: string
+  mapped_label: string
+  mapped_type: string
+  mapping_code: string
+  mapping_type: string
+  mapping?: MappedOptions[]
+}
+
 export interface SyncOption extends Options {
   is_active: boolean;
   is_activated: boolean;
@@ -77,7 +125,7 @@ export interface SyncOption extends Options {
 }
 
 export interface Tab extends Options {
-  mapping_options: MappingOption[] | any[];
+  mapping_options: MappingOption[];
 }
 
 export interface MappingOption extends Options {

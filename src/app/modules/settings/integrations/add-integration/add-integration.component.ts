@@ -20,7 +20,7 @@ import { CdkPortal } from '@angular/cdk/portal';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
 import { SyncOptionService } from './common/sync-option/sync-option.service';
 import { SyncOptionComponent } from './common/sync-option/sync-option.component';
-import { IntegrationInstance, SyncOption } from '../integration.types';
+import { IntegrationInstance, MappedSyncOption, SyncOption } from '../integration.types';
 
 
 const badgeActiveClasses =
@@ -111,10 +111,24 @@ export class AddIntegrationComponent
         this.integrationInstance= {...data};
         if (data) { 
           this.setPanels();
+          if(this.isAddIntegration) {
+            this.initMappedIntegration();
+          }
           console.log(data);
         }
       })
     );
+
+    this._syncOptionService.mappedIntegration$.pipe(
+      takeUntil(this._unsubscribeAll),
+      tap(data => {
+        // Setup available panels
+        if(data) {
+          this.mappedIntegration = {...data}
+          console.log(data);
+        }
+      })
+    ).subscribe();
 
     this._syncOptionService.valuesList$.pipe(
       takeUntil(this._unsubscribeAll)

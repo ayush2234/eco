@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, tap, switchMap, map, forkJoin, catchError, mergeMap } from 'rxjs';
 
-import { Integration, IntegrationInstance, IntegrationValue, SelectOption, ValuesList } from '../../../integration.types';
+import { Integration, IntegrationInstance, IntegrationValue, MappedIntegration, SelectOption, ValuesList } from '../../../integration.types';
 import { appConfig } from 'app/core/config/app.config';
 import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 
@@ -16,6 +16,8 @@ export class SyncOptionService {
   private _selectedIntegration: BehaviorSubject<IntegrationInstance | null> =
     new BehaviorSubject(null);
   private _wipIntegration: BehaviorSubject<IntegrationInstance | null> =
+    new BehaviorSubject(null);
+  private _mappedIntegration: BehaviorSubject<MappedIntegration | null> =
     new BehaviorSubject(null);
   private _customerOptionsSelectOptions: BehaviorSubject<
     SelectOption[] | null
@@ -40,6 +42,14 @@ export class SyncOptionService {
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
   // -----------------------------------------------------------------------------------------------------
+
+  set mappedIntegration(value: MappedIntegration) {
+    this._mappedIntegration.next(value);
+  }
+
+  get mappedIntegration$(): Observable<MappedIntegration> {
+    return this._mappedIntegration.asObservable();
+  }
 
   set wipIntegration(value: IntegrationInstance) {
     this._wipIntegration.next(value);
@@ -66,23 +76,23 @@ export class SyncOptionService {
           mergeMap((res: any) => {
             const formResult = res.result;
             if(isAddIntegration) {
-              formResult.sync_options = formResult.sync_options.map(x => {
-                return {
-                  ...x,
-                  is_active: false,
-                  is_activated: false
-                }
-              })
-              return of(formResult)
-            } else {
-              return this._httpClient.get(api + '/integration/instance/' + instance.instance_id).pipe(
-                mergeMap((intResponse: any) => {
-                  const integrationResponse = intResponse.result;
-                  const populatedData = this.mergeIntegrationData(integrationResponse, formResult)
-                  return of(populatedData)
-                })
-              )
+              return of(formResult);
             }
+            return this._httpClient.get(api + '/integration/instance/' + instance.instance_id).pipe(
+              mergeMap((intResponse: any) => {
+                const integrationResponse = intResponse.result;
+                this._mappedIntegration.next(integrationResponse);
+                formResult.sync_options = formResult.sync_options.map(x => {
+                  const integrationInstance = integrationResponse.sync_options.find(ir => ir.code === x.code);
+                  return {
+                    ...x,
+                    is_active: integrationInstance ? integrationInstance.is_active : x.is_active,
+                    is_activated: integrationInstance ? integrationInstance.is_activated : x.is_activated
+                  }
+                })
+                return of(formResult);
+              })
+            )
           })
         ).subscribe((integrationForm: any) => {
           this._wipIntegration.next({
@@ -609,7 +619,7 @@ export class SyncOptionService {
    * @param instance Represents the integration instance for which the values list to be fetched.
    */
   getValueList(instance: IntegrationInstance): void {
-    const api = this._config.apiConfig.serviceUrl + '/api/v1/' +
+    const api = this._config.apiConfig.serviceUrl + '/' +
     LocalStorageUtils.companyId + '/integrationInstance/' + instance.instance_id +
     '/values_list?origin=';
 
@@ -632,7 +642,7 @@ export class SyncOptionService {
     })
   }
 
-  createIntegration(integrationValue: IntegrationValue){
+  createIntegration(integrationValue: any){
     const apiUrl= this._config.apiConfig.baseUrl;
     const api =  `${apiUrl}/${LocalStorageUtils.companyId}/integration/instance`;
     return this._httpClient.post(api, integrationValue).pipe(
@@ -642,7 +652,7 @@ export class SyncOptionService {
       })
     )
   }
-  updateInstalledIntegration(integrationValue: IntegrationValue){
+  updateInstalledIntegration(integrationValue: any){
     const apiUrl= this._config.apiConfig.baseUrl;
     const api =  `${apiUrl + '/' + LocalStorageUtils.companyId}/integration/instance/${integrationValue.integration_instance_id}`;
     return this._httpClient.put(api, integrationValue).pipe(
