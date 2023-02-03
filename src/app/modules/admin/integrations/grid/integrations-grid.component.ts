@@ -44,15 +44,15 @@ import { CompanyService } from '../../companies/company.service';
         grid-template-columns: repeat(3, 1fr);
 
         @screen sm {
-          grid-template-columns: repeat(3, 1fr) 72px;
+          grid-template-columns: repeat(3, 1fr) 116px;
         }
 
         @screen md {
-          grid-template-columns: repeat(5, 1fr) 72px;
+          grid-template-columns: repeat(5, 1fr) 116px;
         }
 
         @screen lg {
-          grid-template-columns: repeat(2, 2fr) 1fr 2fr repeat(3, 1fr) 72px;
+          grid-template-columns: repeat(2, 2fr) 1fr 2fr repeat(3, 1fr) 116px;
         }
       }
     `,
@@ -82,6 +82,8 @@ export class IntegrationsGridComponent
   filteredRestrictedToCompanyTags: Tag[];
   errorMsg: string;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
+
+  viewIntegration: boolean = false;
 
   /**
    * Constructor
@@ -508,6 +510,22 @@ export class IntegrationsGridComponent
     this.openAddIntegration = true;
     this._changeDetectorRef.detectChanges();
   }
+
+  /**
+   * Create source
+   */
+  onViewIntegration(): void {
+    this.viewIntegration = true;
+    this._changeDetectorRef.detectChanges();
+  }
+
+   /**
+   * Cancel create source
+   */
+    cancelIntegrationForm(): void {
+      this.viewIntegration = false;
+      this._changeDetectorRef.detectChanges();
+    }
 
   /**
    * Cancel create source

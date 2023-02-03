@@ -130,6 +130,11 @@
                             : 'heroicons_solid:chevron-down'
                         "></mat-icon>
                     </button>
+                    <button (click)="onViewIntegration()" class="ml-2 hover:text-primary" mat-icon-button>
+                      <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                    </button>
                   </div>
                 </div>
                 <div class="grid">
@@ -425,3 +430,10 @@
   <eco-admin-add-integration
     (cancel)="cancelCreateIntegration()"></eco-admin-add-integration
 ></ng-container>
+
+<ng-container *ngIf="viewIntegration">
+  <eco-add-integration-form 
+    [isOpen]="viewIntegration" 
+    (cancel)="cancelIntegrationForm()"
+  ></eco-add-integration-form>
+</ng-container>
