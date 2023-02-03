@@ -286,88 +286,103 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
       this.selectedPanel.sub_sync_options[tabIndex] = {...this.selectedTab};
     }
 
-    this.updateMappedOptions(selection);
+    this.updateMappedSyncOptions();
   }
 
-  updateMappedOptions(option: ValuesListOptions) {
-    const activePanelIndex = this.mappedIntegration.sync_options.findIndex(x => x.code === this.selectedPanel.code);
-    if(activePanelIndex !== -1) {
-      const activeTabIndex = this.mappedIntegration.sync_options[activePanelIndex].sub_sync_options.findIndex(x => x.code === this.selectedTab.code);
-      if(activeTabIndex !== -1) {
-        const mappedOptions = this.mappedIntegration.sync_options[activePanelIndex].sub_sync_options[activeTabIndex].mapped_options;
-        const activeField = mappedOptions.findIndex(x => x.mapping_code === this.selectedField.code);
-        if(activeField !== -1) {
-          this.mappedIntegration.sync_options[activePanelIndex].sub_sync_options[activeTabIndex].mapped_options[activeField] = this.getMappedOptions();
-        } else {
-          // Look into child
-          if(this.selectedFieldChildIndex !== null) {
-            // Replace
-            // let parentIndex;
-            // let childIndex;
-            // mappedOptions.forEach((parent, index) => {
-            //   if(childIndex === undefined) {
-            //     parentIndex = index;
-            //     childIndex = parent.mapping.findIndex(x => x.mapping_code === this.selectedField.code)
-            //   }
-            // })
+  mapOptionsToForm(): void {
+    this.mappedIntegration.sync_options.forEach(syncOption => {
+      syncOption.sub_sync_options.forEach(subOption => {
+        const syncOptionIndex = this.integrationInstance.integration.sync_options.findIndex(x => x.code === syncOption.code);
+        const subOptionIndex = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options.findIndex(x => x.code === subOption.code);
+        subOption.mapped_options.forEach(mappedOption => {
+          const fieldIndex = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options
+            .findIndex(x => x.code === mappedOption.mapping_code);
+          if(fieldIndex !== -1) {
+            this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].selected_value = {
+              label: mappedOption.mapped_label,
+              code: mappedOption.mapped_code
+            }
 
-
-            // if(childIndex !== undefined) {
-            //   this.mappedIntegration.sync_options[activePanelIndex].sub_sync_options[activeTabIndex].mapped_options[parentIndex].mapping[childIndex] = this.getMappedOptions();
-            // } else {
-            //   parentIndex = mappedOptions.findIndex(x => x.mapped_code === this.selec)
-            // }
-          } else {
-            // Insert Field
-            this.mappedIntegration.sync_options[activePanelIndex].sub_sync_options[activeTabIndex].mapped_options.push(this.getMappedOptions());
+            if(mappedOption.mapping) {
+              mappedOption.mapping.forEach(mapping => {
+                const children = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children;
+                if(children && children.length) {
+                  this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children.push({
+                    label: mapping.mapping_code,
+                    code: mapping.mapping_code,
+                    type: mapping.mapping_type,
+                    required: false,
+                    selected_value: {label: mapping.mapped_label, code: mapping.mapped_code},
+                    value_options: this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].value_options
+                  })
+                } else {
+                  this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children = [{
+                    label: mapping.mapping_code,
+                    code: mapping.mapping_code,
+                    type: mapping.mapping_type,
+                    required: false,
+                    selected_value: {label: mapping.mapped_label, code: mapping.mapped_code},
+                    value_options: this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].value_options
+                  }]
+                }
+              })
+            }
           }
-        }
-      } else {
-        // No Tab
-        const mapped_options: MappedOptions[] = [this.getMappedOptions()]
-        const tab: MappedTab = {
-          code: this.selectedTab.code,
-          mapped_options
-        }
-
-        this.mappedIntegration.sync_options[activePanelIndex].sub_sync_options.push(tab)
-      }
-    } else {
-      // No Sync Option
-
-      const mapped_options: MappedOptions[] = [this.getMappedOptions()]
-      const tab: MappedTab = {
-        code: this.selectedTab.code,
-        mapped_options
-      }
-      const syncOption: MappedSyncOption = {
-        code: this.selectedPanel.code,
-        is_active: this.selectedPanel.is_active,
-        is_activated: this.selectedPanel.is_activated,
-        sub_sync_options: [tab]
-      } 
-      this.mappedIntegration.sync_options.push(syncOption);
-    }
-
-    console.log(this.mappedIntegration);
+        })
+      })
+    })
   }
 
-  getMappedOptions(): MappedOptions {
-    return {
-      mapped_code: this.selectedField.selected_value.code,
-      mapped_label: this.selectedField.selected_value.label,
-      mapped_type: this.selectedField.type,
-      mapping_code: this.selectedField.code,
-      mapping_type: this.selectedField.type
-    }
+  updateMappedSyncOptions() {
+    const oSync = this.integrationInstance.integration.sync_options.map(syncOption => {
+      return {
+        code: syncOption.code,
+        is_active: this.integrationInstance.integration.sync_options.find(y => y.code === syncOption.code).is_active,
+        is_activated: this.integrationInstance.integration.sync_options.find(y => y.code === syncOption.code).is_activated,
+        sub_sync_options: syncOption.sub_sync_options.map(subOption => {
+          return {
+            code: subOption.code,
+            mapped_options: subOption.mapping_options.map(mappingOption => {
+              if(mappingOption.selected_value) {
+                return {
+                  mapped_code: mappingOption.selected_value.code,
+                  mapped_label: mappingOption.selected_value.label,
+                  mapped_type: mappingOption.type,
+                  mapping_code: mappingOption.code,
+                  mapping_type: mappingOption.type,
+                  mapping: mappingOption.children?.map(child => {
+                    if(child.selected_value) {
+                      return {
+                        mapped_code: child.selected_value.code,
+                        mapped_label: child.selected_value.label,
+                        mapped_type: child.type,
+                        mapping_code: child.code,
+                        mapping_type: child.type,
+                      }
+                    } else {
+                      return undefined
+                    }
+                  }).filter(x => x)
+                }
+              } else {
+                return undefined
+              }
+            }).filter(x => x)
+          }
+        }).filter(x => x.mapped_options.length)
+      }
+    })
+    this.mappedIntegration.sync_options = [...oSync];
   }
 
   initMappedIntegration() {
     this.mappedIntegration = {
       source_instance_id: "f8d13159-70dd-4071-8c72-621ff27a9999",
-      integration_id: "1ed1f116-8527-6bfa-93c1-0605e1fd6890",
+      connection: {} as any,
+      integration_id: this.integrationInstance.integration_id,
       active_status: "Y",
       is_custom: "N",
+      name: "",
       connection_status: true,
       last_connection_time:"",
       sync_options: this.syncOptions.map(x => {
@@ -619,56 +634,23 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
 
   updateIntegration(){
     console.log("AddIntegration");
-    const integrationVal = {
-      ...this.mappedIntegration,
-      integration_id: this.integrationInstance.integration_id,
-      sync_options: this.mappedIntegration.sync_options.map(x => {
-        return {
-          ...x,
-          is_active: this.integrationInstance.integration.sync_options.find(y => y.code === x.code).is_active,
-          is_activated: this.integrationInstance.integration.sync_options.find(y => y.code === x.code).is_activated
-        }
-      })
-    }
-    this._syncOptionService.createIntegration(integrationVal).pipe(
+    this.updateMappedSyncOptions();
+    this._syncOptionService.createIntegration(this.mappedIntegration).pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe(integration => {
       if(integration) {
-        const newIntegration = this._syncOptionService.mergeIntegrationData(integration, this.integrationInstance.integration);
-        this._syncOptionService.wipIntegration = {
-          ...this.integrationInstance,
-          integration: {
-            ...this.integrationInstance.integration,
-            ...newIntegration
-          }
-        }
+        this._syncOptionService.mappedIntegration = {...integration};
       }
     });
   }
   saveIntegration(){
     console.log("Save Integration");
-    const integrationVal = {
-      ...this.mappedIntegration,
-      sync_options: this.mappedIntegration.sync_options.map(x => {
-        return {
-          ...x,
-          is_active: this.integrationInstance.integration.sync_options.find(y => y.code === x.code).is_active,
-          is_activated: this.integrationInstance.integration.sync_options.find(y => y.code === x.code).is_activated
-        }
-      })
-    }
-    this._syncOptionService.updateInstalledIntegration(integrationVal).pipe(
+    this.updateMappedSyncOptions();
+    this._syncOptionService.updateInstalledIntegration(this.mappedIntegration).pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe(integration => {
       if(integration) {
-        const newIntegration = this._syncOptionService.mergeIntegrationData(integration, this.integrationInstance.integration);
-        this._syncOptionService.wipIntegration = {
-          ...this.integrationInstance,
-          integration: {
-            ...this.integrationInstance.integration,
-            ...newIntegration
-          }
-        }
+        this._syncOptionService.mappedIntegration = {...integration};
       }
     });
   }

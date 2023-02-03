@@ -76,6 +76,13 @@ export class SyncOptionService {
           mergeMap((res: any) => {
             const formResult = res.result;
             if(isAddIntegration) {
+              formResult.sync_options = formResult.sync_options.map(x => {
+                return {
+                  ...x,
+                  is_active: false,
+                  is_activated: false
+                }
+              })
               return of(formResult);
             }
             return this._httpClient.get(api + '/integration/instance/' + instance.instance_id).pipe(
@@ -642,7 +649,7 @@ export class SyncOptionService {
     })
   }
 
-  createIntegration(integrationValue: any){
+  createIntegration(integrationValue: MappedIntegration): Observable<MappedIntegration>{
     const apiUrl= this._config.apiConfig.baseUrl;
     const api =  `${apiUrl}/${LocalStorageUtils.companyId}/integration/instance`;
     return this._httpClient.post(api, integrationValue).pipe(
@@ -652,7 +659,7 @@ export class SyncOptionService {
       })
     )
   }
-  updateInstalledIntegration(integrationValue: any){
+  updateInstalledIntegration(integrationValue: MappedIntegration): Observable<MappedIntegration>{
     const apiUrl= this._config.apiConfig.baseUrl;
     const api =  `${apiUrl + '/' + LocalStorageUtils.companyId}/integration/instance/${integrationValue.integration_instance_id}`;
     return this._httpClient.put(api, integrationValue).pipe(

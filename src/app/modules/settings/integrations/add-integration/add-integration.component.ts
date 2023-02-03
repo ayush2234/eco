@@ -113,6 +113,8 @@ export class AddIntegrationComponent
           this.setPanels();
           if(this.isAddIntegration) {
             this.initMappedIntegration();
+          } else {
+            this.mapOptionsToForm();
           }
           console.log(data);
         }
@@ -125,6 +127,7 @@ export class AddIntegrationComponent
         // Setup available panels
         if(data) {
           this.mappedIntegration = {...data}
+          this.isAddIntegration = false;
           console.log(data);
         }
       })

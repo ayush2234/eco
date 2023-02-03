@@ -10,7 +10,7 @@ import {
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { Integration, IntegrationInstance, integrationInstanceConnection, IntegrationValue, SyncOption } from '../../integration.types';
+import { Integration, IntegrationInstance, integrationInstanceConnection, IntegrationValue, MappedIntegration, SyncOption } from '../../integration.types';
 import { SyncOptionService } from '../common/sync-option/sync-option.service';
 
 @Component({
@@ -26,6 +26,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
   protected _unsubscribeAll: Subject<any> = new Subject<any>();
   integrationValue: IntegrationValue; 
   integrationInstanceConnection: integrationInstanceConnection;
+  @Input() mappedIntegration: MappedIntegration;
   /**
    * Constructor
    */
@@ -70,11 +71,11 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
       connection_status: "Y",
       last_connection_time:"",
       connection: {},
-      sync_options: this.instance.integration.sync_options
+      sync_options: []
     }
 
     this.instance.integration.connection.fields.forEach(field => {
-      this.integrationValue.connection[field.code] = this.instance.integration.connection[field.code];
+      this.integrationValue.connection[field.code] = this.mappedIntegration.connection[field.code];
     })
   }
 
@@ -146,58 +147,37 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
         delete objectIntegrationValue.connection[field.code];
       }
     })
-    if(objectIntegrationValue.name === this.instance.integration.name) {
-      delete objectIntegrationValue.name
+  }
+
+  mapFormToInstance() {
+    const integrationClone = {...this.integrationValue};
+    this.eliminateUnchanged(integrationClone);
+    this.mappedIntegration = {
+      ...this.mappedIntegration,
+      connection: {...integrationClone.connection},
+      integration_id: this.integrationValue.integration_id
     }
   }
 
   updateIntegration(){
     console.log("AddIntegration");
-    const integrationVal = {
-      ...{...this.integrationValue},
-      connection: {...this.integrationValue.connection},
-      integration_id: this.instance.integration_id,
-      sync_options: (this.getApiSyncOptions() as any)
-    }
-    this.eliminateUnchanged(integrationVal);
-    this._syncOptionService.createIntegration(integrationVal).pipe(
+    this.mapFormToInstance()
+    this._syncOptionService.createIntegration(this.mappedIntegration).pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe(integration => {
       if(integration) {
-        const newIntegration = this._syncOptionService.mergeIntegrationData(integration, this.instance.integration);
-        this._syncOptionService.wipIntegration = {
-          ...this.instance,
-          integration: {
-            ...this.instance.integration,
-            ...newIntegration
-          }
-        }
+        this._syncOptionService.mappedIntegration = {...integration};
       }
     });
   }
   saveIntegration(){
     console.log("Save Integration");
-    const integrationVal = {
-      ...{...this.integrationValue},
-      connection: {...this.integrationValue.connection},
-      integration_id: this.instance.integration.integration_id,
-      integration_instance_id: this.instance.integration.integration_instance_id,
-      sync_options: (this.getApiSyncOptions() as any)
-    }
-    this.eliminateUnchanged(integrationVal);
-    this._syncOptionService.updateInstalledIntegration(integrationVal).pipe(
+    this.mapFormToInstance()
+    this._syncOptionService.updateInstalledIntegration(this.mappedIntegration).pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe(integration => {
-      console.log(integration);
       if(integration) {
-        const newIntegration = this._syncOptionService.mergeIntegrationData(integration, this.instance.integration);
-        this._syncOptionService.wipIntegration = {
-          ...this.instance,
-          integration: {
-            ...this.instance.integration,
-            ...newIntegration
-          }
-        }
+        this._syncOptionService.mappedIntegration = {...integration};
       }
     });
   }
