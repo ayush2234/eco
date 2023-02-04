@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, tap, switchMap, map, forkJoin, catchError, mergeMap } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap, switchMap, map, forkJoin, catchError, mergeMap, Subject } from 'rxjs';
 
 import { Integration, IntegrationInstance, IntegrationValue, MappedIntegration, SelectOption, ValuesList } from '../../../integration.types';
 import { appConfig } from 'app/core/config/app.config';
@@ -14,12 +14,12 @@ import { SnackbarService } from 'app/shared/service/snackbar.service';
 export class SyncOptionService {
     // Private
     private _config = appConfig;
-    private _selectedIntegration: BehaviorSubject<IntegrationInstance | null> =
-        new BehaviorSubject(null);
-    private _wipIntegration: BehaviorSubject<IntegrationInstance | null> =
-        new BehaviorSubject(null);
-    private _mappedIntegration: BehaviorSubject<MappedIntegration | null> =
-        new BehaviorSubject(null);
+    private _selectedIntegration: Subject<IntegrationInstance> =
+        new Subject();
+    private _wipIntegration: Subject<IntegrationInstance> =
+        new Subject();
+    private _mappedIntegration: Subject<MappedIntegration> =
+        new Subject();
     private _customerOptionsSelectOptions: BehaviorSubject<
         SelectOption[] | null
     > = new BehaviorSubject(null);

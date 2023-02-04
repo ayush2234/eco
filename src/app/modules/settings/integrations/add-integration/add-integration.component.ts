@@ -106,6 +106,7 @@ export class AddIntegrationComponent
     ngOnInit(): void {
         this._portalBridge.setPortal(this.portalContent);
         this.wipIntegration$ = this._syncOptionService.wipIntegration$.pipe(
+            takeUntil(this._unsubscribeAll),
             tap(data => {
                 // Setup available panels
                 this.integrationInstance = { ...data };

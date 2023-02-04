@@ -46,6 +46,9 @@ export class IntegrationsComponent implements OnInit, OnDestroy {
         this.integrationInstances$ = this._integrationService.integrationInstances$;
         this.availableIntegrations$ =
             this._integrationService.availableIntegrations$;
+        this.selectedIntegration$.pipe(
+            takeUntil(this._unsubscribeAll)
+        ).subscribe(value => value ? this.openIntegrationView = true : null);
     }
 
     /**
@@ -79,14 +82,12 @@ export class IntegrationsComponent implements OnInit, OnDestroy {
      * @param item
      */
     addIntegration(instance: IntegrationInstance): any {
-        this.openIntegrationView = true;
         this.isAddIntegration = true;
         console.log('add integration');
         this._syncOptionService.setSelectedIntegration(instance);
     }
 
     configureIntegration(instance: IntegrationInstance): any {
-        this.openIntegrationView = true;
         this.isAddIntegration = false;
         console.log('configure integration');
         this._syncOptionService.setSelectedIntegration(instance);

@@ -290,7 +290,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   }
 
   mapOptionsToForm(): void {
-    this.mappedIntegration.sync_options.forEach(syncOption => {
+    this.mappedIntegration?.sync_options.forEach(syncOption => {
       syncOption.sub_sync_options.forEach(subOption => {
         const syncOptionIndex = this.integrationInstance.integration.sync_options.findIndex(x => x.code === syncOption.code);
         const subOptionIndex = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options.findIndex(x => x.code === subOption.code);
