@@ -231,10 +231,11 @@ export class AddIntegrationComponent
      */
     openedChanged(fuseDrawer): any {
         this.isOpen ? null : fuseDrawer.close();
-        !fuseDrawer?.opened && this.closeDrawer();
+        !fuseDrawer?.opened && this.closeDrawer(fuseDrawer);
     }
 
-    closeDrawer() {
+    closeDrawer(fuseDrawer) {
+        fuseDrawer.close();
         this.isOpen = false;
         this.cancel.emit();
     }

@@ -14,7 +14,7 @@ import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 import { Subject, takeUntil } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { IntegrationService } from '../../integration.service';
-import { Integration, IntegrationInstance, integrationInstanceConnection, IntegrationValue, MappedIntegration, SyncOption } from '../../integration.types';
+import { Integration, IntegrationInstance, integrationInstanceConnection, IntegrationSettings, IntegrationValue, MappedIntegration, SyncOption } from '../../integration.types';
 import { SyncOptionService } from '../common/sync-option/sync-option.service';
 
 @Component({
@@ -33,6 +33,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
     @Input() mappedIntegration: MappedIntegration;
 
     @Output() onAddNewIntegration: EventEmitter<any> = new EventEmitter();
+    @Output() onClose: EventEmitter<any> = new EventEmitter();
 
     /**
      * Constructor
@@ -174,9 +175,12 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
                 this._syncOptionService.mappedIntegration = { ...integration };
                 // Refresh Integration Data in Main Screen
                 const companyId = LocalStorageUtils.companyId;
-                this._integrationsService.getIntegrationSettings(companyId).subscribe();
-                this.isAddIntegration = true;
-                this.onAddNewIntegration.emit();
+                this._integrationsService.getIntegrationSettings(companyId).pipe(takeUntil(this._unsubscribeAll)).subscribe((response: IntegrationSettings) => {
+                    this.isAddIntegration = true;
+                    const createdInstance = response.instances.find(instance => instance.instance_id == integration.integration_instance_id)
+                    this._syncOptionService.getValueList(createdInstance);
+                    this.onAddNewIntegration.emit();
+                });
             }
         });
     }
@@ -188,6 +192,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
         ).subscribe(integration => {
             if (integration) {
                 this._syncOptionService.mappedIntegration = { ...integration };
+                this.onClose.emit();
             }
         });
     }

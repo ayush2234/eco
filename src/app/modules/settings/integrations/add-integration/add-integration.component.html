@@ -79,6 +79,7 @@
                             <eco-add-integration-connection [instance]="instance"
                                 [mappedIntegration]="mappedIntegration"
                                 (onAddNewIntegration)="configureIntegrationAfterCreate($event)"
+                                (onClose)="closeDrawer(fuseDrawer)"
                                 [isAddIntegration]="isAddIntegration"></eco-add-integration-connection>
                         </div>
                     </div>
@@ -502,7 +503,8 @@
 
                                 <!-- Actions -->
                                 <div class="flex items-center justify-end">
-                                    <button mat-stroked-button type="button">Cancel</button>
+                                    <button mat-stroked-button type="button"
+                                        (click)="closeDrawer(fuseDrawer)">Cancel</button>
                                     <button *ngIf="isAddIntegration" class="ml-4" mat-flat-button type="button"
                                         [color]="'primary'" (click)="updateIntegration()">
                                         Save
