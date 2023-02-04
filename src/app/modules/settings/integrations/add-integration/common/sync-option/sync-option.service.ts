@@ -617,7 +617,9 @@ export class SyncOptionService {
    */
   setSelectedIntegration(integration: IntegrationInstance): void {
     this._selectedIntegration.next(integration);
-    this.getValueList(integration);
+    if(!integration.integration_id) {
+      this.getValueList(integration);
+    }
   }
 
   /**
