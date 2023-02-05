@@ -17,9 +17,13 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from 'app/shared/shared.module';
 import { AddIntegrationComponent } from './add-integration/add-integration.component';
+import { AddIntegrationFormComponent } from './add-integration-form/add-integration-form.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
-  declarations: [IntegrationsGridComponent, AddIntegrationComponent],
+  declarations: [IntegrationsGridComponent, AddIntegrationComponent, AddIntegrationFormComponent],
   imports: [
     IntegrationsRoutingModule,
     MatButtonModule,
@@ -36,6 +40,9 @@ import { AddIntegrationComponent } from './add-integration/add-integration.compo
     MatSlideToggleModule,
     MatTooltipModule,
     SharedModule,
+    MatSidenavModule,
+    DragDropModule,
+    ClipboardModule
   ],
 })
 export class IntegrationsModule {}
