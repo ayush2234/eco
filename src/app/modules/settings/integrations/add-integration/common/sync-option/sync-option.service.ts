@@ -32,6 +32,7 @@ export class SyncOptionService {
         new BehaviorSubject(null);
     private _valuesList: BehaviorSubject<ValuesList[] | null> =
         new BehaviorSubject(null);
+    private _valueListLoader: BehaviorSubject<boolean | null> = new BehaviorSubject(false);
 
     /**
      * Constructor
@@ -63,6 +64,10 @@ export class SyncOptionService {
 
     get valuesList$(): Observable<ValuesList[]> {
         return this._valuesList.asObservable();
+    }
+
+    get valueListLoader$(): Observable<boolean> {
+        return this._valueListLoader.asObservable();
     }
 
     get selectedIntegration$(): Observable<IntegrationInstance> {
@@ -637,21 +642,25 @@ export class SyncOptionService {
         const sourceApi = api + 'source';
         const channelApi = api + 'channel';
 
+        this._valueListLoader.next(true);
         forkJoin([
-            this._httpClient.get(sourceApi),
-            this._httpClient.get(channelApi)
-        ]).pipe(
-            catchError(err => {
-                this._snackbarService.showError("Failed to retrieve source values_list");
-                this.fetchValuesList$.subscribe();
-                return of();
-            })
-        ).subscribe(response => {
+            this._httpClient.get(sourceApi).pipe(catchError(err => of({ result: { values_lists: [] } }))),
+            this._httpClient.get(channelApi).pipe(catchError(err => of({ result: { values_lists: [] } })))
+        ]).subscribe(response => {
             console.log(response);
             this._snackbarService.showSuccess("Successfully received values lists");
-            this.fetchValuesList$.subscribe();
-            // const list = (response[0] as any).data.values_lists.concat((response[1] as any).data.values_lists);
-            // this._valuesList.next(list);
+            // this.fetchValuesList$.subscribe();
+            const list = (response[0] as any).result.values_lists.concat((response[1] as any).result.values_lists);
+            if (list.length <= 0) {
+                this.fetchValuesList$.subscribe()
+            } else {
+                this._valuesList.next(list);
+            }
+            this._valueListLoader.next(false);
+        }, error => {
+            this.fetchValuesList$.subscribe()
+            this._valueListLoader.next(false);
+            console.log('error in forkjoin', error);
         })
     }
 

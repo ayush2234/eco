@@ -81,6 +81,7 @@ export class AddIntegrationComponent
     isConnectionActivated = false;
     wipIntegration$: Observable<IntegrationInstance>;
     protected _unsubscribeAll: Subject<any> = new Subject<any>();
+    valueListLoader: boolean = false;
     @Input() isOpen = false;
     @Input() isAddIntegration = false;
 
@@ -104,6 +105,9 @@ export class AddIntegrationComponent
      * On init
      */
     ngOnInit(): void {
+        this._syncOptionService.valueListLoader$.pipe(takeUntil(this._unsubscribeAll)).subscribe(value => {
+            this.valueListLoader = value;
+        })
         this._portalBridge.setPortal(this.portalContent);
         this.wipIntegration$ = this._syncOptionService.wipIntegration$.pipe(
             takeUntil(this._unsubscribeAll),

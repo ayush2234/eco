@@ -134,7 +134,8 @@
                             </div>
 
                             <!-- Section -->
-                            <div class="grid grid-cols-6 gap-2 w-full mt-4">
+                            <div class="grid grid-cols-6 gap-2 w-full mt-4"
+                                *ngIf="!valueListLoader || valueListLoader == false">
 
                                 <!-- Mapping Section -->
                                 <div class="w-full col-span-4">
@@ -470,6 +471,64 @@
                                 </div>
                             </div>
 
+                            <ng-container *ngIf="valueListLoader == true">
+                                <div class=" animate-pulse grid grid-cols-6 gap-2 w-full mt-4 h-100">
+                                    <div class="w-full col-span-4">
+                                        <div class="grid sm:grid-cols-2 w-full my-3 rounded-md">
+                                            <div class="w-full h-15 bg-gray-300 rounded"></div>
+                                            <div class="w-full h-15 ml-2 bg-gray-200 rounded"></div>
+                                        </div>
+                                        <div class="grid sm:grid-cols-2 w-full my-3 rounded-md">
+                                            <div class="w-full h-3 bg-gray-300 rounded"></div>
+                                            <div class="w-4/5 ml-2 h-3 bg-gray-200 rounded"></div>
+                                        </div>
+                                        <div class="grid sm:grid-cols-2 w-full my-3 rounded-md">
+                                            <div class="w-full h-4 bg-gray-300 rounded"></div>
+                                            <div class="w-3/5 ml-2 h-4 bg-gray-200 rounded"></div>
+                                        </div>
+                                        <div class="grid sm:grid-cols-2 w-full my-3 rounded-md">
+                                            <div class="w-full h-5 bg-gray-300 rounded"></div>
+                                            <div class="w-full ml-2 h-5 bg-gray-200 rounded"></div>
+                                        </div>
+                                        <div class="grid sm:grid-cols-2 w-full my-3 rounded-md">
+                                            <div class="w-full h-10 bg-gray-300 rounded"></div>
+                                            <div class="w-3/5 ml-2 h-10 bg-gray-200 rounded"></div>
+                                        </div>
+                                        <div class="grid sm:grid-cols-2 w-full my-3 rounded-md">
+                                            <div class="w-3/5 h-6 bg-gray-300 rounded"></div>
+                                            <div class="w-4/5 ml-2 h-7 bg-gray-200 rounded"></div>
+                                        </div>
+                                        <div class="grid sm:grid-cols-2 w-full my-3 rounded-md">
+                                            <div class="w-10/12 h-8 bg-gray-300 rounded"></div>
+                                            <div class="w-full ml-2 h-5 bg-gray-200 rounded"></div>
+                                        </div>
+                                    </div>
+                                    <div class="w-full col-span-2 ml-2 rounded-md">
+                                        <div class="w-full h-15 bg-gray-300 my-3 rounded"></div>
+                                        <div class="w-4/5 my-3  h-6 bg-gray-300 rounded"></div>
+                                        <div class="w-3/5 my-3 h-4 bg-gray-300 rounded"></div>
+                                        <div class="w-full my-3 h-5 bg-gray-300 rounded"></div>
+                                        <div class="w-full my-3 h-7 bg-gray-300 rounded"></div>
+                                        <div class="w-4/5 my-3 h-7 bg-gray-300 rounded"></div>
+                                        <div class="w-full my-3 h-5 bg-gray-300 rounded"></div>
+                                    </div>
+
+                                    <!-- <div class="animate-pulse flex space-x-4">
+                                        <div class="rounded-full bg-slate-700 h-10 w-10"></div>
+                                        <div class="flex-1 space-y-6 py-1">
+                                            <div class="h-2 bg-slate-700 rounded"></div>
+                                            <div class="space-y-3">
+                                                <div class="grid grid-cols-3 gap-4">
+                                                    <div class="h-2 bg-slate-700 rounded col-span-2"></div>
+                                                    <div class="h-2 bg-slate-700 rounded col-span-1"></div>
+                                                </div>
+                                                <div class="h-2 bg-slate-700 rounded"></div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                </div>
+
+                            </ng-container>
                             <!-- Divider -->
                             <div class="my-4 border-t"></div>
 
