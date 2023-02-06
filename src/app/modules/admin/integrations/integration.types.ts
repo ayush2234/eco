@@ -83,6 +83,10 @@ export interface ValuesList {
     pim?: string[];
 }
 
+export interface ValueOptions {
+    values: Array<Options>
+}
+
 export interface IntegrationValue {
     source_instance_id: string;
     integration_id: string;

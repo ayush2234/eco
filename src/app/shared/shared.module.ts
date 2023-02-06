@@ -13,7 +13,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         ReactiveFormsModule,
         PipesModule,
         PortalModule,
-        FuseDrawerModule,
+        FuseDrawerModule
     ],
     exports: [
         CommonModule,

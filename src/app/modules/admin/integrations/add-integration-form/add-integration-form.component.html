@@ -253,7 +253,49 @@
                             <div class="w-full col-span-4 overflow-hidden border rounded-md"
                                 *ngIf="selectedTab == 'sync_options' && selectedSyncOptionTab > -1">
                                 <div class="flex items-center bg-white py-6 px-8 justify-between">
-                                    <h1 class="m-0 text-xl font-bold">Fields {{': '}}</h1>
+                                    <div class="flex items-center">
+                                        <h1 class="m-0 text-xl font-bold whitespace-nowrap">Fields :</h1>
+                                        <div class="flex items-center ml-2">
+                                            <mat-select [(ngModel)]="originModal" (ngModelChange)="valueListModal = ''"
+                                                class="p-2 mx-2 border rounded-md" placeholder="source">
+                                                <mat-option [value]="'source'">
+                                                    source
+                                                </mat-option>
+                                                <mat-option [value]="'channel'">
+                                                    channel
+                                                </mat-option>
+                                                <mat-option [value]="'global'">
+                                                    global
+                                                </mat-option>
+                                                <mat-option [value]="'pim'">
+                                                    pim
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-select class="p-2 mx-2 border rounded-md" [(ngModel)]="valueListModal"
+                                                placeholder="values list" (ngModelChange)="getValueOptionList()">
+                                                <mat-option
+                                                    *ngFor="let value of (valueListDDOptions[originModal] || [])"
+                                                    [value]="value">
+                                                    {{value}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-select class="p-2 mx-2 border rounded-md max-w-[150px]"
+                                                placeholder="values" [(ngModel)]="valueModal" multiple>
+
+                                                <input [(ngModel)]="optionSearchQuery"
+                                                    class="p-3 border rounded-md w-full mb-2 sticky top-0 bg-white z-50"
+                                                    placeholder="Search...">
+
+                                                <mat-option
+                                                    *ngFor="let value of valueOptions | search:'label':optionSearchQuery"
+                                                    [value]="value">
+                                                    {{value.label}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <button mat-raised-button color="primary" class="px-2 mx-3"
+                                                (click)="insertNewFields(valueModal)">Insert</button>
+                                        </div>
+                                    </div>
                                     <button mat-raised-button color="primary" (click)="addMappingOption()">Add
                                         Field</button>
                                 </div>
@@ -424,11 +466,11 @@
                                                     </div>
                                                     <div class="w-full">
                                                         <mat-select class="p-2 border rounded-md"
-                                                            *ngIf="valueOption.value_option_type == 'values_list' && (valueList[valueOption.values_list_origin] || []).length > 0"
+                                                            *ngIf="valueOption.value_option_type == 'values_list' && (valueListDDOptions[valueOption.values_list_origin] || []).length > 0"
                                                             [(ngModel)]="valueOption.values_list"
                                                             placeholder="values list">
                                                             <mat-option
-                                                                *ngFor="let value of valueList[valueOption.values_list_origin]"
+                                                                *ngFor="let value of valueListDDOptions[valueOption.values_list_origin]"
                                                                 [value]="value">
                                                                 {{value}}
                                                             </mat-option>
