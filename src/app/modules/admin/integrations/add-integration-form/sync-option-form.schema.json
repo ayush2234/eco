@@ -8,15 +8,9 @@
             },
             "minItems": 0
         },
-        "connections": {
+        "connection": {
             "type": "object",
             "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "label": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },
@@ -56,8 +50,6 @@
                 }
             },
             "required": [
-                "code",
-                "label",
                 "description",
                 "connection_instructions",
                 "fields"
@@ -233,7 +225,7 @@
     },
     "required": [
         "endpoints",
-        "connections",
+        "connection",
         "sync_options"
     ],
     "additionalProperties": false

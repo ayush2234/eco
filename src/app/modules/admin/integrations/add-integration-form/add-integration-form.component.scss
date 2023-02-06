@@ -36,7 +36,7 @@
 }
 
 .tab-grid-wrapper {
-    grid-template-columns: 24px 2fr 2fr 3fr 2fr 1fr 1fr 1fr 36px 24px;
+    grid-template-columns: 24px 2fr 2fr 3fr 2fr 1fr 50px 60px 50px 36px 24px;
     gap: 10px;
 
     .collapse-wrapper {
@@ -76,7 +76,7 @@
     // }
 
     @screen lg {
-        grid-template-columns: 24px 2fr 2fr 3fr 2fr 1fr 1fr 1fr 36px 24px;
+        grid-template-columns: 24px 2fr 2fr 3fr 2fr 1fr 50px 60px 50px 36px 24px;
     }
 }
 

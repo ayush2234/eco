@@ -36,9 +36,7 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     @ViewChildren('mappingOptionItem') mappingOptionItems: QueryList<any>;
     formObj: IntegrationSyncForm = {
         endpoints: [],
-        connections: {
-            code: "",
-            label: "",
+        connection: {
             description: "",
             connection_instructions: "",
             fields: []
@@ -88,9 +86,7 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
         if (changes.isOpen.currentValue) {
             this.formObj = {
                 endpoints: [],
-                connections: {
-                    code: "",
-                    label: "",
+                connection: {
                     description: "",
                     connection_instructions: "",
                     fields: []
@@ -146,8 +142,8 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
                 })
                 break;
 
-            case 'connections':
-                this.formObj.connections.fields.push({
+            case 'connection':
+                this.formObj.connection.fields.push({
                     "code": "",
                     "label": "",
                     "type": "",
@@ -167,7 +163,7 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
                 this.formObj.endpoints.splice(index, 1);
                 break;
 
-            case 'connections':
+            case 'connection':
                 this.formObj[this.selectedTab].fields.splice(index, 1);
                 break;
 
@@ -179,7 +175,7 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
                         this.selectedPanelIndex -= 1;
                     }
                 } else {
-                    this.selectedTab = "connections";
+                    this.selectedTab = "connection";
                 }
                 break;
 
@@ -277,8 +273,8 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
                 moveItemInArray(this.formObj.endpoints, event.previousIndex, event.currentIndex);
                 break;
 
-            case 'connections':
-                moveItemInArray(this.formObj.connections.fields, event.previousIndex, event.currentIndex);
+            case 'connection':
+                moveItemInArray(this.formObj.connection.fields, event.previousIndex, event.currentIndex);
                 break;
 
             case 'sync_options':

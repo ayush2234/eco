@@ -30,11 +30,11 @@
                                 </div>
                             </div>
                             <div class="flex px-8 py-3 cursor-pointer hover:bg-primary-50" [ngClass]="{
-                                    'bg-primary-50 dark:bg-hover': selectedTab == 'connections',
-                                    'text-primary dark:text-primary-500': selectedTab == 'connections'
-                                  }" (click)="goToTab('connections')">
+                                    'bg-primary-50 dark:bg-hover': selectedTab == 'connection',
+                                    'text-primary dark:text-primary-500': selectedTab == 'connection'
+                                  }" (click)="goToTab('connection')">
                                 <div class="text-[16px] leading-6 hover:text-primary">
-                                    Connections
+                                    Connection
                                 </div>
                             </div>
                             <ng-container
@@ -138,14 +138,8 @@
                             </div>
                         </ng-container>
 
-                        <!-- Main content for connections -->
-                        <ng-container *ngIf="selectedTab == 'connections'">
-                            <input [(ngModel)]="formObj[selectedTab].code" placeholder="Connection Code..."
-                                class="p-2 border bg-white px-4 text-black lg:w-3/5 w-full rounded-md mb-2"
-                                name="connection-code">
-                            <input [(ngModel)]="formObj[selectedTab].label" placeholder="Connection label..."
-                                class="p-2 border bg-white px-4 text-black lg:w-3/5 w-full rounded-md mb-2"
-                                name="connection-label">
+                        <!-- Main content for connection -->
+                        <ng-container *ngIf="selectedTab == 'connection'">
                             <input [(ngModel)]="formObj[selectedTab].description"
                                 placeholder="Connection description..."
                                 class="p-2 border bg-white px-4 text-black lg:w-3/5 w-full rounded-md mb-2"
@@ -165,8 +159,8 @@
                                         <div class="text-secondary">code</div>
                                         <div class="text-secondary">label</div>
                                         <div class="text-secondary">description</div>
-                                        <div class="text-secondary">auth url</div>
                                         <div class="text-secondary">type</div>
+                                        <div class="text-secondary">auth url</div>
                                         <div></div>
                                     </div>
                                     <div cdkDropList (cdkDropListDropped)="fieldDropped($event)">
@@ -190,11 +184,6 @@
                                                     placeholder="Description...">
                                             </div>
                                             <div class="w-full">
-                                                <input *ngIf="field.type == 'oauth'" [(ngModel)]="field.needs_auth_url"
-                                                    class="p-2 border w-full rounded-md" name="field{{fieldIndex}}"
-                                                    placeholder="Auth URL..." #authURL>
-                                            </div>
-                                            <div class="w-full">
                                                 <mat-select class="p-2 border rounded-md" [(ngModel)]="field.type"
                                                     placeholder="Type..."
                                                     (ngModelChange)="resetAuthURL(field.type, fieldIndex)">
@@ -208,6 +197,11 @@
                                                         oauth
                                                     </mat-option>
                                                 </mat-select>
+                                            </div>
+                                            <div class="w-full">
+                                                <input *ngIf="field.type == 'oauth'" [(ngModel)]="field.needs_auth_url"
+                                                    class="p-2 border w-full rounded-md" name="field{{fieldIndex}}"
+                                                    placeholder="Auth URL..." #authURL>
                                             </div>
                                             <div>
                                                 <button mat-stroked-button class="px-2 py-2 mat-icon-button rounded-md"
@@ -307,11 +301,17 @@
                                             <div class="w-full">
                                                 <mat-select class="p-2 border rounded-md" [(ngModel)]="field.type"
                                                     placeholder="Type...">
-                                                    <mat-option [value]="'text'">
-                                                        text
+                                                    <mat-option [value]="'attribute'">
+                                                        attribute
                                                     </mat-option>
-                                                    <mat-option [value]="'url'">
-                                                        url
+                                                    <mat-option [value]="'advanced_attribute'">
+                                                        advanced_attribute
+                                                    </mat-option>
+                                                    <mat-option [value]="'option'">
+                                                        option
+                                                    </mat-option>
+                                                    <mat-option [value]="'static'">
+                                                        static
                                                     </mat-option>
                                                 </mat-select>
                                             </div>
@@ -439,6 +439,12 @@
                                                             [(ngModel)]="valueOption.value_type" placeholder="static">
                                                             <mat-option [value]="'attribute'">
                                                                 attribute
+                                                            </mat-option>
+                                                            <mat-option [value]="'advanced_attribute'">
+                                                                advanced_attribute
+                                                            </mat-option>
+                                                            <mat-option [value]="'option'">
+                                                                option
                                                             </mat-option>
                                                             <mat-option [value]="'static'">
                                                                 static

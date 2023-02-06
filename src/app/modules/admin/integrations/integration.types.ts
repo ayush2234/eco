@@ -39,7 +39,7 @@ export interface IntegrationSyncFormConnectionFields extends Options {
     description: string;
 }
 
-export interface IntegrationSyncFormConnection extends Options {
+export interface IntegrationSyncFormConnection {
     description: string,
     connection_instructions: string,
     fields: Array<IntegrationSyncFormConnectionFields>
@@ -97,6 +97,6 @@ export interface IntegrationValue {
 }
 export interface IntegrationSyncForm {
     endpoints: Array<IntegrationSyncFormEndpoint>,
-    connections: IntegrationSyncFormConnection,
+    connection: IntegrationSyncFormConnection,
     sync_options: SyncOption[]
 }
