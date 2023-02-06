@@ -23,6 +23,7 @@ import { SyncOptionComponent } from './common/sync-option/sync-option.component'
 import { IntegrationInstance, MappedSyncOption, SyncOption } from '../integration.types';
 
 
+const connection_code: string = 'connection';
 const badgeActiveClasses =
     'px-2 text-sm font-medium w-15 text-center text-green-800 bg-green-100 rounded-full';
 // 'px-2 bg-[#4FD1C5] text-sm text-on-primary rounded-full';
@@ -31,7 +32,7 @@ const badgeInactiveClasses =
 // 'px-2 bg-[#DE3A3A] text-sm text-on-primary rounded-full';
 const addIntegrationPanels = [
     {
-        code: 'connection',
+        code: connection_code,
         icon: 'heroicons_outline:user-circle',
         title: 'Connection',
         isActive: true
@@ -112,6 +113,7 @@ export class AddIntegrationComponent
         this.wipIntegration$ = this._syncOptionService.wipIntegration$.pipe(
             takeUntil(this._unsubscribeAll),
             tap(data => {
+                console.log('wipintegration pipe', data);
                 // Setup available panels
                 this.integrationInstance = { ...data };
                 if (data) {
@@ -198,7 +200,7 @@ export class AddIntegrationComponent
                 panel.isActive = false;
             }
         })
-        if (code === 'connection') {
+        if (code === connection_code) {
             this.selectedPanel = undefined;
         } else {
             this.selectedPanel = this.syncOptions.find(opt => opt.code === code);
@@ -247,6 +249,7 @@ export class AddIntegrationComponent
     private setPanels(): void {
         const connection = this.integrationInstance.integration.connection;
         this.syncOptions = [...this.integrationInstance.integration.sync_options];
+        console.log('integrationInstance', this.integrationInstance, this.syncOptions);
         this.panels = this.syncOptions
             .filter(panel => panel.is_active).map(
                 panel => {
@@ -271,14 +274,16 @@ export class AddIntegrationComponent
                     title: null,
                     classes: null,
                 },
-                code: connection.code,
-                label: connection.label,
+                code: connection_code,
+                label: 'Connection',
                 description: connection.description,
-                isActive: addIntegrationPanels.find(x => x.code === connection.code)?.isActive,
-                icon: addIntegrationPanels.find(x => x.code === connection.code)?.icon
+                isActive: true,
+                icon: 'heroicons_outline: user- circle'
             })
         }
+        console.log('this.panels', this.panels);
         const activePanel = this.panels.find(x => x.isActive);
+        console.log('this.panels', activePanel, this.syncOptions[0].code);
         this.goToPanel(activePanel ? activePanel.code : this.syncOptions[0].code);
     }
 }
