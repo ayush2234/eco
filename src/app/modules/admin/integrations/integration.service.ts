@@ -12,7 +12,7 @@ import {
     throwError,
 } from 'rxjs';
 import { Pagination, Tag } from 'app/layout/common/grid/grid.types';
-import { Integration, IntegrationListResponse, IntegrationSyncForm, ValuesList } from './integration.types';
+import { Integration, IntegrationListResponse, IntegrationSyncForm, Options, ValueOptions, ValuesList } from './integration.types';
 import { appConfig } from 'app/core/config/app.config';
 import { EcommifyApiResponse } from 'app/core/api/api.types';
 import { GridUtils } from 'app/layout/common/grid/grid.utils';
@@ -317,6 +317,18 @@ export class IntegrationService {
             .pipe(
                 tap(response => {
                     console.log('Value list', response);
+                })
+            )
+    }
+
+    getIntegrationSyncFormValueOptionList(integrationId: string, origin: string, value_list: string) {
+        const api = this._config?.apiConfig?.serviceUrl;
+        // <EcommifyApiResponse<Integration>>
+        return this._httpClient
+            .get<EcommifyApiResponse<ValueOptions>>(`${api}/admin/integration/${integrationId}/values_list/${origin}/${value_list}`)
+            .pipe(
+                tap(response => {
+                    console.log('Value Option list', response);
                 })
             )
     }

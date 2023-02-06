@@ -30,6 +30,12 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     drawerOpened: boolean = true;
     fuseDrawerOpened: boolean = true;
     formObjectStringified!: string;
+    // Used for insert multiple records in a sync_option
+    optionSearchQuery: any;
+    originModal: string;
+    valueListModal: string;
+    valueModal: Array<any> = [];
+    valueOptions: any;
 
     @Input() isOpen = true;
     @Input() selectedIntegration: Integration;
@@ -45,7 +51,7 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     };
 
     panels: any[] = [];
-    valueList: ValuesList;
+    valueListDDOptions: ValuesList;
     selectedPanel: any;
     selectedPanelIndex: number = 0;
     selectedTab;
@@ -345,6 +351,30 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     }
 
     /**
+    * Create Multiple records in sub sync options
+    *
+    */
+    insertNewFields(valueModal = []) {
+        if (valueModal.length > 0) {
+            valueModal.forEach(item => {
+                this.formObj.sync_options[this.selectedPanelIndex].sub_sync_options[this.selectedSyncOptionTab].mapping_options.push({
+                    code: item.code || "",
+                    label: item.label || "",
+                    description: "",
+                    type: 'attribute',
+                    required: true,
+                    is_validated: false,
+                    is_hidden: true,
+                    display_conditions: "",
+                    value_options: [],
+                    child_attribute_values: []
+                });
+            })
+            this.optionSearchQuery = "";
+            this.valueModal = [];
+        }
+    }
+    /**
     * Beautify Sync Option Form JSON
     *
     */
@@ -376,9 +406,24 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     getValueList() {
         this._integrationService.getIntegrationSyncFormValueList(this.selectedIntegration.integration_id).pipe(takeUntil(this._unsubscribeAll)).subscribe((result) => {
             if (result?.result) {
-                this.valueList = result?.result;
+                this.valueListDDOptions = result?.result;
             }
         })
+    }
+
+    /**
+    * Get Value list to fillup Dropdown options.
+    *
+    */
+    getValueOptionList() {
+        if (this.originModal && this.valueListModal) {
+            this.valueModal = [];
+            this._integrationService.getIntegrationSyncFormValueOptionList(this.selectedIntegration.integration_id, this.originModal, this.valueListModal).pipe(takeUntil(this._unsubscribeAll)).subscribe((result) => {
+                if (result?.result?.values) {
+                    this.valueOptions = result?.result?.values;
+                }
+            })
+        }
     }
 
     /**
