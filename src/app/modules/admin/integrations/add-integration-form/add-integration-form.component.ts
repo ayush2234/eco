@@ -1,12 +1,12 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { CdkPortal } from '@angular/cdk/portal';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
 import { Subject, takeUntil } from 'rxjs';
 import { IntegrationService } from '../integration.service';
-import { Integration, IntegrationSyncForm, ValuesList } from '../integration.types';
+import { Integration, IntegrationSyncForm, MappingValueOptions, ValueOptions, ValuesList } from '../integration.types';
 import * as JSONschema from './sync-option-form.schema.json';
 import Ajv from "ajv"
 
@@ -31,11 +31,14 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     fuseDrawerOpened: boolean = true;
     formObjectStringified!: string;
     // Used for insert multiple records in a sync_option
+    is_column_shown: boolean = false;
     optionSearchQuery: any;
     originModal: string;
     valueListModal: string;
     valueModal: Array<any> = [];
-    valueOptions: any;
+    valueOptionsDropdown: any;
+    valueOptionFormList: Array<MappingValueOptions> = [];
+
 
     @Input() isOpen = true;
     @Input() selectedIntegration: Integration;
@@ -258,9 +261,10 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
         this.formObj.sync_options[this.selectedPanelIndex].sub_sync_options[this.selectedSyncOptionTab].mapping_options[mappingOptionIndex].value_options.push({
             value_option_type: "",
             value_option_label: "",
-            values_list_option: "",
+            value_type: "",
+            values_list_origin: "",
             values_list: "",
-            is_child: true,
+            is_child: false,
         });
     }
 
@@ -350,13 +354,42 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
         }
     }
 
+    onExpandValueOptionForm(target: HTMLElement) {
+        target.classList.toggle('collapsed');
+    }
+
+    addValueOptionForm() {
+        this.valueOptionFormList.push({
+            value_option_type: "",
+            value_option_label: "",
+            value_type: "",
+            values_list_origin: "",
+            values_list: "",
+            is_child: false,
+        })
+    }
+
+    removeValuesOptionForm(index) {
+        this.valueOptionFormList.splice(index, 1);
+    }
+
+    valueOptionsFormDropped(event) {
+        console.log('drop event', event.previousIndex, event.currentIndex);
+        moveItemInArray(this.valueOptionFormList, event.previousIndex, event.currentIndex);
+    }
     /**
     * Create Multiple records in sub sync options
     *
     */
-    insertNewFields(valueModal = []) {
+    insertNewFields(valueModal = [], valueOptionFormList = []) {
+        console.log('valueOptionFormList', valueOptionFormList);
         if (valueModal.length > 0) {
             valueModal.forEach(item => {
+                this.formObj.sync_options[this.selectedPanelIndex].sub_sync_options[this.selectedSyncOptionTab]['custom_row_options'] = {
+                    value_list_origin: this.originModal,
+                    value_list: this.valueListModal
+                }
+
                 this.formObj.sync_options[this.selectedPanelIndex].sub_sync_options[this.selectedSyncOptionTab].mapping_options.push({
                     code: item.code || "",
                     label: item.label || "",
@@ -366,7 +399,7 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
                     is_validated: false,
                     is_hidden: true,
                     display_conditions: "",
-                    value_options: [],
+                    value_options: [...valueOptionFormList],
                     child_attribute_values: []
                 });
             })
@@ -420,7 +453,7 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
             this.valueModal = [];
             this._integrationService.getIntegrationSyncFormValueOptionList(this.selectedIntegration.integration_id, this.originModal, this.valueListModal).pipe(takeUntil(this._unsubscribeAll)).subscribe((result) => {
                 if (result?.result?.values) {
-                    this.valueOptions = result?.result?.values;
+                    this.valueOptionsDropdown = result?.result?.values;
                 }
             })
         }
@@ -473,6 +506,12 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     updateValuesList(valueOptionType, valueIndex, mappingIndex) {
         if (valueOptionType != 'values_list') {
             this.resetValuesList(valueIndex, mappingIndex);
+        }
+    }
+
+    updateValuesListInForm(valueOptionType, valueIndex) {
+        if (valueOptionType != 'values_list') {
+            this.valueOptionFormList[valueIndex].values_list = "";
         }
     }
 
