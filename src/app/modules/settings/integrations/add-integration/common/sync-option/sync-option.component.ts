@@ -339,21 +339,39 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
               })
             }
 
+            // Checking if it has predefined subfields
+            if(this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].child_attribute_values?.length > 0){
+              const childArray = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].child_attribute_values;
+              childArray.forEach(x=>{
+                const children = [];
+                if(children && children.length) {
+                  this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children.push({
+                    label: 'This is custom label by Kumar',  // what will be the Label
+                    code: '', // what will be the code
+                    type: x.value_type,
+                    required: false,
+                    selected_value: {label: 'Not Mapped', code: ''},
+                    value_options: this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].value_options,
+                    isHideEditAndDelete: true
+                  })
+                } else {
+                  this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children = [{
+                    label: 'This is custom label by Kumar',  // what will be the Label
+                    code: '', // what will be the code
+                    type: x.value_type,
+                    required: false,
+                    selected_value: {label: 'Not Mapped', code: ''},
+                    value_options: this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].value_options,
+                    isHideEditAndDelete: true
+                  }]
+                }
+              })
+            }
+
             if(mappedOption.mapping) {
               mappedOption.mapping.forEach(mapping => {
                 const children = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children;
-                const childIndex = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex]
-                  .mapping_options[fieldIndex].children?.findIndex(x => x.code === mapping.mapping_code) || -1;
-                if(childIndex !== -1) {
-                  this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children[childIndex] = {
-                    label: mapping.mapping_code,
-                    code: mapping.mapping_code,
-                    type: mapping.mapping_type,
-                    required: false,
-                    selected_value: {label: mapping.mapped_label, code: mapping.mapped_code},
-                    value_options: this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].value_options
-                  }
-                } else if(children && children.length) {
+                if(children && children.length) {
                   this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children.push({
                     label: mapping.mapping_code,
                     code: mapping.mapping_code,

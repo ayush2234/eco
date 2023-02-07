@@ -138,7 +138,8 @@ export interface MappingOption extends Options {
   child_attribute_values?: any[];
   mapping_options?: MappingOption[] | any[];
   selected_value?: any;
-  children?: MappingOption[]
+  children?: MappingOption[];
+  isHideEditAndDelete?: boolean; // Needed for show/hide edit and delete button, default is null/false
 }
 
 export interface MappingValueOptions {

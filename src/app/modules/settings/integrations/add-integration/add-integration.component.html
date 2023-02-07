@@ -302,7 +302,7 @@
                                                                                 (click)="editChild(parentIndex, childIndex, children)" />
                                                                         </mat-form-field>
                                                                     </span>
-                                                                    <div class="crud-btns">
+                                                                    <div class="crud-btns" *ngIf="!children.isHideEditAndDelete">
                                                                         <button class="min-w-0 min-h-0 w-6 h-6 p-0"
                                                                             mat-stroked-button
                                                                             (click)="setChildrenLabel(children, field)"
