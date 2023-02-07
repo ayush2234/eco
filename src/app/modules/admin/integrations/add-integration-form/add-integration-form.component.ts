@@ -9,6 +9,7 @@ import { IntegrationService } from '../integration.service';
 import { Integration, IntegrationSyncForm, MappingValueOptions, ValueOptions, ValuesList } from '../integration.types';
 import * as JSONschema from './sync-option-form.schema.json';
 import Ajv from "ajv"
+import { SnackbarService } from 'app/shared/service/snackbar.service';
 
 
 const ajv = new Ajv();
@@ -66,7 +67,8 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
         private _portalBridge: PortalBridgeService,
         private _changeDetector: ChangeDetectorRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _integrationService: IntegrationService
+        private _integrationService: IntegrationService,
+        private _snackbarService: SnackbarService
     ) { }
 
     ngOnInit(): void {
@@ -332,6 +334,7 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
                 if (json && Object.keys(json).length > 0) {
                     const valid = validateJSON(JSON.parse(this.formObjectStringified));
                     if (!valid) {
+                        this._snackbarService.showError(JSON.stringify({ path: validateJSON.errors[0].instancePath, message: validateJSON.errors[0].message }, null, 4), "X", 15);
                         console.log(validateJSON.errors)
                         return;
                     }
@@ -346,9 +349,11 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
                     this.goToTab('endpoints');
                     this._changeDetector.detectChanges();
                 } else {
+                    this._snackbarService.showError('You are trying to parse Invalid JSON.', 'X', 15);
                     console.log('You are trying to parse Invalid JSON.');
                 }
             } catch (error) {
+                this._snackbarService.showError(error.message, 'X', 15);
                 console.log('You are trying to parse Invalid JSON.', error);
             }
         }

@@ -77,10 +77,10 @@
 }
 
 .tab-grid-wrapper.hidden-col-grid-wrapper {
-    grid-template-columns: 24px 24px 2fr 2fr 3fr 50px 60px 50px 36px;
+    grid-template-columns: 24px 24px auto auto 170px 50px 60px 50px 36px;
 
     @screen lg {
-        grid-template-columns: 24px 24px 2fr 2fr 3fr 50px 60px 50px 36px;
+        grid-template-columns: 24px 24px auto auto 170px 50px 60px 50px 36px;
     }
 }
 
