@@ -131,6 +131,7 @@ export interface Tab extends Options {
 export interface MappingOption extends Options {
   type: VALUE_TYPE | any;
   required?: boolean;
+  is_hidden?: boolean;
   display_conditions?: string;
   default_value?: string;
   value_options?: MappingValueOptions[] | any[];

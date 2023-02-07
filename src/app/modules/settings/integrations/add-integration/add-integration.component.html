@@ -180,8 +180,8 @@
                                             <ng-container *ngIf="isConditionSatisfied(field)">
                                                 <div class="sm:col-span-4 last:border-none border-b cursor-pointer mapping-table"
                                                     (click)="goToField(field, parentIndex)" [ngClass]="{
-                            'required-map-color': field.required && field.selected_value?.code === '',
-                            'optional-map-color': !field.required && field.selected_value?.code === ''
+                            'required-map-color': field.required && (field.selected_value?.code === '' || !field.selected_value),
+                            'optional-map-color': !field.required && (field.selected_value?.code === '' || !field.selected_value)
                           }">
                                                     <mat-form-field
                                                         class="fuse-mat-no-subscript fuse-mat-emphasized-affix dynamic-rows my-0 w-full"
@@ -254,14 +254,13 @@
                                                         <mat-icon class="icon-size-5 -mr-2.5" [ngClass]="{
                                 'text-primary': selectedField && selectedField.code === field.code
                               }" [svgIcon]="'heroicons_solid:arrow-right'" matPrefix></mat-icon>
-                                                        <mat-select [value]="field.selected_value?.code"
-                                                            class="{{ field.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
-                                                            [ngClass]="{'selected-code': field.selected_value?.code != '' || [true, false].includes(field.selected_value?.code)}"
+                                                        <mat-select [value]="field.selected_value ? field.selected_value?.code : 'not_mapped'"
+                                                            class="{{ !field.selected_value || field.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
+                                                            [ngClass]="{'selected-code': field.selected_value && field.selected_value.code != ''}"
                                                             disabled>
-                                                            <mat-option [value]="field.selected_value?.code">
-                                                                {{ field.selected_value?.code === '' ? '<' : '' }} <i>
-                                                                    {{ field.selected_value?.label }} </i>
-                                                                    {{ field.selected_value?.code === '' ? '>' : '' }}
+                                                            <mat-option [value]="field.selected_value ? field.selected_value?.code : 'not_mapped'">
+                                                                <span *ngIf="field.selected_value">{{ field.selected_value?.label }} </span>
+                                                                <span *ngIf="!field.selected_value"> {{ '< Not Mapped >' }} </span>
                                                             </mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
@@ -420,7 +419,10 @@
                                                             <span class="ml-2 text-[#64748B] font-normal">Static
                                                                 Text</span>
                                                         </div>
-                                                        <div *ngIf="valueOption.value_option.value_type === 'attribute'"
+                                                        <div *ngIf="
+                                                            valueOption.value_option.value_type === 'attribute' ||
+                                                            valueOption.value_option.value_type === 'advanced_attribute'
+                                                        "
                                                             (click)="toggleInputOption(valueOption.value_option, 'Advance: Custom Source Attribute')"
                                                             class="flex items-center mt-4 cursor-pointer">
                                                             <img class="w-5" src="assets/icons/attribute.svg" />
@@ -562,6 +564,10 @@
 
                                 <!-- Actions -->
                                 <div class="flex items-center justify-end">
+                                    <p 
+                                    *ngIf="showHidden === false"
+                                    class="text-sm cursor-pointer mr-5 font-bold" 
+                                    (click)="showHiddenFields()">Advance: Show Hidden</p>
                                     <button mat-stroked-button type="button"
                                         (click)="closeDrawer(fuseDrawer)">Cancel</button>
                                     <button *ngIf="isAddIntegration" class="ml-4" mat-flat-button type="button"

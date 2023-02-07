@@ -45,6 +45,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   selectedFieldChildIndex: Number | null | any;
   newInsertedFieldChildren = {};
   mappedIntegration: MappedIntegration;
+  showHidden = false;
 
   protected _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -163,14 +164,27 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
         const value = splitedCondition[1];
         const dependencyField = this.checkCondition(code);
         if(dependencyField !== null) {
-          return dependencyField.selected_value?.code === value && mappingRequiredCondition;
+          return dependencyField.selected_value?.code === value && mappingRequiredCondition && option.is_hidden === false;
         }
       }
 
       return false;
     } else {
-      return true && mappingRequiredCondition;
+      return true && mappingRequiredCondition && option.is_hidden === false;
     }
+  }
+
+  showHiddenFields(): void {
+    this.integrationInstance.integration.sync_options.forEach(syncOption => {
+      syncOption.sub_sync_options.forEach(subOption => {
+        subOption.mapping_options.forEach((mappingOption, index, array) => {
+          if(mappingOption.is_hidden) {
+            array[index].is_hidden = false;
+          }
+        })
+      })
+    })
+    this.showHidden = true;
   }
 
   /**
