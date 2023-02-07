@@ -51,6 +51,7 @@ export interface SyncOption extends Options {
 }
 
 export interface Tab extends Options {
+    custom_row_options?: CustomRowOptions,
     mapping_options: MappingOption[] | any[];
 }
 
@@ -69,11 +70,18 @@ export interface MappingOption extends Options {
     children?: MappingOption[];
 }
 
+export interface CustomRowOptions {
+    value_list_origin: string,
+    value_list: string
+}
+
 export interface MappingValueOptions {
     value_option_type: string;
     values_list_origin: string;
     value_type: string;
     values_list?: string;
+    value_option_label?: string;
+    is_child?: boolean;
 }
 
 export interface ValuesList {

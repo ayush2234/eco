@@ -12,10 +12,16 @@
             "type": "object",
             "properties": {
                 "description": {
-                    "type": "string"
+                    "type": [
+                        "null",
+                        "string"
+                    ]
                 },
                 "connection_instructions": {
-                    "type": "string"
+                    "type": [
+                        "null",
+                        "string"
+                    ]
                 },
                 "fields": {
                     "type": "array",
@@ -23,19 +29,34 @@
                         "type": "object",
                         "properties": {
                             "code": {
-                                "type": "string"
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
                             },
                             "label": {
-                                "type": "string"
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
                             },
                             "type": {
-                                "type": "string"
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
                             },
                             "needs_auth_url": {
-                                "type": "string"
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
                             },
                             "description": {
-                                "type": "string"
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
                             }
                         },
                         "required": [
@@ -61,13 +82,22 @@
                 "type": "object",
                 "properties": {
                     "code": {
-                        "type": "string"
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "label": {
-                        "type": "string"
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "description": {
-                        "type": "string"
+                        "type": [
+                            "null",
+                            "string"
+                        ]
                     },
                     "sub_sync_options": {
                         "type": "array",
@@ -75,10 +105,37 @@
                             "type": "object",
                             "properties": {
                                 "code": {
-                                    "type": "string"
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
                                 },
                                 "label": {
-                                    "type": "string"
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                },
+                                "custom_row_options": {
+                                    "type": "object",
+                                    "properties": {
+                                        "value_list_origin": {
+                                            "type": [
+                                                "null",
+                                                "string"
+                                            ]
+                                        },
+                                        "value_list": {
+                                            "type": [
+                                                "null",
+                                                "string"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "value_list_origin",
+                                        "value_list"
+                                    ]
                                 },
                                 "mapping_options": {
                                     "type": "array",
@@ -86,16 +143,28 @@
                                         "type": "object",
                                         "properties": {
                                             "code": {
-                                                "type": "string"
+                                                "type": [
+                                                    "null",
+                                                    "string"
+                                                ]
                                             },
                                             "label": {
-                                                "type": "string"
+                                                "type": [
+                                                    "null",
+                                                    "string"
+                                                ]
                                             },
                                             "description": {
-                                                "type": "string"
+                                                "type": [
+                                                    "null",
+                                                    "string"
+                                                ]
                                             },
                                             "type": {
-                                                "type": "string"
+                                                "type": [
+                                                    "null",
+                                                    "string"
+                                                ]
                                             },
                                             "required": {
                                                 "type": "boolean"
@@ -107,7 +176,10 @@
                                                 "type": "boolean"
                                             },
                                             "display_conditions": {
-                                                "type": "string"
+                                                "type": [
+                                                    "null",
+                                                    "string"
+                                                ]
                                             },
                                             "value_options": {
                                                 "type": "array",
@@ -115,31 +187,42 @@
                                                     "type": "object",
                                                     "properties": {
                                                         "value_option_type": {
-                                                            "type": "string"
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
                                                         },
                                                         "value_option_label": {
-                                                            "type": "string"
-                                                        },
-                                                        "values_list_option": {
-                                                            "type": "string"
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
                                                         },
                                                         "values_list": {
-                                                            "type": "string"
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
                                                         },
                                                         "is_child": {
                                                             "type": "boolean"
                                                         },
                                                         "values_list_origin": {
-                                                            "type": "string"
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
                                                         },
                                                         "value_type": {
-                                                            "type": "string"
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
                                                         }
                                                     },
                                                     "required": [
                                                         "value_option_type",
                                                         "value_option_label",
-                                                        "values_list_option",
                                                         "values_list",
                                                         "is_child",
                                                         "values_list_origin",
@@ -154,31 +237,42 @@
                                                     "type": "object",
                                                     "properties": {
                                                         "value_option_type": {
-                                                            "type": "string"
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
                                                         },
                                                         "value_option_label": {
-                                                            "type": "string"
-                                                        },
-                                                        "values_list_option": {
-                                                            "type": "string"
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
                                                         },
                                                         "values_list": {
-                                                            "type": "string"
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
                                                         },
                                                         "is_child": {
                                                             "type": "boolean"
                                                         },
                                                         "values_list_origin": {
-                                                            "type": "string"
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
                                                         },
                                                         "value_type": {
-                                                            "type": "string"
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
                                                         }
                                                     },
                                                     "required": [
                                                         "value_option_type",
                                                         "value_option_label",
-                                                        "values_list_option",
                                                         "values_list",
                                                         "is_child",
                                                         "values_list_origin",
