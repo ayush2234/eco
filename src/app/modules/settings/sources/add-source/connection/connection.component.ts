@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  HostListener,
   Input,
   OnDestroy,
   OnInit,
@@ -14,14 +15,18 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
+import { Subject } from 'rxjs';
+
 import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 import { appConfig } from 'app/core/config/app.config';
-import { Subject } from 'rxjs';
+
+import { SnackbarService } from '../../../../../shared/service/snackbar.service';
 import { SourceService } from '../../source.service';
 import {
   DearAttributes,
+  Ioauth_SuccessToken,
   MagentoAttributes,
-  MarapostAttributes,
+  MaropostAttributes,
   SalsifyAttributes,
   SourceFormEnum,
   SourceInstance,
@@ -51,7 +56,8 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
    */
   constructor(
     private _formBuilder: UntypedFormBuilder,
-    private _sourceService: SourceService
+    private _sourceService: SourceService,
+    private _snackbarService: SnackbarService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -165,7 +171,7 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
   /**
    * login into the source
    */
-  verifyMarapost() {
+  verifyMaropost() {
     if (!this.sourceForm.valid) {
       this.sourceForm.markAllAsTouched();
       return;
@@ -178,7 +184,7 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
       SourceFormEnum.maropost
     ) {
       this._sourceService
-        .getMarapostOauthUrl(
+        .getMaropostOauthUrl(
           LocalStorageUtils.companyId,
           this.sourceForm.get('storeUrl').value
         )
@@ -188,6 +194,19 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
         });
     }
   }
+  /**
+   * Added to listen the 'message' thrown by popup modal on success 
+   * @param event 
+   */
+  @HostListener('window:message', ['$event'])
+    messageListener(event: MessageEvent<any>) {
+      if(event?.data?.error) this._snackbarService.showError('Please check domain Url, some error occured !!');
+      else {
+        const token: Ioauth_SuccessToken = {...event?.data}
+        if (token && token?.access_token) this._snackbarService.showSuccess('Verification Successful !!');
+        // console.log(token);
+      }
+    }
 
   /**
    * login into the source
@@ -253,13 +272,13 @@ export class AddSourceConnectionComponent implements OnInit, OnDestroy {
    * @returns attribute class according to the form type.
    */
   getAttributes():
-    | MarapostAttributes
+    | MaropostAttributes
     | SalsifyAttributes
     | MagentoAttributes
     | DearAttributes
     | any {
     let attribute:
-      | MarapostAttributes
+      | MaropostAttributes
       | SalsifyAttributes
       | MagentoAttributes
       | DearAttributes
