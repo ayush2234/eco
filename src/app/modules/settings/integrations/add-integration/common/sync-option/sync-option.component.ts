@@ -343,7 +343,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
               mappedOption.mapping.forEach(mapping => {
                 const children = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children;
                 const childIndex = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex]
-                  .mapping_options[fieldIndex].children?.findIndex(x => x.code === mapping.mapping_code);
+                  .mapping_options[fieldIndex].children?.findIndex(x => x.code === mapping.mapping_code) || -1;
                 if(childIndex !== -1) {
                   this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children[childIndex] = {
                     label: mapping.mapping_code,
