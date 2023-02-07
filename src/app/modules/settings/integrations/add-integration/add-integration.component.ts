@@ -145,6 +145,9 @@ export class AddIntegrationComponent
         ).subscribe(response => {
             if (response) {
                 this.valuesList = [...response];
+                if(!this.isAddIntegration) {
+                    this.mapOptionsToForm();
+                }
             }
         });
 

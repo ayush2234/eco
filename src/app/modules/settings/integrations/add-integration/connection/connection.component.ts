@@ -143,7 +143,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
 
     eliminateUnchanged(objectIntegrationValue: IntegrationValue) {
         this.instance.integration.connection.fields.forEach(field => {
-            if (objectIntegrationValue.connection[field.code] === this.instance.integration.connection[field.code]) {
+            if (objectIntegrationValue.connection[field.code] === this.mappedIntegration.connection[field.code]) {
                 delete objectIntegrationValue.connection[field.code];
             }
         })

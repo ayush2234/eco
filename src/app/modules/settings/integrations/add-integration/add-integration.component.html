@@ -427,8 +427,9 @@
                                                             class="flex items-center mt-4 cursor-pointer">
                                                             <img class="w-5" src="assets/icons/attribute.svg" />
                                                             <span
-                                                                class="ml-2 truncate text-[#64748B] font-normal">Advance:
-                                                                Custom Source attribute</span>
+                                                                class="ml-2 truncate text-[#64748B] font-normal">
+                                                                {{ valueOption.value_option.value_option_label != "" ? valueOption.value_option.value_option_label : valueOption.valueList?.label }}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </ng-container>
@@ -566,8 +567,8 @@
                                 <div class="flex items-center justify-end">
                                     <p 
                                     *ngIf="showHidden === false"
-                                    class="text-sm cursor-pointer mr-5 font-bold" 
-                                    (click)="showHiddenFields()">Advance: Show Hidden</p>
+                                    class="text-sm cursor-pointer mr-5 font-medium" 
+                                    (click)="showHiddenFields()">Advanced: Show Hidden</p>
                                     <button mat-stroked-button type="button"
                                         (click)="closeDrawer(fuseDrawer)">Cancel</button>
                                     <button *ngIf="isAddIntegration" class="ml-4" mat-flat-button type="button"
