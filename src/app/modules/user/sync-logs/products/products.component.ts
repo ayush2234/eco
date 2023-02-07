@@ -49,8 +49,28 @@ import { SyncLog } from '../../../user/sync-logs/sync-logs.types';
         }
 
         @screen lg {
-          grid-template-columns: 141px 2.5fr repeat(1, 1fr) 2fr repeat(6, 1fr) 121px;
+          grid-template-columns: 275px 8% 8% repeat(4, 1fr) repeat(3, 115px);
         }
+      }
+
+      .integartion-list:nth-child(odd) {
+        background: white;
+      }
+
+      .integartion-list:nth-child(even) {
+        background: #f7f7fa;
+      }
+      .active {
+        background-color: #d8f4ee;
+        color: #5ad1c5;
+      }
+      .warning {
+        background-color: #ffeeda;
+        color: orange;
+      }
+      .error {
+        background-color: #f5d3d4;
+        color: #ed0c12;
       }
     `,
   ],
@@ -92,10 +112,10 @@ export class SyncLogsProductsComponent
   // -----------------------------------------------------------------------------------------------------
   getStatus(status) {
     switch (status) {
-      case 'Ok':
+      case 'Active':
         return '#22bfb7';
-      case 'Warning':
-        return '#e0af0b';
+      case 'Inactive':
+        return 'orange';
       case 'Error':
         return '#c92d0e';
     }
@@ -129,7 +149,7 @@ export class SyncLogsProductsComponent
 
     // Get the syncLogs
     this.syncLogs$ = this._syncLogService.syncLogs$;
-
+    console.log(this.syncLogs$);
     // Get the tags
     this._syncLogService.tags$
       .pipe(takeUntil(this._unsubscribeAll))
