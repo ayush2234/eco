@@ -5,7 +5,7 @@ import { FuseNavigationItem } from '@fuse/components/navigation';
 export const superAdminNavigationItems: FuseNavigationItem[] = [
   {
     id: 'admin.dashboards',
-    title: 'Dashboards',
+    title: 'Dashboard',
     type: 'basic',
     // icon: 'heroicons_outline:user-group',
     link: '/admin/dashboard',
@@ -46,7 +46,7 @@ export const superAdminNavigationItems: FuseNavigationItem[] = [
 export const adminNavigationItems: FuseNavigationItem[] = [
   {
     id: 'admin.dashboards',
-    title: 'Dashboards',
+    title: 'Dashboard',
     type: 'basic',
     // icon: 'heroicons_outline:user-group',
     link: '/admin/dashboard',
@@ -72,7 +72,7 @@ export const adminNavigationItems: FuseNavigationItem[] = [
 export const userNavigationItems: FuseNavigationItem[] = [
   {
     id: 'dashboards',
-    title: 'Dashboards',
+    title: 'Dashboard',
     type: 'group',
     children: [
       {
@@ -108,13 +108,12 @@ export const userNavigationItems: FuseNavigationItem[] = [
   },
 ];
 
-
 //Master user nav items
 
 export const masterUserNavigationItems: FuseNavigationItem[] = [
   {
     id: 'dashboards',
-    title: 'Dashboards',
+    title: 'Dashboard',
     type: 'group',
     children: [
       {
