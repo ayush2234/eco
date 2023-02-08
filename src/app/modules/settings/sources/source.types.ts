@@ -43,6 +43,15 @@ export interface Source {
   need_auth?: boolean;
 }
 
+export interface Ioauth_SuccessToken {
+  access_token: string;
+  api_id: string;
+  expires_in: string;
+  refresh_token: string;
+  scope: string;
+  token_type: string;
+}
+
 export class SourcePayload {
   source_id: string;
   source_instance_id?: string;
@@ -55,15 +64,15 @@ export class SourcePayload {
 
 export class ConnectionPanel {
   attributes:
-    | MarapostAttributes
-    // | MarapostUpdateAttributes
+    | MaropostAttributes
+    // | MaropostUpdateAttributes
     | SalsifyAttributes
     | MagentoAttributes
     | DearAttributes
     | any;
 }
 
-export class MarapostAttributes {
+export class MaropostAttributes {
   storeUrl: string;
   username?: string;
   apiKey?: string;
@@ -71,7 +80,7 @@ export class MarapostAttributes {
   NETOAPI_KEY?: string;
 }
 
-// export class MarapostUpdateAttributes {
+// export class MaropostUpdateAttributes {
 //   storeUrl: string;
 // }
 
