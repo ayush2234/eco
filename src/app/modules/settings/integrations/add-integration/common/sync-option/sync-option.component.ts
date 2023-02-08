@@ -541,6 +541,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
       type: "option",
       required: false,
       default_value: "",
+      is_hidden: false,
       selected_value: {
           label: "Not Mapped",
           code: ""
