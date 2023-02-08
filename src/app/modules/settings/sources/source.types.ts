@@ -50,6 +50,7 @@ export interface Ioauth_SuccessToken {
   refresh_token: string;
   scope: string;
   token_type: string;
+  error?: string;
 }
 
 export class SourcePayload {

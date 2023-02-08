@@ -10,15 +10,14 @@
             </div>
             <!-- Grouped Parent -->
             <div class="sm:col-span-4" *ngFor="let field of instance.integration.connection.fields">
-                <mat-form-field class="fuse-mat-no-subscript w-full" [ngClass]="{
-            'fuse-mat-emphasized-affix': field.type === 'url'
-          }">
+                <mat-form-field *ngIf="field.type !== 'oauth'"  class="fuse-mat-no-subscript w-full" [ngClass]="{'fuse-mat-emphasized-affix': field.type === 'url'}">
                     <mat-label>{{field.label}}</mat-label>
-                    <div *ngIf="
-              field.type === 'url'
-            " class="text-secondary" matPrefix>https://</div>
+                    <div *ngIf="field.type === 'url'" class="text-secondary" matPrefix>https://</div>
                     <input matInput [(ngModel)]="integrationValue.connection[field.code]" />
                 </mat-form-field>
+                <button *ngIf="field.type === 'oauth'" class="w-full" mat-flat-button type="button" [color]="'primary'" (click)="verify()">
+                    {{field.label}}
+                </button>
             </div>
         </div>
 
@@ -55,11 +54,11 @@
         <div class="flex items-center justify-end">
             <button mat-stroked-button type="button" (click)="onClose.emit()">Cancel</button>
             <button *ngIf="isAddIntegration" class="ml-4" mat-flat-button type="button" [color]="'primary'"
-                (click)="updateIntegration()">
+                (click)="addIntegration()">
                 Save
             </button>
             <button *ngIf="!isAddIntegration" class="ml-4" mat-flat-button type="button" [color]="'primary'"
-                (click)="saveIntegration()">
+                (click)="updateIntegration()">
                 Save
             </button>
         </div>
