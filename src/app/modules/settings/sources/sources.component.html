@@ -44,7 +44,9 @@
           <!-- Avatar & Info -->
           <div class="flex items-center p-8 pb-0 space-x-4">
             <div class="flex-shrink-0">
-              <img class="w-15 h-15 rounded-full" [src]="instance.icon" />
+              <img
+                class="w-15 h-15 rounded-full"
+                [src]="instance.source.icon" />
             </div>
             <div class="flex-1 min-w-0">
               <p
@@ -55,45 +57,49 @@
                 {{ instance.name }}
               </p>
             </div>
+            <mat-slide-toggle
+              (change)="getInstallListActiveInactive(instance, $event)"
+              class="ml-3"
+              [color]="'primary'"
+              [checked]="instance.active_status">
+            </mat-slide-toggle>
           </div>
           <div class="flex items-center space-x-4">
-            <p class="text-md px-8 pt-2 text-secondary">
-              <span
-                [ngClass]="
-                  instance.connection_status ? 'text-gray-900' : 'text-gray-500'
-                ">
-                {{ instance.connection_status ? 'Connected' : 'Not Connected' }}
-              </span>
-              <span
-                class="text-[13px] text-gray-500"
-                *ngIf="instance.last_connection_time">
-                <!-- {{ moment(instance.last_connection_time).fromNow() }} -->
-                since
-                {{
-                  moment(instance.last_connection_time).format('D MMMM yyyy')
-                }}
-              </span>
+            <p class="text-sm p-8 text-secondary">
+              {{ instance.source.description }}
             </p>
           </div>
-          <div class="flex items-center space-x-4">
-            <p class="text-[13px] p-8 pt-2 text-secondary">
-              {{ instance.description }}
-            </p>
-          </div>
+
           <!-- Footer -->
           <div class="flex flex-col w-full mt-auto">
-            <div class="flex items-center justify-between p-8 pt-0">
+            <div class="flex items-center justify-between gap-10 p-8 pt-0">
               <button mat-stroked-button (click)="addSource(instance, true)">
                 <span class="inline-flex items-center">
                   <span class="truncate">Configuration</span>
                 </span>
               </button>
-              <mat-slide-toggle
-                (change)="getInstallListActiveInactive(instance, $event)"
-                class="ml-3"
-                [color]="'primary'"
-                [checked]="instance.active_status">
-              </mat-slide-toggle>
+              <div class="justify-end content-center">
+                <p class="text-sm pt-2 text-secondary">
+                  <button
+                    class="px-2 py-1 rounded-full w-30 text-center"
+                    [ngClass]="
+                      instance.connection_status ? 'connected' : 'not-connected'
+                    ">
+                    {{
+                      instance.connection_status ? 'Connected' : 'Not connected'
+                    }}
+                  </button>
+                </p>
+                <span
+                  class="text-[13px] text-gray-500"
+                  *ngIf="instance.last_connection_time">
+                  {{
+                    moment(instance.last_connection_time).format(
+                      'DD/MM/YY HH:mm:ss'
+                    )
+                  }}
+                </span>
+              </div>
             </div>
           </div>
         </div>

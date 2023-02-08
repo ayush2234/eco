@@ -128,8 +128,8 @@ export class SyncLogsProductsComponent
       });
 
     // Get the syncLogs
-    this.syncLogs$ = this._syncLogService.syncLogs$;
-
+    this.syncLogs$ = this._syncLogService.syncLogProducts$;
+    console.log(this.syncLogs$);
     // Get the tags
     this._syncLogService.tags$
       .pipe(takeUntil(this._unsubscribeAll))
@@ -150,7 +150,7 @@ export class SyncLogsProductsComponent
         switchMap(query => {
           this.closeDetails();
           this.isLoading = true;
-          return this._syncLogService.getSyncLogProducts(
+          return this._syncLogService.getSyncLogProductsList(
             0,
             10,
             'name',
@@ -197,7 +197,7 @@ export class SyncLogsProductsComponent
           switchMap(() => {
             this.closeDetails();
             this.isLoading = true;
-            return this._syncLogService.getSyncLogProducts(
+            return this._syncLogService.getSyncLogProductsList(
               this._paginator.pageIndex,
               this._paginator.pageSize,
               this._sort.active,

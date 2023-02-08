@@ -24,7 +24,7 @@ const routes: Route[] = [
           ),
       },
       {
-        path: 'source-channel',
+        path: 'sources',
         loadChildren: () =>
           import('app/modules/settings/sources/sources.module').then(
             m => m.SourcesModule
@@ -32,7 +32,7 @@ const routes: Route[] = [
       },
       {
         path: 'custom-request',
-       component:CustomIntegrationRequestComponent
+        component: CustomIntegrationRequestComponent,
       },
       {
         path: 'users',

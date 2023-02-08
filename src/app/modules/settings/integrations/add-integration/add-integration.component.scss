@@ -3,6 +3,10 @@
     --fuse-drawer-width: 85vw !important;
 }
 
+.full-height {
+    min-height: calc(100vh - 430px);
+}
+
 .mapping-area {
     max-height: calc(100vh - 430px);
 
@@ -319,6 +323,9 @@
 }
 
 @media only screen and (min-width: 1280px) {
+    .full-height {
+        min-height: calc(100vh - 362px);
+    }
 
     .mapping-area,
     .options-wrapper {

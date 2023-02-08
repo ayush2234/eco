@@ -29,7 +29,6 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
     @Input() isAddIntegration = false;
     protected _unsubscribeAll: Subject<any> = new Subject<any>();
     integrationValue: IntegrationValue;
-    integrationInstanceConnection: integrationInstanceConnection;
     @Input() mappedIntegration: MappedIntegration;
 
     @Output() onAddNewIntegration: EventEmitter<any> = new EventEmitter();
@@ -62,14 +61,9 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
         // this.connectionForm.patchValue({ ...this.integration });
         // this.setSyncOptions();
         // this.subscribeOnFormValueChanges();
-        this.integrationInstanceConnection = {
-            store_url: "https://onesixeightlondon.com.au",
-            consumer_key: "ck-5262842efed5eede****",
-            consumer_secret: "cs-58de5de5eg5w5ww5g5c****"
-        }
         this.integrationValue = {
             source_instance_id: "f8d13159-70dd-4071-8c72-621ff27a9999",
-            integration_id: "1ed1f116-8527-6bfa-93c1-0605e1fd6890",
+            integration_id: "",
             name: this.instance.integration.name,
             active_status: "Y",
             is_custom: "N",
@@ -149,7 +143,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
 
     eliminateUnchanged(objectIntegrationValue: IntegrationValue) {
         this.instance.integration.connection.fields.forEach(field => {
-            if (objectIntegrationValue.connection[field.code] === this.instance.integration.connection[field.code]) {
+            if (objectIntegrationValue.connection[field.code] === this.mappedIntegration.connection[field.code]) {
                 delete objectIntegrationValue.connection[field.code];
             }
         })
@@ -161,7 +155,12 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
         this.mappedIntegration = {
             ...this.mappedIntegration,
             connection: { ...integrationClone.connection },
-            integration_id: this.integrationValue.integration_id
+            integration_id: this.isAddIntegration ? this.instance.integration_id : this.instance.integration.integration_id,
+            sync_options: this.mappedIntegration.sync_options.map(x => ({
+                ...x,
+                is_active: this.instance.integration.sync_options.find(s => s.code === x.code)?.is_active,
+                is_activated: this.instance.integration.sync_options.find(s => s.code === x.code)?.is_activated
+            }))
         }
     }
 
@@ -176,7 +175,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
                 // Refresh Integration Data in Main Screen
                 const companyId = LocalStorageUtils.companyId;
                 this._integrationsService.getIntegrationSettings(companyId).pipe(takeUntil(this._unsubscribeAll)).subscribe((response: IntegrationSettings) => {
-                    this.isAddIntegration = true;
+                    // this.isAddIntegration = true;
                     const createdInstance = response.instances.find(instance => instance.instance_id == integration.integration_instance_id)
                     this._syncOptionService.getValueList(createdInstance);
                     this.onAddNewIntegration.emit();
@@ -186,7 +185,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
     }
     saveIntegration() {
         console.log("Save Integration");
-        this.mapFormToInstance()
+        this.mapFormToInstance();
         this._syncOptionService.updateInstalledIntegration(this.mappedIntegration).pipe(
             takeUntil(this._unsubscribeAll)
         ).subscribe(integration => {

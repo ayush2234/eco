@@ -5,7 +5,7 @@ import { FuseNavigationItem } from '@fuse/components/navigation';
 export const superAdminNavigationItems: FuseNavigationItem[] = [
   {
     id: 'admin.dashboards',
-    title: 'Dashboards',
+    title: 'Dashboard',
     type: 'basic',
     // icon: 'heroicons_outline:user-group',
     link: '/admin/dashboard',
@@ -46,7 +46,7 @@ export const superAdminNavigationItems: FuseNavigationItem[] = [
 export const adminNavigationItems: FuseNavigationItem[] = [
   {
     id: 'admin.dashboards',
-    title: 'Dashboards',
+    title: 'Dashboard',
     type: 'basic',
     // icon: 'heroicons_outline:user-group',
     link: '/admin/dashboard',
@@ -72,24 +72,26 @@ export const adminNavigationItems: FuseNavigationItem[] = [
 export const userNavigationItems: FuseNavigationItem[] = [
   {
     id: 'dashboards',
-    title: 'Dashboards',
-    type: 'group',
-    children: [
-      {
-        id: 'dashboards.integration-status',
-        title: 'Integration Status',
-        type: 'basic',
-        icon: 'heroicons_outline:document-duplicate',
-        link: '/user/dashboard/integration-status',
-      },
-      {
-        id: 'dashboards.products',
-        title: 'Products (coming soon)',
-        type: 'basic',
-        icon: 'heroicons_outline:chart-pie',
-        link: '/user/dashboard/products',
-      },
-    ],
+    title: 'Dashboard',
+    type: 'basic',
+    link: '/user/dashboard/integration-status',
+
+    // children: [
+    //   {
+    //     id: 'dashboards.integration-status',
+    //     title: 'Integration Status',
+    //     type: 'basic',
+    //     icon: 'heroicons_outline:document-duplicate',
+    //     link: '/user/dashboard/integration-status',
+    //   },
+    //   {
+    //     id: 'dashboards.products',
+    //     title: 'Products (coming soon)',
+    //     type: 'basic',
+    //     icon: 'heroicons_outline:chart-pie',
+    //     link: '/user/dashboard/products',
+    //   },
+    // ],
   },
   {
     id: 'sync-logs.products',
@@ -108,30 +110,30 @@ export const userNavigationItems: FuseNavigationItem[] = [
   },
 ];
 
-
 //Master user nav items
 
 export const masterUserNavigationItems: FuseNavigationItem[] = [
   {
     id: 'dashboards',
-    title: 'Dashboards',
-    type: 'group',
-    children: [
-      {
-        id: 'dashboards.integration-status',
-        title: 'Integration Status',
-        type: 'basic',
-        // icon: 'heroicons_outline:document-duplicate',
-        link: '/user/dashboard/integration-status',
-      },
-      {
-        id: 'dashboards.products',
-        title: 'Products (coming soon)',
-        type: 'basic',
-        // icon: 'heroicons_outline:chart-pie',
-        link: '/user/dashboard/products',
-      },
-    ],
+    title: 'Dashboard',
+    type: 'basic',
+    link: '/user/dashboard/integration-status',
+    // children: [
+    //   {
+    //     id: 'dashboards.integration-status',
+    //     title: 'Integration Status',
+    //     type: 'basic',
+    //     // icon: 'heroicons_outline:document-duplicate',
+    //     link: '/user/dashboard/integration-status',
+    //   },
+    //   {
+    //     id: 'dashboards.products',
+    //     title: 'Products (coming soon)',
+    //     type: 'basic',
+    //     // icon: 'heroicons_outline:chart-pie',
+    //     link: '/user/dashboard/products',
+    //   },
+    // ],
   },
   {
     id: 'sync-logs.products',

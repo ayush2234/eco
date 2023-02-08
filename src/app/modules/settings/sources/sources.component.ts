@@ -15,6 +15,18 @@ import { Source, SourceInstance, SourcePayload } from './source.types';
 @Component({
   selector: 'eco-sources-settings',
   templateUrl: './sources.component.html',
+  styles: [
+    `
+      .not-connected {
+        background: #edd3cc;
+        color: #b02f0c;
+      }
+      .connected {
+        color: green;
+        background: #ceebd3;
+      }
+    `,
+  ],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
