@@ -57,6 +57,12 @@
                 {{ instance.name }}
               </p>
             </div>
+            <mat-slide-toggle
+              (change)="getInstallListActiveInactive(instance, $event)"
+              class="ml-3"
+              [color]="'primary'"
+              [checked]="instance.active_status">
+            </mat-slide-toggle>
           </div>
           <div class="flex items-center space-x-4">
             <p class="text-sm p-8 pt-2 text-secondary">
@@ -64,21 +70,16 @@
             </p>
           </div>
 
-          <div class="flex items-center space-x-4">
-            <p class="text-[13px] p-8 pt-2 text-secondary">
-              {{ instance.description }}
-            </p>
-          </div>
           <!-- Footer -->
           <div class="flex flex-col w-full mt-auto">
-            <div class="flex items-center justify-between p-8 pt-0">
+            <div class="flex items-center justify-between gap-10 p-8 pt-0">
               <button mat-stroked-button (click)="addSource(instance, true)">
                 <span class="inline-flex items-center">
                   <span class="truncate">Configuration</span>
                 </span>
               </button>
-              <div class="flex items-center space-x-4">
-                <p class="text-md px-8 pt-2 text-secondary">
+              <div class="justify-end content-center">
+                <p class="text-md pt-2 text-secondary">
                   <span
                     class="px-2 py-1 rounded-full"
                     [ngClass]="
@@ -88,25 +89,16 @@
                       instance.connection_status ? 'Connected' : 'Not Connected'
                     }}
                   </span>
-                  <span
-                    class="text-[13px] text-gray-500"
-                    *ngIf="instance.last_connection_time">
-                    <!-- {{ moment(instance.last_connection_time).fromNow() }} -->
-                    since
-                    {{
-                      moment(instance.last_connection_time).format(
-                        'D MMMM yyyy'
-                      )
-                    }}
-                  </span>
                 </p>
+                <span
+                  class="text-[13px] text-gray-500"
+                  *ngIf="instance.last_connection_time">
+                  <!-- {{ moment(instance.last_connection_time).fromNow() }} -->
+                  {{
+                    moment(instance.last_connection_time).format('D MMMM yyyy')
+                  }}
+                </span>
               </div>
-              <mat-slide-toggle
-                (change)="getInstallListActiveInactive(instance, $event)"
-                class="ml-3"
-                [color]="'primary'"
-                [checked]="instance.active_status">
-              </mat-slide-toggle>
             </div>
           </div>
         </div>
