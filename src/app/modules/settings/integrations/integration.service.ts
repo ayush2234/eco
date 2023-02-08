@@ -74,4 +74,23 @@ export class IntegrationService {
         })
       );
   }
+
+  /**
+   * Get Maropost O-Auth api, cloned from source services
+   */
+  getMaropostOauthUrl(
+    companyId: string,
+    store_domain: string
+  ): Observable<any> {
+    const api = this._config.apiConfig.serviceUrl;
+    return this._httpClient
+      .post<EcommifyApiResponse<any>>(`${api}/oauth/maropost/${companyId}`, {
+        store_domain,
+      })
+      .pipe(
+        map(response => {
+          return response;
+        })
+      );
+  }
 }
