@@ -1,47 +1,43 @@
 <!-- Button -->
 <button mat-icon-button [matMenuTriggerFor]="userActions">
-  <span class="relative">
-    <img
-      class="w-10 h-10 rounded-full"
-      *ngIf="showAvatar && user.avatar"
-      [src]="user?.avatar" />
-    <div
-      class="flex items-center justify-center w-8 h-8 rounded-full text-custom-blue bg-indigo-500"
-      *ngIf="!showAvatar || !user.avatar">
-      <span>{{ user?.name | getInitials }}</span>
-    </div>
-  </span>
+    <span class="relative">
+        <img class="w-10 h-10 rounded-full" *ngIf="showAvatar && user.avatar" [src]="user?.avatar" />
+        <div class="flex items-center justify-center w-8 h-8 rounded-full text-primary-900 bg-primary-100"
+            *ngIf="!showAvatar || !user.avatar">
+            <span>{{ user?.name | getInitials }}</span>
+        </div>
+    </span>
 </button>
 
 <mat-menu [xPosition]="'before'" #userActions="matMenu">
-  <button mat-menu-item>
-    <span class="flex flex-col leading-none">
-      <span>Signed in as</span>
-      <span class="mt-1.5 text-md font-medium">{{ user?.email }}</span>
-    </span>
-  </button>
-  <mat-divider class="my-2" *ngIf="showBackButton()"></mat-divider>
-  <!-- <button mat-menu-item>
+    <button mat-menu-item>
+        <span class="flex flex-col leading-none">
+            <span>Signed in as</span>
+            <span class="mt-1.5 text-md font-medium">{{ user?.email }}</span>
+        </span>
+    </button>
+    <mat-divider class="my-2" *ngIf="showBackButton()"></mat-divider>
+    <!-- <button mat-menu-item>
     <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
     <span>Profile</span>
   </button> -->
-  <button mat-menu-item *ngIf="showBackButton()">
-    <mat-icon [svgIcon]="'heroicons_outline:arrow-circle-left'"></mat-icon>
-    <span (click)="goBacktoAdmin()">Back to admin</span>
-  </button>
-  <!-- <button mat-menu-item>
+    <button mat-menu-item *ngIf="showBackButton()">
+        <mat-icon [svgIcon]="'heroicons_outline:arrow-circle-left'"></mat-icon>
+        <span (click)="goBacktoAdmin()">Back to admin</span>
+    </button>
+    <!-- <button mat-menu-item>
     <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
     <span>Settings</span>
   </button> -->
-  <!-- <button mat-menu-item [matMenuTriggerFor]="userStatus">
+    <!-- <button mat-menu-item [matMenuTriggerFor]="userStatus">
     <mat-icon [svgIcon]="'heroicons_outline:dots-circle-horizontal'"></mat-icon>
     <span>Status</span>
   </button> -->
-  <mat-divider class="my-2"></mat-divider>
-  <button mat-menu-item (click)="signOut()">
-    <mat-icon [svgIcon]="'heroicons_outline:logout'"></mat-icon>
-    <span>Sign out</span>
-  </button>
+    <mat-divider class="my-2"></mat-divider>
+    <button mat-menu-item (click)="signOut()">
+        <mat-icon [svgIcon]="'heroicons_outline:logout'"></mat-icon>
+        <span>Sign out</span>
+    </button>
 </mat-menu>
 
 <!-- <mat-menu class="user-status-menu" #userStatus="matMenu">
