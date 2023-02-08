@@ -22,8 +22,8 @@ import { Source, SourceInstance, SourcePayload } from './source.types';
         color: #b02f0c;
       }
       .connected {
-        color: black;
-        background: lightgray;
+        color: green;
+        background: #ceebd3;
       }
     `,
   ],
