@@ -45,7 +45,7 @@
           <div class="flex items-center p-8 pb-0 space-x-4">
             <div class="flex-shrink-0">
               <img
-                class="w-15 h-15 rounded-full border"
+                class="w-15 h-15 rounded-full"
                 [src]="instance.source.icon" />
             </div>
             <div class="flex-1 min-w-0">
@@ -65,7 +65,7 @@
             </mat-slide-toggle>
           </div>
           <div class="flex items-center space-x-4">
-            <p class="text-sm p-8 pt-2 text-secondary">
+            <p class="text-sm p-8 text-secondary">
               {{ instance.source.description }}
             </p>
           </div>
@@ -79,23 +79,24 @@
                 </span>
               </button>
               <div class="justify-end content-center">
-                <p class="text-md pt-2 text-secondary">
-                  <span
-                    class="px-2 py-1 rounded-full"
+                <p class="text-sm pt-2 text-secondary">
+                  <button
+                    class="px-2 py-1 rounded-full w-30 text-center"
                     [ngClass]="
                       instance.connection_status ? 'connected' : 'not-connected'
                     ">
                     {{
                       instance.connection_status ? 'Connected' : 'Not connected'
                     }}
-                  </span>
+                  </button>
                 </p>
                 <span
                   class="text-[13px] text-gray-500"
                   *ngIf="instance.last_connection_time">
-                  <!-- {{ moment(instance.last_connection_time).fromNow() }} -->
                   {{
-                    moment(instance.last_connection_time).format('D MMMM yyyy')
+                    moment(instance.last_connection_time).format(
+                      'DD/MM/YY HH:mm:ss'
+                    )
                   }}
                 </span>
               </div>

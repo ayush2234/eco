@@ -73,23 +73,25 @@ export const userNavigationItems: FuseNavigationItem[] = [
   {
     id: 'dashboards',
     title: 'Dashboard',
-    type: 'group',
-    children: [
-      {
-        id: 'dashboards.integration-status',
-        title: 'Integration Status',
-        type: 'basic',
-        icon: 'heroicons_outline:document-duplicate',
-        link: '/user/dashboard/integration-status',
-      },
-      {
-        id: 'dashboards.products',
-        title: 'Products (coming soon)',
-        type: 'basic',
-        icon: 'heroicons_outline:chart-pie',
-        link: '/user/dashboard/products',
-      },
-    ],
+    type: 'basic',
+    link: '/user/dashboard/integration-status',
+
+    // children: [
+    //   {
+    //     id: 'dashboards.integration-status',
+    //     title: 'Integration Status',
+    //     type: 'basic',
+    //     icon: 'heroicons_outline:document-duplicate',
+    //     link: '/user/dashboard/integration-status',
+    //   },
+    //   {
+    //     id: 'dashboards.products',
+    //     title: 'Products (coming soon)',
+    //     type: 'basic',
+    //     icon: 'heroicons_outline:chart-pie',
+    //     link: '/user/dashboard/products',
+    //   },
+    // ],
   },
   {
     id: 'sync-logs.products',
@@ -114,23 +116,24 @@ export const masterUserNavigationItems: FuseNavigationItem[] = [
   {
     id: 'dashboards',
     title: 'Dashboard',
-    type: 'group',
-    children: [
-      {
-        id: 'dashboards.integration-status',
-        title: 'Integration Status',
-        type: 'basic',
-        // icon: 'heroicons_outline:document-duplicate',
-        link: '/user/dashboard/integration-status',
-      },
-      {
-        id: 'dashboards.products',
-        title: 'Products (coming soon)',
-        type: 'basic',
-        // icon: 'heroicons_outline:chart-pie',
-        link: '/user/dashboard/products',
-      },
-    ],
+    type: 'basic',
+    link: '/user/dashboard/integration-status',
+    // children: [
+    //   {
+    //     id: 'dashboards.integration-status',
+    //     title: 'Integration Status',
+    //     type: 'basic',
+    //     // icon: 'heroicons_outline:document-duplicate',
+    //     link: '/user/dashboard/integration-status',
+    //   },
+    //   {
+    //     id: 'dashboards.products',
+    //     title: 'Products (coming soon)',
+    //     type: 'basic',
+    //     // icon: 'heroicons_outline:chart-pie',
+    //     link: '/user/dashboard/products',
+    //   },
+    // ],
   },
   {
     id: 'sync-logs.products',

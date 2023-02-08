@@ -64,10 +64,15 @@
                 {{ instance.name }}
               </p>
             </div>
+            <mat-slide-toggle
+              class="ml-3"
+              [color]="'primary'"
+              [checked]="instance?.active_status">
+            </mat-slide-toggle>
           </div>
           <div class="flex items-center space-x-4">
-            <p class="text-sm p-8 pt-2 text-secondary">
-              {{ instance.integration?.name }}
+            <p class="text-sm p-8 text-secondary">
+              {{ instance.integration?.description }}
             </p>
           </div>
           <!-- Footer -->
@@ -80,11 +85,28 @@
                   <span class="truncate">Configuration</span>
                 </span>
               </button>
-              <mat-slide-toggle
-                class="ml-3"
-                [color]="'primary'"
-                [checked]="instance?.active_status">
-              </mat-slide-toggle>
+              <div class="justify-end content-center">
+                <p class="text-sm pt-2 text-secondary">
+                  <button
+                    class="px-2 py-1 rounded-full w-30 text-center"
+                    [ngClass]="
+                      instance.connection_status ? 'connected' : 'not-connected'
+                    ">
+                    {{
+                      instance.connection_status ? 'Connected' : 'Not connected'
+                    }}
+                  </button>
+                </p>
+                <span
+                  class="text-[13px] text-gray-500"
+                  *ngIf="instance.last_connection_time">
+                  {{
+                    moment(instance.last_connection_time).format(
+                      'DD/MM/YY HH:mm:ss'
+                    )
+                  }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
