@@ -404,7 +404,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
                   }
                 } else if(children && children.length) {
                   this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children.push({
-                    label: mapping.mapping_code,
+                    label: mapping.mapping_label,
                     code: mapping.mapping_code,
                     type: mapping.mapping_type,
                     required: false,
@@ -413,7 +413,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
                   })
                 } else {
                   this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children = [{
-                    label: mapping.mapping_code,
+                    label: mapping.mapping_label,
                     code: mapping.mapping_code,
                     type: mapping.mapping_type,
                     required: false,
@@ -446,6 +446,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
                   mapped_type: mappingOption.selected_value.value_option?.value_type,
                   mapping_code: mappingOption.code,
                   mapping_type: mappingOption.type,
+                  mapping_label: mappingOption.label,
                   mapped_origin: mappingOption.selected_value.value_option?.values_list_origin,
                   mapping: mappingOption.children?.map(child => {
                     if(child.selected_value && child.selected_value.code !== '') {
@@ -455,6 +456,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
                         mapped_type: child.selected_value.value_option?.value_type,
                         mapping_code: child.code,
                         mapping_type: child.type,
+                        mapping_label: child.label
                       }
                     } else {
                       return undefined

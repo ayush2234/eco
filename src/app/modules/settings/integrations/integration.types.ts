@@ -114,6 +114,7 @@ export interface MappedOptions {
   mapped_type: string
   mapping_code: string
   mapping_type: string
+  mapping_label: string
   mapping?: MappedOptions[]
 }
 
