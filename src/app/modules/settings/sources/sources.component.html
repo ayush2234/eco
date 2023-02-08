@@ -78,10 +78,10 @@
                   <span class="truncate">Configuration</span>
                 </span>
               </button>
-              <div class="justify-end content-center">
-                <p class="text-sm pt-2 text-secondary">
+              <div class="justify-end content-center items-center text-center">
+                <div class="text-sm pt-2">
                   <button
-                    class="px-2 py-1 rounded-full w-30 text-center"
+                    class="px-1 py-[2px] rounded-full w-26 text-center"
                     [ngClass]="
                       instance.connection_status ? 'connected' : 'not-connected'
                     ">
@@ -89,16 +89,16 @@
                       instance.connection_status ? 'Connected' : 'Not connected'
                     }}
                   </button>
-                </p>
-                <span
-                  class="text-[13px] text-gray-500"
+                </div>
+                <div
+                  class="text-[11px] text-gray-500"
                   *ngIf="instance.last_connection_time">
                   {{
                     moment(instance.last_connection_time).format(
                       'DD/MM/YY HH:mm:ss'
                     )
                   }}
-                </span>
+                </div>
               </div>
             </div>
           </div>

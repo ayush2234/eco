@@ -165,8 +165,8 @@
     <!-- syncLogs list -->
     <div
       class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
-      <ng-container *ngIf="syncLogOrders$ | async as syncLogs">
-        <ng-container *ngIf="syncLogs.length > 0; else noSyncLogs">
+      <ng-container>
+        <ng-container>
           <div class="grid">
             <!-- Header -->
             <div
@@ -193,104 +193,105 @@
             </div>
             <!-- Rows -->
             <ng-container *ngIf="syncLogOrders$ | async as syncLogs">
-              <ng-container
-                *ngFor="let syncLog of syncLogs; trackBy: trackByFn">
-                <div
-                  class="sync-logs-orders-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
-                  <!-- Date Created -->
-                  <div class="hidden md:block truncate sm:block">
-                    {{ syncLog.created_at | date: 'dd-MM-YYYY hh:mm a' }}
-                  </div>
-
-                  <!-- Integration -->
-                  <div class="flex items-center pb-0 space-x-4">
-                    <div class="flex-shrink-0">
-                      <img
-                        class="w-10 h-10 rounded-full border border-gray-200"
-                        [src]="syncLog.integration.logo"
-                        alt="Integration Icon" />
+              <div *ngIf="syncLogs.length > 0; else noSyncLogs">
+                <ng-container
+                  *ngFor="let syncLog of syncLogs; trackBy: trackByFn">
+                  <div
+                    class="sync-logs-orders-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                    <!-- Date Created -->
+                    <div class="hidden md:block truncate sm:block">
+                      {{ syncLog.created_at | date: 'dd-MM-YYYY hh:mm a' }}
                     </div>
-                    <div class="flex-1 min-w-0">
-                      <!-- Integration name -->
-                      <p
-                        class="font-medium text-gray-900 truncate dark:text-white">
-                        {{ syncLog.integration.name }}
-                      </p>
+
+                    <!-- Integration -->
+                    <div class="flex items-center pb-0 space-x-4">
+                      <div class="flex-shrink-0">
+                        <img
+                          class="w-10 h-10 rounded-full border border-gray-200"
+                          [src]="syncLog.integration.logo"
+                          alt="Integration Icon" />
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <!-- Integration name -->
+                        <p
+                          class="font-medium text-gray-900 truncate dark:text-white">
+                          {{ syncLog.integration.name }}
+                        </p>
+                        <p
+                          class="text-sm text-gray-500 truncate dark:text-gray-400">
+                          {{ syncLog.integration_instance.name }}
+                        </p>
+                      </div>
+                    </div>
+
+                    <!--  sync status -->
+
+                    <div>
+                      <button
+                        class="px-2 py-[2px] w-24 min-w-20 rounded-[4px] text-center capitalize"
+                        [ngClass]="{
+                          active: syncLog.log.status == 'complete',
+                          warning: syncLog.log.status == 'Warning',
+                          error: syncLog.log.status === 'Error'
+                        }">
+                        <span> {{ syncLog.log.status }}</span>
+                      </button>
+                    </div>
+                    <!--Sync  lifecycle -->
+
+                    <div class="hidden sm:block truncate">
+                      <button
+                        class="text-white rounded-[4px] w-36 px-2 py-[2px] text-center"
+                        [ngStyle]="{
+                          backgroundColor:
+                            syncLog.log.lifecycle === 'Completed'
+                              ? '#5ad1c5'
+                              : '#4f46e5'
+                        }">
+                        {{ syncLog.log.lifecycle }}
+                      </button>
+                    </div>
+
+                    <!-- Source ID -->
+                    <div class="hidden md:block truncate sm:block">
+                      <p>{{ syncLog.source.order_id }}</p>
                       <p
                         class="text-sm text-gray-500 truncate dark:text-gray-400">
-                        {{ syncLog.integration_instance.name }}
+                        {{ syncLog.source.status }}
                       </p>
                     </div>
-                  </div>
 
-                  <!--  sync status -->
+                    <!-- Channel Order ID -->
+                    <div class="hidden md:block truncate sm:block">
+                      <p class="hidden md:block truncate sm:block">
+                        {{ syncLog.channel.order_id }}
+                      </p>
+                      <p
+                        class="text-sm text-gray-500 truncate dark:text-gray-400 sm:block">
+                        {{ syncLog.channel.status }}
+                      </p>
+                    </div>
+                    <!-- Items -->
 
-                  <div>
-                    <button
-                      class="px-2 py-[2px] w-24 min-w-20 rounded-[4px] text-center capitalize"
-                      [ngClass]="{
-                        active: syncLog.log.status == 'complete',
-                        warning: syncLog.log.status == 'Warning',
-                        error: syncLog.log.status === 'Error'
-                      }">
-                      <span> {{ syncLog.log.status }}</span>
-                    </button>
-                  </div>
-                  <!--Sync  lifecycle -->
+                    <div class="hidden lg:block truncate md:hidden">
+                      <p
+                        class="hidden md:block truncate"
+                        *ngFor="let item of syncLog.order_lines">
+                        {{ item.quantity }} X {{ item.sku }}
+                        <span *ngIf="item.name">({{ item.name }})</span>
+                      </p>
+                    </div>
 
-                  <div class="hidden sm:block truncate">
-                    <button
-                      class="text-white rounded-[4px] w-36 px-2 py-[2px] text-center"
-                      [ngStyle]="{
-                        backgroundColor:
-                          syncLog.log.lifecycle === 'Completed'
-                            ? '#5ad1c5'
-                            : '#4f46e5'
-                      }">
-                      {{ syncLog.log.lifecycle }}
-                    </button>
-                  </div>
-
-                  <!-- Source ID -->
-                  <div class="hidden md:block truncate sm:block">
-                    <p>{{ syncLog.source.order_id }}</p>
-                    <p
-                      class="text-sm text-gray-500 truncate dark:text-gray-400">
-                      {{ syncLog.source.status }}
-                    </p>
-                  </div>
-
-                  <!-- Channel Order ID -->
-                  <div class="hidden md:block truncate sm:block">
-                    <p class="hidden md:block truncate sm:block">
-                      {{ syncLog.channel.order_id }}
-                    </p>
-                    <p
-                      class="text-sm text-gray-500 truncate dark:text-gray-400 sm:block">
-                      {{ syncLog.channel.status }}
-                    </p>
-                  </div>
-                  <!-- Items -->
-
-                  <div class="hidden lg:block truncate md:hidden">
-                    <p
-                      class="hidden md:block truncate"
-                      *ngFor="let item of syncLog.order_lines">
-                      {{ item.quantity }} X {{ item.sku }}
-                      <span *ngIf="item.name">({{ item.name }})</span>
-                    </p>
-                  </div>
-
-                  <!-- Shipment -->
-                  <div class="hidden truncate lg:block md:hidden">
-                    <p
-                      class="hidden md:block truncate"
-                      *ngFor="let item of syncLog.order_lines; trackByFn">
-                      {{ item.carrier }} {{ item.carrier_tracking }}
-                    </p>
-                  </div>
-                  <!-- shipment Status -->
-                  <!-- <div class="hidden md:block truncate">
+                    <!-- Shipment -->
+                    <div class="hidden truncate lg:block md:hidden">
+                      <p
+                        class="hidden md:block truncate"
+                        *ngFor="let item of syncLog.order_lines; trackByFn">
+                        {{ item.carrier }} {{ item.carrier_tracking }}
+                      </p>
+                    </div>
+                    <!-- shipment Status -->
+                    <!-- <div class="hidden md:block truncate">
                       <p
                         class="hidden md:block truncate"
                         *ngFor="let item of syncLog.orderlines">
@@ -298,62 +299,63 @@
                       </p>
                     </div> -->
 
-                  <!-- Action Required -->
-                  <div class="hidden lg:block md:hidden">
-                    <ng-container *ngIf="syncLog.log.action_required">
-                      <mat-icon
-                        class="text-[#de3a3a] icon-size-5"
-                        [svgIcon]="'heroicons_solid:check'"></mat-icon>
-                    </ng-container>
-                    <ng-container *ngIf="!syncLog.log.action_required">
-                      <mat-icon
-                        class="text-gray-400 icon-size-5"
-                        [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                    </ng-container>
-                  </div>
-
-                  <!-- Details button -->
-                  <div class="flex flex-row">
-                    <div>
-                      <button
-                        class="min-w-10 min-h-7 h-9 px-[3px] leading-6 mr-3"
-                        mat-stroked-button
-                        title="View"
-                        (click)="viewOrderDetails(syncLog)">
-                        <mat-icon class="icon-size-5 text-slate-700">
-                          visibility</mat-icon
-                        >
-                      </button>
+                    <!-- Action Required -->
+                    <div class="hidden lg:block md:hidden">
+                      <ng-container *ngIf="syncLog.log.action_required">
+                        <mat-icon
+                          class="text-[#de3a3a] icon-size-5"
+                          [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                      </ng-container>
+                      <ng-container *ngIf="!syncLog.log.action_required">
+                        <mat-icon
+                          class="text-gray-400 icon-size-5"
+                          [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                      </ng-container>
                     </div>
-                    <!-- <div *ngIf="syncLog.log.status !== 'Error'">
+
+                    <!-- Details button -->
+                    <div class="flex flex-row">
+                      <div>
+                        <button
+                          class="min-w-10 min-h-7 h-9 px-[3px] leading-6 mr-3"
+                          mat-stroked-button
+                          title="View"
+                          (click)="viewOrderDetails(syncLog)">
+                          <mat-icon class="icon-size-5 text-slate-700">
+                            visibility</mat-icon
+                          >
+                        </button>
+                      </div>
+                      <!-- <div *ngIf="syncLog.log.status !== 'Error'">
                       <button
                         class="min-w-18 min-h-7 h-7 px-2 leading-6"
                         mat-stroked-button>
                         Resync
                       </button>
                     </div> -->
-                    <div *ngIf="syncLog.log.status === 'Error'">
-                      <button
-                        class="min-w-10 min-h-7 h-9 px-[3px] leading-6"
-                        mat-flat-button
-                        color="primary">
-                        <mat-icon class="icon-size-5 text-black"
-                          >cached</mat-icon
-                        >
-                      </button>
+                      <div *ngIf="syncLog.log.status === 'Error'">
+                        <button
+                          class="min-w-10 min-h-7 h-9 px-[3px] leading-6"
+                          mat-flat-button
+                          color="primary">
+                          <mat-icon class="icon-size-5 text-black"
+                            >cached</mat-icon
+                          >
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="grid">
-                  <ng-container *ngIf="selectedSyncLog?.id === syncLog.id">
-                    <ng-container
-                      *ngTemplateOutlet="
-                        rowDetailsTemplate;
-                        context: { $implicit: syncLog }
-                      "></ng-container>
-                  </ng-container>
-                </div>
-              </ng-container>
+                  <div class="grid">
+                    <ng-container *ngIf="selectedSyncLog?.id === syncLog.id">
+                      <ng-container
+                        *ngTemplateOutlet="
+                          rowDetailsTemplate;
+                          context: { $implicit: syncLog }
+                        "></ng-container>
+                    </ng-container>
+                  </div>
+                </ng-container>
+              </div>
             </ng-container>
           </div>
 
@@ -567,8 +569,8 @@
 
       <ng-template #noSyncLogs>
         <div
-          class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
-          There are no Orders!
+          class="p-8 sm:p-16 border-t text-gray-400 text-xl tracking-tight text-center font-medium italic">
+          No orders have been synced
         </div>
       </ng-template>
     </div>
