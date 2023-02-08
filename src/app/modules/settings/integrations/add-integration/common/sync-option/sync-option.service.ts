@@ -30,8 +30,8 @@ export class SyncOptionService {
     > = new BehaviorSubject(null);
     private _selectedValuesList: BehaviorSubject<string | null> =
         new BehaviorSubject(null);
-    private _valuesList: BehaviorSubject<ValuesList[] | null> =
-        new BehaviorSubject(null);
+    private _valuesList: Subject<ValuesList[]> =
+        new Subject();
     private _valueListLoader: BehaviorSubject<boolean | null> = new BehaviorSubject(false);
 
     /**

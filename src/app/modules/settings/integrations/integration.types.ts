@@ -114,6 +114,7 @@ export interface MappedOptions {
   mapped_type: string
   mapping_code: string
   mapping_type: string
+  mapping_label: string
   mapping?: MappedOptions[]
 }
 
@@ -131,13 +132,15 @@ export interface Tab extends Options {
 export interface MappingOption extends Options {
   type: VALUE_TYPE | any;
   required?: boolean;
+  is_hidden?: boolean;
   display_conditions?: string;
   default_value?: string;
   value_options?: MappingValueOptions[] | any[];
   child_attribute_values?: any[];
   mapping_options?: MappingOption[] | any[];
   selected_value?: any;
-  children?: MappingOption[]
+  children?: MappingOption[];
+  isHideEditAndDelete?: boolean; // Needed for show/hide edit and delete button, default is null/false
 }
 
 export interface MappingValueOptions {

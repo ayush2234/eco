@@ -11,7 +11,7 @@
                         <!-- Title -->
                         <div class="h-16 flex flex-col justify-center">
                             <div class="text-3xl font-bold tracking-tight leading-none">
-                                {{ isAddIntegration ? 'Add' : 'Configure' }} Integration
+                                {{ addIntegration ? 'Add' : 'Configure' }} Integration
                             </div>
                             <div class="text-disabled mt-2">
                                 {{ instance.name }}
@@ -31,7 +31,7 @@
                             <div class="flex px-8 py-5 cursor-pointer" [ngClass]="{
                   'hover:bg-primary-50 dark:hover:bg-hover': !panel.isActive,
                   'bg-primary-50 dark:bg-hover': panel.isActive
-                }" (click)="!isAddIntegration && goToPanel(panel.code)">
+                }" (click)="!addIntegration && goToPanel(panel.code)">
                                 <div>
                                     <div class="font-medium leading-6" [ngClass]="{
                       'text-primary dark:text-primary-500': panel.isActive
@@ -80,7 +80,7 @@
                                 [mappedIntegration]="mappedIntegration"
                                 (onAddNewIntegration)="configureIntegrationAfterCreate($event)"
                                 (onClose)="closeDrawer(fuseDrawer)"
-                                [isAddIntegration]="isAddIntegration"></eco-add-integration-connection>
+                                [isAddIntegration]="addIntegration"></eco-add-integration-connection>
                         </div>
                     </div>
 
@@ -138,12 +138,12 @@
                                 *ngIf="!valueListLoader || valueListLoader == false">
 
                                 <!-- Mapping Section -->
-                                <div class="w-full col-span-4">
+                                <div class="w-full col-span-4 full-height">
                                     <div
                                         class="grid sm:grid-cols-4 w-full mapping-area overflow-y-auto rounded-md border border-gray-300">
 
                                         <!-- Static Field -->
-                                        <div class="sm:col-span-4 border-b mapping-head sticky inset-0 z-10">
+                                        <div class="sm:col-span-4 border-b mapping-head sticky inset-0 z-10 h-[51px]">
                                             <mat-form-field
                                                 class="fuse-mat-no-subscript fuse-mat-emphasized-affix static-header my-0 w-full">
                                                 <div class="text-[#1E293B] w-full sm:w-full" matPrefix>
@@ -153,7 +153,7 @@
                                                                 class="truncate w-20 text-[#1E293B] text-[18px] opacity-100 block font-bold">
                                                                 Mapping</div>
                                                             <div
-                                                                class="font-medium text-[#1E293B] text-[18px] opacity-100 ml-1">
+                                                                class="font-medium text-[#1E293B] text-[18px] opacity-100 ml-[2px]">
                                                                 option</div>
                                                         </div>
                                                         <div>
@@ -167,7 +167,7 @@
                                                 </div>
                                                 <mat-icon class="icon-size-5 -mr-2.5"
                                                     [svgIcon]="'heroicons_solid:arrow-right'" matPrefix></mat-icon>
-                                                <input class="text-[18px] w-20 text-[#1E293B] opacity-100 font-bold"
+                                                <input class="text-[18px] w-[76px] text-[#1E293B] opacity-100 font-bold"
                                                     disabled value="Mapped" matInput />
                                                 <span
                                                     class="font-medium text-[18px] text-[#1E293B] opacity-100">option</span>
@@ -180,8 +180,8 @@
                                             <ng-container *ngIf="isConditionSatisfied(field)">
                                                 <div class="sm:col-span-4 last:border-none border-b cursor-pointer mapping-table"
                                                     (click)="goToField(field, parentIndex)" [ngClass]="{
-                            'required-map-color': field.required && field.selected_value?.code === '',
-                            'optional-map-color': !field.required && field.selected_value?.code === ''
+                            'required-map-color': field.required && (field.selected_value?.code === '' || !field.selected_value),
+                            'optional-map-color': !field.required && (field.selected_value?.code === '' || !field.selected_value)
                           }">
                                                     <mat-form-field
                                                         class="fuse-mat-no-subscript fuse-mat-emphasized-affix dynamic-rows my-0 w-full"
@@ -196,12 +196,23 @@
                               }">
                                                             <div class="flex items-center justify-between">
                                                                 <div class="flex items-center">
-                                                                    <img *ngIf="!selectedField || selectedField.code !== field.code"
-                                                                        class="w-4 parent-field-icon"
-                                                                        src="assets/icons/attribute.svg" />
-                                                                    <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null"
-                                                                        class="w-4 parent-field-icon"
-                                                                        src="assets/icons/active-attribute.svg" />
+                                                                    <ng-container *ngIf="field.type === 'attribute'">
+                                                                        <img *ngIf="!selectedField || selectedField.code !== field.code"
+                                                                            class="w-4 parent-field-icon"
+                                                                            src="assets/icons/attribute.svg" />
+                                                                        <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null"
+                                                                            class="w-4 parent-field-icon"
+                                                                            src="assets/icons/active-attribute.svg" />
+                                                                    </ng-container>
+                                                                    <ng-container *ngIf="field.type === 'option'">
+                                                                        <img *ngIf="!selectedField || selectedField.code !== field.code"
+                                                                            class="w-3 mr-1 parent-field-icon"
+                                                                            src="assets/icons/static-text.svg" />
+                                                                        <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null"
+                                                                            class="w-3 mr-1 parent-field-icon"
+                                                                            src="assets/icons/active-static-text.svg" />
+                                                                    </ng-container>
+                                                                    
                                                                     <span class="truncate block ml-2 font-normal"
                                                                         *ngIf="field.code.length">{{field.label}}
                                                                     </span>
@@ -254,14 +265,13 @@
                                                         <mat-icon class="icon-size-5 -mr-2.5" [ngClass]="{
                                 'text-primary': selectedField && selectedField.code === field.code
                               }" [svgIcon]="'heroicons_solid:arrow-right'" matPrefix></mat-icon>
-                                                        <mat-select [value]="field.selected_value?.code"
-                                                            class="{{ field.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
-                                                            [ngClass]="{'selected-code': field.selected_value?.code != '' || [true, false].includes(field.selected_value?.code)}"
+                                                        <mat-select [value]="field.selected_value ? field.selected_value?.code : 'not_mapped'"
+                                                            class="{{ !field.selected_value || field.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
+                                                            [ngClass]="{'selected-code': field.selected_value && field.selected_value.code != ''}"
                                                             disabled>
-                                                            <mat-option [value]="field.selected_value?.code">
-                                                                {{ field.selected_value?.code === '' ? '<' : '' }} <i>
-                                                                    {{ field.selected_value?.label }} </i>
-                                                                    {{ field.selected_value?.code === '' ? '>' : '' }}
+                                                            <mat-option [value]="field.selected_value ? field.selected_value?.code : 'not_mapped'">
+                                                                <span *ngIf="field.selected_value">{{ field.selected_value?.label }} </span>
+                                                                <span *ngIf="!field.selected_value"> {{ '< Not Mapped >' }} </span>
                                                             </mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
@@ -303,7 +313,7 @@
                                                                                 (click)="editChild(parentIndex, childIndex, children)" />
                                                                         </mat-form-field>
                                                                     </span>
-                                                                    <div class="crud-btns">
+                                                                    <div class="crud-btns" *ngIf="!children.isHideEditAndDelete">
                                                                         <button class="min-w-0 min-h-0 w-6 h-6 p-0"
                                                                             mat-stroked-button
                                                                             (click)="setChildrenLabel(children, field)"
@@ -333,6 +343,7 @@
                                                                 matPrefix></mat-icon>
                                                             <mat-select [value]="children.selected_value?.code"
                                                                 class="{{ children.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
+                                                                [ngClass]="{'selected-code': children.selected_value && children.selected_value.code != ''}"
                                                                 disabled>
                                                                 <mat-option [value]="children.selected_value?.code">
                                                                     {{ children.selected_value?.code === '' ? '<' : ''
@@ -359,7 +370,7 @@
                                             <div class="flex items-center">
                                                 <div class="truncate w-fit text-[#1E293B] block font-bold text-[18px]">
                                                     Option</div>
-                                                <div class="font-medium text-[#1E293B] text-[18px] ml-1.5">values</div>
+                                                <div class="font-medium text-[#1E293B] text-[18px] ml-[2px]">values</div>
                                             </div>
                                         </div>
                                         <div class="search-wrapper sticky inset-0 z-10 bg-white">
@@ -412,21 +423,24 @@
                           valueOption.value_option.value_option_type === 'text_input' ||
                           valueOption.value_option.value_option_type === 'decimal_input'
                         ">
-                                                    <div class="ml-5">
+                                                    <div class="ml-[31px]">
                                                         <div *ngIf="valueOption.value_option.value_type === 'static'"
-                                                            (click)="toggleInputOption(valueOption.value_option, 'Static Text')"
+                                                            (click)="toggleInputOption(valueOption.value_option, valueOption.value_option.value_option_label)"
                                                             class="flex items-center mt-4 cursor-pointer">
                                                             <img class="w-3" src="assets/icons/static-text.svg" />
-                                                            <span class="ml-2 text-[#64748B] font-normal">Static
-                                                                Text</span>
+                                                            <span class="ml-3 text-[#64748B] font-normal">{{ valueOption.value_option.value_option_label }}</span>
                                                         </div>
-                                                        <div *ngIf="valueOption.value_option.value_type === 'attribute'"
-                                                            (click)="toggleInputOption(valueOption.value_option, 'Advance: Custom Source Attribute')"
+                                                        <div *ngIf="
+                                                            valueOption.value_option.value_type === 'attribute' ||
+                                                            valueOption.value_option.value_type === 'advanced_attribute'
+                                                        "
+                                                            (click)="toggleInputOption(valueOption.value_option, valueOption.value_option.value_option_label)"
                                                             class="flex items-center mt-4 cursor-pointer">
-                                                            <img class="w-5" src="assets/icons/attribute.svg" />
+                                                            <img class="w-4" src="assets/icons/attribute.svg" />
                                                             <span
-                                                                class="ml-2 truncate text-[#64748B] font-normal">Advance:
-                                                                Custom Source attribute</span>
+                                                                class="ml-2 truncate text-[#64748B] font-normal">
+                                                                {{ valueOption.value_option.value_option_label != "" ? valueOption.value_option.value_option_label : valueOption.valueList?.label }}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </ng-container>
@@ -562,13 +576,17 @@
 
                                 <!-- Actions -->
                                 <div class="flex items-center justify-end">
+                                    <p 
+                                    *ngIf="showHidden === false"
+                                    class="text-sm cursor-pointer mr-5 font-medium" 
+                                    (click)="showHiddenFields()">Advanced: Show Hidden</p>
                                     <button mat-stroked-button type="button"
                                         (click)="closeDrawer(fuseDrawer)">Cancel</button>
-                                    <button *ngIf="isAddIntegration" class="ml-4" mat-flat-button type="button"
+                                    <button *ngIf="addIntegration" class="ml-4" mat-flat-button type="button"
                                         [color]="'primary'" (click)="updateIntegration()">
                                         Save
                                     </button>
-                                    <button *ngIf="!isAddIntegration" class="ml-4" mat-flat-button type="button"
+                                    <button *ngIf="!addIntegration" class="ml-4" mat-flat-button type="button"
                                         [color]="'primary'" (click)="saveIntegration()">
                                         Save
                                     </button>

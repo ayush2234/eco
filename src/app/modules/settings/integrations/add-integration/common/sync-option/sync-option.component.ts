@@ -40,11 +40,12 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   searchKeyword !: string;
   availableOptionsTypes = [];
   filteredAvailableOptionsTypes = [];
-  valuesList: ValuesList[];
+  valuesList: ValuesList[] = [];
   selectedFieldParentIndex: Number | null | any;
   selectedFieldChildIndex: Number | null | any;
   newInsertedFieldChildren = {};
   mappedIntegration: MappedIntegration;
+  showHidden = false;
 
   protected _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -154,23 +155,46 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
    * @returns True if option is independent or meets the condition and false otherwise.
    */
   isConditionSatisfied(option: MappingOption): boolean {
+    let childrenCondition = false;
+    option.children?.forEach((child) => {
+      if(!child.selected_value || child.selected_value.code == '') {
+        childrenCondition = true;
+      }
+    })
+
+    const childMatter = this.validate === false ? true : childrenCondition;
     const mappingRequiredCondition = this.validate === false ? true :
-      option.selected_value?.code === '' ? true : false;
-    if(option.display_conditions) {
+      ((!option.selected_value || option.selected_value?.code == '') ? true : false);
+
+    const fieldDisplay = mappingRequiredCondition || childMatter;
+    if(option.display_conditions && option.display_conditions.length) {
       const splitedCondition = option.display_conditions.split('==').map(x => x.trim());
       if(splitedCondition.length === 2) {
         const code = splitedCondition[0];
         const value = splitedCondition[1];
         const dependencyField = this.checkCondition(code);
         if(dependencyField !== null) {
-          return dependencyField.selected_value?.code === value && mappingRequiredCondition;
+          return dependencyField.selected_value?.code === value && fieldDisplay && option.is_hidden === false;
         }
       }
 
       return false;
     } else {
-      return true && mappingRequiredCondition;
+      return fieldDisplay && option.is_hidden === false ;
     }
+  }
+
+  showHiddenFields(): void {
+    this.integrationInstance.integration.sync_options.forEach(syncOption => {
+      syncOption.sub_sync_options.forEach(subOption => {
+        subOption.mapping_options.forEach((mappingOption, index, array) => {
+          if(mappingOption.is_hidden) {
+            array[index].is_hidden = false;
+          }
+        })
+      })
+    })
+    this.showHidden = true;
   }
 
   /**
@@ -206,7 +230,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
     this.selectedField.value_options.forEach((option) => {
       switch(option.value_option_type) {
         case VALUE_OPTION_TYPE.values_list:
-          // const valuesListEndpoint = '/values_list?origin=' + option.values_list_origin;
+          // const valuesListEndpoint = '/values_list?origin option.values_list_origin;
           const valueList = this.valuesList.find(vl => vl.code === option.values_list)
           this.availableOptionsTypes.push({
             value_option: option,
@@ -269,10 +293,10 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
    *
    * @param selection Represents the selected value option.
    */
-  selectOption(selection: ValuesListOptions): void {
+  selectOption(selection: ValuesListOptions, valueOption: MappingValueOptions): void {
     this.selectedField = {
       ...this.selectedField,
-      selected_value: {...selection}
+      selected_value: {...selection, value_option: valueOption}
     }
 
     if (this.selectedFieldChildIndex != null) {
@@ -289,7 +313,39 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
     this.updateMappedSyncOptions();
   }
 
+  mapChildren() {
+    this.integrationInstance?.integration.sync_options.forEach((syncOption, syncOptionIndex) => {
+      syncOption.sub_sync_options.forEach((subOption, subOptionIndex) => {
+        subOption.mapping_options.forEach((field, fieldIndex) => {
+          if(field.child_attribute_values && field.child_attribute_values.length) {
+            field.child_attribute_values.forEach(child => {
+              if(!this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children) {
+                this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children = [];
+              }
+              const valueList = this.valuesList.find(x => x.code === child.values_list);
+              valueList?.values.forEach(value => {
+                const childExist = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex]
+                .mapping_options[fieldIndex].children.findIndex(x => x.code === value?.code);
+                if(childExist === -1) {
+                  this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children.push({
+                    label: value?.label,
+                    code: value.code,
+                    type: child.value_type,
+                    required: false,
+                    selected_value: {label: 'Not Mapped', code: ''},
+                    value_options: this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].value_options
+                  })
+                }
+              })
+            })
+          }
+        })
+      })
+    })
+  }
+
   mapOptionsToForm(): void {
+    this.mapChildren();
     this.mappedIntegration?.sync_options.forEach(syncOption => {
       syncOption.sub_sync_options.forEach(subOption => {
         const syncOptionIndex = this.integrationInstance.integration.sync_options.findIndex(x => x.code === syncOption.code);
@@ -303,12 +359,52 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
               code: mappedOption.mapped_code
             }
 
+            const field = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex];
+            if(field.child_attribute_values && field.child_attribute_values.length) {
+              field.child_attribute_values.forEach(child => {
+                if(!this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children) {
+                  this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children = [];
+                }
+                const valueList = this.valuesList.find(x => x.code === child.values_list);
+                valueList?.values.forEach(value => {
+                  const childExist = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex]
+                  .mapping_options[fieldIndex].children.findIndex(x => x.code === value?.code);
+                  if(childExist === -1) {
+                    this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children.push({
+                      label: value?.label,
+                      code: value.code,
+                      type: child.value_type,
+                      required: false,
+                      selected_value: {label: 'Not Mapped', code: ''},
+                      value_options: this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].value_options
+                    })
+                  } else {
+                    this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children[childExist] = {
+                      label: value?.label,
+                      code: value.code,
+                      type: child.value_type,
+                      required: false,
+                      selected_value: {label: 'Not Mapped', code: ''},
+                      value_options: this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].value_options
+                    }
+                  }
+                })
+              })
+            }
+
             if(mappedOption.mapping) {
               mappedOption.mapping.forEach(mapping => {
                 const children = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children;
-                if(children && children.length) {
+                const childIndex = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex]
+                  .mapping_options[fieldIndex].children?.findIndex(x => x.code === mapping.mapping_code);
+                if(childIndex !== undefined && childIndex !== -1) {
+                  this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children[childIndex] = {
+                    ...this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children[childIndex],
+                    selected_value: {label: mapping.mapped_label, code: mapping.mapped_code}
+                  }
+                } else if(children && children.length) {
                   this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children.push({
-                    label: mapping.mapping_code,
+                    label: mapping.mapping_label,
                     code: mapping.mapping_code,
                     type: mapping.mapping_type,
                     required: false,
@@ -317,7 +413,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
                   })
                 } else {
                   this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children = [{
-                    label: mapping.mapping_code,
+                    label: mapping.mapping_label,
                     code: mapping.mapping_code,
                     type: mapping.mapping_type,
                     required: false,
@@ -344,26 +440,33 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
             code: subOption.code,
             mapped_options: subOption.mapping_options.map(mappingOption => {
               if(mappingOption.selected_value) {
-                return {
+                const fieldObj = {
                   mapped_code: mappingOption.selected_value.code,
                   mapped_label: mappingOption.selected_value.label,
-                  mapped_type: mappingOption.type,
+                  mapped_type: mappingOption.selected_value.value_option?.value_type,
                   mapping_code: mappingOption.code,
                   mapping_type: mappingOption.type,
+                  mapping_label: mappingOption.label,
+                  mapped_origin: mappingOption.selected_value.value_option?.values_list_origin,
                   mapping: mappingOption.children?.map(child => {
-                    if(child.selected_value) {
+                    if(child.selected_value && child.selected_value.code !== '') {
                       return {
                         mapped_code: child.selected_value.code,
                         mapped_label: child.selected_value.label,
-                        mapped_type: child.type,
+                        mapped_type: child.selected_value.value_option?.value_type,
                         mapping_code: child.code,
                         mapping_type: child.type,
+                        mapping_label: child.label
                       }
                     } else {
                       return undefined
                     }
                   }).filter(x => x)
                 }
+                if(fieldObj.mapped_type === 'static') {
+                  delete fieldObj.mapped_origin;
+                }
+                return fieldObj;
               } else {
                 return undefined
               }
@@ -417,7 +520,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
    */
   setInputValue(): void {
     if(this.inputOptions.value.length) {
-      this.selectOption({ label: this.inputOptions.value, code: this.inputOptions.value })
+      this.selectOption({ label: this.inputOptions.value, code: this.inputOptions.value }, this.inputOptions.valueOption)
     }
 
     this.toggleInputOption();
@@ -472,6 +575,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
       type: "option",
       required: false,
       default_value: "",
+      is_hidden: false,
       selected_value: {
           label: "Not Mapped",
           code: ""
@@ -635,6 +739,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   updateIntegration(){
     console.log("AddIntegration");
     this.updateMappedSyncOptions();
+    delete this.mappedIntegration.connection;
     this._syncOptionService.createIntegration(this.mappedIntegration).pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe(integration => {
@@ -646,6 +751,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   saveIntegration(){
     console.log("Save Integration");
     this.updateMappedSyncOptions();
+    delete this.mappedIntegration.connection;
     this._syncOptionService.updateInstalledIntegration(this.mappedIntegration).pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe(integration => {
