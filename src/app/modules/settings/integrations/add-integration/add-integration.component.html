@@ -196,12 +196,23 @@
                               }">
                                                             <div class="flex items-center justify-between">
                                                                 <div class="flex items-center">
-                                                                    <img *ngIf="!selectedField || selectedField.code !== field.code"
-                                                                        class="w-4 parent-field-icon"
-                                                                        src="assets/icons/attribute.svg" />
-                                                                    <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null"
-                                                                        class="w-4 parent-field-icon"
-                                                                        src="assets/icons/active-attribute.svg" />
+                                                                    <ng-container *ngIf="field.type === 'attribute'">
+                                                                        <img *ngIf="!selectedField || selectedField.code !== field.code"
+                                                                            class="w-4 parent-field-icon"
+                                                                            src="assets/icons/attribute.svg" />
+                                                                        <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null"
+                                                                            class="w-4 parent-field-icon"
+                                                                            src="assets/icons/active-attribute.svg" />
+                                                                    </ng-container>
+                                                                    <ng-container *ngIf="field.type === 'option'">
+                                                                        <img *ngIf="!selectedField || selectedField.code !== field.code"
+                                                                            class="w-3 parent-field-icon"
+                                                                            src="assets/icons/static-text.svg" />
+                                                                        <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null"
+                                                                            class="w-3 parent-field-icon"
+                                                                            src="assets/icons/active-static-text.svg" />
+                                                                    </ng-container>
+                                                                    
                                                                     <span class="truncate block ml-2 font-normal"
                                                                         *ngIf="field.code.length">{{field.label}}
                                                                     </span>
@@ -332,6 +343,7 @@
                                                                 matPrefix></mat-icon>
                                                             <mat-select [value]="children.selected_value?.code"
                                                                 class="{{ children.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
+                                                                [ngClass]="{'selected-code': children.selected_value && children.selected_value.code != ''}"
                                                                 disabled>
                                                                 <mat-option [value]="children.selected_value?.code">
                                                                     {{ children.selected_value?.code === '' ? '<' : ''
@@ -411,7 +423,7 @@
                           valueOption.value_option.value_option_type === 'text_input' ||
                           valueOption.value_option.value_option_type === 'decimal_input'
                         ">
-                                                    <div class="ml-7">
+                                                    <div class="ml-[31px]">
                                                         <div *ngIf="valueOption.value_option.value_type === 'static'"
                                                             (click)="toggleInputOption(valueOption.value_option, valueOption.value_option.value_option_label)"
                                                             class="flex items-center mt-4 cursor-pointer">
