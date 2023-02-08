@@ -411,7 +411,7 @@
                           valueOption.value_option.value_option_type === 'text_input' ||
                           valueOption.value_option.value_option_type === 'decimal_input'
                         ">
-                                                    <div class="ml-5">
+                                                    <div class="ml-7">
                                                         <div *ngIf="valueOption.value_option.value_type === 'static'"
                                                             (click)="toggleInputOption(valueOption.value_option, 'Static Text')"
                                                             class="flex items-center mt-4 cursor-pointer">
@@ -423,9 +423,9 @@
                                                             valueOption.value_option.value_type === 'attribute' ||
                                                             valueOption.value_option.value_type === 'advanced_attribute'
                                                         "
-                                                            (click)="toggleInputOption(valueOption.value_option, 'Advance: Custom Source Attribute')"
+                                                            (click)="toggleInputOption(valueOption.value_option, valueOption.value_option.value_option_label)"
                                                             class="flex items-center mt-4 cursor-pointer">
-                                                            <img class="w-5" src="assets/icons/attribute.svg" />
+                                                            <img class="w-4" src="assets/icons/attribute.svg" />
                                                             <span
                                                                 class="ml-2 truncate text-[#64748B] font-normal">
                                                                 {{ valueOption.value_option.value_option_label != "" ? valueOption.value_option.value_option_label : valueOption.valueList?.label }}
