@@ -138,9 +138,9 @@
                                 *ngIf="!valueListLoader || valueListLoader == false">
 
                                 <!-- Mapping Section -->
-                                <div class="w-full col-span-4 full-height">
+                                <div class="w-full col-span-4 full-height rounded-md border border-gray-300">
                                     <div
-                                        class="grid sm:grid-cols-4 w-full mapping-area overflow-y-auto rounded-md border border-gray-300">
+                                        class="grid sm:grid-cols-4 w-full mapping-area overflow-y-auto">
 
                                         <!-- Static Field -->
                                         <div class="sm:col-span-4 border-b mapping-head sticky inset-0 z-10 h-[51px]">
@@ -178,7 +178,7 @@
                                         <ng-container
                                             *ngFor="let field of selectedTab.mapping_options; let parentIndex = index;">
                                             <ng-container *ngIf="isConditionSatisfied(field)">
-                                                <div class="sm:col-span-4 last:border-none border-b cursor-pointer mapping-table"
+                                                <div class="sm:col-span-4  border-b cursor-pointer mapping-table"
                                                     (click)="goToField(field, parentIndex)" [ngClass]="{
                             'required-map-color': field.required && (field.selected_value?.code === '' || !field.selected_value),
                             'optional-map-color': !field.required && (field.selected_value?.code === '' || !field.selected_value)
@@ -280,7 +280,7 @@
                                                 <!-- Child Fields -->
                                                 <ng-container
                                                     *ngFor="let children of field.children; let childIndex = index;">
-                                                    <div class="sm:col-span-4 last:border-none border-b cursor-pointer"
+                                                    <div class="sm:col-span-4  border-b cursor-pointer"
                                                         (click)="goToField(children, parentIndex, childIndex)"
                                                         [ngClass]="{ 'bg-primary-200': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex, 'required-map-color': children.required && children.selected_value?.code === '', 'optional-map-color': !children.required && children.selected_value?.code === '' }">
                                                         <mat-form-field
