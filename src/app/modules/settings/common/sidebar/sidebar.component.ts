@@ -11,11 +11,13 @@ import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types
       </div>
 
       <!-- Fixed demo sidebar -->
-      <div class="
+      <div
+        class="
         mx-6 text-3xl font-bold tracking-tighter h-14
         flex items-center
-      "
-      >Settings</div>
+      ">
+        Settings
+      </div>
       <fuse-vertical-navigation
         [appearance]="'default'"
         [navigation]="menuData"
@@ -105,7 +107,7 @@ export class SettingsSidebarComponent {
             title: 'Sources',
             type: 'basic',
             icon: 'heroicons_outline:clipboard-copy',
-            link: 'source-channel',
+            link: 'sources',
           },
           {
             title: 'Integrations',

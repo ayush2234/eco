@@ -120,4 +120,19 @@ export class UserComponent implements OnInit, OnDestroy {
     localStorage.removeItem('companyName');
     this._router.navigate(['/admin/companies/list']);
   }
+  gotoSettings() {
+    this._router.navigate(['/user/settings/integrations']);
+  }
+  showSettings() {
+    if (this.role === 'masterUser') {
+      return true;
+    } else if (
+      (this.role === 'admin' || this.role === 'superAdmin') &&
+      LocalStorageUtils.impersonate
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

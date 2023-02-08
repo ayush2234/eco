@@ -6,7 +6,7 @@
       *ngIf="showAvatar && user.avatar"
       [src]="user?.avatar" />
     <div
-      class="flex items-center justify-center w-8 h-8 rounded-full text-custom-blue bg-indigo-500"
+      class="flex items-center justify-center w-8 h-8 rounded-full text-primary bg-[#F1F5F9]"
       *ngIf="!showAvatar || !user.avatar">
       <span>{{ user?.name | getInitials }}</span>
     </div>
@@ -20,19 +20,27 @@
       <span class="mt-1.5 text-md font-medium">{{ user?.email }}</span>
     </span>
   </button>
-  <mat-divider class="my-2" *ngIf="showBackButton()"></mat-divider>
+
   <!-- <button mat-menu-item>
     <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
     <span>Profile</span>
   </button> -->
-  <button mat-menu-item *ngIf="showBackButton()">
-    <mat-icon [svgIcon]="'heroicons_outline:arrow-circle-left'"></mat-icon>
-    <span (click)="goBacktoAdmin()">Back to admin</span>
-  </button>
-  <!-- <button mat-menu-item>
-    <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
-    <span>Settings</span>
-  </button> -->
+
+  <div *ngIf="showSettings()">
+    <mat-divider class="my-2"></mat-divider>
+    <button mat-menu-item>
+      <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
+      <span (click)="gotoSettings()">Settings</span>
+    </button>
+  </div>
+  <div *ngIf="showBackButton()">
+    <mat-divider class="my-2"></mat-divider>
+    <button mat-menu-item>
+      <mat-icon [svgIcon]="'heroicons_outline:arrow-circle-left'"></mat-icon>
+      <span (click)="goBacktoAdmin()">Back to admin</span>
+    </button>
+  </div>
+
   <!-- <button mat-menu-item [matMenuTriggerFor]="userStatus">
     <mat-icon [svgIcon]="'heroicons_outline:dots-circle-horizontal'"></mat-icon>
     <span>Status</span>
