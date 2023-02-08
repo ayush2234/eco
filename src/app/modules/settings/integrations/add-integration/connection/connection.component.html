@@ -27,23 +27,26 @@
             following URL:
         </div>
 
-        <!-- Divider -->
-        <div class="my-10 border-t"></div>
+
 
         <!-- Section -->
-        <div class="w-full text-xl">Sync Options</div>
-        <div class="grid grid-cols-1 gap-4 w-full mt-4">
-            <!-- Comments -->
-            <div *ngFor="let sync_option of instance.integration.sync_options" class="flex items-center justify-between"
-                (click)="toggleSyncOptions(sync_option)">
-                <div class="flex-auto leading-6 cursor-pointer">
-                    {{sync_option.label}}
+        <ng-container *ngIf="isAddIntegration === false">
+            <!-- Divider -->
+            <div class="my-10 border-t"></div>
+            <div class="w-full text-xl">Sync Options</div>
+            <div class="grid grid-cols-1 gap-4 w-full mt-4">
+                <!-- Comments -->
+                <div *ngFor="let sync_option of instance.integration.sync_options" class="flex items-center justify-between"
+                    (click)="toggleSyncOptions(sync_option)">
+                    <div class="flex-auto leading-6 cursor-pointer">
+                        {{sync_option.label}}
+                    </div>
+                    <mat-slide-toggle (click)="$event.preventDefault()" [checked]="sync_option.is_active" class="ml-2"
+                        [color]="'primary'" #toggleRef>
+                    </mat-slide-toggle>
                 </div>
-                <mat-slide-toggle (click)="$event.preventDefault()" [checked]="sync_option.is_active" class="ml-2"
-                    [color]="'primary'" #toggleRef>
-                </mat-slide-toggle>
             </div>
-        </div>
+        </ng-container>
 
         <!-- Divider -->
         <div class="mt-11 mb-10 border-t"></div>

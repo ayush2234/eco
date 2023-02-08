@@ -230,7 +230,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
     this.selectedField.value_options.forEach((option) => {
       switch(option.value_option_type) {
         case VALUE_OPTION_TYPE.values_list:
-          // const valuesListEndpoint = '/values_list?origin=' + option.values_list_origin;
+          // const valuesListEndpoint = '/values_list?origin option.values_list_origin;
           const valueList = this.valuesList.find(vl => vl.code === option.values_list)
           this.availableOptionsTypes.push({
             value_option: option,
@@ -313,7 +313,39 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
     this.updateMappedSyncOptions();
   }
 
+  mapChildren() {
+    this.integrationInstance?.integration.sync_options.forEach((syncOption, syncOptionIndex) => {
+      syncOption.sub_sync_options.forEach((subOption, subOptionIndex) => {
+        subOption.mapping_options.forEach((field, fieldIndex) => {
+          if(field.child_attribute_values && field.child_attribute_values.length) {
+            field.child_attribute_values.forEach(child => {
+              if(!this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children) {
+                this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children = [];
+              }
+              const valueList = this.valuesList.find(x => x.code === child.values_list);
+              valueList?.values.forEach(value => {
+                const childExist = this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex]
+                .mapping_options[fieldIndex].children.findIndex(x => x.code === value?.code);
+                if(childExist === -1) {
+                  this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].children.push({
+                    label: value?.label,
+                    code: value.code,
+                    type: child.value_type,
+                    required: false,
+                    selected_value: {label: 'Not Mapped', code: ''},
+                    value_options: this.integrationInstance.integration.sync_options[syncOptionIndex].sub_sync_options[subOptionIndex].mapping_options[fieldIndex].value_options
+                  })
+                }
+              })
+            })
+          }
+        })
+      })
+    })
+  }
+
   mapOptionsToForm(): void {
+    this.mapChildren();
     this.mappedIntegration?.sync_options.forEach(syncOption => {
       syncOption.sub_sync_options.forEach(subOption => {
         const syncOptionIndex = this.integrationInstance.integration.sync_options.findIndex(x => x.code === syncOption.code);

@@ -85,7 +85,7 @@ export class AddIntegrationComponent
     valueListLoader: boolean = false;
     @Input() isOpen = false;
     @Input() isAddIntegration = false;
-
+    addIntegration = false;
     /**
      * Constructor
      */
@@ -106,6 +106,7 @@ export class AddIntegrationComponent
      * On init
      */
     ngOnInit(): void {
+        this.addIntegration = this.isAddIntegration;
         this._syncOptionService.valueListLoader$.pipe(takeUntil(this._unsubscribeAll)).subscribe(value => {
             this.valueListLoader = value;
         })
@@ -118,7 +119,7 @@ export class AddIntegrationComponent
                 this.integrationInstance = { ...data };
                 if (data) {
                     this.setPanels();
-                    if (this.isAddIntegration) {
+                    if (this.addIntegration) {
                         this.initMappedIntegration();
                     } else {
                         this.mapOptionsToForm();
@@ -134,7 +135,7 @@ export class AddIntegrationComponent
                 // Setup available panels
                 if (data) {
                     this.mappedIntegration = { ...data }
-                    this.isAddIntegration = false;
+                    this.addIntegration = false;
                     console.log(data);
                 }
             })
@@ -145,7 +146,7 @@ export class AddIntegrationComponent
         ).subscribe(response => {
             if (response) {
                 this.valuesList = [...response];
-                if(!this.isAddIntegration) {
+                if(!this.addIntegration) {
                     this.mapOptionsToForm();
                 }
             }
@@ -183,7 +184,7 @@ export class AddIntegrationComponent
      * Convert Add Integration Modal Into Configure Integration Modal After Create Integration.
      */
     configureIntegrationAfterCreate(instance: IntegrationInstance) {
-        this.isAddIntegration = false;
+        this.addIntegration = false;
     }
 
     // -----------------------------------------------------------------------------------------------------

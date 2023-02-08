@@ -63,7 +63,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
         // this.subscribeOnFormValueChanges();
         this.integrationValue = {
             source_instance_id: "f8d13159-70dd-4071-8c72-621ff27a9999",
-            integration_id: "1ed1f116-8527-6bfa-93c1-0605e1fd6890",
+            integration_id: "",
             name: this.instance.integration.name,
             active_status: "Y",
             is_custom: "N",
@@ -175,7 +175,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
                 // Refresh Integration Data in Main Screen
                 const companyId = LocalStorageUtils.companyId;
                 this._integrationsService.getIntegrationSettings(companyId).pipe(takeUntil(this._unsubscribeAll)).subscribe((response: IntegrationSettings) => {
-                    this.isAddIntegration = true;
+                    // this.isAddIntegration = true;
                     const createdInstance = response.instances.find(instance => instance.instance_id == integration.integration_instance_id)
                     this._syncOptionService.getValueList(createdInstance);
                     this.onAddNewIntegration.emit();
