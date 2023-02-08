@@ -191,28 +191,22 @@
                             }">
                                                         <div class="text-secondary w-full sm:w-full" matPrefix
                                                             [ngClass]="{
-                                'text-[#4F46E5] font-semibold': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null,
+                                'text-primary-500 font-semibold': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null,
                                 'active-hover': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null
                               }">
                                                             <div class="flex items-center justify-between">
                                                                 <div class="flex items-center">
                                                                     <ng-container *ngIf="field.type === 'attribute'">
-                                                                        <img *ngIf="!selectedField || selectedField.code !== field.code"
-                                                                            class="w-4 parent-field-icon"
-                                                                            src="assets/icons/attribute.svg" />
-                                                                        <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null"
-                                                                            class="w-4 parent-field-icon"
-                                                                            src="assets/icons/active-attribute.svg" />
+                                                                        <img class="w-4 parent-field-icon"
+                                                                            src="assets/icons/attribute.svg"
+                                                                            onload="SVGInject(this)" />
                                                                     </ng-container>
                                                                     <ng-container *ngIf="field.type === 'option'">
-                                                                        <img *ngIf="!selectedField || selectedField.code !== field.code"
-                                                                            class="w-3 mr-1 parent-field-icon"
-                                                                            src="assets/icons/static-text.svg" />
-                                                                        <img *ngIf="selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === null"
-                                                                            class="w-3 mr-1 parent-field-icon"
-                                                                            src="assets/icons/active-static-text.svg" />
+                                                                        <img class="w-3 mr-1 parent-field-icon"
+                                                                            src="assets/icons/static-text.svg"
+                                                                            onload="SVGInject(this)" />
                                                                     </ng-container>
-                                                                    
+
                                                                     <span class="truncate block ml-2 font-normal"
                                                                         *ngIf="field.code.length">{{field.label}}
                                                                     </span>
@@ -256,22 +250,28 @@
                                                                         class="min-w-0 min-h-0 w-6 h-6 p-0 hover-btn ml-1"
                                                                         mat-stroked-button (click)="addChildren()"
                                                                         *ngIf="field.code.length">
-                                                                        <mat-icon class="icon-size-4 text-black"
+                                                                        <mat-icon class="icon-size-4 text-primary-500"
                                                                             [svgIcon]="'heroicons_outline:plus'"></mat-icon>
                                                                     </button>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <mat-icon class="icon-size-5 -mr-2.5" [ngClass]="{
-                                'text-primary': selectedField && selectedField.code === field.code
-                              }" [svgIcon]="'heroicons_solid:arrow-right'" matPrefix></mat-icon>
-                                                        <mat-select [value]="field.selected_value ? field.selected_value?.code : 'not_mapped'"
+                                                        <mat-icon class=" icon-size-5 -mr-2.5"
+                                                            [ngClass]="{ 'text-primary': selectedField && selectedField.code === field.code }"
+                                                            [svgIcon]="'heroicons_solid:arrow-right'"
+                                                            matPrefix></mat-icon>
+                                                        <mat-select
+                                                            [value]="field.selected_value ? field.selected_value?.code : 'not_mapped'"
                                                             class="{{ !field.selected_value || field.selected_value?.code === '' ? 'italic text-red-600' : '' }}"
                                                             [ngClass]="{'selected-code': field.selected_value && field.selected_value.code != ''}"
                                                             disabled>
-                                                            <mat-option [value]="field.selected_value ? field.selected_value?.code : 'not_mapped'">
-                                                                <span *ngIf="field.selected_value">{{ field.selected_value?.label }} </span>
-                                                                <span *ngIf="!field.selected_value"> {{ '< Not Mapped >' }} </span>
+                                                            <mat-option
+                                                                [value]="field.selected_value ? field.selected_value?.code : 'not_mapped'">
+                                                                <span *ngIf="field.selected_value">{{
+                                                                    field.selected_value?.label }}
+                                                                </span>
+                                                                <span *ngIf="!field.selected_value"> {{ '< Not Mapped>'
+                                                                        }} </span>
                                                             </mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
@@ -282,21 +282,12 @@
                                                     *ngFor="let children of field.children; let childIndex = index;">
                                                     <div class="sm:col-span-4 last:border-none border-b cursor-pointer"
                                                         (click)="goToField(children, parentIndex, childIndex)"
-                                                        [ngClass]="{
-                              'bg-primary-200': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex,
-                              'required-map-color': children.required && children.selected_value?.code === '',
-                              'optional-map-color': !children.required && children.selected_value?.code === ''
-                            }">
+                                                        [ngClass]="{ 'bg-primary-200': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex, 'required-map-color': children.required && children.selected_value?.code === '', 'optional-map-color': !children.required && children.selected_value?.code === '' }">
                                                         <mat-form-field
                                                             class="fuse-mat-no-subscript fuse-mat-emphasized-affix dynamic-rows my-0 w-full child-input-parent"
-                                                            [ngClass]="{
-                                'text-primary-200': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex,
-                                'selected-field': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex
-                              }">
+                                                            [ngClass]="{ 'text-primary-200': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex, 'selected-field': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex }">
                                                             <div class="text-secondary w-full sm:w-full mr-0" matPrefix
-                                                                [ngClass]="{
-                                  'text-primary-800 font-semibold': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex
-                                }">
+                                                                [ngClass]="{ 'text-primary-800 font-semibold': selectedField && selectedFieldParentIndex === parentIndex && selectedFieldChildIndex === childIndex }">
                                                                 <div class="flex items-center ml-14">
                                                                     <span *ngIf="children.code.length"
                                                                         class="truncate block">{{children.label}}
@@ -313,7 +304,8 @@
                                                                                 (click)="editChild(parentIndex, childIndex, children)" />
                                                                         </mat-form-field>
                                                                     </span>
-                                                                    <div class="crud-btns" *ngIf="!children.isHideEditAndDelete">
+                                                                    <div class="crud-btns"
+                                                                        *ngIf="!children.isHideEditAndDelete">
                                                                         <button class="min-w-0 min-h-0 w-6 h-6 p-0"
                                                                             mat-stroked-button
                                                                             (click)="setChildrenLabel(children, field)"
@@ -370,7 +362,8 @@
                                             <div class="flex items-center">
                                                 <div class="truncate w-fit text-[#1E293B] block font-bold text-[18px]">
                                                     Option</div>
-                                                <div class="font-medium text-[#1E293B] text-[18px] ml-[2px]">values</div>
+                                                <div class="font-medium text-[#1E293B] text-[18px] ml-[2px]">values
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="search-wrapper sticky inset-0 z-10 bg-white">
@@ -394,19 +387,17 @@
                         ">
                                                     <div>
                                                         <ng-container>
-                                                            <div
-                                                                class="flex items-center px-2 option-header cursor-pointer">
+                                                            <div class="flex items-center px-2 option-header cursor-pointer"
+                                                                [ngClass]="{ 'text-primary-500': valueOption.isExpanded, 'text-[#64748B]': !valueOption.isExpanded }">
                                                                 <div (click)="toggleOptionsExpansion(i)">
                                                                     <img class="w-3 cursor-pointer"
                                                                         [src]="'assets/icons/' + (valueOption.isExpanded ? 'minimize' : 'maximize') + '.svg'" />
                                                                 </div>
                                                                 <img class="w-4 ml-2 cursor-pointer"
-                                                                    [src]="'assets/icons/' + (valueOption.isExpanded ? 'active-attribute' : 'attribute') + '.svg'" />
-                                                                <span class="ml-2 cursor-pointer  font-normal"
-                                                                    [ngClass]="{
-                                    'text-primary-500': valueOption.isExpanded,
-                                    'text-[#64748B]': !valueOption.isExpanded
-                                  }">{{valueOption.valueList.label}}</span>
+                                                                    src="assets/icons/attribute.svg"
+                                                                    onload="SVGInject(this)" />
+                                                                <span
+                                                                    class="ml-2 cursor-pointer  font-normal">{{valueOption.valueList.label}}</span>
                                                             </div>
                                                             <ng-container *ngIf="valueOption.isExpanded">
                                                                 <div class="pl-18 pr-2 text-[#64748B] option-tab-value font-normal cursor-pointer"
@@ -427,19 +418,24 @@
                                                         <div *ngIf="valueOption.value_option.value_type === 'static'"
                                                             (click)="toggleInputOption(valueOption.value_option, valueOption.value_option.value_option_label)"
                                                             class="flex items-center mt-4 cursor-pointer">
-                                                            <img class="w-3" src="assets/icons/static-text.svg" />
-                                                            <span class="ml-3 text-[#64748B] font-normal">{{ valueOption.value_option.value_option_label }}</span>
+                                                            <img class="w-3 text-[#64748B]"
+                                                                src="assets/icons/static-text.svg"
+                                                                onload="SVGInject(this)" />
+                                                            <span class="ml-3 text-[#64748B] font-normal">{{
+                                                                valueOption.value_option.value_option_label }}</span>
                                                         </div>
                                                         <div *ngIf="
                                                             valueOption.value_option.value_type === 'attribute' ||
                                                             valueOption.value_option.value_type === 'advanced_attribute'
-                                                        "
-                                                            (click)="toggleInputOption(valueOption.value_option, valueOption.value_option.value_option_label)"
+                                                        " (click)="toggleInputOption(valueOption.value_option, valueOption.value_option.value_option_label)"
                                                             class="flex items-center mt-4 cursor-pointer">
-                                                            <img class="w-4" src="assets/icons/attribute.svg" />
-                                                            <span
-                                                                class="ml-2 truncate text-[#64748B] font-normal">
-                                                                {{ valueOption.value_option.value_option_label != "" ? valueOption.value_option.value_option_label : valueOption.valueList?.label }}
+                                                            <img class="w-4 text-[#64748B]"
+                                                                src="assets/icons/attribute.svg"
+                                                                onload="SVGInject(this)" />
+                                                            <span class="ml-2 truncate text-[#64748B] font-normal">
+                                                                {{ valueOption.value_option.value_option_label != "" ?
+                                                                valueOption.value_option.value_option_label :
+                                                                valueOption.valueList?.label }}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -563,8 +559,8 @@
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <button class="ml-auto mr-0" mat-flat-button type="button"
-                                                            [color]="'primary'" (click)="activatePanel()">
+                                                        <button class="ml-auto mr-0 bg-indigo-600 text-white"
+                                                            mat-flat-button type="button" (click)="activatePanel()">
                                                             Activate
                                                         </button>
                                                     </div>
@@ -576,10 +572,8 @@
 
                                 <!-- Actions -->
                                 <div class="flex items-center justify-end">
-                                    <p 
-                                    *ngIf="showHidden === false"
-                                    class="text-sm cursor-pointer mr-5 font-medium" 
-                                    (click)="showHiddenFields()">Advanced: Show Hidden</p>
+                                    <p *ngIf="showHidden === false" class="text-sm cursor-pointer mr-5 font-medium"
+                                        (click)="showHiddenFields()">Advanced: Show Hidden</p>
                                     <button mat-stroked-button type="button"
                                         (click)="closeDrawer(fuseDrawer)">Cancel</button>
                                     <button *ngIf="addIntegration" class="ml-4" mat-flat-button type="button"

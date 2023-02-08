@@ -27,6 +27,10 @@ import { FormControl } from '@angular/forms';
     selector: 'modern-layout',
     styles: [
         `
+
+        .bg-original {
+            background-color: var(--fuse-original) !important;
+        }
       .companyList
         .mat-select-trigger
         .mat-select-value

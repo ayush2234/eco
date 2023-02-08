@@ -3,7 +3,6 @@
 /*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
 /* ----------------------------------------------------------------------------------------------------- */
 
-
 .value-options-grid-wrapper {
     $grid: repeat(5, 2fr) 1fr 36px;
     grid-template-columns: $grid;

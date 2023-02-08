@@ -203,7 +203,7 @@
                 .mat-select-value {
                     .mat-select-value-text {
                         >* {
-                            color: #4F46E5 !important;
+                            @apply text-primary-500 #{!important};
                         }
                     }
                 }
@@ -218,7 +218,7 @@
                     .mat-select-value-text {
                         >* {
                             &:hover {
-                                color: #4F46E5 !important;
+                                @apply text-primary-500 #{!important};
                             }
                         }
                     }
@@ -234,7 +234,7 @@
                     .mat-select-value-text {
                         >* {
                             &:hover {
-                                color: #4F46E5 !important;
+                                @apply text-primary-500 #{!important};
                             }
                         }
                     }
@@ -258,7 +258,7 @@
             display: inline-block !important;
 
             mat-icon {
-                color: #4F46E5 !important;
+                @apply text-primary-500 #{!important};
             }
         }
     }

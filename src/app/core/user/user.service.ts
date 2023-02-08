@@ -308,6 +308,7 @@ export class UserService {
         const contrastsRGB = generateContrastsRGB(palette);
         const paletteArr = Object.keys(palette);
 
+        document.body.style.setProperty(`--fuse-original`, color);
         document.body.style.setProperty(`--fuse-primary`, palette['600']);
         document.body.style.setProperty(`--fuse-primary-rgb`, paletteRGB['600']);
         document.body.style.setProperty(`--fuse-on-primary`, contrasts['600']);
