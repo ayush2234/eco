@@ -134,7 +134,7 @@ export class IntegrationStatusComponent implements OnInit {
 
     // Get the syncLogs
     this.syncLogs$ = this._syncLogService.syncLogs$;
-    console.log(this.syncLogs$);
+
     // Get the tags
     this._syncLogService.tags$
       .pipe(takeUntil(this._unsubscribeAll))

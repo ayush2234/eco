@@ -66,7 +66,6 @@ export class SyncLogsService {
     return this._syncLogs.asObservable();
   }
   get syncLogProducts$(): Observable<SyncLog[]> {
-    console.log(this._syncLogsProducts);
     return this._syncLogsProducts.asObservable();
   }
   /**
@@ -98,6 +97,7 @@ export class SyncLogsService {
 
   /**
    * Get syncLog Orders
+   *
    *
    *
    * @param page
@@ -253,7 +253,6 @@ export class SyncLogsService {
       })
       .pipe(
         tap(response => {
-          console.log(response);
           this._pagination.next(response.pagination);
           this._syncLogsProducts.next(response.syncLogProducts);
         })
