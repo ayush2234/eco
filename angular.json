@@ -62,7 +62,9 @@
                             "src/styles/styles.scss",
                             "src/styles/tailwind.scss"
                         ],
-                        "scripts": []
+                        "scripts": [
+                            "src/app/shared/service/svg-inject.min.js"
+                        ]
                     },
                     "configurations": {
                         "production": {
