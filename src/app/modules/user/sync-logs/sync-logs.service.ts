@@ -33,6 +33,8 @@ export class SyncLogsService {
   private _syncLogs: BehaviorSubject<SyncLog[] | null> = new BehaviorSubject(
     null
   );
+  private _syncLogsProducts: BehaviorSubject<SyncLog[] | null> =
+    new BehaviorSubject(null);
   private _ordersList: BehaviorSubject<OrdersList[] | null> =
     new BehaviorSubject(null);
   private _pagination: BehaviorSubject<Pagination | null> = new BehaviorSubject(
@@ -62,6 +64,10 @@ export class SyncLogsService {
    */
   get syncLogs$(): Observable<SyncLog[]> {
     return this._syncLogs.asObservable();
+  }
+  get syncLogProducts$(): Observable<SyncLog[]> {
+    console.log(this._syncLogsProducts);
+    return this._syncLogsProducts.asObservable();
   }
   /**
    * Getter for syncLogs orders
@@ -212,7 +218,47 @@ export class SyncLogsService {
         })
       );
   }
-
+  /**
+   * Get syncLog Orders
+   *
+   *
+   * @param page
+   * @param size
+   * @param sort
+   * @param order
+   * @param search
+   */
+  getSyncLogProductsList(
+    page: number = 0,
+    size: number = 10,
+    sort: string = 'name',
+    order: 'asc' | 'desc' | '' = 'asc',
+    search: string = ''
+  ): Observable<{
+    pagination: Pagination;
+    syncLogProducts: SyncLog[];
+  }> {
+    return this._httpClient
+      .get<{
+        pagination: Pagination;
+        syncLogProducts: SyncLog[];
+      }>('api/sync-logs/products', {
+        params: {
+          page: '' + page,
+          size: '' + size,
+          sort,
+          order,
+          search,
+        },
+      })
+      .pipe(
+        tap(response => {
+          console.log(response);
+          this._pagination.next(response.pagination);
+          this._syncLogsProducts.next(response.syncLogProducts);
+        })
+      );
+  }
   /**
    * Get syncLog by id
    */

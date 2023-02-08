@@ -4,6 +4,7 @@ import { IntegrationResolver } from 'app/modules/settings/integrations/integrati
 import { SyncLogsOrdersComponent } from './orders/orders.component';
 import { SyncLogsProductsComponent } from './products/products.component';
 import {
+  SyncLogsProductsListResolver,
   SyncLogsProductsResolver,
   SyncLogsResolver,
 } from './sync-logs.resolvers';
@@ -25,7 +26,7 @@ const routes: Routes = [
     path: 'products',
     component: SyncLogsProductsComponent,
     resolve: {
-      syncLogs: SyncLogsProductsResolver,
+      syncLogs: SyncLogsProductsListResolver,
     },
   },
 ];

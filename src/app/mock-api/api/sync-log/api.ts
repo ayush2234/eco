@@ -3,6 +3,7 @@ import { assign, cloneDeep } from 'lodash-es';
 import { FuseMockApiService, FuseMockApiUtils } from '@fuse/lib/mock-api';
 import {
   syncLog as syncLogData,
+  syncLogProducts,
   syncLogs as syncLogsData,
 } from 'app/mock-api/api/sync-log/data';
 
@@ -11,6 +12,7 @@ import {
 })
 export class SyncLogMockApi {
   private _syncLog: any = syncLogData;
+  private _syncLogProducts: any[] = syncLogProducts;
   private _syncLogs: any[] = syncLogsData;
 
   /**
@@ -117,6 +119,95 @@ export class SyncLogMockApi {
           200,
           {
             syncLogs,
+            pagination,
+          },
+        ];
+      });
+    this._fuseMockApiService
+      .onGet('api/sync-log')
+      .reply(() => [200, cloneDeep(this._syncLogProducts)]);
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ syncLogs - GET
+    // -----------------------------------------------------------------------------------------------------
+    this._fuseMockApiService
+      .onGet('api/sync-logs/products', 300)
+      .reply(({ request }) => {
+        // Get available queries
+        const search = request.params.get('search');
+        const sort = request.params.get('sort') || 'name';
+        const order = request.params.get('order') || 'asc';
+        const page = parseInt(request.params.get('page') ?? '1', 10);
+        const size = parseInt(request.params.get('size') ?? '10', 10);
+
+        // Clone the syncLogs
+        let syncLogProducts: any[] | null = cloneDeep(this._syncLogProducts);
+
+        // Sort the syncLogs
+        if (sort === 'id') {
+          syncLogProducts.sort((a, b) => {
+            const fieldA = a[sort].toString().toUpperCase();
+            const fieldB = b[sort].toString().toUpperCase();
+            return order === 'asc'
+              ? fieldA.localeCompare(fieldB)
+              : fieldB.localeCompare(fieldA);
+          });
+        } else {
+          syncLogProducts.sort((a, b) =>
+            order === 'asc' ? a[sort] - b[sort] : b[sort] - a[sort]
+          );
+        }
+
+        // If search exists...
+        if (search) {
+          // Filter the syncLogs
+          syncLogProducts = syncLogProducts.filter(
+            contact =>
+              contact.name &&
+              contact.name.toLowerCase().includes(search.toLowerCase())
+          );
+        }
+
+        // Paginate - Start
+        const syncLogsLength = syncLogProducts.length;
+
+        // Calculate pagination details
+        const begin = page * size;
+        const end = Math.min(size * (page + 1), syncLogsLength);
+        const lastPage = Math.max(Math.ceil(syncLogsLength / size), 1);
+
+        // Prepare the pagination object
+        let pagination = {};
+
+        // If the requested page number is bigger than
+        // the last possible page number, return null for
+        // syncLogs but also send the last possible page so
+        // the app can navigate to there
+        if (page > lastPage) {
+          syncLogProducts = null;
+          pagination = {
+            lastPage,
+          };
+        } else {
+          // Paginate the results by size
+          syncLogProducts = syncLogProducts.slice(begin, end);
+
+          // Prepare the pagination mock-api
+          pagination = {
+            length: syncLogsLength,
+            size: size,
+            page: page,
+            lastPage: lastPage,
+            startIndex: begin,
+            endIndex: end - 1,
+          };
+        }
+
+        // Return the response
+        return [
+          200,
+          {
+            syncLogProducts,
             pagination,
           },
         ];

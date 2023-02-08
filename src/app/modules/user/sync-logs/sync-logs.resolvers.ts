@@ -71,7 +71,7 @@ export class SyncLogsProductsResolver implements Resolve<any> {
 @Injectable({
   providedIn: 'root',
 })
-export class OrdersIntegrationsResolver implements Resolve<any> {
+export class SyncLogsProductsListResolver implements Resolve<any> {
   /**
    * Constructor
    */
@@ -90,7 +90,10 @@ export class OrdersIntegrationsResolver implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<EcommifyApiResponse<IntegrationListResponse>> {
-    return this._syncLogsService.getIntegrations();
+  ): Observable<{
+    pagination: Pagination;
+    syncLogProducts: SyncLog[];
+  }> {
+    return this._syncLogsService.getSyncLogProductsList();
   }
 }
