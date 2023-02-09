@@ -43,15 +43,15 @@ import { CompanyService } from '../../companies/company.service';
         grid-template-columns: repeat(3, 1fr);
 
         @screen sm {
-          grid-template-columns: repeat(3, 1fr) 72px;
+          grid-template-columns: repeat(3, 1fr) 116px;
         }
 
         @screen md {
-          grid-template-columns: repeat(5, 1fr) 72px;
+          grid-template-columns: repeat(5, 1fr) 116px;
         }
 
         @screen lg {
-          grid-template-columns: repeat(2, 2fr) 1fr repeat(3, 1fr) 72px;
+          grid-template-columns: repeat(2, 2fr) 1fr repeat(3, 1fr) 116px;
         }
       }
     `,
