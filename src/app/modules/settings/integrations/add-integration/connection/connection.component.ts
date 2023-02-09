@@ -3,6 +3,7 @@ import {
     ChangeDetectionStrategy,
     Component,
     EventEmitter,
+    HostListener,
     Input,
     OnDestroy,
     OnInit,
@@ -13,6 +14,8 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { LocalStorageUtils } from 'app/core/common/local-storage.utils';
 import { Subject, takeUntil } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { SnackbarService } from '../../../../../shared/service/snackbar.service';
+import { Ioauth_SuccessToken } from '../../../sources/source.types';
 import { IntegrationService } from '../../integration.service';
 import { Integration, IntegrationInstance, integrationInstanceConnection, IntegrationSettings, IntegrationValue, MappedIntegration, SyncOption } from '../../integration.types';
 import { SyncOptionService } from '../common/sync-option/sync-option.service';
@@ -33,6 +36,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
 
     @Output() onAddNewIntegration: EventEmitter<any> = new EventEmitter();
     @Output() onClose: EventEmitter<any> = new EventEmitter();
+    verificationData: Ioauth_SuccessToken;
 
     /**
      * Constructor
@@ -40,7 +44,8 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
     constructor(
         private _formBuilder: UntypedFormBuilder,
         public _syncOptionService: SyncOptionService,
-        private _integrationsService: IntegrationService
+        private _integrationsService: IntegrationService,
+        private _snackbarService: SnackbarService
     ) { }
 
     /**
@@ -154,7 +159,7 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
         this.eliminateUnchanged(integrationClone);
         this.mappedIntegration = {
             ...this.mappedIntegration,
-            connection: { ...integrationClone.connection },
+            connection: this.verificationData ? { ...integrationClone.connection, ...this.verificationData } : { ...integrationClone.connection },
             integration_id: this.isAddIntegration ? this.instance.integration_id : this.instance.integration.integration_id,
             sync_options: this.mappedIntegration.sync_options.map(x => ({
                 ...x,
@@ -164,9 +169,82 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
         }
     }
 
-    updateIntegration() {
+    /**
+     * Added to listen the 'message' thrown by popup modal on success 
+     * @param event 
+     */
+    @HostListener('window:message', ['$event'])
+    messageListener(event: MessageEvent<any>) {
+        if(event?.data?.error) this._snackbarService.showError('Please check domain Url, some error occured !!');
+        else {
+        this.verificationData = {...event?.data}
+        if (this.verificationData && this.verificationData?.access_token) this._snackbarService.showSuccess('Verification Successful !!');
+        // console.log(this.verificationData);
+        }
+    }
+
+
+    /**
+     * Verify OAuth, copied and updated as per Integrations
+     */
+    verify() {
+        const storeUrl = this.integrationValue?.connection?.storeURL;
+        if (!storeUrl) return;
+        this._integrationsService.getMaropostOauthUrl(LocalStorageUtils.companyId, storeUrl)
+        .subscribe(res => {
+            this.verificationData = undefined // IMP - to set it null before each call.
+            const newWindow = this.openWindow('', 'message');
+            newWindow.location.href = res.auth_url;
+        });
+        
+    }
+
+    // Cloned from source
+    openWindow(url, title, options = {}) {
+        if (typeof url === 'object') {
+            options = url;
+            url = '';
+        }
+        options = { url, title, width: 600, height: 720, ...options };
+
+        const dualScreenLeft =
+        window.screenLeft !== undefined
+            ? window.screenLeft
+            : window.screen['left'];
+        const dualScreenTop =
+        window.screenTop !== undefined ? window.screenTop : window.screen['top'];
+        const width =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        window.screen.width;
+        const height =
+        window.innerHeight ||
+        document.documentElement.clientHeight ||
+        window.screen.height;
+
+        options['left'] = width / 2 - options['width'] / 2 + dualScreenLeft;
+        options['top'] = height / 2 - options['height'] / 2 + dualScreenTop;
+
+        const optionsStr = Object.keys(options)
+        .reduce((acc, key) => {
+            acc.push(`${key}=${options[key]}`);
+            return acc;
+        }, [])
+        .join(',');
+
+        const newWindow = window.open(url, title, optionsStr);
+
+        if (window.focus) {
+        newWindow.focus();
+        }
+
+        return newWindow;
+    }
+
+    // Name of the function should be add and not update, since it is Create (POST)
+    addIntegration() {
         console.log("AddIntegration");
-        this.mapFormToInstance()
+        this.mapFormToInstance();
         this._syncOptionService.createIntegration(this.mappedIntegration).pipe(
             takeUntil(this._unsubscribeAll)
         ).subscribe(integration => {
@@ -183,8 +261,10 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
             }
         });
     }
-    saveIntegration() {
-        console.log("Save Integration");
+
+    // Name of the function should be update, since it is Update (PUT)
+    updateIntegration() {
+        console.log("updateIntegration");
         this.mapFormToInstance();
         this._syncOptionService.updateInstalledIntegration(this.mappedIntegration).pipe(
             takeUntil(this._unsubscribeAll)

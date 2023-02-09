@@ -149,9 +149,9 @@ export class SourceService {
   }
 
   /**
-   * Get Marapost O-Auth api
+   * Get Maropost O-Auth api
    */
-  getMarapostOauthUrl(
+  getMaropostOauthUrl(
     companyId: string,
     store_domain: string
   ): Observable<any> {
