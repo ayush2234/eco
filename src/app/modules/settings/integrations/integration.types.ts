@@ -20,6 +20,7 @@ export interface IntegrationInstance {
   integration_id?: string;
   force_test_connection: string;
   source_id: string;
+  channel_platform?: string;
 }
 
 export interface Integration {
