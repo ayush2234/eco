@@ -5,11 +5,11 @@
 
 .full-height {
     min-height: calc(100vh - 430px);
+    background: linear-gradient(90deg, #ffffff 48.4%, #f1f5f9 48%) !important;
 }
 
 .mapping-area {
     max-height: calc(100vh - 430px);
-
     .fuse-mat-emphasized-affix {
         .mat-form-field-wrapper {
             .mat-form-field-flex {
