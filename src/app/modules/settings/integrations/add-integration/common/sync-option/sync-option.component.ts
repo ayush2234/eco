@@ -430,11 +430,16 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
   }
 
   updateMappedSyncOptions() {
-    const oSync = this.integrationInstance.integration.sync_options.map(syncOption => {
-      return {
-        code: syncOption.code,
-        is_active: this.integrationInstance.integration.sync_options.find(y => y.code === syncOption.code).is_active,
-        is_activated: this.integrationInstance.integration.sync_options.find(y => y.code === syncOption.code).is_activated,
+    const oSync = this.integrationInstance.integration.sync_options.map(
+      syncOption => {
+        const sync = this.integrationInstance.integration.sync_options.find(
+          y => y.code === syncOption.code
+        );
+        return {
+          code: syncOption.code,
+          is_active: sync.is_active != undefined ? sync.is_active : false,
+          is_activated:
+            sync.is_activated != undefined ? sync.is_activated : false,
         sub_sync_options: syncOption.sub_sync_options.map(subOption => {
           return {
             code: subOption.code,
