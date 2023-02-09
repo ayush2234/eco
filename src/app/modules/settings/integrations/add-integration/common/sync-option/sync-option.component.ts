@@ -448,7 +448,7 @@ export abstract class SyncOptionComponent implements OnDestroy, OnInit {
                 const fieldObj = {
                   mapped_code: mappingOption.selected_value.code,
                   mapped_label: mappingOption.selected_value.label,
-                  mapped_type: mappingOption.selected_value.value_option?.value_type,
+                  mapped_type: mappingOption.selected_value.value_option?.value_type == undefined ? '':mappingOption.selected_value.value_options?.value_type,
                   mapping_code: mappingOption.code,
                   mapping_type: mappingOption.type,
                   mapping_label: mappingOption.label,
