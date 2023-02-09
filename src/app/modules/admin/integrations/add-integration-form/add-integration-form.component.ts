@@ -55,7 +55,12 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     };
 
     panels: any[] = [];
-    valueListDDOptions: ValuesList;
+    valueListDDOptions: ValuesList = {
+        source: [],
+        channel: [],
+        global: [],
+        pim: []
+    };
     selectedPanel: any;
     selectedPanelIndex: number = 0;
     selectedTab;
