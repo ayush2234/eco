@@ -306,7 +306,7 @@
                                                     [(ngModel)]="valueListModal" placeholder="values list"
                                                     (ngModelChange)="getValueOptionList()">
                                                     <mat-option
-                                                        *ngFor="let value of (valueListDDOptions[originModal] || [])"
+                                                        *ngFor="let value of (valueListDDOptions?.[originModal] || [])"
                                                         [value]="value">
                                                         {{value}}
                                                     </mat-option>
@@ -398,11 +398,11 @@
                                                         </div>
                                                         <div class="w-full">
                                                             <mat-select class="p-2 border rounded-md"
-                                                                *ngIf="valueOption.value_option_type == 'values_list' && (valueListDDOptions[valueOption.values_list_origin] || []).length > 0"
+                                                                *ngIf="valueOption.value_option_type == 'values_list' && (valueListDDOptions?.[valueOption?.values_list_origin] || []).length > 0"
                                                                 [(ngModel)]="valueOption.values_list"
                                                                 placeholder="values list">
                                                                 <mat-option
-                                                                    *ngFor="let value of valueListDDOptions[valueOption.values_list_origin]"
+                                                                    *ngFor="let value of valueListDDOptions?.[valueOption?.values_list_origin]"
                                                                     [value]="value">
                                                                     {{value}}
                                                                 </mat-option>
@@ -628,11 +628,11 @@
                                                         </div>
                                                         <div class="w-full">
                                                             <mat-select class="p-2 border rounded-md"
-                                                                *ngIf="valueOption.value_option_type == 'values_list' && (valueListDDOptions[valueOption.values_list_origin] || []).length > 0"
+                                                                *ngIf="valueOption.value_option_type == 'values_list' && (valueListDDOptions?.[valueOption?.values_list_origin] || []).length > 0"
                                                                 [(ngModel)]="valueOption.values_list"
                                                                 placeholder="values list">
                                                                 <mat-option
-                                                                    *ngFor="let value of valueListDDOptions[valueOption.values_list_origin]"
+                                                                    *ngFor="let value of valueListDDOptions?.[valueOption?.values_list_origin]"
                                                                     [value]="value">
                                                                     {{value}}
                                                                 </mat-option>
