@@ -5,23 +5,23 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { PortalBridgeService } from 'app/layout/common/eco-drawer/portal-bridge.service';
 import { Subject, takeUntil } from 'rxjs';
-import { IntegrationService } from '../integration.service';
-import { Integration, IntegrationSyncForm, MappingValueOptions, ValueOptions, ValuesList } from '../integration.types';
+import { Source, SourceSyncForm, MappingValueOptions, ValuesList } from '../source.types';
 import * as JSONschema from './sync-option-form.schema.json';
 import Ajv from "ajv"
 import { SnackbarService } from 'app/shared/service/snackbar.service';
+import { SourceService } from '../source.service';
 
 
 const ajv = new Ajv();
 const validateJSON = ajv.compile(JSONschema);
 @Component({
-    selector: 'eco-add-integration-form',
-    templateUrl: './add-integration-form.component.html',
-    styleUrls: ['./add-integration-form.component.scss'],
+    selector: 'eco-add-source-form',
+    templateUrl: './add-source-form.component.html',
+    styleUrls: ['./add-source-form.component.scss'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddIntegrationFormComponent implements OnInit, OnChanges {
+export class AddSourceFormComponent implements OnInit, OnChanges {
 
     @ViewChild(CdkPortal, { static: true }) portalContent: CdkPortal;
     @ViewChild('drawer') drawer: MatDrawer;
@@ -42,9 +42,9 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
 
 
     @Input() isOpen = true;
-    @Input() selectedIntegration: Integration;
+    @Input() selectedSource: Source;
     @ViewChildren('mappingOptionItem') mappingOptionItems: QueryList<any>;
-    formObj: IntegrationSyncForm = {
+    formObj: SourceSyncForm = {
         endpoints: [],
         connection: {
             description: "",
@@ -55,12 +55,7 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     };
 
     panels: any[] = [];
-    valueListDDOptions: ValuesList = {
-        source: [],
-        channel: [],
-        global: [],
-        pim: []
-    };
+    valueListDDOptions: ValuesList = {};
     selectedPanel: any;
     selectedPanelIndex: number = 0;
     selectedTab;
@@ -72,12 +67,12 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
         private _portalBridge: PortalBridgeService,
         private _changeDetector: ChangeDetectorRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _integrationService: IntegrationService,
+        private _sourceService: SourceService,
         private _snackbarService: SnackbarService
     ) { }
 
     ngOnInit(): void {
-        this.getIntegrationFormValue();
+        this.getSourceFormValue();
         this.getValueList();
         this._portalBridge.setPortal(this.portalContent);
         this.goToTab('endpoints');
@@ -323,6 +318,7 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     *
     */
     async onViewJSON() {
+        console.log('view json');
         this.jsonDrawerOpened = true;
         const payload = await this.createPayload();
         this.formObjectStringified = JSON.stringify(payload, null, 4);
@@ -430,11 +426,11 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     }
 
     /**
-    * Get Sync Options JSON for given Integration ID
+    * Get Sync Options JSON for given Source ID
     *
     */
-    getIntegrationFormValue() {
-        this._integrationService.getIntegrationSyncForm(this.selectedIntegration.integration_id).pipe(takeUntil(this._unsubscribeAll)).subscribe((result) => {
+    getSourceFormValue() {
+        this._sourceService.getSourceSyncForm(this.selectedSource.source_id).pipe(takeUntil(this._unsubscribeAll)).subscribe((result) => {
             if (result?.result && Object.keys(result?.result).length > 0) {
                 this.formObj = result?.result;
                 this.mergeValueOptionList();
@@ -447,9 +443,23 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     *
     */
     getValueList() {
-        this._integrationService.getIntegrationSyncFormValueList(this.selectedIntegration.integration_id).pipe(takeUntil(this._unsubscribeAll)).subscribe((result) => {
+        this._sourceService.getSourceSyncFormValueList(this.selectedSource.source_id).pipe(takeUntil(this._unsubscribeAll)).subscribe((result) => {
             if (result?.result) {
                 this.valueListDDOptions = result?.result;
+            } else {
+                this.valueListDDOptions = {
+                    source: [],
+                    channel: [],
+                    global: [],
+                    pim: []
+                }
+            }
+        }, error => {
+            this.valueListDDOptions = {
+                source: [],
+                channel: [],
+                global: [],
+                pim: []
             }
         })
     }
@@ -459,23 +469,23 @@ export class AddIntegrationFormComponent implements OnInit, OnChanges {
     *
     */
     getValueOptionList() {
-        if (this.originModal && this.valueListModal) {
-            this.valueModal = [];
-            this._integrationService.getIntegrationSyncFormValueOptionList(this.selectedIntegration.integration_id, this.originModal, this.valueListModal).pipe(takeUntil(this._unsubscribeAll)).subscribe((result) => {
-                if (result?.result?.values) {
-                    this.valueOptionsDropdown = result?.result?.values;
-                }
-            })
-        }
+        // if (this.originModal && this.valueListModal) {
+        //     this.valueModal = [];
+        //     this._sourceService.getSourceSyncFormValueOptionList(this.selectedSource.source_id, this.originModal, this.valueListModal).pipe(takeUntil(this._unsubscribeAll)).subscribe((result) => {
+        //         if (result?.result?.values) {
+        //             this.valueOptionsDropdown = result?.result?.values;
+        //         }
+        //     })
+        // }
     }
 
     /**
     * Save Sync Option Form
     *
     */
-    async saveIntegrationSyncForm() {
+    async saveSourceSyncForm() {
         const payload = await this.createPayload();
-        this._integrationService.updateIntegrationSyncForm(this.selectedIntegration.integration_id, payload).pipe(takeUntil(this._unsubscribeAll)).subscribe()
+        this._sourceService.updateSourceSyncForm(this.selectedSource.source_id, payload).pipe(takeUntil(this._unsubscribeAll)).subscribe()
     }
 
     /**

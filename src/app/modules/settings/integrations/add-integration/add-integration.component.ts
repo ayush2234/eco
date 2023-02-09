@@ -287,7 +287,7 @@ export class AddIntegrationComponent
         }
         console.log('this.panels', this.panels);
         const activePanel = this.panels.find(x => x.isActive);
-        console.log('this.panels', activePanel, this.syncOptions[0].code);
-        this.goToPanel(activePanel ? activePanel.code : this.syncOptions[0].code);
+        console.log('this.panels', activePanel, this.syncOptions[0]?.code); // White screen issue
+        this.goToPanel(activePanel ? activePanel.code : this.syncOptions[0]?.code);
     }
 }

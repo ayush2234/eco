@@ -17,25 +17,32 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from 'app/shared/shared.module';
 import { AddSourceComponent } from './add-source/add-source.component';
+import { AddSourceFormComponent } from './add-source-form/add-source-form.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
-  declarations: [SourcesGridComponent, AddSourceComponent],
-  imports: [
-    SourcesRoutingModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatMenuModule,
-    MatPaginatorModule,
-    MatProgressBarModule,
-    MatRippleModule,
-    MatSortModule,
-    MatSelectModule,
-    MatSlideToggleModule,
-    MatTooltipModule,
-    SharedModule,
-  ],
+    declarations: [SourcesGridComponent, AddSourceComponent, AddSourceFormComponent],
+    imports: [
+        SourcesRoutingModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatMenuModule,
+        MatPaginatorModule,
+        MatProgressBarModule,
+        MatRippleModule,
+        MatSortModule,
+        MatSelectModule,
+        MatSlideToggleModule,
+        MatTooltipModule,
+        SharedModule,
+        MatSidenavModule,
+        DragDropModule,
+        ClipboardModule
+    ],
 })
-export class SourcesModule {}
+export class SourcesModule { }

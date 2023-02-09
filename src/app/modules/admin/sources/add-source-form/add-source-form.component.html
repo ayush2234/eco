@@ -1,19 +1,19 @@
 <ng-container *cdkPortal>
     <fuse-drawer class="w-screen min-w-screen sm:w-65vw sm:min-w-100 z-999" fixed [mode]="'over'"
-        [name]="'addIntegrationFormDrawer'" [position]="'right'" [opened]="fuseDrawerOpened"
+        [name]="'addSourceFormDrawer'" [position]="'right'" [opened]="fuseDrawerOpened"
         (openedChanged)="openedChanged(fuseDrawer)" *ngIf="isOpen" #fuseDrawer>
         <div class="absolute inset-0 flex min-w-0 overflow-hidden bg-white">
             <mat-drawer-container class="flex flex-auto sm:h-full ">
                 <mat-drawer class="sm:w-90 dark:bg-gray-900 shrink-0" [autoFocus]="false" [mode]="drawerMode"
-                    [opened]="drawerOpened" #drawer>
+                    [opened]="drawerOpened" #sourcedrawer>
                     <!-- Header -->
                     <div class="flex flex-col justify-between">
                         <!-- Title -->
                         <div class="my-10 mx-8 flex justify-between items-center">
-                            <h1 class="text-3xl font-bold tracking-tight leading-none">Integration Form</h1>
+                            <h1 class="text-3xl font-bold tracking-tight leading-none">Source Form</h1>
                             <!-- Close button -->
                             <div class="lg:hidden">
-                                <button mat-icon-button (click)="drawer.close()">
+                                <button mat-icon-button (click)="sourcedrawer.close()">
                                     <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
                                 </button>
                             </div>
@@ -75,7 +75,7 @@
                 <mat-drawer-content class="flex flex-auto flex-col light">
                     <div class="flex-auto px-6 pt-8 pb-12 md:p-8 md:pb-12 lg:py-10 lg:px-12">
                         <!-- Drawer toggler -->
-                        <button class="lg:hidden -ml-2 mb-10" mat-icon-button (click)="drawer.toggle()">
+                        <button class="lg:hidden -ml-2 mb-10" mat-icon-button (click)="sourcedrawer.toggle()">
                             <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
                         </button>
                         <!-- Main content for endpoints -->
@@ -251,7 +251,7 @@
                             </div>
 
                             <!-- Insert Row Helper Table -->
-                            <div class="w-full col-span-4 overflow-hidden border rounded-md mb-5"
+                            <!-- <div class="w-full col-span-4 overflow-hidden border rounded-md mb-5"
                                 *ngIf="selectedTab == 'sync_options' && selectedSyncOptionTab > -1">
                                 <div class="flex items-center bg-white py-6 px-8 justify-between">
                                     <h1 class="m-0 text-xl font-bold whitespace-nowrap">Insert rows</h1>
@@ -306,7 +306,7 @@
                                                     [(ngModel)]="valueListModal" placeholder="values list"
                                                     (ngModelChange)="getValueOptionList()">
                                                     <mat-option
-                                                        *ngFor="let value of (valueListDDOptions?.[originModal] || [])"
+                                                        *ngFor="let value of (valueListDDOptions[originModal] || [])"
                                                         [value]="value">
                                                         {{value}}
                                                     </mat-option>
@@ -398,11 +398,11 @@
                                                         </div>
                                                         <div class="w-full">
                                                             <mat-select class="p-2 border rounded-md"
-                                                                *ngIf="valueOption.value_option_type == 'values_list' && (valueListDDOptions?.[valueOption?.values_list_origin] || []).length > 0"
+                                                                *ngIf="valueOption.value_option_type == 'values_list' && (valueListDDOptions[valueOption.values_list_origin] || []).length > 0"
                                                                 [(ngModel)]="valueOption.values_list"
                                                                 placeholder="values list">
                                                                 <mat-option
-                                                                    *ngFor="let value of valueListDDOptions?.[valueOption?.values_list_origin]"
+                                                                    *ngFor="let value of valueListDDOptions[valueOption.values_list_origin]"
                                                                     [value]="value">
                                                                     {{value}}
                                                                 </mat-option>
@@ -445,7 +445,7 @@
                                         </div>
                                     </ng-container>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="w-full col-span-4 overflow-hidden border rounded-md"
                                 *ngIf="selectedTab == 'sync_options' && selectedSyncOptionTab > -1">
@@ -627,12 +627,14 @@
                                                             </mat-select>
                                                         </div>
                                                         <div class="w-full">
+                                                            <!-- {{valueListDDOptions[valueOption.values_list_origin] |
+                                                            json}} -->
                                                             <mat-select class="p-2 border rounded-md"
-                                                                *ngIf="valueOption.value_option_type == 'values_list' && (valueListDDOptions?.[valueOption?.values_list_origin] || []).length > 0"
+                                                                *ngIf="valueOption.value_option_type == 'values_list' && (valueListDDOptions?.[valueOption.values_list_origin] || []).length > 0"
                                                                 [(ngModel)]="valueOption.values_list"
                                                                 placeholder="values list">
                                                                 <mat-option
-                                                                    *ngFor="let value of valueListDDOptions?.[valueOption?.values_list_origin]"
+                                                                    *ngFor="let value of valueListDDOptions[valueOption.values_list_origin]"
                                                                     [value]="value">
                                                                     {{value}}
                                                                 </mat-option>
@@ -687,7 +689,7 @@
                         <div class="flex items-center justify-end">
                             <button mat-stroked-button type="button" (click)="fuseDrawerOpened = false">Cancel</button>
                             <button class="ml-4" mat-flat-button type="button" [color]="'primary'"
-                                (click)="saveIntegrationSyncForm()">
+                                (click)="saveSourceSyncForm()">
                                 Save
                             </button>
                         </div>

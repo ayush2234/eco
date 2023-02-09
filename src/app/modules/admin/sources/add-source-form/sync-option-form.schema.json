@@ -1,0 +1,326 @@
+{
+    "type": "object",
+    "properties": {
+        "endpoints": {
+            "type": "array",
+            "items": {
+                "type": "object"
+            },
+            "minItems": 0
+        },
+        "connection": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "connection_instructions": {
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "label": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "type": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "needs_auth_url": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "description": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "code",
+                            "label",
+                            "type",
+                            "description",
+                            "needs_auth_url"
+                        ]
+                    },
+                    "minItems": 0
+                }
+            },
+            "required": [
+                "description",
+                "connection_instructions",
+                "fields"
+            ]
+        },
+        "sync_options": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "label": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "description": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "sub_sync_options": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "code": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                },
+                                "label": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                },
+                                "custom_row_options": {
+                                    "type": "object",
+                                    "properties": {
+                                        "value_list_origin": {
+                                            "type": [
+                                                "null",
+                                                "string"
+                                            ]
+                                        },
+                                        "value_list": {
+                                            "type": [
+                                                "null",
+                                                "string"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "value_list_origin",
+                                        "value_list"
+                                    ]
+                                },
+                                "mapping_options": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "code": {
+                                                "type": [
+                                                    "null",
+                                                    "string"
+                                                ]
+                                            },
+                                            "label": {
+                                                "type": [
+                                                    "null",
+                                                    "string"
+                                                ]
+                                            },
+                                            "description": {
+                                                "type": [
+                                                    "null",
+                                                    "string"
+                                                ]
+                                            },
+                                            "type": {
+                                                "type": [
+                                                    "null",
+                                                    "string"
+                                                ]
+                                            },
+                                            "required": {
+                                                "type": "boolean"
+                                            },
+                                            "is_validated": {
+                                                "type": "boolean"
+                                            },
+                                            "is_hidden": {
+                                                "type": "boolean"
+                                            },
+                                            "display_conditions": {
+                                                "type": [
+                                                    "null",
+                                                    "string"
+                                                ]
+                                            },
+                                            "value_options": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "value_option_type": {
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
+                                                        },
+                                                        "value_option_label": {
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
+                                                        },
+                                                        "values_list": {
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
+                                                        },
+                                                        "is_child": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "values_list_origin": {
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
+                                                        },
+                                                        "value_type": {
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "value_option_type",
+                                                        "value_option_label",
+                                                        "values_list",
+                                                        "is_child",
+                                                        "values_list_origin",
+                                                        "value_type"
+                                                    ]
+                                                },
+                                                "minItems": 0
+                                            },
+                                            "child_attribute_values": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "value_option_type": {
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
+                                                        },
+                                                        "value_option_label": {
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
+                                                        },
+                                                        "values_list": {
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
+                                                        },
+                                                        "is_child": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "values_list_origin": {
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
+                                                        },
+                                                        "value_type": {
+                                                            "type": [
+                                                                "null",
+                                                                "string"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "value_option_type",
+                                                        "value_option_label",
+                                                        "values_list",
+                                                        "is_child",
+                                                        "values_list_origin",
+                                                        "value_type"
+                                                    ]
+                                                },
+                                                "minItems": 0
+                                            }
+                                        },
+                                        "required": [
+                                            "code",
+                                            "label",
+                                            "description",
+                                            "type",
+                                            "required",
+                                            "is_validated",
+                                            "is_hidden",
+                                            "display_conditions",
+                                            "value_options",
+                                            "child_attribute_values"
+                                        ]
+                                    },
+                                    "minItems": 0
+                                }
+                            },
+                            "required": [
+                                "code",
+                                "label",
+                                "mapping_options"
+                            ]
+                        },
+                        "minItems": 0
+                    }
+                },
+                "required": [
+                    "code",
+                    "label",
+                    "description",
+                    "sub_sync_options"
+                ]
+            },
+            "minItems": 0
+        }
+    },
+    "required": [
+        "endpoints",
+        "connection",
+        "sync_options"
+    ],
+    "additionalProperties": false
+}

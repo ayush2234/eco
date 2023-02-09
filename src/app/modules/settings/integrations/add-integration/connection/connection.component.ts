@@ -206,20 +206,21 @@ export class AddIntegarationConnectionComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Verify OAuth, copied and updated as per Integrations
-   */
-  verify() {
-    const storeUrl = this.integrationValue?.connection?.storeURL;
-    if (!storeUrl) return;
-    this._integrationsService
-      .getMaropostOauthUrl(LocalStorageUtils.companyId, storeUrl)
-      .subscribe(res => {
-        this.verificationData = undefined; // IMP - to set it null before each call.
-        const newWindow = this.openWindow('', 'message');
-        newWindow.location.href = res.auth_url;
-      });
-  }
+    /**
+     * Verify OAuth, copied and updated as per Integrations
+     */
+    verify() {
+        const channel_platform = this.instance?.channel_platform;
+        const storeUrl = this.integrationValue?.connection?.storeURL;
+        if (!storeUrl) return;
+        this._integrationsService.getOauthUrl(LocalStorageUtils.companyId, storeUrl, channel_platform)
+        .subscribe(res => {
+            this.verificationData = undefined // IMP - to set it null before each call.
+            const newWindow = this.openWindow('', 'message');
+            newWindow.location.href = res.auth_url;
+        });
+        
+    }
 
   // Cloned from source
   openWindow(url, title, options = {}) {

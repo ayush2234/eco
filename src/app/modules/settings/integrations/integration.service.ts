@@ -76,15 +76,16 @@ export class IntegrationService {
   }
 
   /**
-   * Get Maropost O-Auth api, cloned from source services
+   * Get O-Auth api
    */
-  getMaropostOauthUrl(
+  getOauthUrl(
     companyId: string,
-    store_domain: string
+    store_domain: string,
+    platform: string
   ): Observable<any> {
     const api = this._config.apiConfig.serviceUrl;
     return this._httpClient
-      .post<EcommifyApiResponse<any>>(`${api}/oauth/maropost/${companyId}`, {
+      .post<EcommifyApiResponse<any>>(`${api}/oauth/${platform}/${companyId}`, {
         store_domain,
       })
       .pipe(
