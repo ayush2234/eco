@@ -1,0 +1,737 @@
+<ng-container *cdkPortal>
+    <fuse-drawer class="w-screen min-w-screen sm:w-65vw sm:min-w-100 z-999" fixed [mode]="'over'"
+        [name]="'addSourceFormDrawer'" [position]="'right'" [opened]="fuseDrawerOpened"
+        (openedChanged)="openedChanged(fuseDrawer)" *ngIf="isOpen" #fuseDrawer>
+        <div class="absolute inset-0 flex min-w-0 overflow-hidden bg-white">
+            <mat-drawer-container class="flex flex-auto sm:h-full ">
+                <mat-drawer class="sm:w-90 dark:bg-gray-900 shrink-0" [autoFocus]="false" [mode]="drawerMode"
+                    [opened]="drawerOpened" #sourcedrawer>
+                    <!-- Header -->
+                    <div class="flex flex-col justify-between">
+                        <!-- Title -->
+                        <div class="my-10 mx-8 flex justify-between items-center">
+                            <h1 class="text-3xl font-bold tracking-tight leading-none">Source Form</h1>
+                            <!-- Close button -->
+                            <div class="lg:hidden">
+                                <button mat-icon-button (click)="sourcedrawer.close()">
+                                    <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Side nav links -->
+                        <div class="flex flex-col mb-4">
+                            <div class="flex px-8 py-3 cursor-pointer hover:bg-primary-50" [ngClass]="{
+                                    'bg-primary-50 dark:bg-hover': selectedTab == 'endpoints',
+                                    'text-primary dark:text-primary-500': selectedTab == 'endpoints'
+                                  }" (click)="goToTab('endpoints')">
+                                <div class="text-[16px] leading-6 hover:text-primary">
+                                    Endpoints
+                                </div>
+                            </div>
+                            <div class="flex px-8 py-3 cursor-pointer hover:bg-primary-50" [ngClass]="{
+                                    'bg-primary-50 dark:bg-hover': selectedTab == 'connection',
+                                    'text-primary dark:text-primary-500': selectedTab == 'connection'
+                                  }" (click)="goToTab('connection')">
+                                <div class="text-[16px] leading-6 hover:text-primary">
+                                    Connection
+                                </div>
+                            </div>
+                            <ng-container
+                                *ngFor="let panel of formObj['sync_options']; trackBy: trackByFn; let panelIndex = index;">
+                                <div class="flex px-8 py-2 cursor-pointer hover:bg-primary-50" [ngClass]="{
+                                        'bg-primary-50 dark:bg-hover': selectedTab == 'sync_options' && selectedPanelIndex == panelIndex,
+                                        'text-primary dark:text-primary-500': selectedTab == 'sync_options' && selectedPanelIndex == panelIndex
+                                      }" (click)="goToPanel(panelIndex)">
+                                    <div class="flex w-full flex-auto items-center justify-between ">
+                                        <input [(ngModel)]="formObj.sync_options[panelIndex].label"
+                                            placeholder="Sync option label..."
+                                            class="p-2 sync-label-input border bg-white px-4 text-black lg:w-3/5 w-full rounded-md"
+                                            name="sync-option-label-{{panelIndex}}">
+                                        <mat-icon aria-hidden="false" class="text-xs text-red-600"
+                                            (click)="removeField(panelIndex)"
+                                            [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex justify-center">
+                            <div class="flex flex-col justify-center gap-2.5">
+                                <button mat-stroked-button class="mb-1" (click)="addSyncOption()">
+                                    <mat-icon aria-hidden="false" class="mr-2"
+                                        [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                                    Add Sync Options
+                                </button>
+                                <button mat-raised-button color="primary" (click)="onViewJSON()">
+                                    View JSON
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </mat-drawer>
+
+                <mat-drawer-content class="flex flex-auto flex-col light">
+                    <div class="flex-auto px-6 pt-8 pb-12 md:p-8 md:pb-12 lg:py-10 lg:px-12">
+                        <!-- Drawer toggler -->
+                        <button class="lg:hidden -ml-2 mb-10" mat-icon-button (click)="sourcedrawer.toggle()">
+                            <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+                        </button>
+                        <!-- Main content for endpoints -->
+                        <ng-container *ngIf="selectedTab == 'endpoints'">
+                            <div class="w-full col-span-4 overflow-hidden border rounded-md">
+                                <div class="flex items-center bg-white py-6 px-8 justify-between">
+                                    <h1 class="m-0 text-xl font-bold">Fields</h1>
+                                    <button mat-raised-button color="primary" (click)="addField()">Add Field</button>
+                                </div>
+                                <div class="flex flex-col">
+                                    <div class="grid p-4 pl-11 border-b fields-wrapper">
+                                        <div class="text-secondary">origin</div>
+                                        <div class="text-secondary">type</div>
+                                        <div></div>
+                                    </div>
+                                    <div cdkDropList (cdkDropListDropped)="fieldDropped($event)">
+                                        <div class="grid pl-11 pr-4 py-2 border-b relative fields-wrapper bg-white"
+                                            *ngFor="let field of formObj[selectedTab]; let fieldIndex = index;" cdkDrag>
+                                            <div class="absolute h-6 w-6 top-1/2 left-1 -translate-y-1/2 cursor-move">
+                                                <mat-icon>drag_handle</mat-icon>
+                                            </div>
+                                            <div class="w-full">
+                                                <mat-select class="p-2 border rounded-md" [(ngModel)]="field.origin">
+                                                    <mat-option [value]="'source'">
+                                                        source
+                                                    </mat-option>
+                                                    <mat-option [value]="'channel'">
+                                                        channel
+                                                    </mat-option>
+                                                    <mat-option [value]="'global'">
+                                                        global
+                                                    </mat-option>
+                                                    <mat-option [value]="'pim'">
+                                                        pim
+                                                    </mat-option>
+                                                </mat-select>
+                                            </div>
+                                            <div class="w-full">
+                                                <!-- <input [(ngModel)]="field.type" class="p-2 border rounded-md"
+                                                    name="field{{fieldIndex}}"> -->
+                                                <mat-select class="p-2 border rounded-md" [(ngModel)]="field.type">
+                                                    <mat-option [value]="'values_list'">
+                                                        values_list
+                                                    </mat-option>
+                                                    <mat-option [value]="'category'">
+                                                        category
+                                                    </mat-option>
+                                                </mat-select>
+                                            </div>
+                                            <div>
+                                                <button mat-stroked-button class="px-2 py-2 mat-icon-button rounded-md"
+                                                    (click)="removeField(fieldIndex)">
+                                                    <mat-icon aria-hidden="false" class="text-xs"
+                                                        [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Main content for connection -->
+                        <ng-container *ngIf="selectedTab == 'connection'">
+                            <input [(ngModel)]="formObj[selectedTab].description"
+                                placeholder="Connection description..."
+                                class="p-2 border bg-white px-4 text-black lg:w-3/5 w-full rounded-md mb-2"
+                                name="connection-description">
+                            <input [(ngModel)]="formObj[selectedTab].connection_instructions"
+                                placeholder="Connection instructions..."
+                                class="p-2 border bg-white px-4 text-black lg:w-3/5 w-full rounded-md mb-10"
+                                name="connection-instructions">
+
+                            <div class="w-full col-span-4 overflow-hidden border rounded-md">
+                                <div class="flex items-center bg-white py-6 px-8 justify-between">
+                                    <h1 class="m-0 text-xl font-bold">Fields</h1>
+                                    <button mat-raised-button color="primary" (click)="addField()">Add Field</button>
+                                </div>
+                                <div class="flex flex-col">
+                                    <div class="grid p-4 pl-11 border-b connection-grid-wrapper">
+                                        <div class="text-secondary">code</div>
+                                        <div class="text-secondary">label</div>
+                                        <div class="text-secondary">description</div>
+                                        <div class="text-secondary">type</div>
+                                        <div class="text-secondary">auth url</div>
+                                        <div></div>
+                                    </div>
+                                    <div cdkDropList (cdkDropListDropped)="fieldDropped($event)">
+                                        <div class="grid pl-11 pr-4 py-2 border-b connection-grid-wrapper bg-white relative"
+                                            cdkDrag
+                                            *ngFor="let field of formObj[selectedTab].fields; let fieldIndex = index;">
+                                            <div class="absolute h-6 w-6 top-1/2 left-1 -translate-y-1/2 cursor-move">
+                                                <mat-icon>drag_handle</mat-icon>
+                                            </div>
+                                            <div class="w-full">
+                                                <input [(ngModel)]="field.code" class="p-2 border rounded-md w-full"
+                                                    name="field{{fieldIndex}}" placeholder="Code...">
+                                            </div>
+                                            <div class="w-full">
+                                                <input [(ngModel)]="field.label" class="p-2 border rounded-md w-full"
+                                                    name="field{{fieldIndex}}" placeholder="Label...">
+                                            </div>
+                                            <div class="w-full">
+                                                <input [(ngModel)]="field.description"
+                                                    class="p-2 border w-full rounded-md" name="field{{fieldIndex}}"
+                                                    placeholder="Description...">
+                                            </div>
+                                            <div class="w-full">
+                                                <mat-select class="p-2 border rounded-md" [(ngModel)]="field.type"
+                                                    placeholder="Type..."
+                                                    (ngModelChange)="resetAuthURL(field.type, fieldIndex)">
+                                                    <mat-option [value]="'text'">
+                                                        text
+                                                    </mat-option>
+                                                    <mat-option [value]="'url'">
+                                                        url
+                                                    </mat-option>
+                                                    <mat-option [value]="'oauth'">
+                                                        oauth
+                                                    </mat-option>
+                                                </mat-select>
+                                            </div>
+                                            <div class="w-full">
+                                                <input *ngIf="field.type == 'oauth'" [(ngModel)]="field.needs_auth_url"
+                                                    class="p-2 border w-full rounded-md" name="field{{fieldIndex}}"
+                                                    placeholder="Auth URL..." #authURL>
+                                            </div>
+                                            <div>
+                                                <button mat-stroked-button class="px-2 py-2 mat-icon-button rounded-md"
+                                                    (click)="removeField(fieldIndex)">
+                                                    <mat-icon aria-hidden="false" class="text-xs"
+                                                        [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Main content for sync_options -->
+                        <ng-container *ngIf="selectedTab == 'sync_options'">
+                            <input [(ngModel)]="formObj[selectedTab][selectedPanelIndex].label"
+                                placeholder="Sync option label..."
+                                class="p-2 border bg-white px-4 text-black lg:w-3/5 w-full rounded-md mb-2"
+                                name="sync-option-label-{{selectedPanelIndex}}">
+                            <input [(ngModel)]="formObj[selectedTab][selectedPanelIndex].description"
+                                placeholder="Sync option description..."
+                                class="p-2 border bg-white px-4 text-black lg:w-3/5 w-full rounded-md mb-2"
+                                name="sync-option-description-{{selectedPanelIndex}}">
+
+                            <div class="py-6 flex items-center gap-2">
+                                <div class="flex items-center justify-between rounded-2xl py-1 pl-2 border-transparent border-2 border cursor-pointer"
+                                    (click)="selectSyncOptionTab(tabIndex)"
+                                    *ngFor="let tab of formObj[selectedTab][selectedPanelIndex].sub_sync_options; let tabIndex = index;"
+                                    [ngClass]="{
+                                        'bg-primary': selectedTab == 'sync_options' && selectedSyncOptionTab == tabIndex,
+                                        'text-white': selectedTab == 'sync_options' && selectedSyncOptionTab == tabIndex,
+                                        'bg-primary-100':  selectedTab == 'sync_options' && selectedSyncOptionTab != tabIndex
+                                      }">
+                                    <span class="ml-2 leading-relaxed">{{tab.label}}</span>
+                                    <mat-icon aria-hidden="false" class="mx-2 text-lg text-bold" [ngClass]="{
+                                        'text-white': selectedTab == 'sync_options' && selectedSyncOptionTab == tabIndex,
+                                        'text-black': selectedTab == 'sync_options' && selectedSyncOptionTab != tabIndex
+                                    }">more_vert</mat-icon>
+                                </div>
+                                <div class="flex items-center justify-between border-dotted border-2 rounded-2xl">
+                                    <mat-icon aria-hidden="false" class="mx-2"
+                                        [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                                    <input class="py-1 w-20 leading-relaxed" placeholder="Add Tab"
+                                        (keyup.enter)="[addSyncOptionsTab($event), $event.target.value='']">
+                                </div>
+                            </div>
+
+                            <!-- Insert Row Helper Table -->
+                            <!-- <div class="w-full col-span-4 overflow-hidden border rounded-md mb-5"
+                                *ngIf="selectedTab == 'sync_options' && selectedSyncOptionTab > -1">
+                                <div class="flex items-center bg-white py-6 px-8 justify-between">
+                                    <h1 class="m-0 text-xl font-bold whitespace-nowrap">Insert rows</h1>
+                                    <button mat-raised-button color="primary" class="px-2 mx-3"
+                                        (click)="insertNewFields(valueModal, valueOptionFormList)">Insert</button>
+                                </div>
+                                <div class="flex flex-col">
+                                    <div class="grid items-center p-4 border-b insert-record-grid-wrapper">
+                                        <div></div>
+                                        <div class="text-secondary ml-3">Source</div>
+                                        <div class="text-secondary">Value List</div>
+                                        <div class="text-secondary">Value</div>
+                                    </div>
+                                    <ng-container>
+                                        <div class="grid items-center pr-4 pl-4 py-2 border-b insert-record-grid-wrapper bg-white collapsed relative"
+                                            #target>
+                                            <div class="w-full collapse-wrapper">
+                                                <button
+                                                    class="expanded-button h-6 w-6 min-h-fit rounded-md drop-shadow-xl"
+                                                    color="primary" mat-mini-fab
+                                                    (click)="onExpandValueOptionForm(target)">
+                                                    <mat-icon aria-hidden="false" class="text-xs"
+                                                        [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                                                </button>
+                                                <button
+                                                    class="collapsed-button h-6 w-6 min-h-fit rounded-md drop-shadow-xl bg-slate-500"
+                                                    mat-mini-fab (click)="onExpandValueOptionForm(target)">
+                                                    <mat-icon aria-hidden="false" class="text-xs"
+                                                        [svgIcon]="'heroicons_outline:minus'"></mat-icon>
+                                                </button>
+                                            </div>
+                                            <div class="w-full">
+                                                <mat-select [(ngModel)]="originModal"
+                                                    (ngModelChange)="valueListModal = ''"
+                                                    class="p-2 mx-2 border rounded-md" placeholder="source">
+                                                    <mat-option [value]="'source'">
+                                                        source
+                                                    </mat-option>
+                                                    <mat-option [value]="'channel'">
+                                                        channel
+                                                    </mat-option>
+                                                    <mat-option [value]="'global'">
+                                                        global
+                                                    </mat-option>
+                                                    <mat-option [value]="'pim'">
+                                                        pim
+                                                    </mat-option>
+                                                </mat-select>
+                                            </div>
+                                            <div class="w-full">
+                                                <mat-select class="p-2 mx-2 border rounded-md"
+                                                    [(ngModel)]="valueListModal" placeholder="values list"
+                                                    (ngModelChange)="getValueOptionList()">
+                                                    <mat-option
+                                                        *ngFor="let value of (valueListDDOptions[originModal] || [])"
+                                                        [value]="value">
+                                                        {{value}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </div>
+                                            <div class="w-full">
+                                                <mat-select class="p-2 mx-2 border rounded-md max-w-[150px]"
+                                                    placeholder="values" [(ngModel)]="valueModal" multiple>
+                                                    <input [(ngModel)]="optionSearchQuery"
+                                                        class="p-3 border rounded-md w-full mb-2 sticky top-0 bg-white z-50"
+                                                        placeholder="Search...">
+                                                    <mat-option
+                                                        *ngFor="let value of valueOptionsDropdown | search:'label':optionSearchQuery"
+                                                        [value]="value">
+                                                        {{value.label}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex flex-col value-options-grid value-option-form-drop-list"
+                                            cdkDropList (cdkDropListDropped)="valueOptionsFormDropped($event)">
+                                            <div
+                                                class="grid items-center py-1 px-16 border-b value-options-grid-wrapper">
+                                                <div class="text-secondary">value_option_type</div>
+                                                <div class="text-secondary">value_option_label</div>
+                                                <div class="text-secondary">values_list_origin</div>
+                                                <div class="text-secondary">values_list</div>
+                                                <div class="text-secondary">value_type</div>
+                                                <div class="text-secondary">is child</div>
+                                                <div>
+                                                    <button mat-stroked-button color="primary"
+                                                        class="p-2 mat-icon-button rounded-md "
+                                                        (click)="addValueOptionForm()">
+                                                        <mat-icon aria-hidden="false" class="value-add-icon text-white"
+                                                            [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="option-form-drag-boundry">
+                                                <ng-container *ngIf="valueOptionFormList.length">
+                                                    <div class="grid items-center relative py-1 px-16 border-b value-options-grid-wrapper"
+                                                        *ngFor="let valueOption of valueOptionFormList; let valueOptionIndex = index;"
+                                                        cdkDrag cdkDragBoundary=".option-form-drag-boundry">
+                                                        <div
+                                                            class="absolute h-6 w-6 top-1/2 left-8 -translate-y-1/2 cursor-move">
+                                                            <mat-icon>drag_handle</mat-icon>
+                                                        </div>
+                                                        <div class="w-full">
+                                                            <mat-select class="p-2 border rounded-md"
+                                                                [(ngModel)]="valueOption.value_option_type"
+                                                                (ngModelChange)="updateValuesListInForm(valueOption.value_option_type, valueOptionIndex)"
+                                                                placeholder="value_list">
+                                                                <mat-option [value]="'values_list'">
+                                                                    values_list
+                                                                </mat-option>
+                                                                <mat-option [value]="'text_input'">
+                                                                    text_input
+                                                                </mat-option>
+                                                                <mat-option [value]="'decimal_input'">
+                                                                    decimal_input
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </div>
+                                                        <div class="w-full">
+                                                            <input [(ngModel)]="valueOption.value_option_label"
+                                                                class="p-2 border w-full rounded-md"
+                                                                name="value_option_{{valueOptionIndex}}"
+                                                                placeholder="Value">
+                                                        </div>
+                                                        <div class="w-full">
+                                                            <mat-select class="p-2 border rounded-md"
+                                                                [(ngModel)]="valueOption.values_list_origin"
+                                                                (ngModelChange)="valueOptionFormList[valueOptionIndex].values_list=''"
+                                                                placeholder="source">
+                                                                <mat-option [value]="'source'">
+                                                                    source
+                                                                </mat-option>
+                                                                <mat-option [value]="'channel'">
+                                                                    channel
+                                                                </mat-option>
+                                                                <mat-option [value]="'global'">
+                                                                    global
+                                                                </mat-option>
+                                                                <mat-option [value]="'pim'">
+                                                                    pim
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </div>
+                                                        <div class="w-full">
+                                                            <mat-select class="p-2 border rounded-md"
+                                                                *ngIf="valueOption.value_option_type == 'values_list' && (valueListDDOptions[valueOption.values_list_origin] || []).length > 0"
+                                                                [(ngModel)]="valueOption.values_list"
+                                                                placeholder="values list">
+                                                                <mat-option
+                                                                    *ngFor="let value of valueListDDOptions[valueOption.values_list_origin]"
+                                                                    [value]="value">
+                                                                    {{value}}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </div>
+                                                        <div class="w-full">
+                                                            <mat-select class="p-2 border rounded-md"
+                                                                [(ngModel)]="valueOption.value_type"
+                                                                placeholder="static">
+                                                                <mat-option [value]="'attribute'">
+                                                                    attribute
+                                                                </mat-option>
+                                                                <mat-option [value]="'advanced_attribute'">
+                                                                    advanced_attribute
+                                                                </mat-option>
+                                                                <mat-option [value]="'option'">
+                                                                    option
+                                                                </mat-option>
+                                                                <mat-option [value]="'static'">
+                                                                    static
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </div>
+                                                        <div class="w-full">
+                                                            <mat-slide-toggle [(ngModel)]="valueOption.is_child"
+                                                                [checked]="valueOption.is_child"
+                                                                [color]="'primary'"></mat-slide-toggle>
+                                                        </div>
+                                                        <div>
+                                                            <button mat-stroked-button
+                                                                class="px-2 py-2 mat-icon-button rounded-md"
+                                                                (click)="removeValuesOptionForm(valueOptionIndex)">
+                                                                <mat-icon aria-hidden="false" class="text-xs"
+                                                                    [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div> -->
+
+                            <div class="w-full col-span-4 overflow-hidden border rounded-md"
+                                *ngIf="selectedTab == 'sync_options' && selectedSyncOptionTab > -1">
+                                <div class="flex items-center bg-white py-6 px-8 justify-between">
+                                    <h1 class="m-0 text-xl font-bold whitespace-nowrap">Fields :</h1>
+                                    <div class="flex items-center">
+                                        <mat-slide-toggle class="mr-2" [(ngModel)]="is_column_shown"
+                                            [checked]="is_column_shown" [color]="'primary'">Show
+                                            Hidden</mat-slide-toggle>
+                                        <button mat-raised-button color="primary" (click)="addMappingOption()">Add
+                                            Field</button>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col" cdkDropList (cdkDropListDropped)="fieldDropped($event)">
+                                    <div class="grid items-center p-4 border-b tab-grid-wrapper"
+                                        [ngClass]="{ 'hidden-col-grid-wrapper': is_column_shown == false }">
+                                        <div></div>
+                                        <div></div>
+                                        <div class="text-secondary ml-3">code</div>
+                                        <div class="text-secondary">label</div>
+                                        <div class="text-secondary" *ngIf="is_column_shown">description</div>
+                                        <div class="text-secondary" *ngIf="is_column_shown">display conditions</div>
+                                        <div class="text-secondary">type</div>
+                                        <div class="text-secondary">required</div>
+                                        <div class="text-secondary">validated</div>
+                                        <div class="text-secondary">hidden</div>
+                                    </div>
+                                    <!-- this.formObj.sync_options[this.selectedPanelIndex].sub_sync_options[this.selectedSyncOptionTab].mapping_options -->
+                                    <ng-container
+                                        *ngFor="let field of formObj[selectedTab][selectedPanelIndex]['sub_sync_options'][selectedSyncOptionTab]?.mapping_options; let mappingOptionIndex = index;">
+                                        <div class="grid items-center pr-4 pl-4 py-2 border-b tab-grid-wrapper bg-white collapsed relative"
+                                            [ngClass]="{ 'hidden-col-grid-wrapper': is_column_shown == false }" cdkDrag
+                                            #mappingOptionItem>
+                                            <div class="cursor-move">
+                                                <mat-icon>drag_handle</mat-icon>
+                                            </div>
+                                            <div class="w-full collapse-wrapper">
+                                                <button
+                                                    class="expanded-button h-6 w-6 min-h-fit rounded-md drop-shadow-xl"
+                                                    color="primary" mat-mini-fab
+                                                    (click)="onExpandMappingOption($event, mappingOptionIndex)">
+                                                    <mat-icon aria-hidden="false" class="text-xs"
+                                                        [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                                                </button>
+                                                <button
+                                                    class="collapsed-button h-6 w-6 min-h-fit rounded-md drop-shadow-xl bg-slate-500"
+                                                    mat-mini-fab
+                                                    (click)="onExpandMappingOption($event, mappingOptionIndex)">
+                                                    <mat-icon aria-hidden="false" class="text-xs"
+                                                        [svgIcon]="'heroicons_outline:minus'"></mat-icon>
+                                                </button>
+                                            </div>
+                                            <div class="w-full">
+                                                <input [(ngModel)]="field.code" class="p-2 border rounded-md w-full"
+                                                    name="mapping_option_{{mappingOptionIndex}}" placeholder="Code...">
+                                            </div>
+                                            <div class="w-full">
+                                                <input [(ngModel)]="field.label" class="p-2 border rounded-md w-full"
+                                                    name="mapping_option_{{mappingOptionIndex}}" placeholder="Label...">
+                                            </div>
+                                            <div class="w-full" *ngIf="is_column_shown">
+                                                <input [(ngModel)]="field.description"
+                                                    class="p-2 border w-full rounded-md"
+                                                    name="mapping_option_{{mappingOptionIndex}}"
+                                                    placeholder="Description...">
+                                            </div>
+                                            <div class="w-full" *ngIf="is_column_shown">
+                                                <input [(ngModel)]="field.display_conditions"
+                                                    class="p-2 border w-full rounded-md"
+                                                    name="mapping_option_{{mappingOptionIndex}}"
+                                                    placeholder="Display Condition...">
+                                            </div>
+                                            <div class="w-full">
+                                                <mat-select class="p-2 border rounded-md" [(ngModel)]="field.type"
+                                                    placeholder="Type...">
+                                                    <mat-option [value]="'attribute'">
+                                                        attribute
+                                                    </mat-option>
+                                                    <mat-option [value]="'advanced_attribute'">
+                                                        advanced_attribute
+                                                    </mat-option>
+                                                    <mat-option [value]="'option'">
+                                                        option
+                                                    </mat-option>
+                                                    <mat-option [value]="'static'">
+                                                        static
+                                                    </mat-option>
+                                                </mat-select>
+                                            </div>
+                                            <div class="w-full">
+                                                <mat-slide-toggle [(ngModel)]="field.required"
+                                                    [checked]="field.required" [color]="'primary'"></mat-slide-toggle>
+                                            </div>
+                                            <div class="w-full">
+                                                <mat-slide-toggle [(ngModel)]="field.is_validated"
+                                                    [checked]="field.is_validated"
+                                                    [color]="'primary'"></mat-slide-toggle>
+                                            </div>
+                                            <div class="w-full">
+                                                <mat-slide-toggle [(ngModel)]="field.is_hidden"
+                                                    [checked]="field.is_hidden" [color]="'primary'"></mat-slide-toggle>
+                                            </div>
+                                            <div>
+                                                <button mat-stroked-button class="px-2 py-2 mat-icon-button rounded-md"
+                                                    (click)="removeMappingOption(mappingOptionIndex)">
+                                                    <mat-icon aria-hidden="false" class="text-xs"
+                                                        [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-col value-options-grid" cdkDropList
+                                            (cdkDropListDropped)="fieldDropped($event)">
+                                            <div
+                                                class="grid items-center py-1 px-16 border-b value-options-grid-wrapper mapping-option-drop-list">
+                                                <div class="text-secondary">value_option_type</div>
+                                                <div class="text-secondary">value_option_label</div>
+                                                <div class="text-secondary">values_list_origin</div>
+                                                <div class="text-secondary">values_list</div>
+                                                <div class="text-secondary">value_type</div>
+                                                <div class="text-secondary">is child</div>
+                                                <div>
+                                                    <button mat-stroked-button color="primary"
+                                                        class="p-2 mat-icon-button rounded-md "
+                                                        (click)="addValueOption(mappingOptionIndex)">
+                                                        <mat-icon aria-hidden="false" class="value-add-icon text-white"
+                                                            [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="option-drag-boundry">
+                                                <ng-container *ngIf="field.value_options.length">
+                                                    <div class="grid items-center relative py-1 px-16 border-b value-options-grid-wrapper"
+                                                        *ngFor="let valueOption of field.value_options; let valueOptionIndex = index;"
+                                                        cdkDrag cdkDragBoundary=".option-drag-boundry"
+                                                        (cdkDragStarted)="mappingOptionDragStart(mappingOptionIndex)">
+                                                        <div
+                                                            class="absolute h-6 w-6 top-1/2 left-8 -translate-y-1/2 cursor-move">
+                                                            <mat-icon>drag_handle</mat-icon>
+                                                        </div>
+                                                        <div class="w-full">
+                                                            <mat-select class="p-2 border rounded-md"
+                                                                [(ngModel)]="valueOption.value_option_type"
+                                                                (ngModelChange)="updateValuesList(valueOption.value_option_type, valueOptionIndex, mappingOptionIndex)"
+                                                                placeholder="value_list">
+                                                                <mat-option [value]="'values_list'">
+                                                                    values_list
+                                                                </mat-option>
+                                                                <mat-option [value]="'text_input'">
+                                                                    text_input
+                                                                </mat-option>
+                                                                <mat-option [value]="'decimal_input'">
+                                                                    decimal_input
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </div>
+                                                        <div class="w-full">
+                                                            <input [(ngModel)]="valueOption.value_option_label"
+                                                                class="p-2 border w-full rounded-md"
+                                                                name="value_option_{{valueOptionIndex}}"
+                                                                placeholder="Value">
+                                                        </div>
+                                                        <div class="w-full">
+                                                            <mat-select class="p-2 border rounded-md"
+                                                                [(ngModel)]="valueOption.values_list_origin"
+                                                                (ngModelChange)="resetValuesList(valueOptionIndex, mappingOptionIndex)"
+                                                                placeholder="source">
+                                                                <mat-option [value]="'source'">
+                                                                    source
+                                                                </mat-option>
+                                                                <mat-option [value]="'channel'">
+                                                                    channel
+                                                                </mat-option>
+                                                                <mat-option [value]="'global'">
+                                                                    global
+                                                                </mat-option>
+                                                                <mat-option [value]="'pim'">
+                                                                    pim
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </div>
+                                                        <div class="w-full">
+                                                            <!-- {{valueListDDOptions[valueOption.values_list_origin] |
+                                                            json}} -->
+                                                            <mat-select class="p-2 border rounded-md"
+                                                                *ngIf="valueOption.value_option_type == 'values_list' && (valueListDDOptions?.[valueOption.values_list_origin] || []).length > 0"
+                                                                [(ngModel)]="valueOption.values_list"
+                                                                placeholder="values list">
+                                                                <mat-option
+                                                                    *ngFor="let value of valueListDDOptions[valueOption.values_list_origin]"
+                                                                    [value]="value">
+                                                                    {{value}}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </div>
+                                                        <div class="w-full">
+                                                            <mat-select class="p-2 border rounded-md"
+                                                                [(ngModel)]="valueOption.value_type"
+                                                                placeholder="static">
+                                                                <mat-option [value]="'attribute'">
+                                                                    attribute
+                                                                </mat-option>
+                                                                <mat-option [value]="'advanced_attribute'">
+                                                                    advanced_attribute
+                                                                </mat-option>
+                                                                <mat-option [value]="'option'">
+                                                                    option
+                                                                </mat-option>
+                                                                <mat-option [value]="'static'">
+                                                                    static
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </div>
+                                                        <div class="w-full">
+                                                            <mat-slide-toggle [(ngModel)]="valueOption.is_child"
+                                                                [checked]="valueOption.is_child"
+                                                                [color]="'primary'"></mat-slide-toggle>
+                                                        </div>
+                                                        <div>
+                                                            <button mat-stroked-button
+                                                                class="px-2 py-2 mat-icon-button rounded-md"
+                                                                (click)="removeValuesOption(mappingOptionIndex, valueOptionIndex, mappingOptionIndex)">
+                                                                <mat-icon aria-hidden="false" class="text-xs"
+                                                                    [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+
+                                    </ng-container>
+                                </div>
+                            </div>
+
+
+                        </ng-container>
+
+                        <!-- Divider -->
+                        <div class="my-10 border-t"></div>
+                        <!-- Action buttons -->
+                        <div class="flex items-center justify-end">
+                            <button mat-stroked-button type="button" (click)="fuseDrawerOpened = false">Cancel</button>
+                            <button class="ml-4" mat-flat-button type="button" [color]="'primary'"
+                                (click)="saveSourceSyncForm()">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </mat-drawer-content>
+
+                <mat-drawer class="w-[77%] dark:bg-gray-900 shrink-0" [opened]="jsonDrawerOpened" [position]="'end'"
+                    [autoFocus]="true" [mode]="'over'" (closedStart)="jsonDrawerOpened = false" #jsondrawer>
+                    <div class="w-full p-4">
+                        <span class="" #formJSON [cdkCopyToClipboard]="formObjectStringified"></span>
+                        <div class="flex w-full justify-between p-4">
+                            <div class="flex flex-wrap">
+                                <button mat-stroked-button class="mr-1 mb-2 text-green-400" (click)="importJSON()">
+                                    <mat-icon aria-hidden="false" class="mr-2 text-green-400"
+                                        [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                                    Import Form
+                                </button>
+                                <button mat-stroked-button class="mr-2 mb-2" color="primary" (click)="formJSON.click()">
+                                    <mat-icon aria-hidden="false" class="mr-2" [svgIcon]="'feather:copy'"></mat-icon>
+                                    Copy
+                                </button>
+
+                                <button mat-stroked-button class="text-red-400" class="mr-2 mb-2"
+                                    (click)="jsonDrawerOpened = false">
+                                    <mat-icon aria-hidden="false" class="mr-2 text-red-400"
+                                        [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                    Close
+                                </button>
+                            </div>
+                            <div class="flex">
+                                <button mat-stroked-button class="mx-4" color="primary" (click)="formatJOSN()">
+                                    <mat-icon svgIcon="feather:align-left" class="mr-2"></mat-icon>
+                                    Beautify
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="formJSON" #jsonInput placeholder="Import JSON" [(ngModel)]="formObjectStringified"
+                            class="w-full h-[80vh] border-2 rounded-[5px] p-4"></textarea>
+                    </div>
+                </mat-drawer>
+            </mat-drawer-container>
+        </div>
+    </fuse-drawer>
+</ng-container>
+<!-- Copy element value container -->

@@ -1,364 +1,299 @@
-<div
-  class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
-  <!-- Header -->
-  <div
-    class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
-    <!-- Loader -->
-    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
-      <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
-    </div>
-    <!-- Title -->
-    <div class="text-4xl font-extrabold tracking-tight">Sources</div>
-    <!-- Actions -->
-    <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
-      <!-- Search -->
-      <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript min-w-64">
-        <mat-icon
-          class="icon-size-5"
-          matPrefix
-          [svgIcon]="'heroicons_solid:search'"></mat-icon>
-        <input
-          matInput
-          [formControl]="searchInputControl"
-          [autocomplete]="'off'"
-          [placeholder]="'Search source or source ID'" />
-      </mat-form-field>
-      <!-- Add source button -->
-      <button
-        class="ml-4"
-        mat-flat-button
-        [color]="'primary'"
-        (click)="createSource()">
-        <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-        <span class="ml-2 mr-1">Add Source</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Main -->
-  <div class="flex flex-auto overflow-hidden">
-    <!-- sources list -->
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+    <!-- Header -->
     <div
-      class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
-      <ng-container *ngIf="sources$ | async as sources">
-        <ng-container *ngIf="sources.length > 0; else noSources">
-          <div class="grid">
-            <!-- Header -->
-            <div
-              class="sources-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
-              matSort
-              matSortDisableClear>
-              <div [mat-sort-header]="'id'">Source ID</div>
-              <div class="hidden md:block">Name</div>
-              <div class="hidden sm:block">Live</div>
-              <div class="hidden sm:block">Date Created</div>
-              <div class="hidden sm:block">Date Updated</div>
-              <div class="hidden sm:block">Installed</div>
-              <div class="hidden sm:block">Details</div>
-            </div>
-            <!-- Rows -->
-            <ng-container *ngIf="sources$ | async as sources">
-              <ng-container *ngFor="let source of sources; trackBy: trackByFn">
-                <div
-                  class="sources-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
-                  <!-- Source ID -->
-                  <div class="hidden md:block truncate">
-                    {{ source.source_id }}
-                  </div>
-
-                  <!-- Source Name -->
-                  <div class="hidden md:block truncate">
-                    {{ source.name }}
-                  </div>
-
-                  <!-- Status -->
-                  <div class="hidden lg:block">
-                    <ng-container *ngIf="source.active_status">
-                      <mat-icon
-                        class="text-green-400 icon-size-5"
-                        [svgIcon]="'heroicons_solid:check'"></mat-icon>
-                    </ng-container>
-                    <ng-container *ngIf="!source.active_status">
-                      <mat-icon
-                        class="text-gray-400 icon-size-5"
-                        [svgIcon]="'heroicons_solid:x'"></mat-icon>
-                    </ng-container>
-                  </div>
-
-                  <!-- Date Created -->
-                  <div class="hidden md:block truncate">
-                    {{
-                      source.created_at
-                        ? (source.created_at | date: 'dd/MM/yyyy')
-                        : '-'
-                    }}
-                  </div>
-
-                  <!-- Date Updated -->
-                  <div class="hidden md:block truncate">
-                    {{
-                      source.updated_at
-                        ? (source.updated_at | date: 'dd/MM/yyyy')
-                        : '-'
-                    }}
-                  </div>
-
-                  <!-- Installed Instances -->
-                  <div class="hidden md:block truncate">
-                    {{ source.installed_instances }}
-                  </div>
-
-                  <!-- Details button -->
-                  <div>
-                    <button
-                      class="min-w-10 min-h-7 h-7 px-2 leading-6"
-                      mat-stroked-button
-                      (click)="toggleDetails(source.source_id)">
-                      <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="
-                          selectedSource?.source_id === source.source_id
-                            ? 'heroicons_solid:chevron-up'
-                            : 'heroicons_solid:chevron-down'
-                        "></mat-icon>
-                    </button>
-                  </div>
-                </div>
-                <div class="grid">
-                  <ng-container
-                    *ngIf="selectedSource?.source_id === source.source_id">
-                    <ng-container
-                      *ngTemplateOutlet="
-                        rowDetailsTemplate;
-                        context: {
-                          $implicit: selectedSource
-                        }
-                      "></ng-container>
-                  </ng-container>
-                </div>
-              </ng-container>
-            </ng-container>
-          </div>
-
-          <mat-paginator
-            class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
-            [ngClass]="{ 'pointer-events-none': isLoading }"
-            [length]="pagination.length"
-            [pageIndex]="pagination.page"
-            [pageSize]="pagination.size"
-            [pageSizeOptions]="[5, 10, 25, 100]"
-            [showFirstLastButtons]="true"></mat-paginator>
-        </ng-container>
-      </ng-container>
-
-      <ng-template #rowDetailsTemplate let-source>
-        <div class="shadow-lg overflow-hidden">
-          <div class="flex border-b">
-            <!-- Selected source form -->
-            <form class="flex flex-col w-full" [formGroup]="selectedSourceForm">
-              <div class="flex flex-col sm:flex-row p-8">
-                <!-- Source status -->
-                <div class="flex flex-col justify-between">
-                  <div class="flex flex-col">
-                    <span class="font-semibold mb-2">Active</span>
-                    <mat-slide-toggle
-                      [formControlName]="'active_status'"
-                      [color]="'primary'">
-                      {{
-                        selectedSourceForm.get('active_status').value
-                          ? 'Active'
-                          : 'Disabled'
-                      }}
-                    </mat-slide-toggle>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="font-semibold mb-2">IsBeta</span>
-                    <mat-slide-toggle
-                      [formControlName]="'is_beta'"
-                      [checked]="false"
-                      [color]="'primary'">
-                      {{
-                        selectedSourceForm.get('is_beta').value
-                          ? 'Active'
-                          : 'Disabled'
-                      }}
-                    </mat-slide-toggle>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="font-semibold mb-2">IsCustom</span>
-                    <mat-slide-toggle
-                      [formControlName]="'is_custom'"
-                      [color]="'primary'">
-                      {{
-                        selectedSourceForm.get('is_custom').value
-                          ? 'Active'
-                          : 'Disabled'
-                      }}
-                    </mat-slide-toggle>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="font-semibold mb-2">Test Connection</span>
-                    <mat-slide-toggle
-                      [formControlName]="'force_connection_test'"
-                      [color]="'primary'">
-                      {{
-                        selectedSourceForm.get('force_connection_test').value
-                          ? 'Active'
-                          : 'Disabled'
-                      }}
-                    </mat-slide-toggle>
-                  </div>
-                  <div class="flex flex-col">
-                    <span class="font-semibold mb-2">Need Auth</span>
-                    <mat-slide-toggle
-                      [formControlName]="'need_auth'"
-                      [color]="'primary'">
-                      {{
-                        selectedSourceForm.get('need_auth').value
-                          ? 'Active'
-                          : 'Disabled'
-                      }}
-                    </mat-slide-toggle>
-                  </div>
-                </div>
-
-                <div class="flex flex-auto flex-wrap">
-                  <!-- Name, Description & etc. -->
-                  <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
-                    <!-- Name -->
-                    <mat-form-field class="w-full">
-                      <mat-label>Name</mat-label>
-                      <input matInput [formControlName]="'name'" />
-                      <mat-error>Source name is required</mat-error>
-                    </mat-form-field>
-                    <!-- Description -->
-                    <mat-form-field class="w-full">
-                      <mat-label>Description</mat-label>
-                      <input matInput [formControlName]="'description'" />
-                    </mat-form-field>
-
-                    <!-- File Upload -->
-                    <div class="flex">
-                      <mat-form-field class="w-1/3 pr-2">
-                        <mat-label>Logo</mat-label>
-                        <input matInput [formControlName]="'icon'" />
-                      </mat-form-field>
-                      <mat-form-field class="w-2/3 pl-2">
-                        <mat-label>Source Platform</mat-label>
-                        <input matInput [formControlName]="'source_platform'" />
-                        <mat-error>Source Platform is required</mat-error>
-                      </mat-form-field>
-                    </div>
-                  </div>
-
-                  <!-- Tags -->
-                  <div class="flex justify-between w-1/2">
-                    <!-- Restricted to companies -->
-                    <div class="flex flex-col w-full sm:pl-8">
-                      <!-- Tags -->
-                      <span class="mb-px font-medium leading-tight"
-                        >Restricted to companies</span
-                      >
-                      <div
-                        class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
-                        <!-- Header -->
-                        <div class="flex items-center -my-px py-2 px-3">
-                          <div class="flex items-center flex-auto min-w-0">
-                            <mat-icon
-                              class="icon-size-5"
-                              [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                            <input
-                              class="min-w-0 ml-2 py-1 border-0"
-                              type="text"
-                              placeholder="Search company"
-                              (input)="filterRestrictedToCompanyTags($event)"
-                              (keydown)="
-                                filterRestrictedToCompanyTagsInputKeyDown(
-                                  $event
-                                )
-                              "
-                              [maxLength]="50"
-                              #newTagInput />
-                          </div>
-                        </div>
-                        <!-- Available tags -->
-                        <div
-                          class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
-                          <!-- Tags -->
-                          <ng-container
-                            *ngFor="
-                              let tag of filteredRestrictedToCompanyTags;
-                              trackBy: trackByFn
-                            ">
-                            <mat-checkbox
-                              class="flex items-center h-10 min-h-10 px-4"
-                              [color]="'primary'"
-                              [checked]="
-                                selectedSource.restricted_to_companies?.includes(
-                                  tag.id
-                                )
-                              "
-                              (change)="
-                                toggleRestricedToCompanyTag(tag, $event)
-                              ">
-                              {{ tag.title }}
-                            </mat-checkbox>
-                          </ng-container>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                class="flex items-center justify-between w-full border-t px-8 py-4">
-                <button
-                  class="-ml-4"
-                  mat-button
-                  [color]="'warn'"
-                  (click)="deleteSelectedSource()">
-                  Delete
-                </button>
-                <div class="flex items-center">
-                  <div class="flex items-center mr-4" *ngIf="flashMessage">
-                    <ng-container *ngIf="flashMessage === 'success'">
-                      <mat-icon
-                        class="text-green-500"
-                        [svgIcon]="'heroicons_outline:check'"></mat-icon>
-                      <span class="ml-2">Source updated</span>
-                    </ng-container>
-                    <ng-container *ngIf="flashMessage === 'error'">
-                      <mat-icon
-                        class="text-red-500"
-                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
-                      <span class="ml-2">{{ errorMsg }}</span>
-                    </ng-container>
-                  </div>
-                  <button
-                    mat-flat-button
-                    [color]="'primary'"
-                    [disabled]="selectedSourceForm.invalid"
-                    (click)="updateSelectedSource()">
-                    Update
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
+        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        <!-- Loader -->
+        <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
         </div>
-      </ng-template>
-
-      <ng-template #noSources>
-        <div
-          class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
-          There are no sources!
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Sources</div>
+        <!-- Actions -->
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <!-- Search -->
+            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript min-w-64">
+                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                    [placeholder]="'Search source or source ID'" />
+            </mat-form-field>
+            <!-- Add source button -->
+            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createSource()">
+                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                <span class="ml-2 mr-1">Add Source</span>
+            </button>
         </div>
-      </ng-template>
     </div>
-  </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
+        <!-- sources list -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+            <ng-container *ngIf="sources$ | async as sources">
+                <ng-container *ngIf="sources.length > 0; else noSources">
+                    <div class="grid">
+                        <!-- Header -->
+                        <div class="sources-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            matSort matSortDisableClear>
+                            <div [mat-sort-header]="'id'">Source ID</div>
+                            <div class="hidden md:block">Name</div>
+                            <div class="hidden sm:block">Live</div>
+                            <div class="hidden sm:block">Date Created</div>
+                            <div class="hidden sm:block">Date Updated</div>
+                            <div class="hidden sm:block">Installed</div>
+                            <div class="hidden sm:block">Details</div>
+                        </div>
+                        <!-- Rows -->
+                        <ng-container *ngIf="sources$ | async as sources">
+                            <ng-container *ngFor="let source of sources; trackBy: trackByFn">
+                                <div class="sources-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                    <!-- Source ID -->
+                                    <div class="hidden md:block truncate">
+                                        {{ source.source_id }}
+                                    </div>
+
+                                    <!-- Source Name -->
+                                    <div class="hidden md:block truncate">
+                                        {{ source.name }}
+                                    </div>
+
+                                    <!-- Status -->
+                                    <div class="hidden lg:block">
+                                        <ng-container *ngIf="source.active_status">
+                                            <mat-icon class="text-green-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                                        </ng-container>
+                                        <ng-container *ngIf="!source.active_status">
+                                            <mat-icon class="text-gray-400 icon-size-5"
+                                                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                                        </ng-container>
+                                    </div>
+
+                                    <!-- Date Created -->
+                                    <div class="hidden md:block truncate">
+                                        {{
+                                        source.created_at
+                                        ? (source.created_at | date: 'dd/MM/yyyy')
+                                        : '-'
+                                        }}
+                                    </div>
+
+                                    <!-- Date Updated -->
+                                    <div class="hidden md:block truncate">
+                                        {{
+                                        source.updated_at
+                                        ? (source.updated_at | date: 'dd/MM/yyyy')
+                                        : '-'
+                                        }}
+                                    </div>
+
+                                    <!-- Installed Instances -->
+                                    <div class="hidden md:block truncate">
+                                        {{ source.installed_instances }}
+                                    </div>
+
+                                    <!-- Details button -->
+                                    <div>
+                                        <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button
+                                            (click)="toggleDetails(source.source_id)">
+                                            <mat-icon class="icon-size-5"
+                                                [svgIcon]=" selectedSource?.source_id === source.source_id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down' "></mat-icon>
+                                        </button>
+                                        <button (click)="onViewSource(source)" class="ml-2 hover:text-primary"
+                                            mat-icon-button>
+                                            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="grid">
+                                    <ng-container *ngIf="selectedSource?.source_id === source.source_id">
+                                        <ng-container
+                                            *ngTemplateOutlet=" rowDetailsTemplate; context: { $implicit: selectedSource } "></ng-container>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+
+                    <mat-paginator
+                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                        [ngClass]="{ 'pointer-events-none': isLoading }" [length]="pagination.length"
+                        [pageIndex]="pagination.page" [pageSize]="pagination.size" [pageSizeOptions]="[5, 10, 25, 100]"
+                        [showFirstLastButtons]="true"></mat-paginator>
+                </ng-container>
+            </ng-container>
+
+            <ng-template #rowDetailsTemplate let-source>
+                <div class="shadow-lg overflow-hidden">
+                    <div class="flex border-b">
+                        <!-- Selected source form -->
+                        <form class="flex flex-col w-full" [formGroup]="selectedSourceForm">
+                            <div class="flex flex-col sm:flex-row p-8">
+                                <!-- Source status -->
+                                <div class="flex flex-col justify-between">
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold mb-2">Active</span>
+                                        <mat-slide-toggle [formControlName]="'active_status'" [color]="'primary'">
+                                            {{
+                                            selectedSourceForm.get('active_status').value
+                                            ? 'Active'
+                                            : 'Disabled'
+                                            }}
+                                        </mat-slide-toggle>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold mb-2">IsBeta</span>
+                                        <mat-slide-toggle [formControlName]="'is_beta'" [checked]="false"
+                                            [color]="'primary'">
+                                            {{
+                                            selectedSourceForm.get('is_beta').value
+                                            ? 'Active'
+                                            : 'Disabled'
+                                            }}
+                                        </mat-slide-toggle>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold mb-2">IsCustom</span>
+                                        <mat-slide-toggle [formControlName]="'is_custom'" [color]="'primary'">
+                                            {{
+                                            selectedSourceForm.get('is_custom').value
+                                            ? 'Active'
+                                            : 'Disabled'
+                                            }}
+                                        </mat-slide-toggle>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold mb-2">Test Connection</span>
+                                        <mat-slide-toggle [formControlName]="'force_connection_test'"
+                                            [color]="'primary'">
+                                            {{
+                                            selectedSourceForm.get('force_connection_test').value
+                                            ? 'Active'
+                                            : 'Disabled'
+                                            }}
+                                        </mat-slide-toggle>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold mb-2">Need Auth</span>
+                                        <mat-slide-toggle [formControlName]="'need_auth'" [color]="'primary'">
+                                            {{
+                                            selectedSourceForm.get('need_auth').value
+                                            ? 'Active'
+                                            : 'Disabled'
+                                            }}
+                                        </mat-slide-toggle>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-auto flex-wrap">
+                                    <!-- Name, Description & etc. -->
+                                    <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+                                        <!-- Name -->
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Name</mat-label>
+                                            <input matInput [formControlName]="'name'" />
+                                            <mat-error>Source name is required</mat-error>
+                                        </mat-form-field>
+                                        <!-- Description -->
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Description</mat-label>
+                                            <input matInput [formControlName]="'description'" />
+                                        </mat-form-field>
+
+                                        <!-- File Upload -->
+                                        <div class="flex">
+                                            <mat-form-field class="w-1/3 pr-2">
+                                                <mat-label>Logo</mat-label>
+                                                <input matInput [formControlName]="'icon'" />
+                                            </mat-form-field>
+                                            <mat-form-field class="w-2/3 pl-2">
+                                                <mat-label>Source Platform</mat-label>
+                                                <input matInput [formControlName]="'source_platform'" />
+                                                <mat-error>Source Platform is required</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tags -->
+                                    <div class="flex justify-between w-1/2">
+                                        <!-- Restricted to companies -->
+                                        <div class="flex flex-col w-full sm:pl-8">
+                                            <!-- Tags -->
+                                            <span class="mb-px font-medium leading-tight">Restricted to companies</span>
+                                            <div
+                                                class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
+                                                <!-- Header -->
+                                                <div class="flex items-center -my-px py-2 px-3">
+                                                    <div class="flex items-center flex-auto min-w-0">
+                                                        <mat-icon class="icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                                                        <input class="min-w-0 ml-2 py-1 border-0" type="text"
+                                                            placeholder="Search company"
+                                                            (input)="filterRestrictedToCompanyTags($event)"
+                                                            (keydown)=" filterRestrictedToCompanyTagsInputKeyDown( $event ) "
+                                                            [maxLength]="50" #newTagInput />
+                                                    </div>
+                                                </div>
+                                                <!-- Available tags -->
+                                                <div
+                                                    class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
+                                                    <!-- Tags -->
+                                                    <ng-container
+                                                        *ngFor=" let tag of filteredRestrictedToCompanyTags; trackBy: trackByFn ">
+                                                        <mat-checkbox class="flex items-center h-10 min-h-10 px-4"
+                                                            [color]="'primary'"
+                                                            [checked]=" selectedSource.restricted_to_companies?.includes( tag.id ) "
+                                                            (change)=" toggleRestricedToCompanyTag(tag, $event) ">
+                                                            {{ tag.title }}
+                                                        </mat-checkbox>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between w-full border-t px-8 py-4">
+                                <button class="-ml-4" mat-button [color]="'warn'" (click)="deleteSelectedSource()">
+                                    Delete
+                                </button>
+                                <div class="flex items-center">
+                                    <div class="flex items-center mr-4" *ngIf="flashMessage">
+                                        <ng-container *ngIf="flashMessage === 'success'">
+                                            <mat-icon class="text-green-500"
+                                                [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                                            <span class="ml-2">Source updated</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="flashMessage === 'error'">
+                                            <mat-icon class="text-red-500" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                                            <span class="ml-2">{{ errorMsg }}</span>
+                                        </ng-container>
+                                    </div>
+                                    <button mat-flat-button [color]="'primary'" [disabled]="selectedSourceForm.invalid"
+                                        (click)="updateSelectedSource()">
+                                        Update
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-template #noSources>
+                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
+                    There are no sources!
+                </div>
+            </ng-template>
+        </div>
+    </div>
 </div>
 
 <ng-container *ngIf="openAddSource">
-  <eco-admin-add-source (cancel)="cancelCreateSource()"></eco-admin-add-source
-></ng-container>
+    <eco-admin-add-source (cancel)="cancelCreateSource()"></eco-admin-add-source></ng-container>
+
+
+<ng-container *ngIf="viewSource">
+    <eco-add-source-form [isOpen]="viewSource" [selectedSource]="selectedSourceForView"
+        (cancel)="cancelSourceForm()"></eco-add-source-form>
+</ng-container>
