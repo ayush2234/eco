@@ -44,6 +44,9 @@ export class UserGuard implements CanActivate {
       (url.match('/user/dashboard/integration-status') ||
         url.match('/user/dashboard/products') ||
         url.match('/user/sync-logs/products') ||
+        url.match('/user/sync-logs/product') ||
+        //url.match('/user/sync-logs/product/productDetails') ||
+        //url.match('/user/sync-logs/product/productDetails/productAttribute') ||
         url.match('/user/sync-logs/orders')) &&
       (role === 'masterUser' ||
         role === 'user' ||

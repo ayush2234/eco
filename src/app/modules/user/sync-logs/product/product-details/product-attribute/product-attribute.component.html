@@ -1,0 +1,224 @@
+<div class="a">
+    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        <!-- Loader -->
+        <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+            <mat-progress-bar [mode]="'query'"></mat-progress-bar>
+        </div>
+           <!-- Title -->
+        <div class="flex flex-col">
+            <div class="text-4xl font-extrabold tracking-tight">Product</div>
+            <div class="flex flex-shrink-0 items-center mt-6">
+               <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript min-w-50 mr-2">
+                <mat-label>Filter the list</mat-label>
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search..." />
+                <mat-icon
+                class="icon-size-5"
+                matSuffix
+                [svgIcon]="'heroicons_solid:search'"></mat-icon>
+              </mat-form-field>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="aa">
+    <div class="flex flex-auto overflow-hidden">
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+              <mat-table [dataSource]="dataSource" matSort>
+  
+                  <ng-container matColumnDef="date_created">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Date Created </mat-header-cell>
+                      <mat-cell *matCellDef="let element"> {{ element.date_created }} </mat-cell>
+                  </ng-container>
+  
+                  <ng-container matColumnDef="integration">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Integration </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                          <div class="flex items-center pb-0 space-x-4">
+                              <div class="flex-shrink-0">
+                                <img
+                                  class="w-10 h-10 rounded-full"
+                                  [src]="element.integration.integration.logo"
+                                  alt="Source Icon" />
+                              </div>
+                              <div class="flex-1 min-w-0">
+                                <!-- Integration name -->
+                                <p
+                                  class="font-medium text-gray-900 truncate dark:text-white">
+                                  {{ element.integration.integration.name }}
+                                </p>
+                                <p
+                                  class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                  {{ element.integration.integration_instance.name }}
+                                </p>
+                              </div>
+                            </div>
+                      </mat-cell>
+                  </ng-container>
+  
+                  <ng-container matColumnDef="syncStatus">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Sync Status </mat-header-cell>
+                      <mat-cell *matCellDef="let element">                      
+                          <div class="flex items-center g-[4px]">
+                              <div
+                              class="flex-0 w-2 h-2 rounded-full"
+                              [ngStyle]="{
+                                  backgroundColor: getStatus(element.syncStatus)
+                              }"></div>
+                              <button
+                              class="text-white p-1 w-20 rounded-md ml-1"
+                              [ngStyle]="{
+                                  backgroundColor: getStatus(element.syncStatus)
+                              }">
+                              {{ element.syncStatus }}
+                              </button>
+                          </div>
+                      </mat-cell>
+                  </ng-container>
+  
+                  <ng-container matColumnDef="syncLifecycle">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Sync Lifecycle </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                          <div class="hidden sm:block truncate">
+                              <button
+                                class="text-white p-1 w-36 rounded-md ml-1"
+                                [ngStyle]="{
+                                  backgroundColor:
+                                  element.syncLifecycl === 'Completed'
+                                      ? '#7cd99b'
+                                      : '#7b81ed'
+                                }">
+                                {{ element.syncLifecycle }}
+                              </button>
+                            </div>
+                      </mat-cell>
+                  </ng-container>
+                   
+                  <ng-container matColumnDef="sourceOrderID">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Source Order ID </mat-header-cell>
+                      <mat-cell *matCellDef="let element"> 
+                          <div class="hidden md:block truncate">
+                              <p>{{ element.sourceOrderID.order_id }}</p>
+                              <p
+                                class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                {{ element.sourceOrderID.status }}
+                              </p>
+                          </div>
+                      </mat-cell>
+                  </ng-container>
+  
+                  <ng-container matColumnDef="channelOrderID">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Channel Order ID </mat-header-cell>
+                      <mat-cell *matCellDef="let element"> 
+                          <div class="hidden md:block truncate">
+                              <p class="hidden md:block truncate">
+                                {{ element.channelOrderID.order_id }}
+                              </p>
+                              <p
+                                class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                {{ element.channelOrderID.status }}
+                              </p>
+                          </div>
+                      </mat-cell>
+                  </ng-container>
+  
+                  <ng-container matColumnDef="items">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Items </mat-header-cell>
+                      <mat-cell *matCellDef="let element" >
+                          <div class="hidden md:block truncate">
+                              <p
+                                class="hidden md:block truncate"
+                                *ngFor="let item of element.items">
+                                {{ item.qty }} X {{ item.sku }}({{ item.name }})
+                              </p>
+                            </div>
+                      </mat-cell>
+                  </ng-container>
+                   
+                  <ng-container matColumnDef="shipment">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Shipment </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                          <div class="hidden md:block truncate">
+                              <p
+                                class="hidden md:block truncate"
+                                *ngFor="let item of element.shipment">
+                                {{ item.carrier }} {{ item.carrier_tracking }}
+                              </p>
+                            </div>
+                      </mat-cell>
+                  </ng-container>
+  
+                  <ng-container matColumnDef="shipmentStatus">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Shipment Status </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                          <div class="hidden md:block truncate">
+                              <p
+                                class="hidden md:block truncate"
+                                *ngFor="let item of element.shipmentStatus">
+                                {{ item.carrier_tracking_status }}
+                              </p>
+                            </div>
+                      </mat-cell>
+                  </ng-container>
+  
+                  <ng-container matColumnDef="actionRequired">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Action Required </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                          <div class="hidden lg:block">
+                              <ng-container *ngIf="element.actionRequired.action_required">
+                                <mat-icon
+                                  class="text-[#de3a3a] icon-size-5"
+                                  [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                              </ng-container>
+                              <ng-container *ngIf="!element.actionRequired.action_required">
+                                <mat-icon
+                                  class="text-gray-400 icon-size-5"
+                                  [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                              </ng-container>
+                            </div>
+                      </mat-cell>
+                  </ng-container>
+  
+                  <ng-container matColumnDef="details">
+                      <mat-header-cell *matHeaderCellDef mat-sort-header> Details </mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                          <div class="flex flex-row justify-between">
+                              <div>
+                                <button
+                                  class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-[6px]"
+                                  mat-stroked-button routerLink="/user/sync-logs/product/productDetails">
+                                  View
+                                </button>
+                              </div>
+                              <div *ngIf="element.details.status !== 'Error'">
+                                <button
+                                  class="min-w-18 min-h-7 h-7 px-2 leading-6"
+                                  mat-stroked-button>
+                                  Resync
+                                </button>
+                              </div>
+                              <div *ngIf="element.details.status === 'Error'">
+                                <button
+                                  class="min-w-18 min-h-7 h-7 px-2 leading-6"
+                                  mat-flat-button
+                                  color="primary">
+                                  Sync
+                                </button>
+                              </div>
+                          </div>
+                      </mat-cell>
+                  </ng-container>
+  
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+              </mat-table>
+          </div>
+          </div>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                          [ngClass]="{ 'pointer-events-none': isLoading }"
+                          showFirstLastButtons
+                          aria-label="Select page of periodic elements">
+          </mat-paginator>
+  
+</div>
+
+

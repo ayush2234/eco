@@ -150,4 +150,11 @@ export const masterUserNavigationItems: FuseNavigationItem[] = [
     // icon: 'heroicons_outline:user-group',
     link: '/user/sync-logs/orders',
   },
+  {
+    id: 'sync-logs.product',
+    title: 'Product',
+    type: 'basic',
+    // icon: 'heroicons_outline:shopping-cart',
+    link: '/user/sync-logs/product',
+  }
 ];

@@ -1,0 +1,14 @@
+<div>
+    <div class="comp">
+        <div>
+            <a routerLink="/user/sync-logs/product"><mat-icon class="mat-icon">arrow_back</mat-icon> All Product        |</a>
+            <a  routerLink="/user/sync-logs/product/productDetails/productAttribute"  routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">Attributes   |</a>
+            <a  routerLink="/user/sync-logs/product/productDetails/productAssets"  routerLinkActive="active-link" >Assets</a>    
+        </div>
+    </div>
+    <div >
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+

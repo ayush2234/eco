@@ -5,6 +5,7 @@ import { SyncLogsOrdersComponent } from './orders/orders.component';
 import { SyncLogsProductsComponent } from './products/products.component';
 import { SyncLogsResolver } from '../../user/sync-logs/sync-logs.resolvers';
 import { SyncLogsTrackingComponent } from './tracking/tracking.component';
+import { SyncLogsProductComponent } from '../../user/sync-logs/product/product.component';
 
 const routes: Routes = [
   {

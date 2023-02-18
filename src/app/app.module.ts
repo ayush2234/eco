@@ -14,6 +14,7 @@ import { AppComponent } from 'app/app.component';
 import { appRoutes } from 'app/app.routing';
 import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
 import { NotAuthorizedComponent } from './modules/not-authorized/not-authorized.component';
+import { MatTableModule } from '@angular/material/table';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -39,7 +40,7 @@ const routerConfig: ExtraOptions = {
     LayoutModule,
 
     // 3rd party modules that require global configuration via forRoot
-    MarkdownModule.forRoot({}),
+    MarkdownModule.forRoot({})
   ],
   bootstrap: [AppComponent],
 })

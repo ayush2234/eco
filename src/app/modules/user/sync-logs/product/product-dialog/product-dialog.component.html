@@ -1,0 +1,20 @@
+
+<div class="element">
+    <mat-icon style="cursor: pointer; float: right; margin-top: 4px;"(click)="onCancel()">close</mat-icon>
+    <h1 mat-dialog-title>Load filters from list</h1>
+</div>
+<div mat-dialog-content>
+  <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript min-w-50 mr-2">
+    <mat-label>Filter the list</mat-label>   
+    <input matInput (keyup)="data.name = $event.target.value" placeholder="Search..." />
+    <mat-icon
+    class="icon-size-5"
+    matSuffix
+    [svgIcon]="'heroicons_solid:search'"></mat-icon>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data.name" 
+             cdkFocusInitial>Ok</button>
+</div>
